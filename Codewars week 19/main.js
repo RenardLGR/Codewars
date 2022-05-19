@@ -1,6 +1,7 @@
 const hi = 'HELLO'
 const alphaL = 'abcdefghijklmnopqrstuvwxyz'
 const alphaU = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 //================================================================================
 // https://www.codewars.com/kata/5c55ad8c9d76d41a62b4ede3/train/javascript
@@ -541,3 +542,247 @@ var kookaCounter = function(laughing) {
 }
 
 //=========================================================================
+// https://www.codewars.com/kata/590e03aef55cab099a0002e8/train/javascript
+// Given an input of an array of digits, return the array with each digit incremented by its position in the array: the first digit will be incremented by 1, the second digit by 2, etc. Make sure to start counting your positions from 1 ( and not 0 ).
+
+// Your result can only contain single digit numbers, so if adding a digit with its position gives you a multiple-digit number, only the last digit of the number should be returned. example : 9 at position 3 gives back 2 (last digit of 12)
+
+// Notes:
+// return an empty array if your array is empty
+// arrays will only contain numbers so don't worry about checking that
+// Examples:
+// [1, 2, 3]  -->  [2, 4, 6]   #  [1+1, 2+2, 3+3]
+
+// [4, 6, 9, 1, 3]  -->  [5, 8, 2, 5, 8]  #  [4+1, 6+2, 9+3, 1+4, 3+5]
+//                                        #  9+3 = 12  -->  2
+
+function incrementer(nums) { 
+    let inc = nums.map( (el, idx) => el+idx+1)
+    let res = inc.map(el => el%10)
+    return res
+}
+
+//===========================================================================
+// https://www.codewars.com/kata/5705ca6a41e5be67720012c0
+// Given an integer, if the length of it's digits is a perfect square, return a square block of sqroot(length) * sqroot(length). If not, simply return "Not a perfect square!".
+
+// Examples:
+
+// 1212 returns:
+
+// 12
+// 12 
+
+// Note: 4 digits so 2 squared (2x2 perfect square). 2 digits on each line.
+
+// 123123123 returns:
+
+// 123
+// 123
+// 123
+
+// Note: 9 digits so 3 squared (3x3 perfect square). 3 digits on each line.
+
+//112141568, "112\n141\n568" => length=
+
+function squareIt(int) {
+	//checks if int.length² is a perfect square (has an int sqr root)
+    //if so returns sqrt(int.length) length packet of digits
+
+    let intLe = int.toString().length
+    let isPerfectSq = Number.isInteger(Math.sqrt(intLe))
+
+    if(isPerfectSq) {
+        let res=''
+        let str = int.toString()
+        for(let i=0 ; i<intLe ; i+=Math.sqrt(intLe)){
+            res+= str.slice(i,i+Math.sqrt(intLe))+'\n'
+        }
+        return res.slice(0,-1)
+    }else {
+        return "Not a perfect square!"
+    }
+}
+
+//console.log(squareIt(112141568));
+
+//============================================================================
+// https://www.codewars.com/kata/57faf32df815ebd49e000117
+// Remove all exclamation marks from the end of words. Words are separated by a single space. There are no exclamation marks within a word.
+
+// Examples
+// remove("Hi!") === "Hi"
+// remove("Hi!!!") === "Hi"
+// remove("!Hi") === "!Hi"
+// remove("!Hi!") === "!Hi"
+// remove("Hi! Hi!") === "Hi Hi"
+// remove("!!!Hi !!hi!!! !hi") === "!!!Hi !!hi !hi"
+
+function removeSomeBangs (string) {
+    let arr = string.split(' ')
+    
+    let res = arr.map(hi => {
+        let arrN = hi.split('')
+        console.log("🚀 ~ file: main.js ~ line 626 ~ removeSomeBangs ~ arr", arrN)
+        while(arrN.slice(-1)=='!') { //deep equal would compare a string to an array of a string
+        //deep equal of two arrays would'nt work either
+            arrN.pop()
+        }
+        return arrN.join('')
+    })
+
+    return res.join(' ')
+}
+
+//console.log(removeSomeBangs("!!!Hi !!hi!!! !hi"));
+//console.log(removeSomeBangs("!!hi!!!"))
+
+//=============================================================================
+// https://www.codewars.com/kata/56e56756404bb1c950000992/train/javascript
+// In this kata you need to create a function that takes a 2D array/list of non-negative integer pairs and returns the sum of all the "saving" that you can have getting the LCM (least common multiple) of each couple of number compared to their simple product.
+
+// the least common multiple of two integers a and b, usually denoted by lcm(a, b), is the smallest positive integer that is divisible by both a and b
+
+// Example
+// lcm (4,6)
+// Multiples of 4 are:
+// 4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,...
+
+// Multiples of 6 are:
+// 6,12,18,24,30,36,42,48,54,60,66,72,...
+
+// Common multiples of 4 and 6 are the numbers that are in both lists:
+// 12,24,36,48,60,72,...
+
+// In this list, the smallest number is 12. Hence, the least common multiple is 12.
+
+
+
+
+// For example, if you are given:
+
+// [[15,18], [4,5], [12,60]]
+
+// Their product would be:
+// [270, 20, 720]
+
+// While their respective LCM would be:
+// [90, 20, 60]
+
+// Thus the result should be:
+// (270-90)+(20-20)+(720-60)==840
+
+// This is a kata that I made, among other things, to let some of my trainees familiarize with the euclidean algorithm, a really neat tool to have on your belt ;)
+
+function sumDifferencesBetweenProductsAndLCMs(pairs){
+
+    if(pairs.length===0) {
+        return 0
+    }
+
+    else {
+        let product = pairs.map(el => el[0] * el[1])
+        let lcm = pairs.map(el => returnLCM(el[0] , el[1])) //apparently struggles with big numbers
+    
+        let res=0
+    
+        for (let i=0 ; i<pairs.length  ;i++) {
+            res+=product[i]-lcm[i]
+        }
+    
+        return res
+    
+        function returnLCM(a,b) {
+            //I need the smallest number n (diff than 0) that n%a===0 && n%b===0
+            //let start this n at max(a,b) to gain some time
+            if(a===0 || b===0){
+                return 0
+            }
+
+            else {
+                let n = ( a>b ) ? a : b
+                while (true) {
+                    if(n%a===0 && n%b===0){
+                        return n
+                    }
+                    n++
+                }
+            }
+
+            function gcd(num1, num2){
+  
+                //Loop till both numbers are not equal
+                while(num1 != num2){
+                  
+                  //check if num1 > num2
+                  if(num1 > num2){
+                    //Subtract num2 from num1
+                    num1 = num1 - num2;
+                  }else{
+                    //Subtract num1 from num2
+                    num2 = num2 - num1;
+                  }
+                }
+                
+                return num2;
+              }
+        }
+
+        // It also is : 
+        // lcm(a, b) = abs(a * b) / gcd(a, b) //that is way faster
+
+
+    }
+}
+
+//console.log(sumDifferencesBetweenProductsAndLCMs([[20,50], [10,10], [50,20]])); //1890
+
+//=============================================================================
+// https://www.codewars.com/kata/58b8c94b7df3f116eb00005b/train/javascript
+// Given a string str, reverse it omitting all non-alphabetic characters.
+
+// Example
+// For str = "krishan", the output should be "nahsirk".
+
+// For str = "ultr53o?n", the output should be "nortlu".
+
+// Input/Output
+// [input] string str
+// A string consists of lowercase latin letters, digits and symbols.
+
+// [output] a string
+
+function reverseLetter(str) {
+    //only small case chartacters
+    return str.split('').reverse().filter(el => alphaL.includes(el)).join('')   
+}
+
+//===============================================================================
+// https://www.codewars.com/kata/59de469cfc3c492da80000c5
+// Your task is to make a program takes in a sentence (without puncuation), adds all words to a list and returns the sentence as a string which is the positions of the word in the list. Casing should not matter too.
+
+// Example
+// "Ask not what your COUNTRY can do for you ASK WHAT YOU CAN DO FOR YOUR country"
+
+// becomes
+
+// "01234567802856734"
+
+// Another example
+// "the one bumble bee one bumble the bee"
+
+// becomes
+
+// "01231203"
+
+function compress(sentence) {
+    let arrStnc = sentence.toLowerCase().split(' ')
+    let set = new Set(arrStnc)
+    let noDuplicateArr = Array.from(set)
+    
+    return arrStnc.map(word => noDuplicateArr.indexOf(word)).join('')
+}
+
+//console.log(compress("Ask not what your COUNTRY can do for you ASK WHAT YOU CAN DO FOR YOUR country"));
+
+//=============================================================================

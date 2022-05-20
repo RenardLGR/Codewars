@@ -786,3 +786,135 @@ function compress(sentence) {
 //console.log(compress("Ask not what your COUNTRY can do for you ASK WHAT YOU CAN DO FOR YOUR country"));
 
 //=============================================================================
+// https://www.codewars.com/kata/57f75cc397d62fc93d000059/train/javascript
+// Given a string, turn each character into its ASCII character code and join them together to create a number - let's call this number total1:
+
+// 'ABC' --> 'A' = 65, 'B' = 66, 'C' = 67 --> 656667
+// Then replace any incidence of the number 7 with the number 1, and call this number 'total2':
+
+// total1 = 656667
+//               ^
+// total2 = 656661
+//               ^
+// Then return the difference between the sum of the digits in total1 and total2:
+
+//   (6 + 5 + 6 + 6 + 6 + 7)
+// - (6 + 5 + 6 + 6 + 6 + 1)
+// -------------------------
+//                        6
+
+function charCodeCalc(str){
+    let total1=''
+    for(let i=0 ; i<str.length ; i++){
+        total1+=str.charCodeAt(i)
+    }
+    let total2=total1.split('').map(el => el==='7' ? '1' : el)
+
+    let sum1 = total1.split('').reduce( (acc, cur) => acc+Number(cur),0)
+    let sum2 = total2.reduce( (acc, cur) => acc+Number(cur),0)
+
+    return sum1 - sum2
+}
+
+//console.log(charCodeCalc('ABC'));
+
+//===============================================================================
+// https://www.codewars.com/kata/525e5a1cb735154b320002c8/train/javascript
+// Triangular numbers are so called because of the equilateral triangular shape that they occupy when laid out as dots. i.e.
+
+// 1st (1)   2nd (3)    3rd (6)
+// *          **        ***
+//            *         **
+//                      *
+// You need to return the nth triangular number (i.e. the number of dots of this triangle). You should return 0 for out of range values:
+
+// For example: (Input --> Output)
+
+// 0 --> 0
+// 2 --> 3
+// 3 --> 6
+// 4 --> 10
+// 5 --> 15
+// -10 --> 0
+
+function triangular(n){
+    if(n<0) {
+        return 0
+    }
+    else {
+        //naive approach works well but struggles with huge numbers as complexity becomes absurd
+        let dots = 0
+        let triangular = 0
+        while(triangular< n) {
+            triangular++
+            dots+=triangular
+        }
+
+        return dots
+    }
+}
+
+function triangularBis(n) {
+    //Triangular numbers: a(n) = binomial(n+1 , 2) = n*(n+1)/2 = 0 + 1 + 2 + ... + n.
+    if(n<0) {
+        return 0
+    }
+    else {
+        return n*(n+1)/2
+    }
+
+    //return (n > 0) ? ((n * n) + n) / 2 : 0;
+}
+
+//===============================================================================
+// https://www.codewars.com/kata/5f6d533e1475f30001e47514/train/javascript
+// You are given a list of unique integers arr, and two integers a and b. Your task is to find out whether or not a and b appear consecutively in arr, and return a boolean value (True if a and b are consecutive, False otherwise).
+
+// It is guaranteed that a and b are both present in arr.
+
+function consecutive(arr, a, b) {
+    return arr.some( (el, idx) => {
+        return (el===a && arr[idx+1]===b) || (el===a && arr[idx-1]===b)
+    })
+}
+
+function consecutiveBis(arr, a, b) {
+    return Math.abs( arr.indexOf(a) - arr.indexOf(b) ) == 1
+    //Works bcs the list have unique integers
+}
+
+//==============================================================================
+// https://www.codewars.com/kata/5acc79efc6fde7838a0000a0/train/javascript
+// Given a number and a binary tree ( not a Binary Search Tree! ):
+
+// return True/true if the given number is in the tree
+// return False/false if it isn't
+// Each node in the binary tree is either of this Node class or null:
+
+// class Node {
+//   constructor(value, left = null, right = null) {
+//     this.value = value;
+//     this.left = left;
+//     this.right = right;
+//   }
+// }
+
+function searchTree(n, root) {
+    //I checked the answers for that one
+    return !!root && (root.value === n || search(n, root.left) || search(n, root.right)); 
+    // !! converts Object to boolean. If it was falsey (e.g. 0, null, undefined, etc.), it will be false, otherwise, true.
+
+    // !object  // inverted boolean
+    // !!object // non inverted boolean so true boolean representation
+    // So !! is not an operator, it's just the ! operator twice.
+    
+    // It may be simpler to do:
+    
+    // Boolean(object) // boolean
+
+    //=================
+    //So the func checks if the root is not null
+    //If that is the case, it checks the val of this node and finally if the node is the last of its branch
+}
+
+//=============================================================================

@@ -917,4 +917,208 @@ function searchTree(n, root) {
     //If that is the case, it checks the val of this node and finally if the node is the last of its branch
 }
 
+//==============================================================================
+// https://www.codewars.com/kata/523f5d21c841566fde000009/train/javascript
+// Your goal in this kata is to implement a difference function, which subtracts one list from another and returns the result.
+
+// It should remove all values from list a, which are present in list b keeping their order.
+
+// arrayDiff([1,2],[1]) == [2]
+// If a value is present in b, all of its occurrences must be removed from the other:
+
+// arrayDiff([1,2,2,2,3],[2]) == [1,3]
+
+function arrayDiff(a, b) {
+  //filter/remove all value of list a present in list b
+  let filteredA = a.filter(el => !b.includes(el))
+  return filteredA
+}
+
 //=============================================================================
+//https://www.codewars.com/kata/56eff1e64794404a720002d2/train/javascript
+//LOOK AT THE TEST CASES
+
+function testit(s){
+    s=s.toLowerCase()
+    let res = 0
+    let temp = 0
+    for(let i=0 ; i<s.length ; i++) {
+        if(s[i]==='w' && temp===0) temp++
+        if(s[i]==='o' && temp===1) temp++
+        if(s[i]==='r' && temp===2) temp++
+        if(s[i]==='d' && temp===3) {
+            res++
+            temp=0
+        }
+    }
+
+    return res
+}
+
+//===============================================================================
+// https://www.codewars.com/kata/58aa68605aab54a26c0001a6/train/javascript
+// The year of 2013 is the first year after the old 1987 with only distinct digits.
+
+// Now your task is to solve the following problem: given a year number, find the minimum year number which is strictly larger than the given one and has only distinct digits.
+
+// Input/Output
+// [input] integer year
+// 1000 ≤ year ≤ 9000
+
+// [output] an integer
+// the minimum year number that is strictly larger than the input number year and all its digits are distinct.
+
+function distinctDigitYear(year) {
+    let res = year+1
+    let set = new Set(res.toString().split(''))
+
+    while(Array.from(set).length<4) {
+        res++
+        set = new Set(res.toString().split(''))
+    }
+    return res
+}
+
+function distinctDigitYearBis(year) {
+    do{
+        year++
+    }while( new Set(year.toString().split('')).size <4)
+
+    return year
+}
+
+//console.log(distinctDigitYearBis(1987));
+
+//=============================================================================
+//https://www.codewars.com/kata/60edafd71dad1800563cf933/train/javascript
+// Define the function counter that returns a function that returns an increasing value.
+// The first value should be 1.
+// You're going to have to use closures.
+// Example:
+// const newCounter = counter();
+// newCounter() // 1
+// newCounter() // 2
+
+// Closure:
+// A closure is the combination of a function bundled together (enclosed) with references to its surrounding state (the lexical environment). In other words, a closure gives you access to an outer function’s scope from an inner function. In JavaScript, closures are created every time a function is created, at function creation time.
+
+function closureCounter(){
+    let counter=1
+    return function() {
+        return counter++
+    }
+}
+
+//============================================================================
+// //https://www.codewars.com/kata/59b710ed70a3b7dd8f000027/train/javascript
+// A non-empty array a of length n is called an array of all possibilities if it contains all numbers between [0,a.length-1].Write a method named isAllPossibilities that accepts an integer array and returns true if the array is an array of all possibilities, else false.
+
+// Example:
+
+// a=[1,2,0,3]
+// a.length-1=3 
+// a includes [0,3] ,hence the function should return true
+
+function isAllPossibilities(arr) {
+    if(arr.length===0) { //an empty arr should return false
+        return false
+    }
+    else {
+        let zeroToLength = [...Array(arr.length).keys()] // gets [0, 1, 2, ... ,length-1]
+        return zeroToLength.every(elem => arr.includes(elem))
+    }
+}
+
+//==============================================================================
+// https://www.codewars.com/kata/58319f37aeb69a89a00000c7/train/javascript
+// Implement the method reduce, which accepts three arguments:
+
+// linked list (head)
+// bi-function - (accumulated_value, current_element_data)
+// initial value
+// This method should return the result of applying the given function on every element with the accumulating result, starting with the initial value.
+
+// For example:
+
+// Given the list: 1 -> 2 -> 3, the function (acc, curr) => acc + curr and an initial value of 0, reduce should return 6, because:
+
+// (0, 1) and the function (acc, curr) => acc + curr gives 1
+// (1, 2) and the function (acc, curr) => acc + curr gives 3
+// (3, 3) and the function (acc, curr) => acc + curr gives 6
+// Another example:
+
+// Given the list: 1 -> 2 -> 3 -> 4, the function (acc, curr) => acc * curr and an initial value of 1, reduce should return 24
+
+// The linked list is defined as follows:
+
+// function Node(data, next = null) {
+//   this.data = data;
+//   this.next = next;
+// }
+// Note: the list may be null and can hold any type of value.
+
+function reduce(head, f, init) {
+    let res=init
+    let obj = head
+    while(obj) {
+        res = f(res, head.data)
+        obj=obj.next
+    }
+
+    return res
+}
+
+//============================================================================
+// https://www.codewars.com/kata/57f5e7bd60d0a0cfd900032d/train/javascript
+// This question is a variation on the Arithmetic Progression kata
+// (https://www.codewars.com/kata/find-the-missing-term-in-an-arithmetic-progression) (See foloowing exercice)
+
+// The following was a question that I received during a technical interview for an entry level software developer position. I thought I'd post it here so that everyone could give it a go:
+
+// You are given an unsorted array containing all the integers from 0 to 100 inclusively. However, one number is missing. Write a function to find and return this number. What are the time and space complexities of your solution?
+
+function missingNo(nums) {
+  //naive way is for i 0 to 100 return 'here' if nums.includes(i) is false
+  for(let i=0 ; i<=100 ; i++){
+      if(!nums.includes(i)) return i
+  }
+
+  //return 5050 - nums.reduce( (acc, cur) => acc+cur , 0)
+  //0+1+2...+n = n(n+1)/2 //So here 5050
+}
+
+//============================================================================
+//https://www.codewars.com/kata/52de553ebb55d1fca3000371/train/javascript
+// An Arithmetic Progression is defined as one in which there is a constant difference between the consecutive terms of a given series of numbers. You are provided with consecutive elements of an Arithmetic Progression. There is however one hitch: exactly one term from the original series is missing from the set of numbers which have been given to you. The rest of the given series is the same as the original AP. Find the missing term.
+
+// You have to write a function that receives a list, list size will always be at least 3 numbers. The missing term will never be the first or last one.
+
+// Example
+// findMissing([1, 3, 5, 9, 11]) == 7
+// PS: This is a sample question of the facebook engineer challenge on interviewstreet. I found it quite fun to solve on paper using math, derive the algo that way. Have fun!
+
+function findMissing(list) { 
+    //naive approach : find step, check if one is missing
+    let firstThree = list.slice(0,3) //list have always at least 3 elements
+
+    let diffList = [] //list of steps
+    for(let i=0 ; i<firstThree.length-1 ; i++) {
+        diffList.push(firstThree[i+1]-firstThree[i])
+    }
+    
+    let increasing = list[1] - list[0] > 0
+
+    if(increasing){
+        let step = Math.min(...diffList) //the step is the smallest step of all steps if the list is increasing
+        for(let i=list[0] ; i<=list[list.length-1] ; i+=step){
+            if(!list.includes(i)) return i
+        }
+    }else {
+        let step = Math.max(...diffList) //the step is the biggest step of all steps if the list is decreasing
+        for(let i=list[0] ; i>=list[list.length-1] ; i+=step){
+            if(!list.includes(i)) return i
+        }
+    }
+}
+
+//console.log(findMissing([ -6, -11, -21 ])); // -> -16

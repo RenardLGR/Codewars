@@ -1122,3 +1122,49 @@ function findMissing(list) {
 }
 
 //console.log(findMissing([ -6, -11, -21 ])); // -> -16
+
+
+//==================================================================================
+// https://www.codewars.com/kata/54521e9ec8e60bc4de000d6c/train/javascript
+// The maximum sum subarray problem consists in finding the maximum sum of a contiguous subsequence in an array or list of integers:
+
+// maxSequence([-2, 1, -3, 4, -1, 2, 1, -5, 4])
+// // should be 6: [4, -1, 2, 1]
+// Easy case is when the list is made up of only positive numbers and the maximum sum is the sum of the whole array. If the list is made up of only negative numbers, return 0 instead.
+
+// Empty list is considered to have zero greatest sum. Note that the empty list or array is also a valid sublist/subarray.
+
+var maxSequence = function(arr){
+    //see Kadane's algorithm for an elgant and fast solution
+
+    if(arr.length===0) { //input of empty list
+        return 0
+    }else {
+        //easy checks : list with only negative and only positive
+        if(arr.every(el => el>=0)) return arr.reduce((acc, cur) => acc+cur,0) //only positive
+        else if(arr.every(el => el<=0)) return 0 //only negative
+        else { //a list combining positive and negative numbers
+            //naive (and bruteforce) approach : check every substring
+            let result = arr.reduce((acc,cur) => acc+cur , 0)
+
+            for(let i=0 ; i<arr.length ; i++) {
+                for(let j=i ; j<arr.length ; j++) {
+                    let substring = arr.slice(i,j+1) //slice(start,end) doesnt take the end
+                    //substring = [-2] i=0 j=0
+                    //substring = [-2 , 1] i=0 j=1
+                    //substring = [-2 , 1 , ... , 4] i=0 j=length-1
+                    //substring = [1] i=1 j=0
+                    //substring = [1 , -3] i=1 j=2
+                    //substring = [1 , ... , 4] i=1 j=length-1
+                    let temp = substring.reduce((acc, cur) => acc+cur,0)
+                    if(temp>result) result = temp
+                }
+            }
+
+            return result
+        }
+    }
+
+}
+
+//console.log(maxSequence([-2, 1, -3, 4, -1, 2, 1, -5, 4]));

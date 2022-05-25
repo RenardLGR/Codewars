@@ -267,3 +267,79 @@ function minSumBis(arr) {
 //console.log(minSumBis([12,6,10,26,3,24]));
 
 //============================================================================
+// https://www.codewars.com/kata/58c9322bedb4235468000019/train/javascript
+// Write a function that returns true if the number is a "Very Even" number.
+
+// If a number is a single digit, then it is simply "Very Even" if it itself is even.
+
+// If it has 2 or more digits, it is "Very Even" if the sum of its digits is "Very Even".
+
+// Examples
+// number = 88 => returns false -> 8 + 8 = 16 -> 1 + 6 = 7 => 7 is odd 
+
+// number = 222 => returns true -> 2 + 2 + 2 = 6 => 6 is even
+
+// number = 5 => returns false
+
+// number = 841 => returns true -> 8 + 4 + 1 = 13 -> 1 + 3 => 4 is even
+// Note: The numbers will always be 0 or positive integers!
+
+function isVeryEvenNumber(n) {
+    if(n<10) return n%2===0
+    else{
+        let num=n
+       do{
+        //console.log(num);
+        num=num.toString().split('').reduce( (acc,cur) => acc+ +cur, 0)
+       }while(num>9)
+       return num%2===0
+    }
+}
+
+//console.log(isVeryEvenNumber(841));
+
+//==========================================================================
+// https://www.codewars.com/kata/569218bc919ccba77000000b
+// You have an amount of money a0 > 0 and you deposit it with an interest rate of p percent divided by 360 per day on the 1st of January 2016. You want to have an amount a >= a0.
+
+// Task:
+// The function date_nb_days (or dateNbDays...) with parameters a0, a, p will return, as a string, the date on which you have just reached a.
+
+// Example:
+// date_nb_days(100, 101, 0.98) --> "2017-01-01" (366 days)
+
+// date_nb_days(100, 150, 2.00) --> "2035-12-26" (7299 days)
+
+// Notes:
+// The return format of the date is "YYYY-MM-DD"
+// The deposit is always on the "2016-01-01"
+// Don't forget to take the rate for a day to be p divided by 36000 since banks consider that there are 360 days in a year.
+// You have: a0 > 0, p% > 0, a >= a0
+
+function dateNbDays(a0, a, p) {
+    let money=a0
+    let dailyInterest = p/36000
+    let target = a
+    let totalDays = 0
+    while(money<target) {
+        money+= money*dailyInterest
+        totalDays++
+    }
+
+    let res = new Date("2016-01-01")
+    res.setDate(totalDays)
+
+    let year = res.getFullYear()
+    let month = res.getMonth()+1 //get month goes from 0 to 11
+    let days = res.getDate() //getDay returns the day of the week 0 to 6 starting on sunday
+    month<10 ? month='0'+month : month=month
+    days<10 ? days='0'+days : days=days
+
+    console.log(totalDays,res);
+    return year+'-'+month+'-'+days
+}
+
+// console.log(dateNbDays(100, 150, 2.00)); //"2035-12-25" (7299 days)
+// console.log(dateNbDays(4281, 5087, 2)); //"2024-07-02"
+
+//===========================================================================

@@ -343,3 +343,304 @@ function dateNbDays(a0, a, p) {
 // console.log(dateNbDays(4281, 5087, 2)); //"2024-07-02"
 
 //===========================================================================
+// https://www.codewars.com/kata/54ba84be607a92aa900000f1/train/javascript
+// An isogram is a word that has no repeating letters, consecutive or non-consecutive. Implement a function that determines whether a string that contains only letters is an isogram. Assume the empty string is an isogram. Ignore letter case.
+
+// Example: (Input --> Output)
+
+// "Dermatoglyphics" --> true
+// "aba" --> false
+// "moOse" --> false (ignore letter case)
+
+function isIsogram(str){
+    let arr = str.toLowerCase().split('')
+    let set = new Set(arr)
+    console.log(set);
+    return set.size===str.length
+    //return new Set(str.toLowerCase()).size == str.length;
+}
+
+//console.log(isIsogram("Dermatoglyphics"));
+
+//============================================================================
+// https://www.codewars.com/kata/583ebb9328a0c034490001ba/train/javascript
+// Given two arrays of integers m and n, test if they contain at least one identical element. Return true if they do; false if not.
+
+// Your code must handle any value within the range of a 32-bit integer, and must be capable of handling either array being empty (which is a false result, as there are no duplicated elements).
+
+function duplicateElements(m, n) {
+    return m.some(el => n.includes(el))
+}
+
+//==========================================================================
+// https://www.codewars.com/kata/5259b20d6021e9e14c0010d4/train/javascript
+// Complete the function that accepts a string parameter, and reverses each word in the string. All spaces in the string should be retained.
+
+// Examples
+// "This is an example!" ==> "sihT si na !elpmaxe"
+// "double  spaces"      ==> "elbuod  secaps"
+
+function reverseWords(str) {
+    let words = str.split(' ')
+    let res = words.map(word => word.split('').reverse().join(''))
+
+    return res.join(' ')
+}
+
+
+//========================================================================
+// https://www.codewars.com/kata/5f77d62851f6bc0033616bd8/train/javascript
+// Your task is to write a function called valid_spacing() or validSpacing() which checks if a string has valid spacing. The function should return either true or false (or the corresponding value in each language).
+
+// For this kata, the definition of valid spacing is one space between words, and no leading or trailing spaces. Words can be any consecutive sequence of non space characters. Below are some examples of what the function should return:
+
+// * 'Hello world'   => true
+// * ' Hello world'  => false
+// * 'Hello world  ' => false
+// * 'Hello  world'  => false
+// * 'Hello'         => true
+
+// Even though there are no spaces, it is still valid because none are needed:
+// * 'Helloworld'    => true
+// * 'Helloworld '   => false
+// * ' '             => false
+// * ''              => true
+// Note - there will be no punctuation or digits in the input string, only letters.
+
+function validSpacing(s) {
+    if(s==='') {
+        return true
+    }else {
+        if(s !== s.trim()) return false //get rid off trailing or leading strings
+
+        else {//get rid off multiples spaces between words
+            return s.split(' ').every(el => el!=='')
+        }
+    }
+}
+
+//console.log(validSpacing("cLOn  BFx")); -> false
+
+function validSpacingBis(s) {
+    return s == s.trim() && !s.includes('  ')
+}
+
+//===========================================================================
+// https://www.codewars.com/kata/585a033e3a36cdc50a00011c/train/javascript
+// Return an output string that translates an input string s by replacing each character in s with a number representing the number of times that character occurs in s and separating each number with the character(s) sep.
+
+// freq_seq("hello world", "-"); // => "1-1-3-3-2-1-1-2-1-3-1"
+// freq_seq("19999999", ":"); // => "1:7:7:7:7:7:7:7"
+// freq_seq("^^^**$", "x"); // => "3x3x3x2x2x1"
+
+function freqSeq(str, sep) {
+    let obj = {}
+    for(let i=0 ; i<str.length ; i++) {
+        obj.hasOwnProperty(str[i]) ? obj[str[i]]++ : obj[str[i]]=1
+    }
+    let res = ''
+    for(let i=0 ; i<str.length ; i++) {
+        res+=obj[str[i]]+sep
+    }
+    return res.slice(0,sep.length-2)
+}
+
+//console.log(freqSeq("hello world", "-"));
+
+function freqSeqBis(str, sep) {
+    return str.split('').map( (letter, idx, arr) => {
+        return arr.filter(letterBis => letter===letterBis).length //returns how many times the letter appears
+    }).join(sep)
+}
+
+//console.log(freqSeqBis("hello world", "-"));
+
+
+//==========================================================================
+// https://www.codewars.com/kata/568dc69683322417eb00002c/train/javascript
+// Given a string, return true if the first instance of "x" in the string is immediately followed by the string "xx".
+
+// tripleX("abraxxxas") → true
+// tripleX("xoxotrololololololoxxx") → false
+// tripleX("softX kitty, warm kitty, xxxxx") → true
+// tripleX("softx kitty, warm kitty, xxxxx") → false
+// Note :
+
+// capital X's do not count as an occurrence of "x".
+// if there are no "x"'s then return false
+
+function tripleX(str){
+  return str[str.indexOf('x')] === str[str.indexOf('x')+1] && str[str.indexOf('x')] === str[str.indexOf('x')+2]
+}
+
+function tripleXBis(str) {
+    return (str.lastIndexOf('x') > -1) && ( str.indexOf('x') === str.indexOf('xxx') ) //ensure 'x' exists
+}
+
+//console.log(tripleXBis("softX kitty, warm kitty, xxxxx"));
+
+//=============================================================================
+// https://www.codewars.com/kata/5d10d53a4b67bb00211ca8af
+// You are an aerial firefighter (someone who drops water on fires from above in order to extinguish them) and your goal is to work out the minimum amount of bombs you need to drop in order to fully extinguish the fire (the fire department has budgeting concerns and you can't just be dropping tons of bombs, they need that money for the annual christmas party).
+
+// The given string is a 2D plane of random length consisting of two characters:
+
+// x representing fire
+// Y representing buildings.
+// Water that you drop cannot go through buildings and therefore individual sections of fire must be addressed separately.
+
+// Your water bombs can only extinguish contiguous sections of fire up to a width (parameter w).
+
+// You must return the minimum number of waterbombs it would take to extinguish the fire in the string.
+
+// Note: all inputs will be valid.
+
+// Examples
+// "xxYxx" and w = 3      -->  2 waterbombs needed
+// "xxYxx" and w = 1      -->  4
+// "xxxxYxYx" and w = 5   -->  3
+// "xxxxxYxYx" and w = 2  -->  5
+
+function waterbombs(fire, w) {
+    let fires = fire.split('Y')
+    return fires.map(el => Math.ceil((el.length/w)) ).reduce( (acc,cur) => acc+cur,0)
+}
+
+//console.log(waterbombs('xxxxxYxYx' , 2));
+
+//===========================================================================
+// https://www.codewars.com/kata/563b662a59afc2b5120000c6
+// In a small town the population is p0 = 1000 at the beginning of a year. The population regularly increases by 2 percent per year and moreover 50 new inhabitants per year come to live in the town. How many years does the town need to see its population greater or equal to p = 1200 inhabitants?
+
+// At the end of the first year there will be: 
+// 1000 + 1000 * 0.02 + 50 => 1070 inhabitants
+
+// At the end of the 2nd year there will be: 
+// 1070 + 1070 * 0.02 + 50 => 1141 inhabitants (** number of inhabitants is an integer **)
+
+// At the end of the 3rd year there will be:
+// 1141 + 1141 * 0.02 + 50 => 1213
+
+// It will need 3 entire years.
+// More generally given parameters:
+
+// p0, percent, aug (inhabitants coming or leaving each year), p (population to surpass)
+
+// the function nb_year should return n number of entire years needed to get a population greater or equal to p.
+
+// aug is an integer, percent a positive or null floating number, p0 and p are positive integers (> 0)
+
+// Examples:
+// nb_year(1500, 5, 100, 5000) -> 15
+// nb_year(1500000, 2.5, 10000, 2000000) -> 10
+// Note:
+// Don't forget to convert the percent parameter as a percentage in the body of your function: if the parameter percent is 2 you have to convert it to 0.02.
+
+function nbYear(p0, percent, aug, p) {
+    let inhabitants = p0
+    let year=0
+    while(inhabitants<p) {
+        inhabitants += Math.floor(inhabitants*percent/100) + aug
+        year++
+        //console.log(inhabitants);
+    }
+
+    return year
+}
+
+
+//console.log(nbYear(1000, 2, 50, 1214));
+
+//============================================================================
+// https://www.codewars.com/kata/558ee8415872565824000007
+// Create a function isDivisible(n,...) that checks if the first argument n is divisible by all other arguments (return true if no other arguments)
+
+// Example:
+
+// isDivisible(6,1,3)--> true because 6 is divisible by 1 and 3
+// isDivisible(12,2)--> true because 12 is divisible by 2
+// isDivisible(100,5,4,10,25,20)--> true
+// isDivisible(12,7)--> false because 12 is not divisible by 7
+// This kata is following kata: http://www.codewars.com/kata/is-n-divisible-by-x-and-y
+
+function isDivisible(){
+    let args = [...arguments]
+    let firstArg=args.shift()
+    if(args.length===0) {
+        return true //true if only one argument
+    }else {
+        return args.every(el => firstArg%el ===0)
+    }
+}
+
+//console.log(isDivisible(100,5,4,10,25,20));
+
+//=============================================================================
+// https://www.codewars.com/kata/5545f109004975ea66000086/train/javascript
+// Create a function that checks if a number n is divisible by two numbers x AND y. All inputs are positive, non-zero digits.
+
+// Examples:
+// 1) n =   3, x = 1, y = 3 =>  true because   3 is divisible by 1 and 3
+// 2) n =  12, x = 2, y = 6 =>  true because  12 is divisible by 2 and 6
+// 3) n = 100, x = 5, y = 3 => false because 100 is not divisible by 3
+// 4) n =  12, x = 7, y = 5 => false because  12 is neither divisible by 7 nor 5
+
+function isDivisibleEz(n, x, y) {
+    return n%x===0 && n%y===0
+}
+
+//===========================================================================
+// https://www.codewars.com/kata/5467e4d82edf8bbf40000155
+// Your task is to make a function that can take any non-negative integer as an argument and return it with its digits in descending order. Essentially, rearrange the digits to create the highest possible number.
+
+// Examples:
+// Input: 42145 Output: 54421
+
+// Input: 145263 Output: 654321
+
+// Input: 123456789 Output: 987654321
+
+function descendingOrder(n){
+    return Number(n.toString().split('').sort( (a,b) => b-a).join(''))
+}
+
+//console.log(descendingOrder(123456789));
+
+//=============================================================================
+// https://www.codewars.com/kata/5a7b3d08fd5777bf6a000121/train/javascript
+// In this kata the function returns an array/list like the one passed to it but with its nth element removed (with 0 <= n <= array/list.length - 1). The function is already written for you and the basic tests pass, but random tests fail. Your task is to figure out why and fix it.
+
+//Make that code not mutating
+
+function removeNthElement(arr, n) {
+    // Fix it
+    // var arrCopy = arr;
+    // arrCopy.splice(n, 1); // removes the nth element
+    // return arrCopy;
+
+    var arrCopy = arr.slice();
+    arrCopy.splice(n, 1); // removes the nth element
+    return arrCopy;
+}
+
+//console.log(removeNthElement([1, 2, 3, 4, 5], 1));
+
+//============================================================================
+// https://www.codewars.com/kata/5a4ff3c5fd56cbaf9800003e
+// In this kata the function returns an array/list of numbers without its last element. The function is already written for you and the basic tests pass, but random tests fail. Your task is to figure out why and fix it.
+
+// Good luck!
+
+// Hint: watch out for side effects.
+
+function withoutLast(arr) {
+    // // Fix it
+    // arr.pop(); // removes the last element
+    // return arr;
+
+    let res = arr.slice()
+    res.pop(); // removes the last element
+    return res;
+}
+
+//============================================================================

@@ -644,3 +644,134 @@ function withoutLast(arr) {
 }
 
 //============================================================================
+// https://www.codewars.com/kata/597d75744f4190857a00008d
+// You and a group of friends are earning some extra money in the school holidays by re-painting the numbers on people's letterboxes for a small fee.
+
+// Since there are 10 of you in the group each person just concentrates on painting one digit! For example, somebody will paint only the 1's, somebody else will paint only the 2's and so on...
+
+// But at the end of the day you realise not everybody did the same amount of work.
+
+// To avoid any fights you need to distribute the money fairly. That's where this Kata comes in.
+
+// Kata Task
+// Given the start and end letterbox numbers, write a method to return the frequency of all 10 digits painted.
+
+// Example
+// For start = 125, and end = 132
+
+// The letterboxes are
+
+// 125 = 1, 2, 5
+// 126 = 1, 2, 6
+// 127 = 1, 2, 7
+// 128 = 1, 2, 8
+// 129 = 1, 2, 9
+// 130 = 1, 3, 0
+// 131 = 1, 3, 1
+// 132 = 1, 3, 2
+// The digit frequencies are:
+
+// 0 is painted 1 time
+// 1 is painted 9 times
+// 2 is painted 6 times
+// etc...
+// and so the method would return [1,9,6,3,0,1,1,1,1,1]
+
+// Notes
+// 0 < start <= end
+
+var paintLetterboxes = function(start, end) {
+    let adresses = []
+    let res = []
+    for (let i=start ; i<=end ; i++) {
+        adresses.push(i)
+    }
+
+    let str = adresses.join('')
+    for (let i=0 ; i<10 ; i++) {
+        res[i] = str.split('').filter(dig => +dig === i).length //get the length of the string containing only i € [0 , ... , 9] i.e. the amount of it
+    }
+
+    return res
+}
+
+//console.log(paintLetterboxes(125,132));
+
+
+function paintLetterboxesBis(start,end) {
+    let res = [...Array(10).fill(0)]
+
+    for (let i=start ; i<=end ; i++) {
+        i.toString().split('').forEach(dig => res[dig]++);
+    }
+
+    return res
+}
+
+// console.log(paintLetterboxesBis(125,132));
+
+//============================================================================
+// https://www.codewars.com/kata/5a91a7c5fd8c061367000002
+// Given an array of N integers, you have to find how many times you have to add up the smallest numbers in the array until their Sum becomes greater or equal to K.
+
+// Notes:
+// List size is at least 3.
+
+// All numbers will be positive.
+
+// Numbers could occur more than once , (Duplications may exist).
+
+// Threshold K will always be reachable.
+
+// Input >> Output Examples
+// minimumSteps({1, 10, 12, 9, 2, 3}, 6)  ==>  return (2)
+// Explanation:
+// We add two smallest elements (1 + 2), their sum is 3 .
+
+// Then we add the next smallest number to it (3 + 3) , so the sum becomes 6 .
+
+// Now the result is greater or equal to 6 , Hence the output is (2) i.e (2) operations are required to do this .
+
+// minimumSteps({8 , 9, 4, 2}, 23)  ==> return (3)
+// Explanation:
+// We add two smallest elements (4 + 2), their sum is 6 .
+
+// Then we add the next smallest number to it (6 + 8) , so the sum becomes 14 .
+
+// Now we add the next smallest number (14 + 9) , so the sum becomes 23 .
+
+// Now the result is greater or equal to 23 , Hence the output is (3) i.e (3) operations are required to do this .
+
+// minimumSteps({19,98,69,28,75,45,17,98,67}, 464)  ==>  return (8)
+// Explanation:
+// We add two smallest elements (19 + 17), their sum is 36 .
+
+// Then we add the next smallest number to it (36 + 28) , so the sum becomes 64 .
+
+// We need to keep doing this until the sum becomes greater or equal to K (464 in this case), which will require 8 Steps .
+
+// Expected Time Complexity O(n Log n)
+
+function minimumSteps(numbers, targetK){
+    let arr = numbers.sort( (a,b) => a-b)
+    let value = arr[0]
+    let ct = 0
+
+    while(value < targetK) {
+        ct++
+        value+=arr[ct]
+    }
+
+    return ct
+}
+
+// console.log(minimumSteps([8 , 9, 4, 2], 23)); // =>3
+// console.log(minimumSteps([19,98,69,28,75,45,17,98,67], 464)); // =>8
+
+function minimumStepsBis(numbers, targetK){
+    return numbers.sort( (a,b) => a-b).filter( el => (targetK=targetK-el) > 0 ).length
+}
+
+//console.log(minimumStepsBis([19,98,69,28,75,45,17,98,67], 464));
+
+//============================================================================

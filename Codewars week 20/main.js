@@ -992,3 +992,120 @@ function getSlope(p1, p2) {
 }
 
 //=========================================================================
+// https://www.codewars.com/kata/544aed4c4a30184e960010f4/train/javascript
+// Create a function named divisors/Divisors that takes an integer n > 1 and returns an array with all of the integer's divisors(except for 1 and the number itself), from smallest to largest. If the number is prime return the string '(integer) is prime'
+
+// Example:
+// divisors(12); // should return [2,3,4,6]
+// divisors(25); // should return [5]
+// divisors(13); // should return "13 is prime"
+
+function divisors(integer) {
+  let res = []
+  for (let i=2 ; i<integer ; i++){ //could go less far than i<intger
+      if(integer%i===0) res.push(i)
+  }
+
+  return res.length===0 ? `${integer} is prime` : res
+};
+
+// console.log(divisors(15));
+// console.log(divisors(13));
+
+//===========================================================================
+//training callback hell , promises , async await
+
+function deliverHouse1() {
+    setTimeout(function cb() {
+        console.log('House 1 delivered');
+    } , 3000)
+}
+function deliverHouse2() {
+    setTimeout( () => {
+        console.log('House 2 delivered');
+    } , 2000)
+}
+function deliverHouse3() {
+    function log() {
+        console.log('House 3 delivered');
+    }
+    setTimeout( log , 4000)
+}
+
+// deliverHouse1()
+// deliverHouse2()
+// deliverHouse3()
+
+// 2 , 1 , 3
+
+function deliverHouses() {
+    setTimeout( () => {
+        console.log('House 1 delivered');
+        setTimeout( () => {
+            console.log('House 2 delivered');
+            setTimeout( () => {
+                console.log('House 3 delivered');
+            },1000)
+        },2000)
+    },3000)
+}
+
+//deliverHouses()
+
+//1 , 2 , 3
+
+function deliverHouse1Promise() {
+    return new Promise( (resolve , reject) => {
+        setTimeout( () => {
+            resolve("House 1 delivered")
+        },3000)
+    })
+}
+
+function deliverHouse2Promise() {
+    return new Promise( (resolve , reject) => {
+        setTimeout( () => {
+            resolve("House 2 delivered")
+        },2000)
+    })
+}
+
+function deliverHouse3Promise() {
+    return new Promise( (resolve , reject) => {
+        setTimeout( () => {
+            resolve("House 3 delivered")
+        },1000)
+    })
+}
+
+// deliverHouse1Promise()
+//     .then(data => console.log(data))
+//     .then(deliverHouse2Promise)
+//     .then(data => console.log(data))
+//     .then(deliverHouse3Promise)
+//     .then(data => console.log(data))
+//     .catch(error => console.log(error))
+
+  
+async function getPaid() {
+    const waitHouse1 = await deliverHouse1Promise()
+    const waitHouse2 = await deliverHouse2Promise()
+    const waitHouse3 = await deliverHouse3Promise()
+
+    console.log(waitHouse1,waitHouse2,waitHouse3); //logs after 6 sec
+}
+
+//getPaid()
+
+async function getDogPhoto() {
+    try{
+        const res = await fetch('https://dog.ceo/api/breeds/image/random')
+        const data = await res.json()
+        console.log(data);
+    }catch(error){console.log(error);}
+}
+
+//getDogPhoto()
+
+let isNight = false
+console.log(isNight ? 'ZZZZZ' : 'AAAA');

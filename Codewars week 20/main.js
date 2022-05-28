@@ -775,3 +775,220 @@ function minimumStepsBis(numbers, targetK){
 //console.log(minimumStepsBis([19,98,69,28,75,45,17,98,67], 464));
 
 //============================================================================
+// https://www.codewars.com/kata/5d95b7644a336600271f52ba/train/javascript
+// Robinson Crusoe decides to explore his isle. On a sheet of paper he plans the following process.
+
+// His hut has coordinates origin = [0, 0]. From that origin he walks a given distance d on a line that has a given angle ang with the x-axis. He gets to a point A. (Angles are measured with respect to the x-axis)
+
+// From that point A he walks the distance d multiplied by a constant distmult on a line that has the angle ang multiplied by a constant angmult and so on and on.
+
+// We have d0 = d, ang0 = ang; then d1 = d * distmult, ang1 = ang * angmult etc ...
+
+// Let us suppose he follows this process n times. What are the coordinates lastx, lasty of the last point?
+
+// The function crusoe has parameters;
+
+// n : numbers of steps in the process
+// d : initial chosen distance
+// ang : initial chosen angle in degrees
+// distmult : constant multiplier of the previous distance
+// angmult : constant multiplier of the previous angle
+// crusoe(n, d, ang, distmult, angmult) should return lastx, lasty as an array or a tuple depending on the language.
+
+// Example:
+// crusoe(5, 0.2, 30, 1.02, 1.1) ->
+
+// The successive x are : 0.0, 0.173205, 0.344294, 0.511991, 0.674744, 0.830674 (approximately)
+
+// The successive y are : 0.0, 0.1, 0.211106, 0.334292, 0.47052, 0.620695 (approximately)
+
+// and
+
+// lastx: 0.8306737544381833
+// lasty: 0.620694691344071
+// A drawing:
+// SEE IN WEBPAGE
+
+// Successive points:
+
+// x: 0.0, 0.9659..., 1.8319..., 2.3319..., 1.8319...
+// y: 0.0, 0.2588..., 0.7588..., 1.6248..., 2.4908...
+
+function crusoe(n, d, ang, distmult, angmult) {
+    //We have : 
+    //d = [x0,y0 ; x1,y1]
+    //ang = xô
+    // xdeg * PI/180 = yrad
+
+    //Given the example crusoe(5, 0.2, 30, 1.02, 1.1)
+    //We can conclude :
+    // x1 = Math.cos(30*Math.PI/180)*0.2 ~ 0.173205
+    // y1 = Math.sin(30*Math.PI/180)*0.2 ~ 0.1
+    //as expected
+
+    //x2 = x1 + Math.cos(30*angmult*Math.PI/180)*0.2*distmult
+    //y2 = y1 + Math.sin(30*angmult*Math.PI/180)*0.2*distmult
+
+    //For any n>=2 : 
+    //xn = xn-1 + [ Math.cos(30*angmult^(n-1) * Math.PI/180)*0.2*distmult^(n-1) ]
+    //yn = yn-1 + [ Math.sin(30*angmult^(n-1) * Math.PI/180)*0.2*distmult^(n-1) ]
+
+    let x=[]
+    let y=[]
+    let tempX=0
+    let tempY=0
+    let angle=ang
+    let distance=d
+
+    for(let i=0 ; i<=n ; i++) {
+        x.push(tempX)
+        y.push(tempY)
+        tempX+=Math.cos(angle*Math.PI/180)*distance
+        tempY+=Math.sin(angle*Math.PI/180)*distance
+        angle = angle*angmult
+        distance = distance*distmult
+    }
+
+    //console.log(x,y);
+
+    return [x.slice(-1),y.slice(-1)].flat()
+}
+
+//console.log(crusoe(5, 0.2, 30, 1.02, 1.1));
+
+//===========================================================================
+// https://www.codewars.com/kata/583ade15666df5a64e000058/train/javascript
+// This kata is about converting numbers to their binary or hexadecimal representation:
+
+// If a number is even, convert it to binary.
+// If a number is odd, convert it to hex.
+// Numbers will be positive. The hexadecimal string should be lowercased.
+
+function evensAndOdds(num){
+    return num%2===0 ? num.toString(2) : num.toString(16)
+    //return n.toString(n%2 ? 16 : 2)
+}
+
+//console.log(evensAndOdds(47)); // -> '2f'
+
+//============================================================================
+// https://www.codewars.com/kata/577bd8d4ae2807c64b00045b/train/javascript
+// Create a function that returns the name of the winner in a fight between two fighters.
+
+// Each fighter takes turns attacking the other and whoever kills the other first is victorious. Death is defined as having health <= 0.
+
+// Each fighter will be a Fighter object/instance. See the Fighter class below in your chosen language.
+
+// Both health and damagePerAttack (damage_per_attack for python) will be integers larger than 0. You can mutate the Fighter objects.
+
+// Example:
+//   declare_winner(Fighter("Lew", 10, 2), Fighter("Harry", 5, 4), "Lew") => "Lew"
+  
+//   Lew attacks Harry; Harry now has 3 health.
+//   Harry attacks Lew; Lew now has 6 health.
+//   Lew attacks Harry; Harry now has 1 health.
+//   Harry attacks Lew; Lew now has 2 health.
+//   Lew attacks Harry: Harry now has -1 health and is dead. Lew wins.
+// function Fighter(name, health, damagePerAttack) {
+//         this.name = name;
+//         this.health = health;
+//         this.damagePerAttack = damagePerAttack;
+//         this.toString = function() { return this.name; }
+// }
+
+function declareWinner(fighter1, fighter2, firstAttacker) {
+    let round
+    if(firstAttacker===fighter1.name) {
+        round=0
+    }else {
+        round = 1
+    }
+
+    while(fighter1.health > 0 && fighter2.health > 0) {
+      if(round%2===0) {
+        fighter2.health-=fighter1.damagePerAttack
+      }else {
+          fighter1.health-=fighter2.damagePerAttack
+      }
+      round++
+    }
+    
+    return fighter1.health > 0 ? fighter1.name : fighter2.name
+}
+
+
+function declareWinnerBis(fighter1, fighter2, firstAttacker) {
+    let fac1 = Math.ceil( fighter1.health / fighter2.damagePerAttack );
+    let fac2 = Math.ceil( fighter2.health / fighter1.damagePerAttack );
+    if(fac1 < fac2) {
+        return fighter2.name;
+    } else if(fac2 < fac1) {
+        return fighter1.name;
+    } else {
+        return firstAttacker;
+    }
+}
+
+  //=====================================================================
+//   https://www.codewars.com/kata/584c7b1e2cb5e1a727000047/train/javascript
+//   You need to create a function, helloWorld, that will return the String Hello, World! without actually using raw strings. This includes quotes, double quotes and template strings. You can, however, use the String constructor and any related functions.
+
+// You cannot use the following:
+
+// "Hello, World!"
+// 'Hello, World!'
+// `Hello, World!`
+
+const helloWorld = () => {
+    return String.fromCharCode(72, 101, 108, 108, 111, 44, 32, 87, 111, 114, 108, 100, 33);
+};
+
+//console.log(helloWorld());
+
+//==========================================================================
+// https://www.codewars.com/kata/5d65fbdfb96e1800282b5ee0
+// It's your best friend's birthday! You already bought a box for the present. Now you want to pack the present in the box. You want to decorate the box with a ribbon and a bow.
+
+// But how much cm of ribbon do you need?
+
+// Write the method wrap that calculates that!
+
+// A box has a height, a width and a length (in cm). The ribbon is crossed on the side with the largest area. Opposite this side (also the side with the largest area) the loop is bound, calculate with 20 cm more tape.
+
+//   wrap(17,32,11) => 162
+//   wrap(13,13,13) => 124
+//   wrap(1,3,1) => 32
+// Notes:
+// height, width and length will always be >0
+
+// The ribbon and the bow on the present looks like this:
+// SEE IN WEBPAGE
+
+function wrap(height, width, length){
+    //return 4*height + 2*width + 2*length + 20
+    return 2 * (height + width + length + Math.min(height, width, length) + 10);
+    //I did not understand the question...
+}
+
+// console.log(wrap(13,13,13));
+// console.log(wrap(17,32,11));
+
+//============================================================================
+// https://www.codewars.com/kata/53222010db0eea35ad000001/train/javascript
+// Your challenge is to write a function named getSlope/get_slope/GetSlope that calculates the slope of the line through two points.
+
+// Input
+// Each point that the function takes in is an array 2 elements long. The first number is the x coordinate and the second number is the y coordinate. If the line through the two points is vertical or if the same point is given twice, the function should return null/None.
+
+function getSlope(p1, p2) {
+    if(p1[0]===p2[0]) return null
+    else {
+        //slope s= (y2-y1)/(x2-x1)
+
+        return (p2[1]-p1[1])/(p2[0]-p1[0])
+
+        //return Math.sqrt( Math.pow(p2[0]-p1[0]) + Math.pow(p2[1]-p1[1])) //that is the length of p1p2
+    }
+}
+
+//=========================================================================

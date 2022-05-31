@@ -155,3 +155,35 @@ function missingNoBis(nums) {
 }
 
 //============================================================================
+// https://www.codewars.com/kata/57fafb6d2b5314c839000195/train/javascript
+// Remove words from the sentence if they contain exactly one exclamation mark. Words are separated by a single space, without leading/trailing spaces.
+
+// Examples
+// remove("Hi!") === ""
+// remove("Hi! Hi!") === ""
+// remove("Hi! Hi! Hi!") === ""
+// remove("Hi Hi! Hi!") === "Hi"
+// remove("Hi! !Hi Hi!") === ""
+// remove("Hi! Hi!! Hi!") === "Hi!!"
+// remove("Hi! !Hi! Hi!") === "!Hi!"
+
+function removeExMark (string) {
+    let words = string.split(' ')
+    let res= words.filter(word=> {
+        return word.split('').filter(char=>char!='!').length != word.length-1
+        //checks if the word without its '!' has a length smaller by one
+        //Basically checks if I deleted only one '!'
+    })
+
+    return res.join(' ')
+}
+
+//console.log(removeExMark("Hiiiiii !Hi! Hi!"));
+
+function removeExMarkBis (string) {
+    let words = string.split(' ')
+    return words.filter(word => word.split('!') != 2).join()
+    //checks if a word splitted by '!' has NOT two elements
+}
+
+//===========================================================================

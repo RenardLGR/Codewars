@@ -187,3 +187,122 @@ function removeExMarkBis (string) {
 }
 
 //===========================================================================
+//PRACTICE CALLBACK HELL , PROMISE , ASYNC/AWAIT
+function deliverHouse1() {
+    setTimeout( () => {
+        console.log("House 1 delivered");
+    }, 3000)
+}
+
+function deliverHouse2() {
+    setTimeout( () => {
+        console.log("House 2 delivered");
+    }, 4000)
+}
+
+function deliverHouse3() {
+    setTimeout( () => {
+        console.log("House 3 delivered");
+    }, 1000)
+}
+
+// deliverHouse1()
+// deliverHouse2()
+// deliverHouse3()
+
+//3 -> 1 -> 2 //all fired at the same time
+
+function deliverHousesCBHell() {
+    setTimeout( () => {
+        console.log('House 1 delivered');
+        setTimeout(() => {
+            console.log('House 2 delivered');
+            setTimeout( () => {
+                console.log('House 3 delivered');
+            } , 2000)
+        },1000);
+    },3000)
+}
+
+//deliverHousesCBHell()
+// 1 -> 2 -> 3 //fired one after the other
+
+function deliverHouse1Promise() {
+    return new Promise( (resolve, reject) => {
+        setTimeout( () => {
+            resolve("House 1 delivered")
+        } , 3000)
+    })
+}
+
+function deliverHouse2Promise() {
+    return new Promise( (resolve, reject) => {
+        setTimeout( () => {
+            resolve("House 2 delivered")
+        } , 1000)
+    })
+}
+
+function deliverHouse3Promise() {
+    return new Promise( (resolve, reject) => {
+        setTimeout( () => {
+            resolve("House 3 delivered")
+        } , 2000)
+    })
+}
+
+// deliverHouse1Promise()
+//     .then(data => console.log(data))
+//     .then(deliverHouse2Promise)
+//     .then(data => console.log(data))
+//     .then(deliverHouse3Promise)
+//     .then(data => console.log(data))
+
+
+// 1 -> 2 -> 3 //fired one after the other
+
+async function deliverHouses() {
+    const house1 = await deliverHouse1Promise()
+    const house2 = await deliverHouse2Promise()
+    const house3 = await deliverHouse3Promise()
+
+    console.log(house1 , house2 , house3); //logs after 6 sec
+}
+
+//deliverHouses()
+
+async function getDogPhoto() {
+    try{
+        const res = await fetch('https://dog.ceo/api/breeds/image/random')
+        const data = await res.json()
+        console.log(data);
+    }catch(error){console.log(error);}
+}
+
+//getDogPhoto()
+
+//============================================================================
+// https://www.codewars.com/kata/57eba158e8ca2c8aba0002a0
+// Given a string of words (x), you need to return an array of the words, sorted alphabetically by the final character in each.
+
+// If two words have the same last letter, they returned array should show them in the order they appeared in the given string.
+
+// All inputs will be valid
+
+function lastWordChar(x){
+    let words = x.split(' ')
+    words.sort( (a,b) => {
+        if(a.slice(-1) < b.slice(-1)) { return -1; }
+        if(a.slice(-1) > b.slice(-1)) { return 1; }
+        return 0;
+
+        //a.slice(-1).localeCompare(b.slice(-1)))
+    })
+
+    return words
+}
+
+//console.log(lastWordChar("man i need a taxi up to ubud"));
+
+
+//============================================================================

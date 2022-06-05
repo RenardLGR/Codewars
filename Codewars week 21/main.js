@@ -428,3 +428,136 @@ function disemvowel(str) {
 }
 
 //===========================================================================
+// https://www.codewars.com/kata/5c45bef3b6adcb0001d3cc5f/train/javascript
+// A pair of numbers has a unique LCM but a single number can be the LCM of more than one possible pairs. For example 12 is the LCM of (1, 12), (2, 12), (3,4) etc. For a given positive integer N, the number of different integer pairs with LCM is equal to N can be called the LCM cardinality of that number N. In this kata your job is to find out the LCM cardinality of a number.
+//LCM = least common multiple
+//lcm(a, b), is the smallest positive integer that is divisible by both a and b
+//We have lcm(a, b) = a * b / gcd(a, b)
+
+function lcmCardinality(n) {
+    //LCM = least common multiple
+    //We have lcm(a, b) = a * b / gcd(a, b)
+
+    //works?? but complexity is too big
+
+    let res=0
+    
+    for(let i=1 ; i<=n ; i++){
+        for(let j=1 ; j<=n ; j++) {
+            if(lcm(i,j)==n){
+                //tries every pair
+                //console.log(i,j);
+                res++
+            }
+        }
+    }
+
+    return Math.ceil(res/2) //result should be divided by 2 since I count the pair a;b and b;a  ceiled because the pair a=b=n is counted once
+
+    function gcd(a, b) {
+        if (b) {
+            return gcd(b, a % b);
+        } else {
+            return Math.abs(a);
+        }
+    }
+
+    function lcm(a,b){
+        return (a * b) / gcd(a, b)
+    }
+}
+
+//console.log(lcmCardinality(24)); WORKS?? but complexity issue
+
+function lcmCardinalityBis(n) {
+    //LCM = least common multiple
+    //We have lcm(a, b) = a * b / gcd(a, b)
+
+    //works?? but complexity is too big
+
+    let res=0
+    let divisor=allDivisor(n)
+
+    for(let i of divisor) {
+        for(let j of divisor) {
+            if(lcm(i,j)==n){
+                //tries every pair of divisors
+                console.log(i,j);
+                res++
+            }
+        }
+    }
+
+    return Math.ceil(res/2) //result should be divided by 2 since I count the pair a;b and b;a  ceiled because the pair a=b=n is counted once
+    
+    function allDivisor(n) {
+        let result = []
+        for(let i=1 ; i<=n ; i++) {
+            if(n%i==0){
+                result.push(i)
+            }
+        }
+
+        return result
+    }
+
+    function gcd(a, b) {
+        if (b) {
+            return gcd(b, a % b);
+        } else {
+            return Math.abs(a);
+        }
+    }
+
+    function lcm(a,b){
+        return (a * b) / gcd(a, b)
+    }
+}
+
+//console.log(lcmCardinalityBis(24)); WORKS?? but complexity issue
+//Kata solution was unreadable without the algorithmic knowledge...
+
+//===========================================================================
+// https://www.codewars.com/kata/5cba04533e6dce000eaf6126
+// Alan is going to watch the Blood Moon (lunar eclipse) tonight for the first time in his life. But his mother, who is a history teacher, thinks the Blood Moon comes with an evil intent. The ancient Inca people interpreted the deep red coloring as a jaguar attacking and eating the moon. But who believes in Inca myths these days? So, Alan decides to prove to her mom that there is no jaguar. How? Well, only little Alan knows that. For now, he needs a small help from you. Help him solve the following calculations so that he gets enough time to prove it before the eclipse starts.
+
+// SEE WEBSITE PIC
+// Three semicircles are drawn on AB, AD, and AF. Here CD is perpendicular to AB and EF is perpendicular to AD.
+
+// Task
+// Given the radius of the semicircle ADBCA, find out the area of the lune AGFHA (the shaded area).
+
+function bloodMoon(r){
+    let segmentEF = 0.5*Math.sqrt(2*r*r) //EF = 1/2 AD and AD=sqrt(2r²)
+    let segmentAF = Math.sqrt(2*segmentEF*segmentEF)//AF=sqrt(2*EF²)
+
+    let aireCercleEF = 0.5*Math.PI*segmentEF*segmentEF
+    let aireCerlceDemiAF = 0.5*Math.PI*segmentAF*segmentAF/4
+
+    let aireTriangleAEF = segmentEF*segmentEF/2
+
+    let aireArcAHF = 1/4*aireCercleEF - aireTriangleAEF
+
+    let aireGris = 1/2*aireCerlceDemiAF - aireArcAHF
+    
+    return aireGris
+}
+
+
+function bloodMoonBis(r) {
+    let segmentEF = 0.5*Math.hypot(r,r)
+    let segmentAF = Math.hypot(segmentEF,segmentEF)
+
+    let aireCercleEF = 0.5*Math.PI*segmentEF*segmentEF
+    let aireCerlceDemiAF = 0.5*Math.PI*segmentAF*segmentAF/4
+
+    let aireTriangleAEF = segmentEF*segmentEF/2
+
+    let aireArcAHF = 1/4*aireCercleEF - aireTriangleAEF
+
+    let aireGris = 1/2*aireCerlceDemiAF - aireArcAHF
+    
+    return aireGris
+}
+
+//=============================================================================

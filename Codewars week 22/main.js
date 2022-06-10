@@ -378,3 +378,84 @@ function greetDevelopersBis(list) {
 }
 
 //===============================================================================
+// https://www.codewars.com/kata/558fc85d8fd1938afb000014
+// Create a function that returns the sum of the two lowest positive numbers given an array of minimum 4 positive integers. No floats or non-positive integers will be passed.
+
+// For example, when an array is passed like [19, 5, 42, 2, 77], the output should be 7.
+
+// [10, 343445353, 3453445, 3453545353453] should return 3453455.
+
+function sumTwoSmallestNumbers(numbers) {  
+    let sorted = numbers.sort((a,b) => a-b)
+
+    return sorted[0]+sorted[1]
+}
+
+//==============================================================================
+// https://www.codewars.com/kata/54f9cba3c417224c63000872
+// The Monty Hall problem is a probability puzzle base on the American TV show "Let's Make A Deal".
+
+// In this show, you would be presented with 3 doors: One with a prize behind it, and two without (represented with goats).
+
+// After choosing a door, the host would open one of the other two doors which didn't include a prize, and having been shown a false door, however the math proves that you significantly increase your chances, from 1/3 to 2/3 by switching. ask the participant if he or she wanted to switch to the third door. Most wouldn't. One would think you have a fifty-fifty chance of winning after
+
+// Further information about this puzzle can be found on https://en.wikipedia.org/wiki/Monty_Hall_problem.
+
+// In this program you are given an array of people who have all guessed on a door from 1-3, as well as given the door which includes the price. You need to make every person switch to the other door, and increase their chances of winning. Return the win percentage (as a rounded int) of all participants.
+
+// Example: 
+// montyHall(1, [3,3,2,3,3,2,2,3,2,2,1,1,1,1]) ==> 71
+//[
+// revealed:2, switched to 1:win
+// revealed:2, switched to 1:win
+// revealed:3, switched to 1:win
+// revealed:2, switched to 1:win
+// revealed:2, switched to 1:win
+// revealed:3, switched to 1:win
+// revealed:3, switched to 1:win
+// revealed:2, switched to 1:win
+// revealed:3, switched to 1:win
+// revealed:3, switched to 1:win
+// revealed:2or3, switched to 3or2:loss
+// revealed:2or3, switched to 3or2:loss
+// revealed:2or3, switched to 3or2:loss
+// revealed:2or3, switched to 3or2:loss
+// ]
+
+//results : 10wins 4losses : winrate=0,714
+
+function montyHall(correctDoorNumber, participantGuesses) {
+    //basically the participant loses if he picked the right door at first try
+    let wins = 0
+    for(let i=0 ; i< participantGuesses.length ; i++){
+        if(participantGuesses[i]!==correctDoorNumber) {
+            wins++
+        }
+    }
+
+    //let wins=participantGuesses.filter(guess => guess !== correctDoorNumber).length
+
+    return Math.round(wins*100/participantGuesses.length)
+}
+
+//console.log(montyHall(1, [3,3,2,3,3,2,2,3,2,2,1,1,1,1]));
+
+//=======================================================================
+// https://www.codewars.com/kata/542c0f198e077084c0000c2e/train/javascript
+// Count the number of divisors of a positive integer n.
+
+// Random tests go up to n = 500000.
+
+// Examples (input --> output)
+// 4 --> 3 (1, 2, 4)
+// 5 --> 2 (1, 5)
+// 12 --> 6 (1, 2, 3, 4, 6, 12)
+// 30 --> 8 (1, 2, 3, 5, 6, 10, 15, 30)
+
+function getDivisorsCnt(n){
+    let res = 0
+    for(let i=1 ; i<=n ; i++) {
+        if(n%i===0) res++
+    }
+    return res
+}

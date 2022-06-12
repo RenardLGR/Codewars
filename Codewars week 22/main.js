@@ -571,4 +571,4 @@ function evaporator(content, evap_per_day, threshold){
     return res
 }
 
-console.log(evaporator(10, 10, 5));
+//console.log(evaporator(10, 10, 5));

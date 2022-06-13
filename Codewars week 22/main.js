@@ -459,3 +459,90 @@ function getDivisorsCnt(n){
     }
     return res
 }
+
+//======================================================================
+// https://www.codewars.com/kata/564e1d90c41a8423230000bc/train/javascript
+// Knight vs King
+// If you are not familiar with chess game you can learn more Here .
+
+// Here is the chess board (rows, denoted by numbers, are called ranks, columns, denoted by a letter, are called files):
+
+// SEE IMAGE ON WEBSITE
+
+// You put a Knight and a King in the board.
+
+// Complete the method that tell us which one can capture the other one.
+
+// You are provided with two object array; each contains an integer (the rank, first item) and a string/char (the file, second item) to show the position of the pieces in the chess board.
+
+// Return:
+
+// "Knight" if the knight is putting the king in check,
+// "King" if the king is attacking the knight
+// "None" if none of the above occur
+// Example:
+
+// knight = [7, "B"], king = [6, "C"]  ---> "King"
+// Check the test cases and Happy coding :)
+
+
+function knightVsKing(knightPosition, kingPosition) {
+    //If the king is attacking, check Moore neighborhood
+    //If the knight is attacking from top to left clockwise : (r+2,c-1) ; (r+2,c+1) ; (r+1,c+2) ; (r-1,c+2) ; (r-2,c+1) ; (r-2,c-1) ; (r-1,c-2) ; (r+1,c-2)
+
+    let row = [1,2,3,4,5,6,7,8]
+    let col = ['Z','Z','A','B','C','D','E','F','G','H','Z','Z']
+
+    let mooreKing = []
+    let legalKnight = []
+
+    //case king attacking
+    mooreKing.push( [kingPosition[0]+1 , col[col.indexOf(kingPosition[1])-1]] ) //+1,-1 top left
+    mooreKing.push( [kingPosition[0]+1 , col[col.indexOf(kingPosition[1])]] ) //+1,0 top
+    mooreKing.push( [kingPosition[0]+1 , col[col.indexOf(kingPosition[1])+1]] ) //+1,+1 top right
+    mooreKing.push( [kingPosition[0] , col[col.indexOf(kingPosition[1])+1]] ) //0,+1 right
+    mooreKing.push( [kingPosition[0]-1 , col[col.indexOf(kingPosition[1])+1]] ) //-1,+1 bottom right
+    mooreKing.push( [kingPosition[0]-1 , col[col.indexOf(kingPosition[1])]] ) //-1,0 bottom
+    mooreKing.push( [kingPosition[0]-1 , col[col.indexOf(kingPosition[1])-1]] ) //-1,-1 bottom left
+    mooreKing.push( [kingPosition[0] , col[col.indexOf(kingPosition[1])-1]] ) //0,-1 left
+
+
+    //case knight attacking
+    legalKnight.push( [knightPosition[0]+1 , col[col.indexOf(knightPosition[1])-2]] ) //+1,-2 top left bottom
+    legalKnight.push( [knightPosition[0]+2 , col[col.indexOf(knightPosition[1])-1]] ) //+2,-1 top left top
+    legalKnight.push( [knightPosition[0]+2 , col[col.indexOf(knightPosition[1])+1]] ) //+2,+1 top right top
+    legalKnight.push( [knightPosition[0]+1 , col[col.indexOf(knightPosition[1])+2]] ) //+1,+2 top right bottom
+    legalKnight.push( [knightPosition[0]-1 , col[col.indexOf(knightPosition[1])+2]] ) //-1,+2 bottom right top
+    legalKnight.push( [knightPosition[0]-2 , col[col.indexOf(knightPosition[1])+1]] ) //-2,+1 bottom right bottom
+    legalKnight.push( [knightPosition[0]-2 , col[col.indexOf(knightPosition[1])-1]] ) //-2,-1 bottom left bottom
+    legalKnight.push( [knightPosition[0]-1 , col[col.indexOf(knightPosition[1])-2]] ) //-1,-2 bottom left top
+
+    // console.log(mooreKing);
+    // console.log(legalKnight);
+
+    //includes struggle with an array as parameter
+
+    // if(mooreKing.includes(knightPosition)) {
+    //     return "King"
+    // }else if(legalKnight.includes(kingPosition)) {
+    //     return "Knight"
+    // }else {
+    //     return "None"
+    // }
+
+    if(mooreKing.some(el => {
+        return (el[0]==knightPosition[0] && el[1]==knightPosition[1])
+    })) {
+        return "King"
+    }else if(legalKnight.some(el => {
+        return (el[0]==kingPosition[0] && el[1]==kingPosition[1])
+    })) {
+        return "Knight"
+    }else {
+        return "None"
+    }
+}
+  
+console.log(knightVsKing([4, "C"], [6, "D"])); //=> Knight
+console.log(knightVsKing([7, "B"], [6, "C"])); //=> King
+console.log(knightVsKing([2, "F"], [6, "B"])); //=> None

@@ -94,6 +94,16 @@ async function deliverHousesAsyncAwait() {
 
 //1 2 3 in 6 seconds
 
+async function getDogPhoto() {
+    try{
+        const res = await fetch('https://dog.ceo/api/breeds/image/random')
+        const data = await res.json()
+        console.log(data);
+    }catch(error){console.log(error);}
+}
+
+//getDogPhoto()
+
 
 //=====================================================================
 // https://www.codewars.com/kata/597d75744f4190857a00008d/train/javascript
@@ -313,3 +323,32 @@ function sequenceSumHard(begin, end, step){
 //console.log(sequenceSumHard(-1, -5, -3)); //=> -5
 
 //======================================================================
+// https://www.codewars.com/kata/546e2562b03326a88e000020/train/javascript
+// Welcome. In this kata, you are asked to square every digit of a number and concatenate them.
+
+// For example, if we run 9119 through the function, 811181 will come out, because 9**2 is 81 and 1**2 is 1.
+
+// Note: The function accepts an integer and returns an integer
+
+function squareDigits(num){
+    let digArr = num.toString().split('')
+    let res = digArr.map(d=> Number(d)**2) //I could just d*d, apprently string*string gives me a number, just like ''+number gives me a string
+    //could use a reduce instead of a map starting at '' and acc+curr
+    //see below
+
+    return Number(res.join(''))
+
+    //return Number(num.toString().split('').map(d=> Number(d)**2).join(''))
+}
+
+// console.log(squareDigits(9119));
+
+function squareDigitsBis(num) {
+    let digArr = num.toString().split('')
+
+    let res = digArr.reduce( (acc, curr) => acc+curr*curr, '')
+
+    return Number(res)
+}
+
+//console.log(squareDigitsBis(9119));

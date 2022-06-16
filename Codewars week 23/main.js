@@ -373,3 +373,82 @@ function lineNumber(arr) {
 }
 
 //======================================================================
+// https://www.codewars.com/kata/62a611067274990047f431a8
+// Given an integer n and two other values, build an array of size n filled with these two values alternating.
+
+// Examples
+// 5, true, false     -->  [true, false, true, false, true]
+// 10, "blue", "red"  -->  ["blue", "red", "blue", "red", "blue", "red", "blue", "red", "blue", "red"]
+// 0, "one", "two"    -->  []
+
+function alternate(n, firstValue, secondValue){
+    let res = []
+    for(let i=0 ; i<n ; i++) {
+        if(i%2==0) res.push(firstValue)
+        else res.push(secondValue)
+        //res.push(i % 2 === 0 ? firstValue : secondValue)
+    }
+
+    return res
+}
+
+//=======================================================================
+// https://www.codewars.com/kata/5a8d2bf60025e9163c0000bc/train/javascript
+// In this Kata, you will sort elements in an array by decreasing frequency of elements. If two elements have the same frequency, sort them by increasing value.
+
+// solve([2,3,5,3,7,9,5,3,7]) = [3,3,3,5,5,7,7,2,9]
+// --we sort by highest frequency to lowest frequency. If two elements have same frequency, we sort by increasing value
+// More examples in test cases.
+
+function simpleFrequencySort(arr){
+    let frequency = {}
+    let frequencyBis = {}
+
+    for(let el of arr){
+        if(frequency[el]){
+            frequency[el]=frequency[el]+1
+        }
+        else {
+            frequency[el]=1
+        }
+    }
+
+    //smilar value but using a different code frequency === frequencyBis
+    frequencyBis = arr.reduce( (acc, curr) => { //using a reduce method, initialize an empty object, add +1 to a key if it already exists, init at 1 if it doenst
+        acc[curr] = (acc[curr] || 0) + 1
+        return acc 
+    }, {})
+    //console.log(frequencyBis); //using the given example : { '2': 1, '3': 3, '5': 2, '7': 2, '9': 1 }
+
+    let elAndFreq = []
+
+    for(let key in frequencyBis) {
+        elAndFreq.push([key, frequencyBis[key]])
+    }
+
+    //console.log(elAndFreq); //using the given example [ [ '2', 1 ], [ '3', 3 ], [ '5', 2 ], [ '7', 2 ], [ '9', 1 ] ]
+
+    let sortedElAndFreq = elAndFreq.sort( (a, b) => {
+        if(a[1] - b[1] === 0) { //in the case the frequency are similar
+            return Number(a[0]) - Number(b[0]) //lowest value should come first
+        }else { //in other case, higher freq should come first
+            return b[1] - a[1]
+        }
+    })
+
+    //console.log(sortedElAndFreq); //using the given example [ [ '3', 3 ], [ '5', 2 ], [ '7', 2 ], [ '2', 1 ], [ '9', 1 ] ]
+
+    let res = []
+    for(let i of sortedElAndFreq){
+        for(let j=0 ; j<i[1] ; j++) {
+            res.push(Number(i[0]))
+        }
+    }
+
+    //console.log(res); //using the given example [3,3,3,5,5,7,7,2,9]
+    return res
+}
+
+//console.log(simpleFrequencySort([3,3,3,5,5,7,7,2,9]));
+
+//=======================================================================

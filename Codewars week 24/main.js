@@ -199,3 +199,92 @@ function getTheVowels(word) {
 // console.log(getTheVowels('erfaiekjudhyfimngukduo'));
 
 //=================================================================================
+// https://www.codewars.com/kata/58162692c2a518f03a000189/train/javascript
+// Chingel is practicing for a rowing competition to be held on this saturday. He is trying his best to win this tournament for which he needs to figure out how much time it takes to cover a certain distance.
+
+// Input
+
+// You will be provided with the total distance of the journey, speed of the boat and whether he is going downstream or upstream. The speed of the stream and direction of rowing will be given as a string. Check example test cases!
+
+// Output
+
+// The output returned should be the time taken to cover the distance. If the result has decimal places, round them to 2 fixed positions.
+
+//Example: 
+// timeRowing(24,10,"Downstream 2") => 2 bcs 24/(10+2) = 2
+// timeRowing(24,14,"Upstream 2") => 2 bcs 24/(14-2) = 2
+// timeRowing(54,28,"Downstream 3") => 1.74 bcs 54/(28+3) = 2
+
+function timeRowing(distance,boatSpeed,stream){
+  let streamSpeed = stream.split(" ")[0] === 'Downstream' ? Number(stream.split(" ")[1]) : -Number(stream.split(" ")[1])
+
+  //let [dir, delta] = stream.split(' ');
+  let res = distance/(boatSpeed+streamSpeed)
+
+  return Number.isInteger(res) ? res : Number(res.toFixed(2))
+}
+
+// console.log(timeRowing(24,10,"Downstream 2"));
+// console.log(timeRowing(54,28,"Downstream 3"));
+
+//=================================================================================
+// https://www.codewars.com/kata/5694cb0ec554589633000036
+// This is a kata series that you can only solve using recursion.
+// ##1 - Factorial
+
+// In mathematics, the factorial of a non-negative integer n, denoted by n!, is the product of all positive integers less than or equal to n. For example,
+
+// 5! = 5 * 4 * 3 * 2 * 1 = 120.
+
+// The value of 0! is 1.
+
+// #Your task
+
+// You have to create the function factorial that receives n and returns n!. You have to use recursion.
+
+// NEXT (RECURSION #2 - FIBONACCI) https://www.codewars.com/kata/569512b7707bc1b88200002f/train/javascript
+
+const factorial = n => {
+    if(n==0) {
+        return 1
+    }else {
+        return n*factorial(n-1)
+    }
+};
+
+//const factorial = n => n > 1 ? n*factorial(n-1) : 1;
+
+//console.log(factorial(5));
+
+//=================================================================================
+// https://www.codewars.com/kata/569512b7707bc1b88200002f/train/javascript
+// This is a kata series that you can only solve using recursion.
+// ##2 - Fibonacci number
+
+// In mathematical terms, the sequence f(n) of fibonacci numbers is defined by the recurrence relation
+
+// f(n) = f(n-1) + f(n-2)
+
+// with seed values
+
+// f(1) = 1 and f(2) = 1
+
+// #Your task
+
+// You have to create the function fibonacci that receives n and returns f(n). You have to use recursion.
+
+// PREVIOUS (RECURSION #1 - FACTORIAL) https://www.codewars.com/kata/569512b7707bc1b88200002f/train/javascript
+
+const fibonacci = n => {
+    if(n==2 || n==1){
+        return 1
+    }else{
+        return fibonacci(n-1)+fibonacci(n-2)
+    }
+};
+
+//const fibonacci = n => (n==2 || n==1) ? 1 : fibonacci(n-1)+fibonacci(n-2)
+
+//console.log(fibonacci(7)); //13
+
+//==================================================================================

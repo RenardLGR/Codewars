@@ -4,6 +4,61 @@ const alphaU = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 //================================================================================
+function deliverHouse1(){
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve("House 1 delivered")
+        }, 3000)
+    })
+}
+
+function deliverHouse2(){
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve("House 2 delivered")
+        }, 1000)
+    })
+}
+
+function deliverHouse3(){
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve("House 3 delivered")
+        }, 2000)
+    })
+}
+
+// deliverHouse1()
+//     .then(res => console.log(res))
+//     .then(deliverHouse2)
+//     .then(res => console.log(res))
+//     .then(deliverHouse3)
+//     .then(res => console.log(res))
+//     .catch(err => console.log(err))
+
+
+async function deliverHouses(){
+    const house1 = await deliverHouse1()
+    const house2 = await deliverHouse2()
+    const house3 = await deliverHouse3()
+
+    console.log(house1, house2, house3);
+}
+
+//deliverHouses()
+
+async function getDoggo(){
+    try {
+        let res = await fetch("https://dog.ceo/api/breeds/image/random")
+        let data =  await res.json()
+    
+        console.log(data.message);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+//getDoggo()
 
 //================================================================================
 // https://www.codewars.com/kata/5d076515e102162ac0dc514e

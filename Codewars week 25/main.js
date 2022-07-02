@@ -488,3 +488,106 @@ function sortTwisted37(array) {
 // console.log(sortTwisted37([2,7,4,3,9]));
 
 //==============================================================================
+// https://www.codewars.com/kata/58c21c4ff130b7cab400009e
+// Task
+// Four men, a, b, c and d are standing in a line, one behind another.
+
+// There's a wall between the first three people (a, b and c) and the last one (d).
+
+// The men a, b and c are lined up in order of height, so that:
+
+// person a can see the backs of b and c
+// person b can see the back of c
+// person c can see just the wall
+// There are 4 hats, 2 black and 2 white. Each person is given a hat. None of them can see their own hat, but person a can see the hats of b and c, while person b can see the hat of person c. Neither c nor d can see any hats.
+
+// Once a person figures out the color of their hat, they shout it.
+
+// Four men, in decreasing height, standing behind each other, wearing black and white colored hats, with the last man on the right hidden behind the wall.
+
+// SEE IMAGE
+
+// Your task is to return the person who will guess their hat first. You can assume that they will speak only when they reach a correct conclusion.
+
+// Input/Output
+//Example: "black","white","black","white"
+
+// [input] string a
+// a's hat color ("white" or "black").
+
+// [input] string b
+// b's hat color ("white" or "black").
+
+// [input] string c
+// c's hat color ("white" or "black").
+
+// [input] string d
+// d's hat color ("white" or "black").
+
+// [output] an integer
+// The person to guess his hat's color first, 1 for a, 2 for b, 3 for c and 4 for d.
+
+// Harder : https://www.codewars.com/kata/618647c4d01859002768bc15/train/javascript
+
+function guessHatColor(a,b,c,d) {
+    //If 1 sees 2 hats of the same color, he can conclude his hat is of a different color. He can not conclude otherwise
+    //If does not hear the conclusion of 1, he can conclude his hat is of a different color than 3.
+    //Neither 3 or 4 can conclude at any circumstances
+
+    if(b==c){ //Case 1 can conclude
+        return 1
+    }else{ //Case 1 could not conclude so 2 can
+        return 2
+    }
+
+    //return b==c ? 1 : 2
+}
+
+//=================================================================================
+// https://www.codewars.com/kata/618647c4d01859002768bc15/train/javascript
+// The Rules
+// The game rules are quite simple. The team playing (n players) are lined up at decreasing heights, facing forward such that each player can clearly see all the players in front of them, but none behind.
+
+// Red and Blue hats are then placed randomly on the heads of all players, carefully so that a player can not see their own hat. (There may be more Red hats than blue, or vice versa. There might also be no Red, or no Blue hats).
+
+// Starting at the back of the line, all players take turns to guess out loud their hat colour. Each team is allowed only one mistake. If two or more players guess the wrong colour, then the game is over and the team loses! But if there is (at most) only one mistake, then they win a huge prize! (All players are on the same team, working together)
+
+// There is no communication allowed. If any player tries to say anything (besides their own guess), or tries to turn around, etc. Then that team is immediately disqualified. Play fair!
+
+// SEE IMAGE
+
+// In the image above, player 1 sees Blue, Blue, Red, and guesses Blue (wrong!). Then player 2 guesses Blue (correct!). Then player 3 guesses Red (wrong!). Since that was the second mistake, the team loses.
+
+// Task
+// Your team really wants to win, so you decide to plan a strategy beforehand.
+
+// Write a function guess_colour which will be your players strategy to win the game. Each player, when it is their turn, will use this strategy (your function, with the relevant inputs) to determine what their guess will be.
+
+// To pass the kata, your function must consistently allow your team to win the game (by the rules explained above). If it causes more than one wrong guess per game, you lose!
+
+// Inputs:
+
+//SEE TEST CASES
+
+// guesses: a list of all previous guesses ("Red" or "Blue") which the player has heard so far (in order).
+// hats: a list of all the hats ("Red" or "Blue") which the player can see in front of them (in order).
+// Output: the player's guess ("Red" or "Blue").
+
+// All inputs will be valid, and length of each list will be between 0 and 999 inclusive. Total size of teams will be between 2 and 1000 inclusive.
+
+// Note: the players strategy should not require global variables or state. Tests will check that the strategy is consistent even when called at unexpected times.
+
+function guessColour(guesses, hats) {
+/*
+  First player counts all red hats, and uses his guess
+  to let the team know if there is an odd or even number,
+  by guessing "Red" or "Blue". This player might guess wrong,
+  but he ensures that the rest of the team will be correct.
+
+  The rest of the team, now knowing the parity of red hats,
+  can count the red hats they see, and the red hat guesses
+  they hear, to determine if they too must be red to match parity.
+*/
+    if (!guesses.length) return ["Blue", "Red"][hats.filter(v=>v=="Red").length%2];
+    return ["Red", "Blue"][(guesses[0] == "Blue") ^ ([...guesses.slice(1), ...hats].filter(v=>v=="Red").length%2)];
+}

@@ -591,3 +591,72 @@ function guessColour(guesses, hats) {
     if (!guesses.length) return ["Blue", "Red"][hats.filter(v=>v=="Red").length%2];
     return ["Red", "Blue"][(guesses[0] == "Blue") ^ ([...guesses.slice(1), ...hats].filter(v=>v=="Red").length%2)];
 }
+
+//=================================================================================
+// https://www.codewars.com/kata/56b5afb4ed1f6d5fb0000991/train/javascript
+// The input is a string str of digits. Cut the string into chunks (a chunk here is a substring of the initial string) of size sz (ignore the last chunk if its size is less than sz).
+
+// If a chunk represents an integer such as the sum of the cubes of its digits is divisible by 2, reverse that chunk; otherwise rotate it to the left by one position. Put together these modified chunks and return the result as a string.
+
+// If
+
+// sz is <= 0 or if str is empty return ""
+// sz is greater (>) than the length of str it is impossible to take a chunk of size sz hence return "".
+// Examples:
+// revrot("123456987654", 6) --> "234561876549"
+// revrot("123456987653", 6) --> "234561356789"
+// revrot("66443875", 4) --> "44668753"
+// revrot("66443875", 8) --> "64438756"
+// revrot("664438769", 8) --> "67834466"
+// revrot("123456779", 8) --> "23456771"
+// revrot("", 8) --> ""
+// revrot("123456779", 0) --> "" 
+// revrot("563000655734469485", 4) --> "0365065073456944"
+// Example of a string rotated to the left by one position:
+// s = "123456" gives "234561".
+
+function revrot(str, sz) {
+    //handle edge cases
+    if(sz<=0){
+        return ""
+    }
+
+    if(sz>str.length){
+        return ""
+    }
+
+
+
+
+    let chunks = []
+    for(let i=0 ; i<str.length ; i=i+sz){
+        //cut the string into chunks
+        chunks.push(str.split('').slice(i, i+sz).reduce((acc,curr) => acc+curr, ''))
+    }
+    chunks = chunks.filter(chunk => chunk.length === sz) //discard the last element if too small
+
+
+    //"the sum of the cubes of its digits is divisible by 2, reverse that chunk"
+    //Is that operation really necessary? An odd number cubed will stay odd, an even number cubed will stay even. So checking if the sum of the digits is odd or even should suffice
+    let res = chunks.map(chunk => {
+        let sum = chunk.split('').reduce((acc, dig) => acc+ +dig, 0)
+        return sum%2===0 ? reverseStr(chunk) : rotateStr(chunk)
+    })
+
+    return res.join('')
+
+    //HELPER FUNCTIONS
+    function reverseStr(str){
+        return str.split('').reverse().join('')
+    }
+
+    function rotateStr(str){
+        let arr=str.split('')
+        let shift=arr.shift()
+        arr.push(shift)
+        return arr.join('')
+    }
+
+}
+
+//console.log(revrot("563000655734469485", 4)); // -> "0365065073456944"

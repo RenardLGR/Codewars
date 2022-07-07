@@ -167,3 +167,66 @@ function isPangram(string){
 }
 
 //==================================================================================
+// https://www.codewars.com/kata/55e1990978c60e5052000011/train/javascript
+// Remember the game 2048? http://gabrielecirulli.github.io/2048/
+
+// The main part of this game is merging identical tiles in a row.
+
+// Implement a function that models the process of merging all of the tile values in a single row.
+// This function takes the array line as a parameter and returns a new array with the tile values from line slid towards the front of the array (index 0) and merged.
+// A given tile can only merge once.
+// Empty grid squares are represented as zeros.
+// Your function should work on arrays containing arbitrary number of elements.
+// Examples
+// merge([2,0,2,2])  -->  [4,2,0,0]
+// Another example with repeated merges:
+
+// merge([4,4,8,16])  -->  [8,8,16,0]
+// merge([8,8,16,0])  -->  [16,16,0,0]
+// merge([16,16,0,0]) -->  [32,0,0,0]
+
+function merge2048(line) {
+    //Step 1 - shift()
+    //Remove all 0s, stack the digits and fill with 0s on the right to the length
+    //Example : [2,0,0,2] -> [2,2,0,0]
+
+    //Step 2 - combine()
+    //If a number is equal to the one on the right, combine them ; i.e. double the first, zero the second
+    //Example : [8,4,4,2,2] -> [8,8,0,4,0]
+
+    let result = shift(line)
+    result = combine(result)
+    result = shift(result)
+
+    return result
+
+
+    //helper functions
+    function shift(line){
+        let length = line.length
+        let noZeroes = line.filter(dig => dig!==0)
+
+        let zeroes = Array(length-noZeroes.length).fill(0)
+
+        return noZeroes.concat(zeroes)
+    }
+    //console.log(shift([2,0,0,2]));
+
+    function combine(line){
+        for(let i=0 ; i<line.length ; i++){
+            if(line[i] === line[i+1]){
+                line[i]=line[i]*2
+                line[i+1]=0
+            }
+        }
+
+        return line
+    }
+    //console.log(combine([8,4,4,2,2]));
+
+};
+
+//console.log(merge2048([4,4,8,16]));
+
+
+//===================================================================================

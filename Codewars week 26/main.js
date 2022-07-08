@@ -230,3 +230,78 @@ function merge2048(line) {
 
 
 //===================================================================================
+// https://www.codewars.com/kata/56a32dd6e4f4748cc3000006
+// data and data1 are two strings with rainfall records of a few cities for months from January to December. The records of towns are separated by \n. The name of each town is followed by :.
+
+// data and towns can be seen in "Your Test Cases:".
+
+// Task:
+// function: mean(town, strng) should return the average of rainfall for the city town and the strng data or data1 (In R and Julia this function is called avg).
+// function: variance(town, strng) should return the variance of rainfall for the city town and the strng data or data1.
+// Examples:
+// mean("London", data), 51.19(9999999999996) 
+// variance("London", data), 57.42(833333333374)
+
+// Notes:
+// if functions mean or variance have as parameter town a city which has no records return -1 or -1.0 (depending on the language)
+
+// Don't truncate or round: the tests will pass if abs(your_result - test_result) <= 1e-2 or abs((your_result - test_result) / test_result) <= 1e-6 depending on the language.
+
+// Shell tests only variance
+
+// A ref: http://www.mathsisfun.com/data/standard-deviation.html
+
+// data and data1 (can be named d0 and d1 depending on the language; see "Sample Tests:") are adapted from: http://www.worldclimate.com
+
+// Example:
+// "Rome:Jan 81.2,Feb 63.2,Mar 70.3,Apr 55.7,May 53.0,Jun 36.4,Jul 17.5,Aug 27.5,Sep 60.9,Oct 117.7,Nov 111.0,Dec 97.9" + "\n" +
+//"London:Jan 48.0,Feb 38.9,Mar 39.9,Apr 42.2,May 47.3,Jun 52.1,Jul 59.5,Aug 57.2,Sep 55.4,Oct 62.0,Nov 59.0,Dec 52.9" + "\n" +
+
+// Step 1: get city function townPrecipitation(town, strng) => [81.2, 63.2, ..., 97.9] for a given town
+
+function townPrecipitation(town, strng){
+    let cities = strng.split("\n") //["Rome:Jan..." , "London:Jan...", ...]
+    cities = cities.map(city => city.split(":")) //[ ["Rome", Jan..."] , ["London", Jan..."] , ...]
+
+    let city = cities.filter(city => city[0] === town) //[ [town, Jan..."] ]
+
+
+
+    if(city.length===0){ //if the town given doesn't exist in our data
+        return []
+    }
+    else{//if the town exists in our data
+        let precipitations = city[0][1].split(',') //["Jan 48.0", "Feb 38.9", ...]
+
+
+        precipitations = precipitations.map(month => Number(month.slice(4))) //[48.0, 38.9, ...] //months are a 3 chars string
+    
+        return precipitations
+    }
+}
+
+function mean(town, strng) {
+    let precipitations = townPrecipitation(town, strng)
+
+    if(precipitations.length===0){ //if the town given doesn't exist in our data
+        return -1
+    }
+    else{ //if the town exists in our data
+        return precipitations.reduce((acc, curr) => curr/precipitations.length + acc,0)
+    }
+}
+function variance(town, strng) {
+    //la variance est la moyenne des carrés des écarts à cette moyenne
+
+    let precipitations = townPrecipitation(town, strng)
+
+    if(precipitations.length===0){ //if the town given doesn't exist in our data
+        return -1
+    }
+    else{ //if the town exists in our data
+        let mean = precipitations.reduce((acc, curr) => curr/precipitations.length + acc,0)
+        return precipitations.reduce((acc, curr) => acc + (mean - curr)**2/precipitations.length ,0)
+    }
+}
+
+//=================================================================================

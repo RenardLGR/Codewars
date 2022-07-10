@@ -4,6 +4,176 @@ const alphaU = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 //=================================================================================
+// https://www.codewars.com/kata/5694d22eb15d78fe8d00003a/train/javascript
+// Write a function groupIn10s which takes any number of arguments, groups them into tens, and sorts each group in ascending order.
+
+// The return value should be an array of arrays, so that numbers between 0 and9 inclusive are in position 0, numbers between 10 and 19 are in position 1, etc.
+
+// Here's an example of the required output:
+
+// const grouped = groupIn10s(8, 12, 38, 3, 17, 19, 25, 35, 50) 
+
+// grouped[0]     // [3, 8]
+// grouped[1]     // [12, 17, 19]
+// grouped[2]     // [25]
+// grouped[3]     // [35, 38]
+// grouped[4]     // undefined
+// grouped[5]     // [50]
+
+function groupIn10s(...args) {
+    let arr=args.reduce((groups, cur) => {
+        let i = Math.floor(cur/10)
+        groups[i] = (groups[i] || []).concat([cur])
+        return groups
+    }, [])
+
+    return arr.map(group => group.sort((a,b) => a-b))
+}
+
+//================================================================================
+// https://www.codewars.com/kata/546e2562b03326a88e000020/train/javascript
+// Welcome. In this kata, you are asked to square every digit of a number and concatenate them.
+
+// For example, if we run 9119 through the function, 811181 will come out, because 92 is 81 and 12 is 1.
+
+// Note: The function accepts an integer and returns an integer
+
+function squareDigits(num){
+    return parseInt(num.toString().split('').reduce((acc, dig) => acc+ Number(dig)**2 ,''))
+}
+
+//=================================================================================
+// https://www.codewars.com/kata/56cd44e1aa4ac7879200010b/train/javascript
+// Create a method to see whether the string is ALL CAPS.
+
+// Examples (input -> output)
+// "c" -> False
+// "C" -> True
+// "hello I AM DONALD" -> False
+// "HELLO I AM DONALD" -> True
+// "ACSKLDFJSgSKLDFJSKLDFJ" -> False
+// "ACSKLDFJSGSKLDFJSKLDFJ" -> True
+// In this Kata, a string is said to be in ALL CAPS whenever it does not contain any lowercase letter so any string containing no letters at all is trivially considered to be in ALL CAPS.
+
+String.prototype.isUpperCase = function() {
+    return this == this.toUpperCase()
+}
+
+//=================================================================================
+// https://www.codewars.com/kata/597d75744f4190857a00008d/train/javascript
+// You and a group of friends are earning some extra money in the school holidays by re-painting the numbers on people's letterboxes for a small fee.
+
+// Since there are 10 of you in the group each person just concentrates on painting one digit! For example, somebody will paint only the 1's, somebody else will paint only the 2's and so on...
+
+// But at the end of the day you realise not everybody did the same amount of work.
+
+// To avoid any fights you need to distribute the money fairly. That's where this Kata comes in.
+
+// Kata Task
+// Given the start and end letterbox numbers, write a method to return the frequency of all 10 digits painted.
+
+// Example
+// For start = 125, and end = 132
+
+// The letterboxes are
+
+// 125 = 1, 2, 5
+// 126 = 1, 2, 6
+// 127 = 1, 2, 7
+// 128 = 1, 2, 8
+// 129 = 1, 2, 9
+// 130 = 1, 3, 0
+// 131 = 1, 3, 1
+// 132 = 1, 3, 2
+// The digit frequencies are:
+
+// 0 is painted 1 time
+// 1 is painted 9 times
+// 2 is painted 6 times
+// etc...
+// and so the method would return [1,9,6,3,0,1,1,1,1,1]
+
+// Notes
+// 0 < start <= end
+// In C, the returned value will be free'd.
+
+
+var paintLetterboxes = function(start, end) {
+    let numbers=''
+    for(let i=start ; i<=end ; i++){
+        numbers+=i
+    }
+    
+    return numbers.split('').reduce((acc, cur) => {
+        acc[cur]++
+        return acc
+    }, Array(10).fill(0))
+}
+  
+//================================================================================
+// https://www.codewars.com/kata/5acc79efc6fde7838a0000a0/train/javascript
+// Given a number and a binary tree ( not a Binary Search Tree! ):
+
+// return True/true if the given number is in the tree
+// return False/false if it isn't
+// Each node in the binary tree is either of this Node class or null:
+
+// class Node {
+//   constructor(value, left = null, right = null) {
+//     this.value = value;
+//     this.left = left;
+//     this.right = right;
+//   }
+// }
+
+function searchNotBST(n, root){
+    while(root){
+        if(root.value===n){
+            return true
+        }else{
+            return searchNotBST(n, root.left) || searchNotBST(n, root.right)
+        }
+    }
+    return false
+}
+
+//================================================================================
+// https://www.codewars.com/kata/58319f37aeb69a89a00000c7/train/javascript
+// Implement the method reduce, which accepts three arguments:
+
+// linked list (head)
+// bi-function - (accumulated_value, current_element_data)
+// initial value
+// This method should return the result of applying the given function on every element with the accumulating result, starting with the initial value.
+
+// For example:
+
+// Given the list: 1 -> 2 -> 3, the function (acc, curr) => acc + curr and an initial value of 0, reduce should return 6, because:
+
+// (0, 1) and the function (acc, curr) => acc + curr gives 1
+// (1, 2) and the function (acc, curr) => acc + curr gives 3
+// (3, 3) and the function (acc, curr) => acc + curr gives 6
+// Another example:
+
+// Given the list: 1 -> 2 -> 3 -> 4, the function (acc, curr) => acc * curr and an initial value of 1, reduce should return 24
+
+// The linked list is defined as follows:
+
+// function Node(data, next = null) {
+//   this.data = data;
+//   this.next = next;
+// }
+// Note: the list may be null and can hold any type of value.
+
+function reduce(head, f, init) {
+    let res=init
+    while(head){
+        res=f(res, head.data)
+        head=head.next
+    }
+
+    return res
+}
 
 //=================================================================================
 // https://www.codewars.com/kata/58b3c2bd917a5caec0000017/train/javascript

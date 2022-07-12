@@ -28,6 +28,7 @@ const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 // minimum and maximum can equal one another and result in a single number repeated for the length of the string
 
 function ascendDescend(length, minimum, maximum) {
+    //edge cases
     if( (maximum < minimum) || length === 0){
         return ''
     }
@@ -38,7 +39,7 @@ function ascendDescend(length, minimum, maximum) {
     }
 
 
-
+    //general cases
     let res =''+minimum
     let direction = 1 //1 will be ascending, -1 will be descending
 
@@ -60,7 +61,28 @@ function ascendDescend(length, minimum, maximum) {
         }
     }
 
-    return res
+    return res.slice(0, length)
 }
 
-console.log(ascendDescend(11,5,9));
+// console.log(ascendDescend(11,5,9));
+// console.log(ascendDescend(1,-1,0)); //--> "-"
+
+
+function ascendDescendBis(length, minimum, maximum) {
+    let increase = '', descending = '', answer = '';
+
+    for (let i = minimum; i <= maximum; i++) {
+        increase += i;
+    }
+    for (let j = maximum - 1; j > minimum; j--) {
+        descending += j;
+    }
+
+    for (let k = 0; k < length; k++) {
+        answer += increase;
+        answer += descending;
+    }
+    return answer.slice(0, length);
+}
+
+//====================================================================================

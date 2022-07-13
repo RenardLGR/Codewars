@@ -235,3 +235,73 @@ function ascendDescendBis(length, minimum, maximum) {
 }
 
 //====================================================================================
+// https://www.codewars.com/kata/57bc802c615f0ba1e3000029/train/javascript
+// A faro shuffle of a deck of playing cards is a shuffle in which the deck is split exactly in half and then the cards in the two halves are perfectly interwoven, such that the original bottom card is still on the bottom and the original top card is still on top.
+
+// For example, faro shuffling the list
+
+// ['ace', 'two', 'three', 'four', 'five', 'six']
+// gives
+
+// ['ace', 'four', 'two', 'five', 'three', 'six' ]
+// If 8 perfect faro shuffles are performed on a deck of 52 playing cards, the deck is restored to its original order.
+
+// Write a function that takes an integer n and returns an integer representing the number of faro shuffles it takes to restore a deck of n cards to its original order.
+
+// Assume n is an even number between 2 and 2000.
+
+function faroCount(deckSize) {
+    //Can maybe be resolved mathematically, but here I'll create a controle array and shuffle the other one until they are back to indentical
+    let deck = Array.from(Array(deckSize).keys()) //gives a deck of n numbers unique [0,..,size-1]
+    let deckShuffled = faroShuffle(deck)
+    let nShuffles = 1
+
+    while(!areTheseArraysIdentical(deck, deckShuffled)){
+        nShuffles++
+        deckShuffled=faroShuffle(deckShuffled)
+    }
+
+    return nShuffles
+
+    //helpers function
+    function faroShuffle(deck){
+        //This function faro shuffle once
+        //deck is an array of numbers, always of even length, all numbers are unique
+        //Example: for a deck of 6 cards represented 0 to 5 [0, 1, 2, 3, 4, 5]
+        //Step 1: deck is split in 2
+        //left half: [0, 1, 2]  right half: [3, 4, 5]
+        //Step 2: Intervows them by taking the same index from each deck starting with the left half
+        //=> [0, 3, 1, 4, 2, 5] 
+        
+        let left = deck.slice(0, deck.length/2)
+        let right = deck.slice(deck.length/2)
+        let res = []
+
+        for(let i=0 ; i<deck.length/2 ; i++) {
+            res.push(left[i])
+            res.push(right[i])
+        }
+
+        return res
+    }
+
+    // console.log(faroShuffle([0, 1, 2, 3, 4, 5]));
+
+    function areTheseArraysIdentical(arr1, arr2){
+        //this func check if 2 arrays are identical
+        if(arr1.length !== arr2.length) {
+            return false
+        }else {
+            return arr1.every((el, idx) => el===arr2[idx])
+        }
+    }
+
+    // console.log(areTheseArraysIdentical([1,2,3,4], [1,2,3,4]));
+    // console.log(areTheseArraysIdentical([1,2,3,4], [1,2,3,4,5]));
+    // console.log(areTheseArraysIdentical([1,2,3,4], [1,2,3,5]));
+}
+
+// console.log(faroCount(52));
+
+
+//====================================================================================

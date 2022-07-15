@@ -344,3 +344,82 @@ function pyramidHeight(n) {
 // console.log(pyramidHeight(100));
 
 //==================================================================================
+// https://www.codewars.com/kata/59098c39d8d24d12b6000020
+// You will get two integers n (width) and m (height) and your task is to draw the following pattern. Each line is seperated with a newline (\n)
+
+// Both integers are equal or greater than 1; no need to check for invalid parameters.
+
+// Examples
+
+//                                             +---+---+---+
+//              +---+                          | o | o | o |
+// dot(1, 1) => | o |            dot(3, 2) =>  +---+---+---+            
+//              +---+                          | o | o | o |
+//                                             +---+---+---+
+
+function dot(width,height){
+    //init line separator
+    let line = "+---+"
+    for(let i=1 ; i<width ; i++){ //could use a repeat
+        line+="---+"
+    }
+    line+="\n"
+
+    //init dot
+    let dot = "| o |"
+    for(let i=1 ; i<width ; i++){ //could use a repeat
+        dot+=" o |"
+    }
+    dot+="\n"
+
+    //compose result
+    let res = line
+    for(let i=0 ; i<height ; i++){
+        res+=dot+line
+    }
+
+    return res.slice(0, -1) //removes last "\n"
+}
+
+//==================================================================================
+// https://www.codewars.com/kata/5839edaa6754d6fec10000a2
+// #Find the missing letter
+
+// Write a method that takes an array of consecutive (increasing) letters as input and that returns the missing letter in the array.
+
+// You will always get an valid array. And it will be always exactly one letter be missing. The length of the array will always be at least 2.
+// The array will always contain letters in only one case.
+
+// Example:
+
+// ['a','b','c','d','f'] -> 'e' ['O','Q','R','S'] -> 'P'
+
+// ["a","b","c","d","f"] -> "e"
+// ["O","Q","R","S"] -> "P"
+// (Use the English alphabet with 26 letters!)
+
+function findMissingLetter(array){
+    const alphaL = 'abcdefghijklmnopqrstuvwxyz'
+    const alphaU = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+    if(alphaL.includes(array[0])){ //if case is lower
+        let start=alphaL.indexOf(array[0]) //from where in our alphabet string we should start comparing letters
+        for(let i=0 ; i<array.length ; i++){
+            if(alphaL[start+i] !== array[i]){
+                return alphaL[start+i]
+            }
+        }
+    }else{ //if case is upper
+        let start=alphaU.indexOf(array[0]) //from where in our alphabet string we should start comparing letters
+        for(let i=0 ; i<array.length ; i++){
+            if(alphaU[start+i] !== array[i]){
+                return alphaU[start+i]
+            }
+        }
+    }
+}
+
+// console.log(findMissingLetter(["a","b","c","d","f"]));
+// console.log(findMissingLetter(["O","Q","R","S"]));
+
+//===================================================================================

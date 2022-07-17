@@ -464,3 +464,102 @@ function mirrorBis(obj) {
 }
 
 //==================================================================================
+// https://www.codewars.com/kata/62d1eb93e5994c003156b2ae/train/javascript
+// This works similarly to Tap Code except instead of being mapped onto a 5x5 square, letters are mapped onto a 3x3x3 cube, left to right, top to bottom, front to back with space being the 27th "letter". Letters are represented by a series of taps (represented as dots .) and pauses (represented by spaces  ), for example A is represented as . . . (first column, first row, first layer) and   is represented as ... ... ... (third column, third row, third layer).
+
+// For reference the three layers of the cube are as follows (underscore represents space):
+
+// 1  1  2  3 
+// 1  A  B  C
+// 2  D  E  F
+// 3  G  H  I
+
+// 2  1  2  3 
+// 1  J  K  L
+// 2  M  N  O
+// 3  P  Q  R
+
+// 3  1  2  3 
+// 1  S  T  U
+// 2  V  W  X
+// 3  Y  Z  _
+// Your task (should you choose to accept it)
+// Create two functions encode() and decode(), to encode and decode strings to and from cubic tap code.
+
+// Input
+// encode() takes a string of uppercase letters and spaces and outputs a string of dots and spaces. decode() takes a string of dots and spaces and outputs a string of uppercase letters and spaces. All inputs will be valid.
+
+// Examples
+// encode("N") => ".. .. .."
+// encode("TEST") => ".. . ... .. .. . . . ... .. . ..."
+// encode("HELLO WORLD") => ".. ... . .. .. . ... . .. ... . .. ... .. .. ... ... ... .. .. ... ... .. .. ... ... .. ... . .. . .. ."
+
+// decode(".. .. ..") => "N"
+// decode(".. . ... .. .. . . . ... .. . ...") => "TEST"
+// decode(".. ... . .. .. . ... . .. ... . .. ... .. .. ... ... ... .. .. ... ... .. .. ... ... .. ... . .. . .. .") => "HELLO WORLD"
+
+function tapCode(){
+    let alphaUSpace = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ '
+    let alphaIdx=0
+    let code = {}
+    for(let i=1 ; i<=3 ;i++){ //square
+        for(let j=1 ;j<=3 ; j++){ //line
+            for(let k=1 ; k<=3 ;k++){ //col
+                let dot = '.'
+                let dots = `${dot.repeat(k)} ${dot.repeat(j)} ${dot.repeat(i)}` //col line square
+                let letter = alphaUSpace[alphaIdx]
+                code[letter] = dots
+                alphaIdx++
+            }
+        }
+    }
+
+    // console.log(code);
+    //code: {
+    //   A: '. . .', //col line square
+    //   B: '.. . .',
+    //   ...,
+    //   ' ': '... ... ...'}
+
+    return code
+}
+//console.log(tapCode());
+
+function encode(str) {
+    let code = tapCode()
+
+    return str.split('').map(char => code[char]).join(' ')
+}
+//console.log(encode("TEST")); // -> ".. . ... .. .. . . . ... .. . ..."
+  
+function decode(str) {
+    let code = tapCode()
+
+    let taps = str.split(' ') //each 3 taps represents a letter
+    let letters = []
+    for(let i=0; i<taps.length ; i=i+3){
+        let temp=[]
+        temp.push(taps[i])
+        temp.push(taps[i+1])
+        temp.push(taps[i+2])
+        letters.push(temp)
+    }
+    //letters : [ ['..', '...', '.'] , ['.', '.', '...',] , ...]
+
+    let res = letters.map(arr => {
+        let letter = arr.join(' ')
+        for(let key in code){
+            if (code[key] == letter){
+                return key
+            }
+        }
+    })
+
+    return res.join('')
+}
+
+// console.log(decode('.. . ... .. .. . . . ... .. . ...')); //-> "TEST"
+// console.log(decode('.. .. ..')); // -> "N"
+// console.log(decode(".. ... . .. .. . ... . .. ... . .. ... .. .. ... ... ... .. .. ... ... .. .. ... ... .. ... . .. . .. .")); // -> "HELLO WORLD"
+
+//====================================================================================

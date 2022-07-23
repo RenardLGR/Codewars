@@ -237,4 +237,68 @@ function deleteNth(arr,n){
 // console.log(deleteNth([20,37,20,21], 1));
 
 //===================================================================================
- 
+// https://www.codewars.com/kata/59279aea8270cc30080000df/train/javascript
+// Back-Story
+// Every day I travel on the freeway.
+
+// When I am more bored than usual I sometimes like to play the following counting game I made up:
+
+// As I join the freeway my count is 0
+// Add 1 for every car that I overtake
+// Subtract 1 for every car that overtakes me
+// Stop counting when I reach my exit
+// What an easy game! What fun!
+
+// Kata Task
+// You will be given
+
+// The distance to my exit (km)
+// How fast I am going (kph)
+// Information about a lot of other cars
+// Their time (relative to me) as I join the freeway. For example,
+// -1.5 means they already passed my starting point 1.5 minutes ago
+// 2.2 means they will pass my starting point 2.2 minutes from now
+// How fast they are going (kph)
+// Find what is my "score" as I exit the freeway!
+
+// Notes
+// Assume all cars travel at a constant speeds
+// Assume all cars are either ahead of or behind me otherCars[X][0] != 0
+
+var freewayGame = function(distKmToExit, mySpeedKph, otherCars) {
+    // otherCars is an array of cars [time, speed]
+    // Example : otherCars : [[1.0, 120.0], [-1.5, 125.0]]
+
+    // We will calculate how much time they will take to reach the exit,
+    //if it's greater than ours AND he started before me +1
+    //if it's smaller than ours AND he started after me -1
+
+    let timeToExit = distKmToExit/mySpeedKph*60 //hrs to sec
+
+    let timeOtherCars = otherCars.map(car => {
+        // returns array of cars with their time (ahead or behind included) instead of their speed
+        let time = distKmToExit/car[1]*60
+        time+=car[0] //if car[0] is positive, meaning they Xmin late, I should add that time
+        //if it's negative, they are ahead of me and I indeed should substract it
+
+        return [car[0], time]
+    })
+
+    let res = timeOtherCars.map(car => {
+        if(car[1] > timeToExit && car[0]<0){
+            return 1
+        }
+        else if(car[1] < timeToExit && car[0]>0){
+            return -1
+        }
+        else{
+            return 0
+        }
+    })
+
+    return res.reduce((acc, cur) => acc+cur,0)
+}
+
+// console.log(freewayGame(50, 130, [[-0.6552303957178518,120.42487688163814],[3.5924063343036945,124.15832971745978],[2.7424336429460645,132.40153496465163],[-2.528858037075805,130.70246493802142],[-1.0790110380923235,121.87515304793858]])); //2
+
+//==================================================================================

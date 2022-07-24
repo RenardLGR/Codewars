@@ -277,7 +277,7 @@ var freewayGame = function(distKmToExit, mySpeedKph, otherCars) {
 
     let timeOtherCars = otherCars.map(car => {
         // returns array of cars with their time (ahead or behind included) instead of their speed
-        let time = distKmToExit/car[1]*60
+        let time = distKmToExit/car[1]*60 //t=d/v (in hrs, *60 in min)
         time+=car[0] //if car[0] is positive, meaning they Xmin late, I should add that time
         //if it's negative, they are ahead of me and I indeed should substract it
 

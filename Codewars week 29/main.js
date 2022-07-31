@@ -326,3 +326,123 @@ var hanoi = function(disks) {
 };
 
 //===================================================================================
+// https://www.codewars.com/kata/585d7d5adb20cf33cb000235
+// There is an array with some numbers. All numbers are equal except for one. Try to find it!
+
+// findUniqN([ 1, 1, 1, 2, 1, 1 ]) === 2
+// findUniqN([ 0, 0, 0.55, 0, 0 ]) === 0.55
+// It’s guaranteed that array contains at least 3 numbers.
+
+// The tests contain some very huge arrays, so think about performance.
+
+// This is the first kata in series:
+
+// Find the unique number (this kata)
+// Find the unique string
+// Find The Unique
+
+function findUniqN(arr) {
+    // I will return the shortest array of all unique element
+    let set = new Set(arr)
+    let numbers = Array.from(set)
+
+
+    let l0 = arr.filter(n => n===numbers[0]).length
+    let l1 = arr.filter(n => n===numbers[1]).length
+
+    return l0>l1 ? numbers[1] : numbers[0]
+}
+  
+// console.log(findUniqN([ 0, 0, 0.55, 0, 0 ]));
+// console.log(findUniqN([ 1, 1, 1, 2, 1, 1 ]));
+
+function findUniqNBis(arr){
+    arr.sort((a, b) => a-b)
+    arr[0]===arr[1] ? arr.pop() : arr[0]
+}
+
+function findUniqNThrice(arr){
+    return arr.find(e => arr.indexOf(e) === arr.lastIndexOf(e))
+}
+
+//===============================================================================
+// https://www.codewars.com/kata/585d8c8a28bc7403ea0000c3/train/javascript
+// There is an array of strings. All strings contains similar letters except one. Try to find it!
+
+// findUniqS([ 'Aa', 'aaa', 'aaaaa', 'BbBb', 'Aaaa', 'AaAaAa', 'a' ]) === 'BbBb'
+// findUniqS([ 'abc', 'acb', 'bac', 'foo', 'bca', 'cab', 'cba' ]) === 'foo'
+// Strings may contain spaces. Spaces are not significant, only non-spaces symbols matters. E.g. string that contains only spaces is like empty string.
+
+// It’s guaranteed that array contains more than 2 strings.
+
+// This is the second kata in series:
+
+// Find the unique number
+// Find the unique string (this kata)
+// Find The Unique
+
+function findUniqS(arr) {
+    // We will create an array with each string reduced to their minimum : lower cases, alphabetically ordered unique letters : BBaCC => abc
+    //We will easily find the unique string here
+
+    let reduced = arr.map(string => {
+        let res = string.toLowerCase() //lowercasing
+        res = res.split('').reduce((acc, char) => {
+            if(acc.includes(char)){
+                return acc
+            }else{
+                return acc+char
+            }
+        },'') //removing duplicates
+        res = res.split('').sort((a,b) => a.localeCompare(b)).join('') //alphabetically ordering
+        //I believe res.sort() would have sufficed
+
+        return res
+    })
+
+    //for arr = [ 'Aa', 'aaa', 'aaaaa', 'BbBb', 'Aaaa', 'AaAaAa', 'a' ]
+    //reduced = ['a', 'a', 'a', 'b', 'a', 'a', 'a']
+
+    //console.log(reduced);
+
+    //I need the arr element at the index of the unique element of reduced
+    //I.e. the index of the unique element of reduced is the the same index at which our unique string is 
+    return arr[reduced.indexOf(reduced.find(char => reduced.indexOf(char) === reduced.lastIndexOf(char)))]
+}
+
+//console.log(findUniqS([ 'Aa', 'aaa', 'aaaaa', 'BbBb', 'Aaaa', 'AaAaAa', 'a' ]));
+//console.log(findUniqS([ 'abc', 'acb', 'bac', 'foo', 'bca', 'cab', 'cba' ]));
+
+//===============================================================================
+// https://www.codewars.com/kata/5862e0db4f7ab47bed0000e5/train/javascript
+// There is an array. All elements types are the same except for one. Try to find it!
+
+// findUniq([ 1, 1, 1, 2, 1, 1 ]) === 2
+// findUniq([ 4, 4, 'foo', 4 ]) === 'foo'
+// It’s guaranteed that array contains more than 3 elements. Array may contain anything (including NaN).
+
+// This is the third kata in series:
+
+// Find the unique number
+// Find the unique string
+// Find The Unique (this kata)
+
+function findUniq(arr){
+    let types =  arr.map(el => typeof el)
+
+    //IF TYPES ARE NOT UNIQUE
+    if(new Set(types).size!==1){
+        //I need the arr element at the index of the unique element of types
+        //I.e. the index of the unique element of types is the the same index at which our unique string is
+
+        return arr[types.indexOf(types.find(type => types.indexOf(type) === types.lastIndexOf(type)))]
+    }else{//IF TYPES ARE UNIQUE
+        //TODO...
+    }
+}
+
+// console.log(findUniq([ 1, 1, 1, 2, 1, 1 ]))
+// console.log(findUniq([ 4, 4, 'foo', 4 ]))
+
+
+//=================================================================================

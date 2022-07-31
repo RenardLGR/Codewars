@@ -446,3 +446,167 @@ function findUniq(arr){
 
 
 //=================================================================================
+// https://www.codewars.com/kata/557af4c6169ac832300000ba
+// Our fruit guy has a bag of fruit (represented as an array of strings) where some fruits are rotten. He wants to replace all the rotten pieces of fruit with fresh ones. For example, given ["apple","rottenBanana","apple"] the replaced array should be ["apple","banana","apple"]. Your task is to implement a method that accepts an array of strings containing fruits should returns an array of strings where all the rotten fruits are replaced by good ones.
+
+// Notes
+// If the array is null/nil/None or empty you should return empty array ([]).
+// The rotten fruit name will be in this camelcase (rottenFruit).
+// The returned array should be in lowercase.
+
+function removeRotten(bagOfFruits){
+    //edge cases
+    if(!bagOfFruits){ //if null input
+        return []
+    }
+    else if(bagOfFruits.length === 0){ //if empty arr input
+        return []
+    }else{
+        return bagOfFruits.map(fruit => freshIt(fruit))
+    }
+
+    function freshIt(fruit){
+        //this function takes a fruit string and returns a fresh fruit if needed
+        if(fruit.slice(0, 6) === 'rotten'){
+            return fruit.slice(6,7).toLowerCase() + fruit.slice(7)
+        }else{
+            return fruit
+        }
+    }
+}
+
+
+// console.log(removeRotten(["apple","rottenBanana","apple"]));
+
+function removeRottenBis(arr){
+    return arr ? arr.map(x=>x.replace('rotten', '').toLowerCase()) : [] ;
+}
+
+
+//=================================================================================
+// https://www.codewars.com/kata/56d6b7e43e8186c228000637/train/javascript
+// Colour plays an important role in our lifes. Most of us like this colour better than another. User experience specialists believe that certain colours have certain psychological meanings for us.
+
+// You are given a 2D array, composed of a colour and its 'common' association in each array element. The function you will write needs to return the colour as 'key' and association as its 'value'.
+
+// For example:
+
+// var array = [["white", "goodness"], ...] //returns [{white: 'goodness'}, ...]
+
+function colourAssociation(array){
+    return array.map(association => {
+        let obj = {}
+        obj[association[0]] = association[1]
+        return obj
+    })
+}
+
+//===============================================================================
+// https://www.codewars.com/kata/57a049e253ba33ac5e000212/train/javascript
+// Your task is to write function factorial.
+
+// https://en.wikipedia.org/wiki/Factorial
+
+function factorial(n){
+    if(n===0 || n===1){
+      return 1
+    }else{
+      return n*factorial(n-1)
+    }
+}
+
+function factorialBis(n){
+    if(n<=1){
+      return 1
+    }else{
+      return n*factorial(n-1)
+    }
+}
+
+//=================================================================================
+// https://www.codewars.com/kata/57a6633153ba33189e000074
+// Count the number of occurrences of each character and return it as a list of tuples in order of appearance. For empty input return an empty list.
+
+// Example:
+
+// orderedCount("abracadabra") == [['a', 5], ['b', 2], ['r', 2], ['c', 1], ['d', 1]]
+
+var orderedCount = function (text) {
+    //this function is not working since object keys are ordered from smallest number to biggest (i will work for string made of letter though)
+    if(text.length ===0){ //edge cases
+        return []
+    }else{
+        //using a reduce method, initialize an empty object, add +1 to a key if it already exists, init at 1 if it doenst
+        let frequency = text.split('').reduce((acc, cur) => {
+            acc[cur.toString()] = (acc[cur.toString()] || 0) + 1
+            return acc
+        }, {})
+
+        let res = []
+        for(let key in frequency){
+            res.push([key, frequency[key]])
+        }
+
+        return res
+    }
+}
+
+// console.log(orderedCount("abracadabra"));
+// console.log(orderedCount("233312"));
+
+function orderedCountBis(text){
+    if(text.length ===0){ //edge cases
+        return []
+    }else{
+        let res = []
+        let splitted = text.split('')
+        for(let i=0 ; i<splitted.length ; i++){
+            if(res.find(arr => arr[0] === splitted[i])){
+                //If I found an arr[0] in res === letter
+                //Then I should add 1 to this arr[1]
+                res[res.findIndex(arr => arr[0] === splitted[i])][1]++
+            }else{ //else just create this arr
+                res.push([splitted[i] , 1])
+            }
+        }
+
+        return res
+    }
+}
+
+// console.log(orderedCountBis("abracadabra"));
+// console.log(orderedCountBis("233312"));
+
+
+//=================================================================================
+// https://www.codewars.com/kata/58841cb52a077503c4000015
+// Consider integer numbers from 0 to n - 1 written down along the circle in such a way that the distance between any two neighbouring numbers is equal (note that 0 and n - 1 are neighbouring, too).
+
+// Given n and firstNumber/first_number/first-number, find the number which is written in the radially opposite position to firstNumber.
+
+// Example
+// For n = 10 and firstNumber = 2, the output should be 7
+
+//SEE IMG
+
+// Input/Output
+// [input] integer n
+
+// A positive EVEN integer.
+
+// Constraints: 4 ≤ n ≤ 1000.
+
+// [input] integer firstNumber/first_number/first-number
+
+// Constraints: 0 ≤ firstNumber ≤ n - 1
+
+// [output] an integer
+
+function circleOfNumbers(n, firstNumber) {
+    //It looks like I just need to add n/2 to firstNumber and make sure it stays included in [0,n[ so that would be a modulus job
+    //n is always even
+
+    return (firstNumber + n/2)%n
+}
+
+//================================================================================

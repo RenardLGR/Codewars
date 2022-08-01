@@ -610,3 +610,22 @@ function circleOfNumbers(n, firstNumber) {
 }
 
 //================================================================================
+// https://www.codewars.com/kata/571640812ad763313600132b/train/javascript
+// Alex is transitioning from website design to coding and wants to sharpen his skills with CodeWars.
+// He can do ten kata in an hour, but when he makes a mistake, he must do pushups. These pushups really tire poor Alex out, so every time he does them they take twice as long. His first set of redemption pushups takes 5 minutes. Create a function, alexMistakes, that takes two arguments: the number of kata he needs to complete, and the time in minutes he has to complete them. Your function should return how many mistakes Alex can afford to make.
+
+function alexMistakes(numberOfKata, timeLimit){
+    //always 10 katas an hour => 6min per kata
+    //always 5 min, doubled for pushups
+
+    let timeForPushups = timeLimit - 6*numberOfKata
+    let mistakesAffordable = 0
+    let pushupSessionTime = 5
+    while(timeForPushups-pushupSessionTime>=0){
+        mistakesAffordable++
+        timeForPushups -= pushupSessionTime
+        pushupSessionTime *= 2
+    }
+
+    return mistakesAffordable
+}

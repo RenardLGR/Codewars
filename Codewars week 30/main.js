@@ -172,6 +172,43 @@ function removeRotten(bagOfFruits){
 // The tests contain some very huge arrays, so think about performance.
 
 function findUniq(arr) {
-
+    return arr.find(num => arr.indexOf(num) === arr.lastIndexOf(num))
 }
-  
+
+
+//==================================================================================
+// https://www.codewars.com/kata/542f3d5fd002f86efc00081a
+// Write a function that generates factors for a given number.
+
+// The function takes an integer on the standard input and returns a list of integers (ObjC: array of NSNumbers representing integers). That list contains the prime factors in numerical sequence.
+
+// Examples
+// 1  ==>  []
+// 3  ==>  [3]
+// 8  ==>  [2, 2, 2]
+// 9  ==>  [3, 3]
+// 12 ==>  [2, 2, 3]
+
+function prime_factors(n) {
+    if(n === 1) return []//edge case
+
+    let primeFactors = []
+    let temp = 2
+
+    while(temp<=n){
+        if(n%temp === 0){
+            primeFactors.push(temp)
+            n=n/temp
+        }else{
+            temp++
+        }
+    }
+
+    return primeFactors
+}
+
+// console.log(prime_factors(1));
+// console.log(prime_factors(2));
+// console.log(prime_factors(612)); // -> [2, 2, 3, 3, 17]
+
+//==================================================================================

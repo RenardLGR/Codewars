@@ -212,3 +212,70 @@ function prime_factors(n) {
 // console.log(prime_factors(612)); // -> [2, 2, 3, 3, 17]
 
 //==================================================================================
+// https://www.codewars.com/kata/55a5c82cd8e9baa49000004c
+// Complete the function that takes 3 numbers x, y and k (where x ≤ y), and returns the number of integers within the range [x..y] (both ends included) that are divisible by k.
+
+// More scientifically: { i : x ≤ i ≤ y, i mod k = 0 }
+
+// Example
+// Given x = 6, y = 11, k = 2 the function should return 3, because there are three numbers divisible by 2 between 6 and 11: 6, 8, 10
+
+// Note: The test cases are very large. You will need a O(log n) solution or better to pass. (A constant time solution is possible.)
+
+function divisibleCount(x, y, k) {
+    //So naive way would be : 
+    //for(x to y) check if i%k === 0
+    //it works just fine but we'll have issues with large cases
+
+    let res = []
+    for(let i=x ; i<=y ; i++){
+        if(i%k === 0){
+            res.push(i)
+        }
+    }
+
+    return res.length
+}
+
+
+// console.log(divisibleCount(6, 11, 2));
+
+function divisibleCountBis(x, y, k){
+    //what if we turn the operation around and instead of checking if k|i we check if k*n is within [x...y] and have all of the n respecting this rule
+    //I.e for divisibleCount(6, 11, 2),
+    // check if 2*1 is in [6...11]
+    // check if 2*2 is in [6...11]
+    // check if 2*3 is in [6...11]
+    // check if 2*4 is in [6...11]
+    // check if 2*5 is in [6...11]
+
+    //first element should be Math.ceil(x/k) if Math.ceil(x/k)*k smaller than y //here it shoulbe be 3
+    //while last element should be Math.floor(y/k) if Math.floor(y/k)*k bigger than x //here it should be 5
+    //And the total possibilities should be biggest-smallest+1
+    let smallest, biggest
+    if(Math.ceil(x/k)*k <= y){
+        smallest = Math.ceil(x/k)
+    }
+    if(Math.floor(y/k)*k >= x){
+        biggest = Math.floor(y/k)
+    }
+
+    console.log(smallest, biggest);
+    if(smallest!==undefined && biggest!==undefined){
+        return biggest-smallest+1
+    }else{
+        return 0
+    }
+}
+
+// console.log(divisibleCountBis(6, 11, 2));
+// console.log(divisibleCountBis(6, 8, 5));
+// console.log(divisibleCountBis(0, 1, 7));
+// console.log(divisibleCountBis(0, 10, 1));
+
+function divisibleCountThrice(x, y, k) {
+    //This was the shortest answer, which I guess is not too far from my previous idea
+    return Math.floor(y/k) - Math.floor((x-1)/k)
+}
+
+//=====================================================================================

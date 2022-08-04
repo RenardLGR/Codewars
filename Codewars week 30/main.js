@@ -279,3 +279,31 @@ function divisibleCountThrice(x, y, k) {
 }
 
 //=====================================================================================
+// https://www.codewars.com/kata/57eb8fcdf670e99d9b000272/train/javascript
+// Given a string of words, you need to find the highest scoring word.
+
+// Each letter of a word scores points according to its position in the alphabet: a = 1, b = 2, c = 3 etc.
+
+// You need to return the highest scoring word as a string.
+
+// If two words score the same, return the word that appears earliest in the original string.
+
+// All letters will be lowercase and all inputs will be valid.
+
+function high(x){
+    //Note all words are separated by a space (no commas, dots, etc)
+    const alpha = 'abcdefghijklmnopqrstuvwxyz'
+
+    //Map the scores, then return the word at the index of the highest score
+    let words = x.split(' ')
+    let score = words.map(word => {
+        return word.split('').reduce((acc, cur) => acc + alpha.indexOf(cur) + 1, 0)
+    })
+
+    return words[score.indexOf(Math.max(...score))]
+}
+
+// console.log(high('man i need a taxi up to ubud')); // -> taxi
+// console.log(high('what time are we climbing up the volcano')); // -> volcano
+
+//===================================================================================

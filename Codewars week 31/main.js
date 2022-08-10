@@ -125,3 +125,117 @@ function isValidWalk(walk) {
 }
 
 //====================================================================================
+// https://www.codewars.com/kata/59dbab4d7997cb350000007f
+
+// Two strings a and b are called isomorphic if there is a one to one mapping possible for every character of a to every character of b. And all occurrences of every character in a map to same character in b.
+
+// Task
+// In this kata you will create a function that return True if two given strings are isomorphic to each other, and False otherwise. Remember that order is important.
+
+// Your solution must be able to handle words with more than 10 characters.
+
+// Example
+// True:
+
+// CBAABC DEFFED
+// XXX YYY
+// RAMBUNCTIOUSLY THERMODYNAMICS
+// False:
+
+// AB CC
+// XXY XYY
+// ABAB CD
+
+function isomorph(a, b) {
+    if(a.length !== b.length){
+        //evident false
+        return false
+    }
+
+    //I believe to prove bijection, I need to prove injection a to b and injection b to a
+    if(isInjective(a,b) && isInjective(b,a)){
+        return true
+    }else{
+        return false
+    }
+
+
+
+
+    //Helper function
+    function isInjective(a, b){
+        //Let's create an object with keys letters of string a and values letters of string b
+        //If once assigned, I don't reassign it means a is injective to b
+        let res = true
+
+        let obj = a.split('').reduce((acc, curr, idx) =>{
+            if(acc.hasOwnProperty(curr)){
+                //if a letter from a is already assigned to a letter from b
+                if(acc[curr] !== b[idx]){
+                    //check if the key and the value match, if not false
+                    res = false
+                }
+            }else{
+                //else just assigned it
+                acc[curr] = b[idx]
+            }
+            return acc
+        } ,{})
+        // Ex : isInjective('CBAABC', 'DEFFED') => obj = { C: 'D', B: 'E', A: 'F' }
+
+        return res
+    }
+    // console.log(isInjective('ztmrxwh', 'nbuwpmn')); //true
+    // console.log(isInjective('nbuwpmn', 'ztmrxwh')); //false
+}
+
+// console.log(isomorph('CBAABC', 'DEFFED')); // -> true
+// console.log(isomorph('CBAABC', 'DEFFEB')); // -> false
+// console.log(isomorph('ztmrxwh', 'nbuwpmn')); // -> false
+
+//==================================================================================
+// https://www.codewars.com/kata/54da5a58ea159efa38000836/javascript
+// Given an array of integers, find the one that appears an odd number of times.
+
+// There will always be only one integer that appears an odd number of times.
+
+// Examples
+// [7] should return 7, because it occurs 1 time (which is odd).
+// [0] should return 0, because it occurs 1 time (which is odd).
+// [1,1,2] should return 2, because it occurs 1 time (which is odd).
+// [0,1,0,1,0] should return 0, because it occurs 3 times (which is odd).
+// [1,2,2,3,3,3,4,3,3,3,2,2,1] should return 4, because it appears 1 time (which is odd).
+
+function findOdd(A) {
+    let frequency = A.reduce((acc, curr) => {
+        acc[curr] = (acc[curr] || 0) + 1
+        return acc
+    }, {})
+
+    let res
+    for(let key in frequency){
+        if(frequency[key]%2 === 1){
+            res = key
+        }
+    }
+
+    return Number(res)
+}
+
+//console.log(findOdd([1,2,2,3,3,3,4,3,3,3,2,2,1]))
+
+function findOddBis(A) {
+    return A.reduce((acc, cur) => acc^cur)
+
+    //This solution is using the bitwise XOR, without knowing too much in details, we have :
+    //Let a,b,c distinct natural numbers, we have :
+    //a^a = 0
+    //a^0 = a
+    //a^b^c = c^a^b //commutativity/associativity
+
+    //so each time we have 2 identical numbers, they cancel each other, hence giving us the result
+}
+
+// console.log(findOddBis([1,2,2,3,3,3,4,3,3,3,2,2,1]))
+
+//===============================================================================

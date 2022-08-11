@@ -239,3 +239,88 @@ function findOddBis(A) {
 // console.log(findOddBis([1,2,2,3,3,3,4,3,3,3,2,2,1]))
 
 //===============================================================================
+// https://www.codewars.com/kata/56dbb6603e5dd6543c00098d
+// Observe the process with the array given below and the tracking of the sums of each corresponding array.
+
+// [5, 3, 6, 10, 5, 2, 2, 1] (34) ----> [5, 3, 6, 10, 2, 1] ----> (27) ------> [10, 6, 5, 3, 2, 1]  ----> [4, 1, 2, 1, 1] (9) -----> [4, 1, 2] (7)
+// The tracked sums are : [34, 27, 9, 7]. We do not register one of the sums. It is not difficult to see why.
+
+// We need the function track_sum ( or trackSum ) that receives an array ( or list ) and outputs a tuple ( or array ) with the following results in the order given below:
+
+// array with the tracked sums obtained in the process
+// final array
+// So for our example given above, the result will be:
+
+// trackSum([5, 3, 6, 10, 5, 2, 2, 1]) == [[34, 27, 9, 7], [4, 1, 2]]
+// You will find more cases in the Example Tests.
+
+function trackSum(arr) {
+    // [5, 3, 6, 10, 5, 2, 2, 1] (34) ----> [5, 3, 6, 10, 2, 1] ----> (27) ------> [10, 6, 5, 3, 2, 1]  ----> [4, 1, 2, 1, 1] (9) -----> [4, 1, 2] (7)
+    //first step : remove duplicate (keeps first occurence only)
+    //second step : sort
+    //third step : map [idx-idx+1] and remove last el
+    //fourth step: removes duplicate (keeps first occurence only)
+
+    let sum = []
+    sum.push(arr.reduce((acc, cur) => acc+cur, 0))
+    
+    //step 1:
+    arr = arr.filter((el, idx, arr) => arr.indexOf(el) === idx)
+    sum.push(arr.reduce((acc, cur) => acc+cur, 0))
+    
+    //step 2: 
+    arr.sort((a, b) => b-a)
+
+    //step 3:
+    arr = arr.map((el, idx, arr) => {
+        if(idx<arr.length-1){//exclude last element substraction
+            return el-arr[idx+1]
+        }else return el
+    })
+    arr.pop()
+    sum.push(arr.reduce((acc, cur) => acc+cur, 0))
+
+    //step 4:
+    arr = arr.filter((el, idx, arr) => arr.indexOf(el) === idx)
+    sum.push(arr.reduce((acc, cur) => acc+cur, 0))
+
+    return [sum, arr]
+
+}
+
+
+// console.log(trackSum([5, 3, 6, 10, 5, 2, 2, 1])); // -> [[34, 27, 9, 7], [4, 1, 2]]
+
+//=====================================================================================
+// https://www.codewars.com/kata/54e6533c92449cc251001667/javascript
+// Implement the function unique_in_order which takes as argument a sequence and returns a list of items without any elements with the same value next to each other and preserving the original order of elements.
+
+// For example:
+
+// uniqueInOrder('AAAABBBCCDAABBB') == ['A', 'B', 'C', 'D', 'A', 'B']
+// uniqueInOrder('ABBCcAD')         == ['A', 'B', 'C', 'c', 'A', 'D']
+// uniqueInOrder([1,2,2,3,3])       == [1,2,3]
+
+var uniqueInOrder=function(iterable){
+    let arr = [...iterable] //if it is an array, doesn't change anything, if it is a string split('') it
+    let working = true
+    while(working){
+      working = false
+        for(let i=0 ; i<arr.length-1 ; i++){ //goes to the penultimate element
+            if(arr[i] === arr[i+1]){
+                //if a change has been made, we are not done, working = true
+                working = true
+                arr.splice(i,1) //if one element is identical to its following, remove it
+            }
+        }
+    }
+
+    return arr
+}
+
+
+// console.log(uniqueInOrder('AAAABBBCCDAABBB')) // -> ['A', 'B', 'C', 'D', 'A', 'B']
+// console.log(uniqueInOrder('ABBCcAD'))         // -> ['A', 'B', 'C', 'c', 'A', 'D']
+// console.log(uniqueInOrder([1,2,2,3,3]))       // -> [1,2,3]
+
+//==================================================================================

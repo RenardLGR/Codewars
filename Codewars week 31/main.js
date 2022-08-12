@@ -324,3 +324,45 @@ var uniqueInOrder=function(iterable){
 // console.log(uniqueInOrder([1,2,2,3,3]))       // -> [1,2,3]
 
 //==================================================================================
+https://www.codewars.com/kata/59df2f8f08c6cec835000012
+// John has invited some friends. His list is:
+
+// s = "Fred:Corwill;Wilfred:Corwill;Barney:Tornbull;Betty:Tornbull;Bjon:Tornbull;Raphael:Corwill;Alfred:Corwill";
+// Could you make a program that
+
+// makes this string uppercase
+// gives it sorted in alphabetical order by last name.
+// When the last names are the same, sort them by first name. Last name and first name of a guest come in the result between parentheses separated by a comma.
+
+// So the result of function meeting(s) will be:
+
+// "(CORWILL, ALFRED)(CORWILL, FRED)(CORWILL, RAPHAEL)(CORWILL, WILFRED)(TORNBULL, BARNEY)(TORNBULL, BETTY)(TORNBULL, BJON)"
+// It can happen that in two distinct families with the same family name two people have the same first name too.
+
+// Notes
+// You can see another examples in the "Sample tests".
+
+function meeting(s) {
+    let friends = s.toUpperCase().split(';').map(friend => friend.split(':'))
+    //gives us an array of array friends with el[0] being the family name and el[1] the first name
+    //-> [ [ 'FRED', 'CORWILL' ], [ 'WILFRED', 'CORWILL' ], ... ]
+
+    friends.sort((a,b) => { //sorting by alphabetical family name & first name
+        if(a[1] === b[1]){ //if family name is the same
+            return a[0].localeCompare(b[0])
+        }else{
+            return a[1].localeCompare(b[1])
+        }
+    })
+
+    friends = friends.map(f => [f[1], f[0]]) //swap idx of family name with first name
+    //could do without and change the backticks litteral and swap it there
+
+    return friends.map(f => {
+        return `(${f[0]}, ${f[1]})`
+    }).join('')
+}
+
+// console.log(meeting("Fred:Corwill;Wilfred:Corwill;Barney:Tornbull;Betty:Tornbull;Bjon:Tornbull;Raphael:Corwill;Alfred:Corwill"));
+
+//====================================================================================

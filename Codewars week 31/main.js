@@ -366,3 +366,43 @@ function meeting(s) {
 // console.log(meeting("Fred:Corwill;Wilfred:Corwill;Barney:Tornbull;Betty:Tornbull;Bjon:Tornbull;Raphael:Corwill;Alfred:Corwill"));
 
 //====================================================================================
+// https://www.codewars.com/kata/52b305bec65ea40fe90007a7
+// Pirates have notorious difficulty with enunciating. They tend to blur all the letters together and scream at people.
+
+// At long last, we need a way to unscramble what these pirates are saying.
+
+// Write a function that will accept a jumble of letters as well as a dictionary, and output a list of words that the pirate might have meant.
+
+// For example:
+
+// grabscrab( "ortsp", ["sport", "parrot", "ports", "matey"] )
+// Should return ["sport", "ports"].
+
+// Return matches in the same order as in the dictionary. Return an empty array if there are no matches.
+
+function grabscrab(anagram, dictionary) {
+    return dictionary.filter(word => {
+        if(word.length === anagram.length){ //obvious wrong case
+            //now we are checking if both words alphabetically ordered are identical
+            let aword = word.split('').sort((a,b) => a.localeCompare(b)).join('')
+            let aanagram = anagram.split('').sort((a,b) => a.localeCompare(b)).join('')
+            return aword === aanagram
+        }else{
+            return false
+        }
+    })
+}
+
+
+// console.log(grabscrab( "ortsp", ["sport", "parrot", "ports", "matey"] )) // -> ['sports', 'ports']
+// console.log(grabscrab("oolp", ["donkey", "pool", "horse", "loop"])); // -> [ 'pool', 'loop' ]
+
+
+function grabscrabBis(anagram, dictionary) {
+    //same principle, faster
+    anagram=anagram.split('').sort().join('');
+    return dictionary.filter(a=>a.split('').sort().join('')===anagram)
+}
+
+
+//======================================================================================

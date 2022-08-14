@@ -406,3 +406,92 @@ function grabscrabBis(anagram, dictionary) {
 
 
 //======================================================================================
+// https://www.codewars.com/kata/55ffb44050558fdb200000a4
+// We have the first value of a certain sequence, we will name it initVal. We define pattern list, patternL, an array that has the differences between contiguous terms of the sequence.  E.g: patternL = [k1, k2, k3, k4]
+
+// The terms of the sequence will be such values that:
+
+// term1 = initVal
+// term2 - term1 = k1
+// term3 - term2 = k2
+// term4 - term3 = k3
+// term5 - term4 = k4
+// term6 - term5 = k1
+// term7 - term6 = k2
+// term8 - term7 = k3
+// term9 - term8 = k4
+// ....  - ..... = ...
+// ....  - ..... = ...
+// So the values of the differences between contiguous terms are cyclical and are repeated as the differences values of the pattern list stablishes.
+
+// Let's see an example with numbers:
+
+// initVal = 10
+// patternL = [2, 1, 3]
+// term1 = 10
+// term2 = 12
+// term3 = 13
+// term4 = 16
+// term5 = 18
+// term6 = 19
+// term7 = 22  # and so on...
+// We can easily obtain the next terms of the sequence following the values in the pattern list. We see that the sixth term of the sequence, 19, has the sum of its digits 10.
+
+// Make a function sumDig_nthTerm(), that receives three arguments in this order
+
+// sumDig_nthTerm(initVal, patternL, nthTerm(ordinal number of the term in the sequence)) 
+
+// This function will output the sum of the digits of the n-th term of the sequence.
+
+// Let's see some cases for this function:
+
+// sumDig_nthTerm(10, [2, 1, 3], 6) -----> 10 # because the sixth term is 19 sum of Dig = 1 + 9 = 10. The sequence up to the sixth-Term is: 10, 12, 13, 16, 18, 19
+
+// sumDig_nthTerm(10, [1, 2, 3], 15) ----> 10 # 37 is the 15-th term, and 3 + 7 = 10
+
+function sumDigNthTerm(initval, pattern, nthterm) {
+    //Following :
+    // initVal = 10
+    // pattern = [2, 1, 3]
+    // term1 = initVal = 10
+    // term2 = pattern[0] + term1 = 12
+    // term3 = pattern[1] + term2 = 13
+    // term4 = pattern[2] + term3 = 16 //end of patter
+    // term5 = pattern[0] + term4 = 18
+    // term6 = pattern[1] + term5 = 19
+    // term7 = pattern[2] + term6 = 22  //end of pattern //and so on...
+    //...
+    //So every 3 terms, we add a pattern.reduce(acc+cur)
+    //We also need to add the missing pattern[0] and pattern[1] if any
+    //And finally add the initValue
+    //So for n=/=0, we have :
+    //term n = Math.floor(n-1/pattern.length) * pattern.reduce((acc, cur) => acc+cur,0)
+    // + for(let i=0 ; i<n-1%pattern.length ; i++){
+        //pattern[i]
+    //}
+    // + initVal
+
+    if(nthterm===0) return sumOfItsDigits(initval) //edge case
+
+    let res = Math.floor((nthterm-1)/pattern.length) * pattern.reduce((acc, cur) => acc+cur,0)
+    //console.log(res);
+    for(let i=0 ; i<(nthterm-1)%pattern.length ; i++){
+        res+=pattern[i]
+    }
+    //console.log(res);
+    res+=initval
+
+    return sumOfItsDigits(res)
+
+    //helper function
+    function sumOfItsDigits(num){
+        //return the sum of its digit. Ex : 19 -> 10 (1+9 =10)
+        return num.toString().split('').reduce((acc, curr) => acc+ +curr,0)
+    }
+}
+
+// console.log(sumDigNthTerm(10, [2, 1, 3], 6)) // -> 10
+// console.log(sumDigNthTerm(10, [2, 1, 3], 15)) // -> 10
+// console.log(sumDigNthTerm(10, [2, 1, 3], 157)) // -> 7
+
+//===================================================================================

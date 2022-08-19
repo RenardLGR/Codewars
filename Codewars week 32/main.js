@@ -4,6 +4,118 @@ const alphaU = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 //=================================================================================
+// https://www.codewars.com/kata/54da5a58ea159efa38000836/train/javascript
+// Given an array of integers, find the one that appears an odd number of times.
+
+// There will always be only one integer that appears an odd number of times.
+
+// Examples
+// [7] should return 7, because it occurs 1 time (which is odd).
+// [0] should return 0, because it occurs 1 time (which is odd).
+// [1,1,2] should return 2, because it occurs 1 time (which is odd).
+// [0,1,0,1,0] should return 0, because it occurs 3 times (which is odd).
+// [1,2,2,3,3,3,4,3,3,3,2,2,1] should return 4, because it appears 1 time (which is odd).
+
+function findOdd(A) {
+    let frequencies = A.reduce((acc, cur) => {
+        acc[cur] = (acc[cur] || 0) +1
+        return acc
+    }, {})
+    let res
+    for(let key in frequencies){
+        if(frequencies[key] % 2 === 1){
+            res = Number(key)
+        }
+    }
+
+    return res
+}
+
+//console.log(findOdd([1,2,2,3,3,3,4,3,3,3,2,2,1]));
+
+//================================================================================
+// https://www.codewars.com/kata/569df0bc5565b243d500002b/train/javascript
+// We define a range with two positive integers n1 and n2 and an integer factor k, [n1, n1 + k*n2], the bounds of the defined range are included.
+
+// We will be given two arrays: prime_factors and digits.
+
+// prime_factors = [p1, p2, ..., pl] # p1, p2, ... and pl are prime factors 
+
+// digits = [d1, d2, ..., dj]  # d1, d2, ..., dj are digits from 0 to 9 included
+// We want to find all the numbers, mi such that: n1 ≤ m1 < m2 < ....mi ≤ n1 + k*n2, and are divisible for all the prime numbers present in prime_factors and have all the digits present in digits.
+
+// Let's see an example showing the function that will solve these challenge.
+
+// n1 = 30
+// n2 = 90
+// k = 4
+// factors = [2, 3]
+// digits = [6, 2]
+// --> return [126, 162, 216, 246, 264, 276] # result should be a sorted list with the found numbers.
+// An empty list means that the are no numbers that may fulfill the given conditions.
+
+// Range of inputs
+// 100 <= n1 <= 500,
+
+// 1000 <= n2 <= 3000
+
+// 180 <= k <= 2500
+
+// Prime factors will be inferior or equal to 31
+
+function findUs(n1, n2, k, factors, digits) {
+    let min = n1
+    let max = n1+k*n2
+    
+    let commonFactor = factors.reduce((acc, cur) => acc*cur, 1)
+    let res = []
+    
+    for(let i=min ; i<= max ;i++){
+      if((i%commonFactor === 0) && doesNumIncludesDigits(i, digits)) res.push(i)
+    }
+    
+    return res
+    
+    //helper func
+    function doesNumIncludesDigits(num, digits){
+      return digits.every(dig => num.toString().split('').includes(dig.toString()))
+    }
+    // console.log(doesNumIncludesDigits(126, [6, 2]));
+}
+// console.log(findUs(30, 90, 4, [2, 3], [6, 2]));
+
+//============================================================================
+// https://www.codewars.com/kata/57a6633153ba33189e000074/train/javascript
+// Count the number of occurrences of each character and return it as a list of tuples in order of appearance. For empty output return an empty list.
+
+// Example:
+
+// orderedCount("abracadabra") == [['a', 5], ['b', 2], ['r', 2], ['c', 1], ['d', 1]]
+
+const orderedCount = function (text) {
+    //   let frequencies = text.split('').reduce((acc, cur) => {
+    //     acc[cur] = (acc[cur] || 0) + 1
+    //     return acc
+    //   }, {})
+    //   let res = []
+    //   for(let key in frequencies){
+    //     res.push([key, frequencies[key]])
+    //   }
+    //   return res
+
+    //doesn't work for a string of numbers as it will order them '1' will go before '2' etc
+    
+    //the idx of appearance of a letter in the result share the indexOf (first appearance) this letter in the text
+    //checks if the index of the letter exist in our result, if so this letter already appeared and we increase its counter, if not initialise
+    return text.split("").reduce((acc, cur, idx, arr) => {
+    acc[arr.indexOf(cur)] ? acc[arr.indexOf(cur)][1]++ : acc.push([cur.toString(), 1])
+    return acc
+    }, [])
+
+}
+
+// console.log(orderedCount("tdmoZ6oXFD"));
+// console.log(orderedCount("E5QqBFf1nUo3vJt5MYLJtbGZb2Moj4tSXF"));
 
 //=================================================================================
 function fisrtRepeatedChar(s) {

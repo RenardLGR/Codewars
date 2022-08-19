@@ -223,3 +223,91 @@ function selNumber(n, d) {
 //console.log(selNumber(47, 3)); // return 12 because 12, 13, 14, 23, 24, 25, 34, 35, 36, 45, 46 and 47 are valid
 
 //=========================================================================
+// https://www.codewars.com/kata/5ef9ca8b76be6d001d5e1c3e
+// The Hamming Code is used to correct errors, so-called bit flips, in data transmissions. Later in the description follows a detailed explanation of how it works.
+// In this Kata we will implement the Hamming Code with bit length 3; this has some advantages and disadvantages:
+
+// [ + ] It's simple to implement
+// [ + ] Compared to other versions of hamming code, we can correct more mistakes
+// [ - ] The size of the input triples
+// Task 1: Encode function
+// Implement the encode function, using the following steps:
+
+// convert every letter of the text to its ASCII value;
+// convert ASCII values to 8-bit binary;
+// triple every bit;
+// concatenate the result;
+// For example:
+
+// input: "hey"
+// --> 104, 101, 121                  // ASCII values
+// --> 01101000, 01100101, 01111001   // binary
+// --> 000111111000111000000000 000111111000000111000111 000111111111111000000111  // tripled
+// --> "000111111000111000000000000111111000000111000111000111111111111000000111"  // concatenated
+// Task 2: Decode function:
+// Check if any errors happened and correct them. Errors will be only bit flips, and not a loss of bits:
+
+// 111 --> 101 : this can and will happen
+// 111 --> 11 : this cannot happen
+// Note: the length of the input string is also always divisible by 24 so that you can convert it to an ASCII value.
+
+// Steps:
+
+// Split the input into groups of three characters;
+// Check if an error occurred: replace each group with the character that occurs most often, e.g. 010 --> 0, 110 --> 1, etc;
+// Take each group of 8 characters and convert that binary number;
+// Convert the binary values to decimal (ASCII);
+// Convert the ASCII values to characters and concatenate the result
+// For example:
+
+// input: "100111111000111001000010000111111000000111001111000111110110111000010111"
+// --> 100, 111, 111, 000, 111, 001, ...  // triples
+// -->  0,   1,   1,   0,   1,   0,  ...  // corrected bits
+// --> 01101000, 01100101, 01111001       // bytes
+// --> 104, 101, 121                      // ASCII values
+// --> "hey"
+
+function encodeHamming(text) {
+    //for input 'hey'
+    let ascii = text.split('').map(letter => letter.charCodeAt())
+    // -> [104, 101, 121]
+    let bin = ascii.map(a => {
+        let res = a.toString(2) //this almost work, I need an answer with 8 bits so I need to add leading 0s until the length hits 8
+        while(res.length<8){
+            res = "0" + res
+        }
+
+        return res
+    }) // -> [01101000, 01100101, 01111001]
+    let tripled = bin.join('').split('').reduce((acc, cur) => acc+cur+cur+cur, '') // -> "000111111000111000000000 000111111000000111000111 000111111111111000000111"
+
+    return tripled
+}
+
+//console.log(encodeHamming('hey'))
+  
+function decodeHamming(bits) {
+    let groupOf3 = []
+    for(let i=0 ; i<bits.length ; i+=3){
+        groupOf3.push(bits.slice(i, i+3))
+    }
+    // groupOf3 -> ['100', '111', '111', '000', '111', '001', '000', '010', ...]
+    let corrected = groupOf3.map(g => {
+        return g.split('').filter(d => d==='0').length >= 2 ? '0' : '1'
+    })
+    // corrected -> ['0', '1', '1', '0', '1', '0', '0', '0', ... ]
+    let bytes = []
+    for(let i=0 ; i<corrected.length ; i+=8){
+        bytes.push(corrected.join('').slice(i, i+8))
+    }
+    // bytes -> [ '01101000', '01100101', '01111001' ]
+    let ints = bytes.map(byte => parseInt(byte, 2))
+    // ints -> [ 104, 101, 121 ]
+    let ascii = ints.map(int => String.fromCharCode(int))
+    // ascii -S [ 'h', 'e', 'y' ]
+    return ascii.join('')
+}
+
+//console.log(decodeHamming("100111111000111001000010000111111000000111001111000111110110111000010111"));
+
+//===================================================================

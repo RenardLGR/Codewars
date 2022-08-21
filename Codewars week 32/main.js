@@ -470,3 +470,41 @@ function ipv4Parser(ip, mask){
 //console.log(ipv4Parser('192.168.50.1', '255.255.255.0'));
 
 //==========================================================================
+// https://www.codewars.com/kata/584703d76f6cf6ffc6000275
+// Given a set of elements (integers or string characters) that may occur more than once, we need to know the amount of subsets that none of their values have repetitions. Let's see with an example:
+
+// set numbers = {1, 2, 3, 4}
+// The subsets are:
+
+// {{1}, {2}, {3}, {4}, {1,2}, {1,3}, {1,4}, {2,3}, {2,4},{3,4}, {1,2,3}, {1,2,4}, {1,3,4}, {2,3,4}, {1,2,3,4}} (15 subsets, as you can see the empty set, {}, is not counted)
+// Let's see an example with repetitions of an element:
+
+// set letters= {a, b, c, d, d}
+// The subsets for this case will be:
+
+// {{a}, {b}, {c}, {d}, {a,b}, {a,c}, {a,d}, {b,c}, {b,d},{c,d}, {a,b,c}, {a,b,d}, {a,c,d}, {b,c,d}, {a,b,c,d}} (15 subsets, only the ones that have no repeated elements inside)
+// The function est_subsets() (javascript: ``estSubsets()```) will calculate the number of these subsets. It will receive the array as an argument and according to its features will output the amount of different subsets without repetitions of its elements.
+
+// est_subsets([1, 2, 3, 4]) == 15
+// est_subsets(['a', 'b', 'c', 'd', 'd']) == 15
+// Features of the random tests:
+
+// Low Performance Tests: 40
+// Length of the arrays between 6 and 15
+
+// High Performance Tests: 80
+// Length of the arrays between 15 and 100 (Python and Ruby) and between 15 and 50 in javascript and Lua
+
+function estSubsets(arr) {
+    // General rule is : There is 2**n subset of a set of cardinality (number of element) of n
+    // Example : {0,1} set has subsets : {}, {0}, {1}, {0,1} = 4 in total
+    // Since our exercise doesnt't include empty set answer should be 2**n - 1
+    let cardinality = new Set(arr).size
+
+    return Math.pow(2,cardinality) - 1
+}
+
+// console.log(estSubsets([1, 2, 3, 4]));
+// console.log(estSubsets(['a', 'z', 'z', 'z', 'b', 'j', 'f', 'k', 'b', 'd', 'j', 'j', 'n', 'm', 'm']));
+
+//==============================================================================

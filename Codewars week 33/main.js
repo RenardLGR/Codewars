@@ -272,3 +272,51 @@ function fortune(f0, p, c0, n, i) {
 // console.log(fortune(100000, 1, 9185, 12, 1));
 
 //============================================================================
+// https://www.codewars.com/kata/51b62bf6a9c58071c600001b
+// Create a function taking a positive integer as its parameter and returning a string containing the Roman Numeral representation of that integer.
+
+// Modern Roman numerals are written by expressing each digit separately starting with the left most digit and skipping any digit with a value of zero. In Roman numerals 1990 is rendered: 1000=M, 900=CM, 90=XC; resulting in MCMXC. 2008 is written as 2000=MM, 8=VIII; or MMVIII. 1666 uses each Roman symbol in descending order: MDCLXVI.
+
+// Example:
+
+// solution(1000); // should return 'M'
+// Help:
+
+// Symbol    Value
+// I          1
+// V          5
+// X          10
+// L          50
+// C          100
+// D          500
+// M          1,000
+// Remember that there can't be more than 3 identical symbols in a row.
+
+// More about roman numerals - http://en.wikipedia.org/wiki/Roman_numerals
+
+function toRoman(number){
+    //let's assume number is lesser or equal than 3999
+    let n = number
+    let thousands = Math.floor(n/1000)
+    n = n-1000*thousands
+    let hundreds = Math.floor(n/100)
+    n= n-100*hundreds
+    let tens = Math.floor(n/10)
+    let units = n-10*tens
+
+    let res = ''
+    res+= 'M'.repeat(thousands)
+    res+= (hundreds===9 ? 'CM' : hundreds>=5 ? 'D'+'C'.repeat(hundreds-5) : hundreds===4 ? 'CD' : 'C'.repeat(hundreds))
+    res+= (tens===9 ? 'XC' : tens>=5 ? 'L'+'X'.repeat(tens-5) : tens===4 ? 'XL' : 'X'.repeat(tens))
+    res+= (units===9 ? 'IX' : units>=5 ? 'V'+'I'.repeat(units-5) : units===4 ? 'IV' : 'I'.repeat(units))
+    return res
+}
+
+
+// console.log(toRoman(1990))
+// console.log(toRoman(2008))
+// console.log(toRoman(1666))
+// console.log(toRoman(400));
+// console.log(toRoman(4));
+
+//===========================================================================

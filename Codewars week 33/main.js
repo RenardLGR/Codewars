@@ -377,3 +377,110 @@ function pairOfShoes(shoes) {
 // console.log(pairOfShoes([[0, 21], [1, 23], [1, 21], [0, 23]]));
 // console.log(pairOfShoes([[0, 23], [1, 23], [1, 23], [0, 23], [0, 23], [0, 23]]));
 
+//===========================================================================
+// https://www.codewars.com/kata/60cc93db4ab0ae0026761232
+// Task
+// A list S will be given. You need to generate a list T from it by following the given process:
+
+// Remove the first and last element from the list S and add them to the list T.
+// Reverse the list S
+// Repeat the process until list S gets emptied.
+// The above process results in the depletion of the list S. Your task is to generate list T without mutating the input List S.
+
+// Example
+// S = [1,2,3,4,5,6]
+// T = []
+
+// S = [2,3,4,5] => [5,4,3,2]
+// T = [1,6]
+
+// S = [4,3] => [3,4]
+// T = [1,6,5,2]
+
+// S = []
+// T = [1,6,5,2,3,4]
+// return T
+// Note
+// size of S goes up to 10^6
+// Keep the efficiency of your code in mind.
+// Do not mutate the Input.
+
+function arrange(s) {
+    //naive way works but too long
+    let cpy = s.slice()
+    let res = []
+    while(cpy.length !== 0){
+        if(cpy.length !==0) {
+            res.push(cpy.shift())
+        }
+        if (cpy.length !==0) {
+            res.push(cpy.pop())
+        }
+        cpy.reverse()
+    }
+
+    return res
+}
+
+
+// console.log(arrange([1,2,3,4,5,6])); // [1,6,5,2,3,4]
+// console.log(arrange([9, 7, -2, 8, 5, -3, 6, 5, 1])); // [9, 1, 5, 7, -2, 6, -3, 8, 5]
+// works but too long
+
+function arrangeBis(s){
+    //If I reverse at each step, wouldn't be just shift, pop ; pop shift altenating this way ? i wouldn't need to reverse saving quite some time
+    let cpy = s.slice()
+    let res = []
+    let alternator = 1
+    while(cpy.length !== 0){
+
+        if(alternator === 1){
+            if(cpy.length !==0) { //check if i don't push undefined
+                res.push(cpy.shift())
+            }
+            if (cpy.length !==0) { //check if i don't push undefined
+                res.push(cpy.pop())
+            }
+            alternator = -1
+        }else{
+            if(cpy.length !==0) { //check if i don't push undefined
+                res.push(cpy.pop())
+            }
+            if (cpy.length !==0) { //check if i don't push undefined
+                res.push(cpy.shift())
+            }
+            alternator = 1
+        }
+        
+    }
+
+    return res
+}
+
+// console.log(arrangeBis([1,2,3,4,5,6])); // [1,6,5,2,3,4]
+// console.log(arrangeBis([9, 7, -2, 8, 5, -3, 6, 5, 1])); // [9, 1, 5, 7, -2, 6, -3, 8, 5]
+// works but still too long
+
+function arrangeThree(s){
+    //There is a pattern we can exploit
+    //Taking the idx of s and l the length of s here what the result looks like :
+    //[0, l-1, l-2, 1, 2, l-3, l-4, 3, 4, ...]
+
+    let result = [];
+    let lastIndex = arr.length - 1;
+    let iterations = Math.floor(arr.length/2);
+    let isReverse = true;
+    
+    for(let i = 0; i < iterations; i++) {
+      isReverse = !isReverse;
+      if(isReverse) {
+        result.push(arr[lastIndex - i], arr[i]);
+      }
+      else result.push(arr[i], arr[lastIndex - i]);
+    }
+    
+    // if arr.length is uneven, there left one last number that we should push
+    if(iterations < arr.length/2) result.push(arr[iterations])
+    
+    return result
+}

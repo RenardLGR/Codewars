@@ -224,3 +224,22 @@ function hasUniqueCharsThree(str){
         return arr.indexOf(char) == i;
       });
 }
+
+//==================================================================================
+// https://www.codewars.com/kata/57cf50a7eca2603de0000090
+// Move every letter in the provided string forward 10 letters through the alphabet.
+
+// If it goes past 'z', start again at 'a'.
+
+// Input will be a string with length > 0.
+// Input will only have lower case letters
+
+function moveTen(s){
+    let alphabet = 'abcdefghijklmnopqrstuvwxyz'.repeat(2).split('')
+    
+    return s.split('').map((letter, idx, arr) => {
+        return alphabet[alphabet.indexOf(letter)+10]
+    }).join('')
+}
+
+//console.log(moveTen("testcase")) // => "docdmkco"

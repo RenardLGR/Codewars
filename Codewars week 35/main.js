@@ -200,3 +200,73 @@ function digPow(n, p){
 // console.log(digPow(46288, 3));
 
 //=========================================================================
+// https://www.codewars.com/kata/6319dba6d6e2160015a842ed
+// In a string we describe a road. There are cars that move to the right and we denote them with ">" and cars that move to the left and we denote them with "<". There are also cameras that are indicated by: " . ".
+// A camera takes a photo of a car if it moves to the direction of the camera.
+
+// Task
+// Your task is to write a function such that, for the input string that represents a road as described, returns the total number of photos that were taken by the cameras. The complexity should be strictly O(N) in order to pass all the tests.
+
+
+// Examples
+// For ">>." -> 2 photos were taken
+// For ".>>" -> 0 photos were taken
+// For ">.<." -> 3 photos were taken
+// For ".><.>>.<<" -> 11 photos were taken
+
+function countPhotos(road){
+  let res = 0
+  road.split('').forEach((el, idx, arr) => {
+    if(el === '>'){ //count the . on the right of the el
+        res += arr.slice(idx).filter(e => e==='.').length
+    }
+    if(el === '<'){ //count the . on the left of the el
+        res += arr.slice(0,idx+1).filter(e => e==='.').length
+    }
+  })
+  return res
+}
+
+// console.log(countPhotos(".><.>>.<<"));
+// works but too slow
+
+function countPhotosBis(road){
+    let res = 0
+    road.split('').forEach((el, idx, arr) => {
+        if(el === '.'){
+            res += arr.slice(idx).filter(e => e === '<').length //count the < on the right of a .
+            res += arr.slice(0,idx+1).filter(e => e === '>').length //count the > on the left of a .
+        }
+    })
+
+    return res
+}
+
+// console.log(countPhotosBis(".><.>>.<<"));
+// works but too slow
+
+function countPhotosThree(road){
+    let res = 0
+    let nDots = 0
+    let nLeft = 0 //useless
+    let nRight = 0
+
+    for(let i=0 ; i<road.length ; i++){
+        if(road[i] === '.'){
+            nDots++
+            res+=nRight
+        }
+        if(road[i] === '<'){
+            res+=nDots
+            nLeft++
+        }
+        if(road[i] === '>'){
+            nRight++
+        }
+    }
+
+    return res
+}
+
+console.log(countPhotosThree(".><.>>.<<"));
+//========================================================================

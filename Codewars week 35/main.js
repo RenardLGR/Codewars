@@ -268,5 +268,5 @@ function countPhotosThree(road){
     return res
 }
 
-console.log(countPhotosThree(".><.>>.<<"));
+// console.log(countPhotosThree(".><.>>.<<"));
 //========================================================================

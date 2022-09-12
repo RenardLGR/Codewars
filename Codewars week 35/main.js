@@ -270,3 +270,48 @@ function countPhotosThree(road){
 
 // console.log(countPhotosThree(".><.>>.<<"));
 //========================================================================
+// https://www.codewars.com/kata/5947d86e07693bcf000000c4/train/javascript
+// Puzzle Tiles
+// You will get two Integer n (width) and m (height) and your task is to draw following pattern. Each line is seperated with '\n'.
+
+// Both integers are equal or greater than 1. No need to check for invalid parameters.
+// There are no whitespaces at the end of each line.
+// e.g.:
+ 
+
+//                                        _( )__ _( )__ _( )__ _( )__
+//                                      _|     _|     _|     _|     _|
+//                                     (_   _ (_   _ (_   _ (_   _ (_
+//                                      |__( )_|__( )_|__( )_|__( )_|
+//                                      |_     |_     |_     |_     |_
+//              puzzleTiles(4,3)=>       _) _   _) _   _) _   _) _   _)
+//                                      |__( )_|__( )_|__( )_|__( )_|
+//                                      _|     _|     _|     _|     _|
+//                                     (_   _ (_   _ (_   _ (_   _ (_
+//                                      |__( )_|__( )_|__( )_|__( )_|
+                                     
+
+// For more informations take a look in the test cases!
+
+function puzzleTiles(width, height){
+    let one = '  '+' _( )__'.repeat(width) + '\n'
+    let two = ' _|    '.repeat(width) + ' _|\n'
+    let three = '(_   _ '.repeat(width) + '(_\n'
+    let four = ' '+ '|__( )_'.repeat(width) + '|\n'
+    let five = ' ' + '|_     '.repeat(width)+ '|_\n'
+    let six = '  ' + '_) _   '.repeat(width) + '_)\n'
+    let seven = ' ' + '|__( )_'.repeat(width) + '|\n'
+
+    let res = one
+    for(let i=1 ; i<=height ; i++){
+        if(i%2===1){
+            res+=two+three+four
+        }else{
+            res+=five+six+seven
+        }
+    }
+
+    return res.slice(0, -1) //removes last \n
+}
+
+// console.log(puzzleTiles(4,3));

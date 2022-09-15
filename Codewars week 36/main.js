@@ -100,3 +100,57 @@ function prepareDeck(drawnCards) {
 // console.log(prepareDeck(["KC", "QC", "KD", "QD", "KH", "QH", "KS", "QS"]));
 
 //===========================================================================
+// https://www.codewars.com/kata/51e0007c1f9378fa810002a9
+
+// Write a simple parser that will parse and run Deadfish.
+
+// Deadfish has 4 commands, each 1 character long:
+
+// i increments the value (initially 0)
+// d decrements the value
+// s squares the value
+// o outputs the value into the return array
+// Invalid characters should be ignored.
+
+// parse("iiisdoso") => [ 8, 64 ]
+
+function parse(str){
+  let value = 0
+  let res = []
+  for(let i=0 ; i<str.length ; i++){
+    switch (str[i]) {
+        case 'i':
+            value++
+            break;
+    
+        case 'd':
+            value--
+            break
+
+        case 's':
+            value=value*value
+        break
+
+        case 'o':
+            res.push(value)
+            break
+        default:
+            break;
+    }
+  }
+  return res
+}
+
+function parseB(str){
+    let value = 0
+    let res = []
+
+    for(let i=0 ;i<str.length ; i++){
+        str[i] === 'i' ? value++ : str[i] === 'd' ? value-- : str[i] === 's' ? value=value*value : res.push(value)
+    }
+    return res
+}
+// console.log(parse('iiisdoso'));
+// console.log(parseB('iiisdoso'));
+
+//===============================================================================

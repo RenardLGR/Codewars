@@ -252,3 +252,30 @@ function calculate1RM(w, r){
 }
 
 //==============================================================
+// https://www.codewars.com/kata/5574835e3e404a0bed00001b/train/javascript
+// Johnny is a farmer and he annually holds a beet farmers convention "Drop the beet".
+
+// Every year he takes photos of farmers handshaking. Johnny knows that no two farmers handshake more than once. He also knows that some of the possible handshake combinations may not happen.
+
+// However, Johnny would like to know the minimal amount of people that participated this year just by counting all the handshakes.
+
+// Help Johnny by writing a function, that takes the amount of handshakes and returns the minimal amount of people needed to perform these handshakes (a pair of farmers handshake only once).
+
+function getParticipants(handshakes){
+  //we are looking for the number of couples in a set or nCk with k=2 and n=handshakes
+  //https://stackoverflow.com/questions/18859430/how-do-i-get-the-total-number-of-unique-pairs-of-a-set-in-the-database
+
+  //So we want to solve for n : 
+  // handshakes = n(n-1)/2 <=> n²-n-2handshakes = 0
+  // n = (-b ± √ (b2 - 4ac) )/2a <=> (1 ± √ (1+8h) )/2
+
+  if(handshakes===0) return 0 //edge case
+
+
+
+  let n = (1+Math.sqrt(1+8*handshakes))/2
+
+  return Math.ceil(n)
+}
+
+//===================================================================

@@ -60,5 +60,11 @@ function onePunch(items){return (items === '' || typeof items === 'number' || ty
 // Return the resulting lamps string. See example tests for more clarity.
 
 function flyBy(lamps, drone){
-
+    let lampsOn = drone.length
+    if(lampsOn >= lamps.length) return 'o'.repeat(lamps.length)
+    else{
+        return 'o'.repeat(lampsOn) + 'x'.repeat(lamps.length - lampsOn)
+    }
 }
+
+//=========================================================================

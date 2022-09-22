@@ -3,6 +3,43 @@ const alphaL = 'abcdefghijklmnopqrstuvwxyz'
 const alphaU = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 //================================================================
+// https://www.codewars.com/kata/54da5a58ea159efa38000836/train/javascript
+// Given an array of integers, find the one that appears an odd number of times.
+
+// There will always be only one integer that appears an odd number of times.
+
+// Examples
+// [7] should return 7, because it occurs 1 time (which is odd).
+// [0] should return 0, because it occurs 1 time (which is odd).
+// [1,1,2] should return 2, because it occurs 1 time (which is odd).
+// [0,1,0,1,0] should return 0, because it occurs 3 times (which is odd).
+// [1,2,2,3,3,3,4,3,3,3,2,2,1] should return 4, because it appears 1 time (which is odd).
+
+function findOdd(A) {
+    return A.find((el, idx, arr) => {
+        return arr.filter(e => e===el).length % 2 === 1
+    })
+}
+
+//================================================================
+// https://www.codewars.com/kata/57a6633153ba33189e000074/train/javascript
+// Count the number of occurrences of each character and return it as a (list of tuples) in order of appearance. For empty output return (an empty list).
+
+// Consult the solution set-up for the exact data structure implementation depending on your language.
+
+// Example:
+
+// orderedCount("abracadabra") == [['a', 5], ['b', 2], ['r', 2], ['c', 1], ['d', 1]]
+
+const orderedCount = function (text) {
+    //If I find inside of my acc an element with its first index being a char that already appeared, I should increase the second index of this position, else I should initialize it
+    return text.split("").reduce((acc, cur, idx, arr) => {
+      acc.find(el => el[0]===cur) ? acc[acc.indexOf(acc.find(el => el[0]===cur))][1]++ : acc.push([cur.toString(), 1])
+      return acc
+    }, [])
+}
+
+//================================================================
 // https://www.codewars.com/kata/55c45be3b2079eccff00010f
 // Your task is to sort a given string. Each word in the string will contain a single number. This number is the position the word should have in the result.
 
@@ -169,4 +206,3 @@ function draw(twoRectangles) {
   // I give up
 
   //==================================================================
-  

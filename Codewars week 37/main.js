@@ -206,3 +206,101 @@ function draw(twoRectangles) {
   // I give up
 
   //==================================================================
+// https://www.codewars.com/kata/59e270da7997cba3d3000041
+// An array is called zero-plentiful if it contains multiple zeros, and every sequence of zeros is at least 4 items long.
+
+// Your task is to return the number of zero sequences if the given array is zero-plentiful, oherwise 0.
+
+// Examples
+// [0, 0, 0, 0, 0, 1]  -->  1
+// # 1 group of 5 zeros (>= 4), thus the result is 1
+
+// [0, 0, 0, 0, 1, 0, 0, 0, 0]  -->  2
+// # 2 group of 4 zeros (>= 4), thus the result is 2
+
+// [0, 0, 0, 0, 1, 0]  -->  0 
+// # 1 group of 4 zeros and 1 group of 1 zero (< 4)
+// # _every_ sequence of zeros must be at least 4 long, thus the result is 0
+
+// [0, 0, 0, 1, 0, 0]  -->  0
+// # 1 group of 3 zeros (< 4) and 1 group of 2 zeros (< 4)
+
+// [1, 2, 3, 4, 5]  -->  0
+// # no zeros
+
+// []  -->  0
+// # no zeros
+
+
+function zeroPlentiful(arr) {
+    if(arr.length < 4){ //edge case
+        return 0
+    }
+
+
+    let res = 0
+    let sequenceLength = 0
+    let didICountYou = false
+    let isZeroPlentiful = true
+
+    for(let i=0 ; i<arr.length ; i++){
+        if(arr[i] === 0){
+            sequenceLength++
+            if(!didICountYou && sequenceLength>=4){
+                res++
+                didICountYou = true
+            }
+        }else{
+            if(sequenceLength>0 && sequenceLength<4){
+                //In the case I don't have at least 4 zeroes in between numbers
+                isZeroPlentiful = false
+                return 0
+            }
+            sequenceLength = 0
+            didICountYou = false
+        }
+    }
+    //This loop doesn't return an issue if it ends with an incomplete sequence (example: [..., 6, 0, 0])
+
+    //Let's make that happen:
+    for(let i=arr.length-4 ; i<arr.length ; i++){
+        if(arr[i] !== 0){ //if I have something different than 0, make sure the remaining numbers are also different than zero
+            if(arr.slice(i).filter(e => e===0).length > 0){
+                isZeroPlentiful = false
+                return 0
+            }
+        }
+    }
+
+
+    return isZeroPlentiful ? res : 0
+}
+
+// console.log(zeroPlentiful([3,0,0,0,0,6,9]));
+// console.log(zeroPlentiful([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,90,0,0,0]));
+
+
+function zeroPlentifulBis(arr){
+    let map = arr.map(n => {
+        if(n !== 0){
+            return ','
+        }else{
+            return '0'
+        }
+    })
+
+    let zeroSequences = map.join('').split(',').filter(el => el.length>0)
+
+    //console.log(zeroSequences);
+
+    if(zeroSequences.every(seq => seq.length >= 4)){
+        return zeroSequences.length
+    }else{
+        return 0
+    }
+}
+
+// console.log(zeroPlentifulBis([3,0,0,0,0,6,9]));
+// console.log(zeroPlentifulBis([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,90,0,0,0]));
+
+//======================================================================

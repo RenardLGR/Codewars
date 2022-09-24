@@ -304,3 +304,56 @@ function zeroPlentifulBis(arr){
 // console.log(zeroPlentifulBis([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,90,0,0,0]));
 
 //======================================================================
+// https://www.codewars.com/kata/62c93765cef6f10030dfa92b
+// An infinite number of shelves are arranged one above the other in a staggered fashion.
+// The cat can jump up to 3 shelves at the same time: from shelf 1 to shelf 2 or 4 (the cat cannot climb on the shelf directly above its head), according to the illustration:
+
+//                  ┌────────┐
+//                  │-6------│
+//                  └────────┘
+// ┌────────┐       
+// │------5-│        
+// └────────┘  ┌─────► OK!
+//             │    ┌────────┐
+//             │    │-4------│
+//             │    └────────┘
+// ┌────────┐  │
+// │------3-│  │     
+// BANG!────┘  ├─────► OK! 
+//   ▲  |\_/|  │    ┌────────┐
+//   │ ("^-^)  │    │-2------│
+//   │ )   (   │    └────────┘
+// ┌─┴─┴───┴┬──┘
+// │------1-│
+// └────────┘
+// Input
+// Start and finish shelf numbers (always positive integers, finish no smaller than start)
+
+// Task
+// Find the minimum number of jumps to go from start to finish
+
+// Example
+// Start 1, finish 5, then answer is 2 (1 => 4 => 5 or 1 => 2 => 5)
+
+function catJumps(start, finish){
+    // start finish jumps diff
+    // 1       2       1   1
+    // 1       3       2   2
+    // 1       4       1   3
+    // 1       5       2   4
+    // 1       6       3   5
+    // 1       7       2   6
+    // --------------------- pattern repeats, just add +2 to jumps
+    // 1       8       3   7
+    // 1       9       4   8
+    // 1       10      3   9
+    // ...
+    // Every double jumps, the pattern repeats itself
+
+    let remainders = [0, 1, 2, 1, 2, 3, 2]
+    let sequences = Math.floor((finish-start)/6) * 2
+    let remainder = (finish-start)%6
+    return sequences + remainders[remainder]
+}
+
+//=====================================================================

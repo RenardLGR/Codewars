@@ -81,3 +81,146 @@ function binaryToString(binary) {
 // console.log(binaryToString('01001011010101000100100001011000010000100101100101000101')); // => KTHXBYE
 
 //=========================================================================
+// https://www.codewars.com/kata/55b3425df71c1201a800009c
+// You are the "computer expert" of a local Athletic Association (C.A.A.). Many teams of runners come to compete. Each time you get a string of all race results of every team who has run. For example here is a string showing the individual results of a team of 5 runners:
+
+// "01|15|59, 1|47|6, 01|17|20, 1|32|34, 2|3|17"
+
+// Each part of the string is of the form: h|m|s where h, m, s (h for hour, m for minutes, s for seconds) are positive or null integer (represented as strings) with one or two digits. Substrings in the input string are separated by ,  or ,.
+
+// To compare the results of the teams you are asked for giving three statistics; range, average and median.
+
+// Range : difference between the lowest and highest values. In {4, 6, 9, 3, 7} the lowest value is 3, and the highest is 9, so the range is 9 − 3 = 6.
+
+// Mean or Average : To calculate mean, add together all of the numbers in a set and then divide the sum by the total count of numbers.
+
+// Median : In statistics, the median is the number separating the higher half of a data sample from the lower half. The median of a finite list of numbers can be found by arranging all the observations from lowest value to highest value and picking the middle one (e.g., the median of {3, 3, 5, 9, 11} is 5) when there is an odd number of observations. If there is an even number of observations, then there is no single middle value; the median is then defined to be the mean of the two middle values (the median of {3, 5, 6, 9} is (5 + 6) / 2 = 5.5).
+
+// Your task is to return a string giving these 3 values. For the example given above, the string result will be
+
+// "Range: 00|47|18 Average: 01|35|15 Median: 01|32|34"
+
+// of the form: "Range: hh|mm|ss Average: hh|mm|ss Median: hh|mm|ss"`
+
+// where hh, mm, ss are integers (represented by strings) with each 2 digits.
+
+// Remarks:
+// if a result in seconds is ab.xy... it will be given truncated as ab.
+// if the given string is "" you will return ""
+
+function stat(strg) {
+    //  step 1 : "h|m|s , h|m|s , h|m|s" -> workingArr = [ [h,m,s] , [h,m,s] , [h,m,s] ]
+    // step 2 get results from each helper function, concatenate and done!
+
+    //step 1
+    let workingArr = strg.split(', ')
+    for (let i=0 ;i<workingArr.length; i++) {
+        workingArr[i] = workingArr[i].split('|')
+    }
+    for (let i=0 ;i<workingArr.length; i++) {
+        for (let j=0 ; j<workingArr[i].length; j++) {
+            workingArr[i][j]=parseInt( workingArr[i][j])
+        }
+    }
+
+    //step 2
+    let rangeResult = range(workingArr)
+    let meanResult = mean(workingArr)
+    let medianResult = median(workingArr)
+
+    let result = 'Range: ' + rangeResult + ' Average: ' + meanResult + ' Median: '+medianResult
+
+    return result
+
+
+    //HELPER FUNCTIONs
+    function range(arr) {
+        // Range : difference between the lowest and highest values. In {4, 6, 9, 3, 7} the lowest value is 3, and the highest is 9, so the range is 9 − 3 = 6.
+
+        // get the info, convert to seconds to get range, convert back to string following the asking model
+
+        //I dont need to convert every elem of the array since I only need 2
+
+        let arrInSec=[]
+        for (let i=0 ;i<arr.length; i++) {
+            arrInSec.push(arr[i][0]*3600+arr[i][1]*60+arr[i][2])
+        }
+        let range = Math.max(...arrInSec) - Math.min(...arrInSec)
+
+        let hour = Math.floor(range/3600)
+        let minute = Math.floor( (range%3600) / 60  )
+        let second = range - hour*3600 - minute*60
+
+        let hourString = hour.toString().length === 2 ? hour.toString() : '0'+hour.toString()
+        let minuteString = minute.toString().length === 2 ? minute.toString() : '0'+minute.toString()
+        let secondString = second.toString().length === 2 ? second.toString() : '0'+second.toString()
+
+        // console.log(range, hourString, minuteString, secondString);
+
+        let rangeString = hourString+'|'+minuteString+'|'+secondString
+
+        return rangeString
+    }
+    
+
+    function mean(arr) {
+        //To calculate mean, add together all of the numbers in a set and then divide the sum by the total count of numbers.
+
+        // get the info, convert to seconds to get mean, convert back to string following the asking model
+
+        let arrInSec=[]
+        for (let i=0 ;i<arr.length; i++) {
+            arrInSec.push(arr[i][0]*3600+arr[i][1]*60+arr[i][2])
+        }
+        let mean=Math.trunc(arrInSec.reduce( (acc, curr) => acc+curr, 0) / arrInSec.length)
+
+        let hour = Math.floor(mean/3600)
+        let minute = Math.floor( (mean%3600) / 60  )
+        let second = mean - hour*3600 - minute*60
+
+        let hourString = hour.toString().length === 2 ? hour.toString() : '0'+hour.toString()
+        let minuteString = minute.toString().length === 2 ? minute.toString() : '0'+minute.toString()
+        let secondString = second.toString().length === 2 ? second.toString() : '0'+second.toString()
+
+        // console.log(mean, hourString, minuteString, secondString);
+
+        let meanString = hourString+'|'+minuteString+'|'+secondString
+
+        return meanString
+
+    }
+    
+    function median(arr) {
+        // In statistics, the median is the number separating the higher half of a data sample from the lower half. The median of a finite list of numbers can be found by arranging all the observations from lowest value to highest value and picking the middle one (e.g., the median of {3, 3, 5, 9, 11} is 5) when there is an odd number of observations. If there is an even number of observations, then there is no single middle value; the median is then defined to be the mean of the two middle values (the median of {3, 5, 6, 9} is (5 + 6) / 2 = 5.5).
+
+        // get the info, convert to seconds, sorti it, check odd or even number in arr, get median, convert back to string following the asking model
+
+        //I dont need to convert every elem of the array since I only need 1 or 2
+
+        let arrInSec=[]
+        for (let i=0 ;i<arr.length; i++) {
+            arrInSec.push(arr[i][0]*3600+arr[i][1]*60+arr[i][2])
+        }
+
+        arrInSec.sort((a,b) => a-b)
+
+        let median = arrInSec.length%2===0 ? Math.trunc((arrInSec[arrInSec.length/2 - 1]+arrInSec[arrInSec.length/2])/2) : arrInSec[Math.floor(arrInSec.length/2-0.5)]
+        
+
+        let hour = Math.floor(median/3600)
+        let minute = Math.floor( (median%3600) / 60  )
+        let second = median - hour*3600 - minute*60
+
+        let hourString = hour.toString().length === 2 ? hour.toString() : '0'+hour.toString()
+        let minuteString = minute.toString().length === 2 ? minute.toString() : '0'+minute.toString()
+        let secondString = second.toString().length === 2 ? second.toString() : '0'+second.toString()
+
+        // console.log(median, hourString, minuteString, secondString);
+
+        let medianString = hourString+'|'+minuteString+'|'+secondString
+
+        return medianString
+    }
+}
+
+//==========================================================================

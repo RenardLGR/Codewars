@@ -241,3 +241,150 @@ function chained(functions) {
 }
 
 //===========================================================================
+// https://www.codewars.com/kata/57be87d184972da58e0001e2
+// John and Anne are a pair of lovebirds. They have their own jobs. John works w1 days off for r1 day and Anne works w2 days off for r2 days. Only when they have a rest, they can go out for a sweet date. Please calculate, they can date how many days in a time period? For example:
+
+// John works 3 days off for 1 day 
+// Anne works 7 days off for 3 days
+// In a time period 10 day
+// John: work work work rest work work work rest work work
+//                                            |
+// Anne: work work work work work work work rest rest rest
+// They have only one sweet date in 10 days
+
+// In a time period 1000 day
+// John: work work work rest work work work rest work work ....
+//                                            |
+// Anne: work work work work work work work rest rest rest ....
+// They will have 100 times sweet date in 1000 days
+// Task
+// Complete function sweetDate() that accepts 5 arguments:
+
+// w1,r1: The work days and rest days of John
+
+// w2,r2: The work days and rest days of Anne
+
+// timePeriod: A time period that we need to calculate the sweet date
+
+// Return a number that How many times can Anne and John have a sweet date.
+
+// Example
+// sweetDate(3,1,7,3,10)  === 1
+
+// sweetDate(3,1,7,3,20)  === 2
+
+// sweetDate(4,2,7,3,20)  === 1
+
+// sweetDate(4,2,7,3,30)  === 3
+
+// sweetDate(3,1,7,3,1000)  === 100
+
+function sweetDate(w1,r1,w2,r2,timePeriod){
+    let dates = 0
+
+    let johnWorkDayStreak = 0
+    let anneWorkDayStreak = 0
+
+    let johnBreakDayStreak = 0
+    let anneBreakDayStreak = 0
+
+    let isJohnFree = false
+    let isAnneFree = false
+
+    for(let i=0 ; i<timePeriod ; i++){
+        if(isAnneFree && isJohnFree){
+            dates++
+        }
+
+        if(isJohnFree){
+            johnBreakDayStreak++
+        }else{
+            johnWorkDayStreak++
+        }
+
+        if(isAnneFree){
+            anneBreakDayStreak++
+        }else{
+            anneWorkDayStreak++
+        }
+
+        if(johnBreakDayStreak>r1){
+            johnBreakDayStreak = 1
+            isJohnFree = false
+        }
+
+        if(anneBreakDayStreak>r2){
+            anneBreakDayStreak = 1
+            isAnneFree = false
+        }
+
+        if(johnWorkDayStreak>w1){
+            johnWorkDayStreak = 1
+            isJohnFree = true
+        }
+
+        if(anneWorkDayStreak>w2){
+            anneWorkDayStreak = 1
+            isAnneFree = true
+        }
+    }
+
+    return dates
+}
+//couldn't make this one work
+  
+// console.log(sweetDate(3,1,7,3,10))
+// console.log(sweetDate(4,2,7,3,30))
+
+function sweetDateNaive(w1,r1,w2,r2,timePeriod){
+    //create the schedule of both john and anne for the timePeriod following days
+    //then checks if they have rest days at the same time
+    //This algo is probably expensive in time and space but easy to implement
+
+    let johnSchedule = []
+    let anneSchedule = []
+
+    let johnPeriod = []
+    let annePeriod = []
+
+    let dates = 0
+
+
+    for(let i=0 ; i<w1 ; i++){
+        johnPeriod.push('work')
+    }
+    for(let i=0 ; i<r1 ; i++){
+        johnPeriod.push('rest')
+    }
+
+    for(let i=0 ; i<w2 ; i++){
+        annePeriod.push('work')
+    }
+    for(let i=0 ; i<r2 ; i++){
+        annePeriod.push('rest')
+    }
+
+
+    while(johnSchedule.length < timePeriod){
+        johnSchedule = johnSchedule.concat(johnPeriod.slice())
+    }
+
+    while(anneSchedule.length < timePeriod){
+        anneSchedule = anneSchedule.concat(annePeriod.slice())
+    }
+
+    for(let i=0 ; i<timePeriod ; i++){
+        if(johnSchedule[i] === 'rest' && johnSchedule[i] === anneSchedule[i]){
+            dates++
+        }
+    }
+
+    return dates
+}
+
+// console.log(sweetDateNaive(3,1,7,3,10))
+// console.log(sweetDateNaive(4,2,7,3,30))
+// console.log(sweetDateNaive(3,1,7,3,1000))
+
+
+//=======================================================================

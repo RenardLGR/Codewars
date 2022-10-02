@@ -501,3 +501,59 @@ function protein(rna) {
 // console.log(protein('UGCGAUGAAUGGGCUCGCUCC'))
 
 //===========================================================================
+// https://www.codewars.com/kata/57ee99a16c8df7b02d00045f/train/javascript
+// Challenge:
+
+// Given a two-dimensional array of integers, return the flattened version of the array with all the integers in the sorted (ascending) order.
+
+// Example:
+
+// Given [[3, 2, 1], [4, 6, 5], [], [9, 7, 8]], your function should return [1, 2, 3, 4, 5, 6, 7, 8, 9].
+
+// Addendum:
+
+// Please, keep in mind, that JavaScript is by default sorting objects alphabetically. For more information, please consult:
+
+// http://stackoverflow.com/questions/6093874/why-doesnt-the-sort-function-of-javascript-work-well
+
+
+function flattenAndSort(array) {
+    let res = []
+    for(let i=0 ; i<array.length ; i++){ //flats it
+      res = res.concat(array[i])
+    }
+    
+    return res.sort((a,b) => a-b)
+}
+
+function flattenAndSortBis(array){
+    return array.reduce((acc, cur) => acc.concat(cur), []).sort((a,b) => a-b)
+}
+
+function flattenAndSortThree(array) {
+    return [].concat(...array).sort((a,b) => a - b);
+}
+
+//==========================================================================
+// https://www.codewars.com/kata/55f4a44eb72a0fa91600001e/train/javascript
+// Implement a function that receives a string, and lets you extend it with repeated calls. When no argument is passed you should return a string consisting of space-separated words you've received earlier.
+
+// Note: there will always be at least 1 string; all inputs will be non-empty.
+
+// For example:
+
+// createMessage("Hello")("World!")("how")("are")("you?")() === "Hello World! how are you?"
+
+function createMessage(string) {
+    return function(b){
+        if(b){
+            return createMessage(string+' '+b)
+        }
+        return string
+    }
+}
+
+//I have no idea how it works
+//Check : https://javascript.plainenglish.io/infinite-currying-in-javascript-f17ec1619568
+
+//==========================================================================

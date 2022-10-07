@@ -121,4 +121,69 @@ function cleanString(s) {
 // console.log(cleanString("abc#d##c"));
 // console.log(cleanString("abc##d######"));
 
-//=======================================================================
+//========================================================================
+// https://www.codewars.com/kata/59b7571bbf10a48c75000070
+// Write a function that accepts msg string and returns local tops of string from the highest to the lowest.
+// The string's tops are from displaying the string in the below way:
+
+//                                                       3 
+//                               p                     2   4
+//             g               o   q                 1
+//   b       f   h           n       r             z 
+// a   c   e       i       m          s          y
+//       d           j   l             t       x
+//                     k                 u   w 
+//                                         v
+
+// The next top is always 1 character higher than the previous one. For the above example, the solution for the abcdefghijklmnopqrstuvwxyz1234 input string is 3pgb.
+
+// When the msg string is empty, return an empty string.
+// The input strings may be very long. Make sure your solution has good performance.
+// Check the test cases for more samples.
+
+function tops(msg) {
+    //Indexes of level 0, maximums and minimums
+    // 2  7        16        29
+    //1  5  9   13    19   25
+    //  4    11         22
+        
+    if(msg.length === 0){ //edge case
+        return ''
+    }
+    //We will keep track of the level, if we are ascending or descending, when we hit either a maximum or a minimum, we should add a result and go to the opposite direction
+    //naive way
+
+    let res = []
+    let level = 0
+    let maxRank = 1
+    let asc = true
+    let minRank = -1
+
+    for(let i=0 ; i<msg.length ; i++){
+        if(asc){
+            if(level === maxRank){
+                level--
+                asc=false
+                maxRank++
+                res.push(msg[i])
+            }else{
+                level++
+            }
+        }else{
+            if(level === minRank){
+                level++
+                asc=true
+                minRank--
+            }else{
+                level--
+            }
+        }
+    }
+
+    return res.reverse().join('')
+}
+
+
+//console.log(tops("abcdefghijklmnopqrstuvwxyz1234"));
+
+//=============================================================

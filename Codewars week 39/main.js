@@ -207,3 +207,138 @@ function spinWords(string){
 }
 
 //===============================================================
+// https://www.codewars.com/kata/5f25f475420f1b002412bb1f
+// Let’s assume that when you register a car you are assigned two numbers:
+
+// Customer ID – number between 0 and 17558423 inclusively. It is assigned to car buyers in the following order: the first customer receives an ID of 0, the second customer receives an ID of 1, the third - 2, and so on;
+
+// A Number Plate – 6-character combination composed of the series - three Latin lowercase letters from a to z; and the serial number - three digits from 0 to 9. Example: aaa001, xyz123, tok469;
+
+// Each Number Plate is related to the given Customer ID. For example:
+
+// Customer ID of 0: aaa001
+
+// Customer ID of 21: aaa022
+
+// Customer ID of 169: aaa170
+
+// Your Task
+// Write a function
+// findTheNumberPlate
+
+// which takes the Customer ID as an argument, calculates the Number Plate corresponding to this ID and returns it as a string;
+
+// Rules
+// The serial number changes first. For each 3-letter series it goes through 001 to 999, such as: aaa001, aaa002, aaa003, ......, aaa998, aaa999
+
+// The leftmost letter in the series switches alphabetically each time after the serial number has moved through 001 to 999 inclusively;
+
+// aaa001...aaa999
+// at this point the leftmost letter will switch alphabetically, while the serial number repeats the same cycle again;
+
+// baa001...baa999,
+// ...... ,
+// zaa001...zaa999
+// The middle letter switches alphabetically each time after the leftmost letter has moved through a to z and the z** series has moved through 001 to 999.
+
+// zaa001...zaa999
+// at this point the middle letter will switch alphabetically, while the leftmost letter and the serial number repeat the same cycle again;
+
+// aba001...aba999,
+// bba001...bba999,
+// ......,
+// zza001...zza999
+// The rightmost letter switches alphabetically each time after the middle letter has moved through a to z and the zz* series has moved through 001 to 999.
+
+// zza001...zza999
+// at this point the rightmost letter will switch alphabetically, while the middle letter, the leftmost letter, and the serial number repeat the same cycle again;
+
+// aab001...aab999,
+// bab001...bab999,
+// ......,
+// zab001...zab999,
+// abb001...abb999,
+// bbb001...bbb999,
+// ......,
+// zbb001...zbb999,
+// acb001...acb999,
+// ......, 
+// zzz001...zzz999
+// Note
+// If the serial number has less than 3 digits, the missing places should be adjusted with zeroes.
+// i.e: 12 should equal 012; 4 should equal 004.
+
+// Once again, the customer ID starts with 0.
+
+// the alphabet: 'abcdefghijklmnopqrstuvwxyz'
+function findTheNumberPlate(customerID){
+    //Every 999 IDs I jump one letter
+
+    let euclidian = Math.trunc(customerID-1/999)
+    let reminder = (customerID-1)%999
+
+
+    //Helper function - from a the result of the euclidian division of ID/999, gives the letters
+    function help1(num){
+        let base = '0123456789abcdefghijklmnop'
+        let base2 = 'abcdefghijklmnopqrstuvwxyz'
+        let str = num.toString(26)
+        str = str.split('').map(letter => base2[base.indexOf(letter)])
+
+
+        return str
+    }
+
+    console.log(help1(0))
+    console.log(help1(25))
+    console.log(help1(26))
+    console.log(help1(675))
+    console.log(help1(676))
+    console.log(help1(1656))
+
+    //TO FINISH
+}
+
+// findTheNumberPlate(5)
+
+
+//================================================================
+// https://www.codewars.com/kata/5af43416882143534300142c
+
+//Our spaceship has crashed on an unknown planet many light years away from earth. Thankfully we were able to send out a distress signal right before the crash. Help will be here shortly but we need to gather as much information about this planet as we can before we're rescued.
+
+// Before our control panels were destroyed, we were able to gather the duration of this planet's orbit around it's planetary system's star.
+
+// Among other things, we need to determine if a given year is a leap year on this planet.
+
+// Your Task:
+
+// Given the duration of the planet's orbit (in days) and a specific year on this planet, determine if the given year is a leap year here.
+
+// For example:
+
+// On Earth, a single rotation around the sun takes 365.25 days. Therefore, each year takes 365 days but every forth year is a leap year and takes 366 days. The next leap year on Earth will occur in 2020.
+
+// Notes: To make things easier, the period of the leap years will always be a power of 2. Good luck!
+
+function isLeapYear(duration, year) {
+    let decimal = duration.toString().split('.')[1]
+    if(decimal === undefined){ //no leap years
+        return false
+    }else{
+        decimal = Number('0.'+decimal)
+        console.log(decimal);
+        return (year*decimal)%1 === 0
+    }
+}
+
+// console.log(isLeapYear(365.25, 2018))
+// console.log(isLeapYear(365.25, 2020))
+// console.log(isLeapYear(124.5, 102))
+
+function isLeapYearB(duration, year) {
+    return duration * year % 1 === 0;
+}
+
+
+//====================================================================

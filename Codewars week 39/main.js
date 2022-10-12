@@ -273,33 +273,45 @@ function spinWords(string){
 // the alphabet: 'abcdefghijklmnopqrstuvwxyz'
 function findTheNumberPlate(customerID){
     //Every 999 IDs I jump one letter
+    let res = ''
 
-    let euclidian = Math.trunc(customerID-1/999)
-    let reminder = (customerID-1)%999
+    let euclidian = Math.trunc((customerID)/999)
+    let reminder = ''+((customerID)%999+1)
+    while(reminder.length<3){
+        reminder='0'+reminder
+    }
 
+    res = help1(euclidian) + reminder
+    return res
 
     //Helper function - from a the result of the euclidian division of ID/999, gives the letters
     function help1(num){
         let base = '0123456789abcdefghijklmnop'
         let base2 = 'abcdefghijklmnopqrstuvwxyz'
         let str = num.toString(26)
-        str = str.split('').map(letter => base2[base.indexOf(letter)])
+        str = str.split('').map(letter => base2[base.indexOf(letter)]).reverse().join('')
 
-
+        while(str.length<3){
+            str=str+'a'
+        }
         return str
     }
 
-    console.log(help1(0))
-    console.log(help1(25))
-    console.log(help1(26))
-    console.log(help1(675))
-    console.log(help1(676))
-    console.log(help1(1656))
+    // console.log(help1(0))
+    // console.log(help1(1))
+    // console.log(help1(25))
+    // console.log(help1(26))
+    //console.log(help1(40))
+    // console.log(help1(675))
+    // console.log(help1(676))
+    // console.log(help1(1656))
 
-    //TO FINISH
 }
 
-// findTheNumberPlate(5)
+// console.log(findTheNumberPlate(3))
+// console.log(findTheNumberPlate(1487))
+// console.log(findTheNumberPlate(40000))
+// console.log(findTheNumberPlate(17558423))
 
 
 //================================================================

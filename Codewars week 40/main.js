@@ -116,3 +116,80 @@ function multipleOfIndexB(array) {
 }
 
 //=====================================================================
+// https://www.codewars.com/kata/58d76854024c72c3e20000de
+// Reverse every other word in a given string, then return the string. Throw away any leading or trailing whitespace, while ensuring there is exactly one space between each word. Punctuation marks should be treated as if they are a part of the word in this kata.
+
+function reverseEveryOtherWord(string){
+    if(string.length===0){//edge case
+        return ''  
+    }
+
+    return string.split(' ').map((word, idx) => {
+        if(idx%2===1){
+            return word.split('').reverse().join('')
+        }else{
+            return word
+        }
+    }).join(' ').trim() //.trim() if it ends with a space because apparently there are cases like that
+}
+
+//==================================================================
+// https://www.codewars.com/kata/55c04b4cc56a697bb0000048/train/javascript
+// Complete the function scramble(str1, str2) that returns true if a portion of str1 characters can be rearranged to match str2, otherwise returns false.
+
+// Notes:
+
+// Only lower case letters will be used (a-z). No punctuation or digits will be included.
+// Performance needs to be considered.
+// Examples
+// scramble('rkqodlw', 'world') ==> True
+// scramble('cedewaraaossoqqyt', 'codewars') ==> True
+// scramble('katas', 'steak') ==> False
+
+function scramble(str1, str2) {
+    //str2.every(letter) in str1 wouldn't work because it wouldn't take into account if str2 has some letter repeated
+
+    //Let's compare frequencies and assure frequencies of eache letter of str2 is smaller or equal than str1
+    let frequencies1 = str1.split('').reduce((acc, cur) => {
+        // acc[cur] ? acc[cur]++ : acc[cur] = 1 //same below
+        acc[cur] = (acc[cur] || 0) + 1
+        return acc
+    }, {})
+
+    let frequencies2 = str2.split('').reduce((acc, cur) => {
+        // acc[cur] ? acc[cur]++ : acc[cur] = 1 //same below
+        acc[cur] = (acc[cur] || 0) + 1
+        return acc
+    }, {})
+
+    let res = true
+    for(let letter in frequencies2){
+        if(frequencies1[letter] !== undefined){ //check if the letter exists in str1
+            if(frequencies2[letter] > frequencies1[letter]){ //if the letter exists, check if they are more of that letter in str2 making it too little in str1
+                return false
+            }
+        }else{ //if the letter doesn't exist in str1, it is false
+            return false
+        }
+    }
+
+    return res
+}
+
+// console.log(scramble('rkqodlw', 'world')) // ==> True
+// console.log(scramble('cedewaraaossoqqyt', 'codewars')) // ==> True
+// console.log(scramble('katas', 'steak')) // ==> False
+
+//This code works as is depsite being a bit long to execute
+
+function scrambleBis(str1, str2) {
+    let frequencies1 = str1.split('').reduce((acc, cur) => {
+        acc[cur] = (acc[cur] || 0) + 1
+        return acc
+    }, {})
+    return str2.split('').every(e => --frequencies1[e] >= 0)
+}
+
+// console.log(scrambleBis('cedewaraaossoqqyt', 'codewars'))
+
+//===================================================================================

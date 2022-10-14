@@ -193,3 +193,123 @@ function scrambleBis(str1, str2) {
 // console.log(scrambleBis('cedewaraaossoqqyt', 'codewars'))
 
 //===================================================================================
+// https://www.codewars.com/kata/51b6249c4612257ac0000005
+// Create a function that takes a Roman numeral as its argument and returns its value as a numeric decimal integer. You don't need to validate the form of the Roman numeral.
+
+// Modern Roman numerals are written by expressing each decimal digit of the number to be encoded separately, starting with the leftmost digit and skipping any 0s. So 1990 is rendered "MCMXC" (1000 = M, 900 = CM, 90 = XC) and 2008 is rendered "MMVIII" (2000 = MM, 8 = VIII). The Roman numeral for 1666, "MDCLXVI", uses each letter in descending order.
+
+// Example:
+
+// solution('XXI'); // should return 21
+// Help:
+
+// Symbol    Value
+// I          1
+// V          5
+// X          10
+// L          50
+// C          100
+// D          500
+// M          1,000
+// Courtesy of rosettacode.org
+
+function romanToDec(string) {
+    //roman numbers go up to 3999
+    let roman = {
+        I:1,
+        IV:4,
+        V:5,
+        IX:9,
+        X:10,
+        XL:40,
+        L:50,
+        XC:90,
+        C:100,
+        CD:400,
+        D:500,
+        CM:900,
+        M:1000
+    }
+
+    //Oops, that is for the opposite
+    // let num = roman
+    // let thousands = Math.trunc(num%1000)
+    // num -= 1000*thousands
+    // let hundreds = Math.trunc(num%100)
+    // num -= 100*hundreds
+    // let tens = Math.trunc(num%10)
+    // num -= 10*tens
+    // let units = num
+
+    // console.log(thousands, hundreds, tens, units)
+
+    let res = 0
+    let stringCpy = string.slice()
+
+    while(stringCpy[0]==='M'){ //this handles the thousands
+        res+=1000
+        stringCpy = stringCpy.slice(1)
+    }
+
+    //hundreds
+    if(stringCpy.slice(0, 2) === 'CM'){
+        res+=900
+        stringCpy = stringCpy.slice(2)
+    }else if(stringCpy.slice(0, 2) === 'CD'){
+        res+=400
+        stringCpy = stringCpy.slice(2)
+    }else if(stringCpy.slice(0, 1) === 'D'){
+        res+=500
+        stringCpy = stringCpy.slice(1)
+    }
+
+    while(stringCpy[0]==='C'){ //this handles the hundreds in the cases of 100, 200, 300, 600, 700, 800
+        res+=100
+        stringCpy = stringCpy.slice(1)
+    }
+
+    //tens
+    if(stringCpy.slice(0, 2) === 'XC'){
+        res+=90
+        stringCpy = stringCpy.slice(2)
+    }else if(stringCpy.slice(0, 2) === 'XL'){
+        res+=40
+        stringCpy = stringCpy.slice(2)
+    }else if(stringCpy.slice(0, 1) === 'L'){
+        res+=50
+        stringCpy = stringCpy.slice(1)
+    }
+
+    while(stringCpy[0]==='X'){ //this handles the tens in the cases of 10, 20, 30, 60, 70, 80
+        res+=10
+        stringCpy = stringCpy.slice(1)
+    }
+
+    //units
+    if(stringCpy.slice(0, 2) === 'IX'){
+        res+=9
+        stringCpy = stringCpy.slice(2)
+    }else if(stringCpy.slice(0, 2) === 'IV'){
+        res+=4
+        stringCpy = stringCpy.slice(2)
+    }else if(stringCpy.slice(0, 1) === 'V'){
+        res+=5
+        stringCpy = stringCpy.slice(1)
+    }
+
+    while(stringCpy[0]==='I'){ //this handles the tens in the cases of 1, 2, 3, 6, 7, 8
+        res+=1
+        stringCpy = stringCpy.slice(1)
+    }
+
+    return res
+
+}
+
+// console.log(romanToDec('MCDXCIX')) //=> 1499
+// console.log(romanToDec('MCDXCVIII')) //=> 1498
+// console.log(romanToDec('MMMCMXCIX')) //=> 3999
+
+//Long to write but actually executes really fast
+
+//==================================================================

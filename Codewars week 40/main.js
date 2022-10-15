@@ -313,3 +313,106 @@ function romanToDec(string) {
 //Long to write but actually executes really fast
 
 //==================================================================
+// https://www.codewars.com/kata/57eba158e8ca2c8aba0002a0/train/javascript
+// Given a string of words (x), you need to return an array of the words, sorted alphabetically by the final character in each.
+
+// If two words have the same last letter, they returned array should show them in the order they appeared in the given string.
+
+// All inputs will be valid.
+
+function last(str){
+    let words = str.split(' ')
+
+
+    let sorted = words.sort((a, b) => {
+        let lastCharOfA = a.slice(-1)
+        let lastCharOfB = b.slice(-1)
+
+
+        return lastCharOfA.localeCompare(lastCharOfB)
+    })
+
+    return sorted
+}
+
+// console.log(last('man i need a taxi up to ubud'))
+// console.log(last('pqgfcyqggcrb pehuxklsdsgu cenpatogvoxl kjoxnrcuxkvr zhari udaam fopbo oapop bplqywa xjovqxa hpvndna eybtcdx wo sf pe or djrfhhmyhrxlcdplcofbskgzlyodnwc hbehiopbinjhtgeppymyiisgldxtdg ovzsllyozxefjjiixsnukoziavaextn pqqdjsgcngrplrhjvajalntjusevhrx caupaqhzyzndcnqglmhvqroe vdpygafzfndmyccgmbkqhabk lzjuevpnjggqcvopbgrqxdx jgqekzxsdmewbdvdvjufuvgi'))
+
+//========================================================
+// https://www.codewars.com/kata/59c5f4e9d751df43cf000035/train/javascript
+// The vowel substrings in the word codewarriors are o,e,a,io. The longest of these has a length of 2. Given a lowercase string that has alphabetic characters only (both vowels and consonants) and no spaces, return the length of the longest vowel substring. Vowels are any of aeiou.
+
+function longestVowelChain(string){
+    let vowels=['a','e','i','o','u']
+    
+    let newWord = string.split('').map(letter => {
+        return vowels.includes(letter) ? letter : ' '
+    })
+        .join('')
+        .split(' ')
+        .filter(el => el !== '')
+
+    //console.log(newWord)
+
+
+    return Math.max(...newWord.map(word => word.length))
+}
+
+
+function longestVowelChainBis(string){
+    let vowels=['a','e','i','o','u']
+    let res = 0
+
+    for(let i=0 ; i<string.length ; i++){
+        if(vowels.includes(string[i])){
+            let j = i+1
+            let temp = 1
+            while(vowels.includes(string[j])){
+                temp++
+                j++
+            }
+            if(temp>res){
+                res=temp
+            }
+        }
+    }
+
+    return res
+}
+
+//console.log(longestVowelChainBis('iiihoovaeaaaoougjyaw'))
+
+//====================================================
+// https://www.codewars.com/kata/514a024011ea4fb54200004b/train/javascript
+// Write a function that when given a URL as a string, parses out just the domain name and returns it as a string. For example:
+
+// * url = "http://github.com/carbonfive/raygun" -> domain name = "github"
+// * url = "http://www.zombie-bites.com"         -> domain name = "zombie-bites"
+// * url = "https://www.cnet.com"                -> domain name = cnet"
+
+function domainName(url){
+    let cpy = url
+    if(url.includes('https://')){
+        cpy = cpy.slice(8)
+    }else if(url.includes('http://')){
+        cpy = cpy.slice(7)
+    }
+    if(cpy.includes('www.')){
+        cpy = cpy.slice(4)
+    }
+
+    return cpy.split('.')[0]
+}
+
+// console.log(domainName("http://google.com"))
+// console.log(domainName("http://google.co.jp"))
+// console.log(domainName("https://youtube.com"))
+// console.log(domainName("www.xakep.ru"))
+
+function domainNameBis(url){
+    let newStr = url.replace('http://','').replace('www.','').replace('https://','').split('.')[0]
+  
+    return newStr
+}
+
+//===========================================================

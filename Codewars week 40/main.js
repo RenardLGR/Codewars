@@ -416,3 +416,121 @@ function domainNameBis(url){
 }
 
 //===========================================================
+// https://www.codewars.com/kata/63431f9b9943dd4cee787da5
+// Given a circuit with fixed resistors connected in series and/or in parallel, calculate the total effective resistance of the circuit.
+
+// All resistors are given in Ω, and the result should be in Ω too (as a float; tested to ± 1e-6). Assume wires have negligible resistance. The voltage of the battery is irrelevant.
+
+// The circuit is passed to your function in the following form:
+
+// I will define a component as any number of resistors connected in series or in parallel.
+// The entire circuit counts as a component.
+// Each component is an array.
+// A series component will have the boolean true in position zero.
+// A parallel component will have the boolean false in position zero.
+// The other positions will either contain:
+// Numbers, denoting fixed resistors of that resistance.
+// Arrays, denoting nested components.
+// A series circuit with no other entries represents a single wire
+// A parallel circuit with no other entries represents a break in the circuit (see below for more details)
+// All circuits will be valid and in the form above (short circuits or broken circuits may appear, though)
+// There will be no negative resistances
+// Example circuit:
+
+//   [
+//     true, // series
+//     20, // 20Ω resistor
+//     [
+//       false, // parallel
+//       [
+//         true, // series
+//         30, // 30Ω resistor
+//         40, // 40Ω resistor
+//       ],
+//       30, // 30Ω resistor
+//     ],
+//     60, // 60Ω resistor
+//   ]
+// Looks like:
+// SEE IMG
+
+// 20 + 1/(1/(30+40)+1/30) + 60 = 101Ω
+
+// Short Circuits
+// It might be the case that the circuit has zero resistance.
+
+// We don't want zero resistance, as these cause short circuits!
+
+// You should throw an Error instead of returning, with the error message Short Circuit! if this ever happens.
+
+// Broken Circuits
+// It might be the case that all the paths in the circuit have a break in them.
+
+// This creates infinite resistance, and in effect a broken circuit!
+
+// You should throw an Error instead of returning, with the error message Broken Circuit! if this ever happens.
+
+// Example Circuit:
+
+
+// [
+//   true, // series
+//   10, // 10Ω resistor
+//   [
+//     false, // parallel
+//     [
+//       false, // parallel, broken circuit
+//     ],
+//     [
+//       false, // parallel, broken circuit
+//     ],
+//   ],
+// ]
+// Looks like:
+// SEE IMG
+
+// Helpful Links
+// If you don't know or don't remember how to calculate the total effective resistance of a series or parallel circuit, then consult the following two kata.
+//Total resistance in series is the sum of all resistances : Rtotal = R1 + R2 + R3 + ...
+//Total resistance in parallel is : 1/Rtotal = 1/R1 + 1/R2 + 1/R3 + ...
+
+// Series Circuit Kata (myjinxin2015; 7kyu)
+// Parallel Circuit Kata (myjinxin2015; 7kyu)
+// Additionally, if you would like to visualise some of the circuits by building them, you can do it online here.
+
+// Interactive Circuit Builder (used to create the images above)
+
+// calculate resistance of circuit
+function calculateResistance(circuit) {
+    // do this if a short circuit is encountered
+    // throw new Error("Short Circuit!");
+    // do this if a broken circuit is encountered
+    // throw new Error("Broken Circuit!");
+
+//TODO
+}
+
+//===============================================================
+// https://www.codewars.com/kata/53da6a7e112bd15cbc000012
+// Python dictionaries are inherently unsorted. So what do you do if you need to sort the contents of a dictionary?
+
+// Create a function that returns a sorted list of (key, value) tuples (Javascript: arrays of 2 items).
+
+// The list must be sorted by the value and be sorted largest to smallest.
+
+// Examples
+// sortDict({3:1, 2:2, 1:3}) == [[1,3], [2,2], [3,1]]
+// sortDict({1:2, 2:4, 3:6}) == [[3,6], [2,4], [1,2]]
+
+function sortDict(dict) {
+    let keyValuePairs = []
+    for(let key in dict){
+        keyValuePairs.push([key, dict[key]])
+    }
+
+    return keyValuePairs.sort((a, b) => b[1] - a[1]).map(tuple => isNaN(Number(tuple[0])) ? tuple : [Number(tuple[0]), tuple[1]])
+}
+
+// console.log(sortDict({3:1, 2:2, 1:3}));
+// console.log(sortDict({1:2, 2:4, 3:6}));
+// console.log(sortDict({'aldo':6,'boris':2,'igor':6}));

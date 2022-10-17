@@ -507,8 +507,76 @@ function calculateResistance(circuit) {
     // do this if a broken circuit is encountered
     // throw new Error("Broken Circuit!");
 
-//TODO
+    let inSeries = circuit[0]
+    let resistances = []
+    let res = 0
+    for(let i = 1 ; i<circuit.length ; i++){
+        if(Array.isArray(circuit[i])){ //checks if it is a component
+            let temp = 0
+            temp = calculateResistance(circuit[i])
+            resistances.push(temp)
+        }else{ //else it is a resistance
+            resistances.push(circuit[i])
+        }
+    }
+    if(resistances.length === 0){
+        throw new Error("Broken Circuit!")
+    }
+
+    res = inSeries ? totalInSeries(resistances) : totalInParallel(resistances)
+
+    if(res === 0){
+        throw new Error("Short Circuit!");
+    }else{
+        return res
+    }
+
+    //helpers
+    function totalInSeries(args){
+        return args.reduce((acc, cur) => acc+cur, 0)
+    }
+
+    function totalInParallel(args){
+        let rTotalInverse = args.reduce((acc, cur) => acc + 1/cur, 0)
+        return 1/rTotalInverse
+    }
 }
+
+// console.log(calculateResistance([ true, 10, 20, 30, 40 ]));
+//This works for easy test cases where there is no errors
+
+
+function calculateResistanceBis(circuit){
+    let res = compute(circuit)
+    if(res === 0){
+        throw new Error("Short Circuit!");
+    }
+    if(res === Infinity){
+        throw new Error("Broken Circuit!")
+    }
+
+    return res
+
+    function compute([isSeries, ...branches]){
+        let out = branches.reduce(isSeries ? add : addInverse, 0)
+        return isSeries ? out : 1/out
+    }
+
+
+    //helpers
+    function add(acc, cur){
+        return acc + dispatch(cur)
+    }
+
+    function addInverse(acc, cur){
+        return acc + 1/dispatch(cur)
+    }
+
+    function dispatch(branch){
+        return Array.isArray(branch) ? compute(branch) : branch
+    }
+}
+
 
 //===============================================================
 // https://www.codewars.com/kata/53da6a7e112bd15cbc000012

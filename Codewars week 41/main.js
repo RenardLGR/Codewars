@@ -151,7 +151,6 @@ function duplicateEncodeBis(word){
 // [160, 3, 1719, 19, 11, 13, -21]
 // Should return: 160 (the only even number)
 
-//[3, 2, 4, ....]
 
 function findOutlier(integers){
     let isEven = ( [integers[0], integers[1], integers[2]].filter(i => i%2===0).length > 1)
@@ -188,3 +187,101 @@ function findOutlierTres(integers){
 // console.log(findOutlierTres([160, 3, 1719, 19, 11, 13, -21, 17]));
 
 //======================================================
+//The function reduceOperation(string operation, array numbers) will take a string of either 'mult' or 'add' and an array of number and should return the product of every number or the summ of every number
+
+function reduceOperation(operation, arr){
+    if(operation === "mult"){
+        return arr.reduce((acc, cur) => acc*cur, 1)
+    }else{
+        return arr.reduce((acc, cur) => acc+cur, 0)
+    }
+}
+
+// console.log(reduceOperation('mult', [5, 2, 7, 3])); // => 210
+// console.log(reduceOperation('add', [5, 2, 7, 3])); // => 17
+
+function reduceOperationBis(operation, arr){
+
+    return arr.reduce(operation==='mult' ? reduceMult : reduceAdd, operation==='mult' ? 1 : 0)
+
+    function reduceMult(acc, cur){
+        return acc*cur
+    }
+
+    function reduceAdd(acc, cur){
+        return acc+cur
+    }
+}
+
+// console.log(reduceOperationBis('mult', [5, 2, 7, 3])); // => 210
+// console.log(reduceOperationBis('add', [5, 2, 7, 3])); // => 17
+
+//===================================================
+// https://www.codewars.com/kata/525f3eda17c7cd9f9e000b39
+// This time we want to write calculations using functions and get the results. Let's have a look at some examples:
+
+// seven(times(five())); // must return 35
+// four(plus(nine())); // must return 13
+// eight(minus(three())); // must return 5
+// six(dividedBy(two())); // must return 3
+// Requirements:
+
+// There must be a function for each number from 0 ("zero") to 9 ("nine")
+// There must be a function for each of the following mathematical operations: plus, minus, times, dividedBy
+// Each calculation consist of exactly one operation and two numbers
+// The most outer function represents the left operand, the most inner function represents the right operand
+// Division should be integer division. For example, this should return 2, not 2.666666...:
+
+function zero(f) {
+    return f===undefined ? 0 : f(0)
+}
+function one(f) {
+    return f===undefined ? 1 : f(1)
+}
+function two(f) {
+    return f===undefined ? 2 : f(2)
+}
+function three(f) {
+    return f===undefined ? 3 : f(3)
+}
+function four(f) {
+    return f===undefined ? 4 : f(4)
+}
+function five(f) {
+    return f===undefined ? 5 : f(5)
+}
+function six(f) {
+    return f===undefined ? 6 : f(6)
+}
+function seven(f) {
+    return f===undefined ? 7 : f(7)
+}
+function eight(f) {
+    return f===undefined ? 8 : f(8)
+}
+function nine(f) {
+    return f===undefined ? 9 : f(9)
+}
+
+function plus(n) {
+    return function(p){
+        return p+n
+    }
+}
+function minus(n) {
+    return function(p){
+        return p-n
+    }
+}
+function times(n) {
+    return function(p){
+        return p*n
+    }
+}
+function dividedBy(n) {
+    return function(p){
+        return Math.trunc(p/n)
+    }
+}
+
+//========================================================

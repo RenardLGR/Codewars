@@ -368,3 +368,92 @@ function decodeCircle(s) {
 
 
 //===============================================================
+// https://www.codewars.com/kata/5865918c6b569962950002a1
+// This Kata is intended as a small challenge for my students
+
+// All Star Code Challenge #18
+
+// Create a function that accepts 2 string arguments and returns an integer of the count of occurrences the 2nd argument is found in the first one.
+
+// If no occurrences can be found, a count of 0 should be returned.
+
+// ("Hello", "o")  ==>  1
+// ("Hello", "l")  ==>  2
+// ("", "z")       ==>  0
+// Notes:
+
+// The first argument can be an empty string
+// The second string argument will always be of length 1
+
+function strCount(str, letter){  
+    let res = 0
+    for(let i=0 ; i<str.length ; i++){
+        if(str[i] === letter) res++
+    }
+
+    return res
+}
+
+function strCountBis(str, letter){
+    return str.split('').filter(c => c === letter).length;
+}
+
+function strCountTres(str, letter){
+    return str.split(letter).length - 1;
+}
+
+//============================================================
+// https://www.codewars.com/kata/539de388a540db7fec000642
+// Story
+// Your online store likes to give out coupons for special occasions. Some customers try to cheat the system by entering invalid codes or using expired coupons.
+
+// Task
+// Your mission:
+// Write a function called checkCoupon which verifies that a coupon code is valid and not expired.
+
+// A coupon is no more valid on the day AFTER the expiration date. All dates will be passed as strings in this format: "MONTH DATE, YEAR".
+
+// Examples:
+// checkCoupon("123", "123", "July 9, 2015", "July 9, 2015")  ===  true
+// checkCoupon("123", "123", "July 9, 2015", "July 2, 2015")  ===  false
+
+function checkCoupon(enteredCode, correctCode, currentDate, expirationDate){
+  let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+
+  if(enteredCode !== correctCode){
+    return false
+  }else{
+    let [currentMonth, currentDay, currentYear] = currentDate.split(' ')
+    let [expirationMonth, expirationDay, expirationYear] = expirationDate.split(' ')
+
+    if(+currentYear > +expirationYear){
+        return false
+    }else if(+currentYear < +expirationYear){
+        return true
+    }else{ //case where the current year is equal to expiration year
+        if(months.indexOf(currentMonth) > months.indexOf(expirationMonth)){
+            return false
+        }else if(months.indexOf(currentMonth) < months.indexOf(expirationMonth)){
+            return true
+        }else{//case where the current month is equal to expiration month
+            if(parseInt(currentDay) > parseInt(expirationDay)){
+                return false
+            }else{
+                return true
+            }
+        }
+    }
+  }
+}
+
+function checkCouponBis(enteredCode, correctCode, currentDate, expirationDate){
+    return enteredCode === correctCode && Date.parse(expirationDate) >= Date.parse(currentDate)
+}
+
+// console.log(checkCoupon("123", "123", "July 9, 2015", "July 9, 2015")); //true
+// console.log(checkCoupon('123','123','September 5, 2014','October 1, 2014')); //true
+// console.log(checkCoupon('123a','123','September 5, 2014','October 1, 2014')); //false
+// console.log(checkCoupon('12abcd3', '12abcd3', 'January 5, 2014', 'January 1, 2014')); //false
+// console.log(checkCoupon('123', '123', 'September 5, 2014', 'October 1, 2014')); //true
+
+//===============================================================

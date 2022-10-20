@@ -285,3 +285,86 @@ function dividedBy(n) {
 }
 
 //========================================================
+//Given a string of only lower case letters return an array of the letters and their appearances ranked by their apperances. If they appear the same number of time, rank them alphabetically
+
+function rankedByAppearancesAndAlphabetically(string){
+    const alphabet = 'abcdefghijklmnopqrstuvwxyz'
+
+    const frequencies = string.split('').reduce((acc, cur) => {
+        acc[cur] = (acc[cur] || 0) + 1
+        return acc
+    }, {})
+
+
+    let unsortedArr = []
+    for(let letter in frequencies){
+        unsortedArr.push([letter, frequencies[letter]])
+    }
+
+    let res = unsortedArr.sort((a, b) => {
+        if(a[1] === b[1]){ //if frequency is identical
+            return a[0].localeCompare(b[0])
+        }else{
+            return b[1] - a[1]
+        }
+    })
+
+    return res
+}
+
+// console.log(rankedByAppearancesAndAlphabetically('kata')) //=> //[['a', 2], ['k', 1], ['t', 1]]
+// console.log(rankedByAppearancesAndAlphabetically('taka')) //=> //[['a', 2], ['k', 1], ['t', 1]]
+// console.log(rankedByAppearancesAndAlphabetically('beam')) //=> //[['a', 1], ['b', 1], ['e', 1], ['m', 1]]
+// console.log(rankedByAppearancesAndAlphabetically('bee')) //=> //[['e', 2], ['b', 1]]
+// console.log(rankedByAppearancesAndAlphabetically('cease')) //=> //[['e', 2], ['a', 1], ['c', 1], ['s', 1]]
+
+
+//============================================================
+// https://www.codewars.com/kata/634d0723075de3f97a9eb604
+// Imagine circle
+// then split into the length of string parts
+// for example we want to encode "codewars"
+// split into eight becasue codewars has eight chars
+// SEE IMG
+// add letters
+// remove circle
+// read it left to right
+// output is csordaew
+
+// decoding is almost same
+
+// take csordaew return codewars
+
+function encodeCircle(s) {
+    //I am taking index 0, then length-1, 1, length-2 ; etc
+    let cpy = s.split('')
+    let res = []
+    while(cpy.length > 0){
+        res.push(cpy.shift())
+        res.push(cpy.pop())
+    }
+
+    return res.join('')
+}
+
+function decodeCircle(s) {
+    //I am taking last index, unshifting left and pushing right
+    //I also need to reverse it if the length is odd
+    let cpy = s.split('')
+    let res = []
+
+    while(cpy.length > 0){
+        res.push(cpy.pop())
+        res.unshift(cpy.pop())
+    }
+
+    return s.length%2 === 0 ? res.join('') : res.reverse().join('')
+}
+
+// console.log(encodeCircle('codewars')) // csordaew
+// console.log(decodeCircle('csordaew')) // codewars
+// console.log(encodeCircle('white')) // wehti
+// console.log(decodeCircle('wehti')) // white
+
+
+//===============================================================

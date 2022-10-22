@@ -457,3 +457,56 @@ function checkCouponBis(enteredCode, correctCode, currentDate, expirationDate){
 // console.log(checkCoupon('123', '123', 'September 5, 2014', 'October 1, 2014')); //true
 
 //===============================================================
+// https://www.codewars.com/kata/5b901127d0093853470001e7
+// Your program must find the longest sequence of consecutive zeroes in an integer number.
+
+// For example, the number 10002030000 has three sequences of zeroes with lengths 3, 1 and 4. So the longest sequence is 4.
+
+// Input :
+// A positive integer
+
+// Output :
+// The max number of consecutive zeros in that number
+
+// Restrictions :
+// Do it in less than 60 (59 or less) chars.
+
+// Note :
+// The number will always have 1 or more zeroes
+
+const maxLenZero = (input) => {
+    //turn num into string
+    //map it with _ instead of number for any number different than 0
+    let string = input.toString().split('').map(digit => digit !== '0' ? '_' : digit).join('')
+
+    let zeroes = string.split('_')
+    let lenZeroes = zeroes.map(el => el.length)
+
+    return Math.max(...lenZeroes)
+}
+
+// console.log(maxLenZero(10002030000));
+
+const maxLenZeroBis = (input) => {
+    let string = input.toString()
+    let res = 0
+    for(let i=0 ; i<string.length ; i++){
+        if(string[i] === '0'){
+            let temp = 0
+            let j = i
+            while(string[j] === '0'){
+                temp++
+                j++
+            }
+            if(temp > res) res = temp
+        }
+    }
+
+    return res
+}
+
+// console.log(maxLenZeroBis(10002030000));
+
+//Solution with the restriction would need regex
+
+//================================================================

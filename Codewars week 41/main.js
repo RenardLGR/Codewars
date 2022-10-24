@@ -2,6 +2,109 @@ const hi = 'HELLO'
 const alphaL = 'abcdefghijklmnopqrstuvwxyz'
 const alphaU = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+//========================================================
+function deliverHouse1() {
+    setTimeout( () => {
+        console.log('House 1 delivered');
+    }, 3000)
+}
+
+function deliverHouse2(){
+    setTimeout( () => {
+        console.log('House 2 delivered');
+    }, 1000)
+}
+
+function deliverHouse3(){
+    setTimeout( () => {
+        console.log('House 3 delivered');
+    }, 2000)
+}
+
+// deliverHouse1()
+// deliverHouse2()
+// deliverHouse3()
+
+// 2 -> 3 -> 1 in 3 seconds
+
+function deliverHousescbHell() {
+    setTimeout( () => {
+        console.log('House 1 delivered');
+        setTimeout( () => {
+            console.log('House 2 delivered');
+            setTimeout( () => {
+                console.log('House 3 delivered');
+                
+            }, 2000)
+        }, 1000)
+    }, 3000)
+}
+
+//deliverHousescbHell()
+
+// 1 -> 2 -> 3 in 6 seconds
+
+
+
+function deliverHouse1Promises() {
+    return new Promise( (resolve, reject) => {
+        setTimeout( () => {
+            resolve('House 1 delivered')
+        }, 3000)
+    })
+}
+
+function deliverHouse2Promises() {
+    return new Promise( (resolve, reject) => {
+        setTimeout( () => {
+            resolve('House 2 delivered')
+        }, 1000)
+    })
+}
+
+function deliverHouse3Promises() {
+    return new Promise( (resolve, reject) => {
+        setTimeout( () => {
+            resolve('House 3 delivered')
+        }, 2000)
+    })
+}
+
+// deliverHouse1Promises()
+//     .then(res => console.log(res))
+//     .then(deliverHouse2Promises)
+//     .then(res => console.log(res))
+//     .then(deliverHouse3Promises)
+//     .then(res => console.log(res))
+//     .catch(err => console.log(err))
+
+//1 -> 2 -> 3 in 6 seconds
+
+
+async function deliverHousesAsyncAwait() {
+    const house1 = await deliverHouse1Promises()
+    const house2 = await deliverHouse2Promises()
+    const house3 = await deliverHouse3Promises()
+
+    console.log(house1,house2, house3);
+}
+
+//deliverHousesAsyncAwait()
+
+//1 2 3 in 6 seconds
+
+
+async function getDoggo(){
+    try{
+        const res = await fetch('https://dog.ceo/api/breeds/image/random')
+        const data = await res.json()
+        console.log(data.message);
+    }catch(err){
+        console.log(err);
+    }
+}
+
+//getDoggo()
 
 //========================================================
 // https://www.codewars.com/kata/59d9ff9f7905dfeed50000b0/train/javascript
@@ -562,3 +665,44 @@ function snail(array){
 // console.log(snail([[1, 2, 3], [4, 5, 6], [7, 8, 9]]));
 
 //=====================================================
+// https://www.codewars.com/kata/582e0e592029ea10530009ce
+// The objective of Duck, duck, goose is to walk in a circle, tapping on each player's head until one is chosen.
+
+// Task: Given an array of Player objects (an array of associative arrays in PHP) and an index (1-based), return the name of the chosen Player(name is a property of Player objects, e.g Player.name)
+
+// Example:
+
+// duck_duck_goose([a, b, c, d], 1) should return a.name
+// duck_duck_goose([a, b, c, d], 5) should return a.name
+// duck_duck_goose([a, b, c, d], 4) should return d.name
+
+function duckDuckGoose(players, goose) {
+    return players[(goose-1)%players.length].name
+}
+
+//=========================================================
+// https://www.codewars.com/kata/55caef80d691f65cb6000040
+// In your class, you have started lessons about geometric progression. Since you are also a programmer, you have decided to write a function that will print first n elements of the sequence with the given constant r and first element a.
+
+// Result should be separated by comma and space.
+
+// Example
+// geometricSequenceElements(2, 3, 5) == '2, 6, 18, 54, 162'
+//Where 3^0 * 2 = 2
+//Where 3^1 * 2 = 6
+//Where 3^2 * 2 = 18
+//Where 3^3 * 2 = 54
+//Where 3^4 * 2 = 162
+// More info: https://en.wikipedia.org/wiki/Geometric_progression
+
+function geometricSequenceElements(a, r, n){
+    let res = ''
+    for(let i=0 ; i<n ; i++){
+        res+= Math.pow(r, i)*a + ', '
+    }
+
+    return res.slice(0, -2)
+}
+
+// console.log(geometricSequenceElements(2, 3, 5));
+

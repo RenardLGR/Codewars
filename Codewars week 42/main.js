@@ -170,3 +170,32 @@ function upArrayBis(arr){
 // console.log(upArrayBis([ 9, 9, 9 ]));
 // console.log(upArrayBis([9,0,6,7,1,1,0]));
 //=====================================================================
+// https://www.codewars.com/kata/59e66e48fc3c499ec5000103/train/javascript
+// In this Kata, you will be given an array of arrays and your task will be to return the number of unique arrays that can be formed by picking exactly one element from each subarray.
+
+// For example: solve([[1,2],[4],[5,6]]) = 4, because it results in only 4 possibilites. They are [1,4,5],[1,4,6],[2,4,5],[2,4,6].
+
+// Make sure that you don't count duplicates; for example solve([[1,2],[4,4],[5,6,6]]) = 4, since the extra outcomes are just duplicates.
+
+// See test cases for more examples.
+
+// Good luck!
+
+// If you like this Kata, please try:
+
+// Sum of integer combinations
+// https://www.codewars.com/kata/59f3178e3640cef6d90000d5
+
+// Sum of array singles
+// https://www.codewars.com/kata/59f11118a5e129e591000134
+
+function arrayCombinations(arr) {
+    //It is the product of the lengths of the no-duplicate sub arrays
+
+    let sets = arr.map(a => Array.from(new Set(a)))
+    return sets.reduce((acc, cur) => acc * cur.length, 1)
+};
+
+// console.log(arrayCombinations([[1,2],[4,4],[5,6,6]]));
+
+//=================================================================

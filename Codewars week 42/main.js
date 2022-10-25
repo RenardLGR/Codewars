@@ -198,4 +198,138 @@ function arrayCombinations(arr) {
 
 // console.log(arrayCombinations([[1,2],[4,4],[5,6,6]]));
 
+//================================================================
+// https://www.codewars.com/kata/59f3178e3640cef6d90000d5
+// Consider the array [3,6,9,12]. If we generate all the combinations with repetition that sum to 12, we get 5 combinations: [12], [6,6], [3,9], [3,3,6], [3,3,3,3]. The length of the sub-arrays (such as [3,3,3,3] should be less than or equal to the length of the initial array ([3,6,9,12]).
+
+// Given an array of positive integers and a number n, count all combinations with repetition of integers that sum to n. For example:
+
+// find([3,6,9,12],12) = 5.
+// More examples in the test cases.
+
+// Good luck!
+
+// If you like this Kata, please try:
+
+// Array combinations
+// https://www.codewars.com/kata/59e66e48fc3c499ec5000103
+
+// Sum of prime-indexed elements
+// https://www.codewars.com/kata/59f38b033640ce9fc700015b
+
+function sumIntegerCombinations(arr, sum){
+    //Note : input arr is sorted increasingly
+    //Note : input arr has only strictly positive numbers
+    //Naive approach : we will create every array possible and keep those with the sum we want
+    //Thx to : https://www.geeksforgeeks.org/combinational-sum/
+    //(Week 42)
+
+    let ans = new Array();
+    let temp = new Array();
+ 
+ 
+    findNumbers(ans, arr, sum, 0, temp);
+    return ans;
+
+    //Helper func - recursively
+    function findNumbers(ans, arr, sum, index, temp) {
+ 
+        if (sum == 0) {
+     
+            // pushing deep copy of list to ans
+     
+            if(temp.length <= arr.length){
+                ans.push([...temp]);
+                // ans.push(temp.slice());
+                return;
+            }
+        }
+     
+        for (let i = index; i < arr.length; i++) {
+     
+            // checking that sum does not become negative
+     
+            if ((sum - arr[i]) >= 0) {
+     
+                // pushing element which can contribute to
+                // sum
+     
+                temp.push(arr[i]);
+     
+                findNumbers(ans, arr, sum - arr[i], i, temp);
+     
+                // removing element from list (backtracking)
+                temp.splice(temp.indexOf(arr[i]), 1);
+            }
+        }
+    }
+}
+
+// console.log(sumIntegerCombinations([3,6,9,12],12));
+
 //=================================================================
+// https://www.codewars.com/kata/59f11118a5e129e591000134/train/javascript
+// In this Kata, you will be given an array of numbers in which two numbers occur once and the rest occur only twice. Your task will be to return the sum of the numbers that occur only once.
+
+// For example, repeats([4,5,7,5,4,8]) = 15 because only the numbers 7 and 8 occur once, and their sum is 15. Every other number occurs twice.
+
+// More examples in the test cases.
+
+// Good luck!
+
+// If you like this Kata, please try:
+
+// Sum of prime-indexed elements
+// https://www.codewars.com/kata/59f38b033640ce9fc700015b
+
+// Sum of integer combinations
+// https://www.codewars.com/kata/59f3178e3640cef6d90000d5
+
+function sumOfArrSingles(arr) {
+    return arr.filter((el, idx, a) => a.indexOf(el) === a.lastIndexOf(el)).reduce((acc, cur) => acc+cur, 0)
+}
+
+
+// console.log(sumOfArrSingles([4,5,7,5,4,8]));
+
+//====================================================================
+// https://www.codewars.com/kata/59f38b033640ce9fc700015b
+// In this Kata, you will be given an integer array and your task is to return the sum of elements occupying prime-numbered indices.
+
+// The first element of the array is at index 0.
+
+// Good luck!
+
+// If you like this Kata, try:
+
+// Dominant primes. It takes this idea a step further.
+
+// Consonant value
+
+function sumPrimeIndexedElements(arr){
+    return arr.filter((el, idx) => isPrime(idx)).reduce((acc, cur) => acc+cur, 0)
+
+
+    //helper function
+    function isPrime(n){
+        if(n===0 || n===1){
+            return false
+        }else{
+            let isPrime = true
+            for(let i=2 ; i<n ; i++){
+                if(n%i === 0){
+                    isPrime = false
+                    break;
+                }
+            }
+            return isPrime
+        }
+    }
+    // console.log(isPrime(13));
+    // console.log(isPrime(12));
+}
+
+
+// console.log(sumPrimeIndexedElements([1,2,3,4,5,6]))
+
+//===================================================================

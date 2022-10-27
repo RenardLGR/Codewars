@@ -333,3 +333,66 @@ function sumPrimeIndexedElements(arr){
 // console.log(sumPrimeIndexedElements([1,2,3,4,5,6]))
 
 //===================================================================
+// https://www.codewars.com/kata/5413759479ba273f8100003d
+// Write a function reverse which reverses a list (or in clojure's case, any list-like data structure)
+
+// (the dedicated builtin(s) functionalities are deactivated)
+
+reverse1 = function(array) {
+  let res = []
+  for(let i=0 ; i<array.length ; i++){
+    res.unshift(array[i])
+  }
+
+  return res
+}
+
+// console.log(reverse1( [597, 181, 115]));
+
+reverse2 = function(array) {
+    let res = []
+    for(let i=array.length-1 ; i>=0 ; i--){
+      res.push(array[i])
+    }
+  
+    return res
+  }
+
+//   console.log(reverse2( [597, 181, 115]));
+
+reverse3 = function(array) {
+    return rec(array, [])
+
+    function rec(array, res){
+        if(array.length > 0){
+            res.push(array.pop())
+            rec(array, res)
+        }
+        return res
+    }
+}
+
+
+// console.log(reverse3([597, 181, 115]));
+
+//===============================================================
+// https://www.codewars.com/kata/5546180ca783b6d2d5000062
+// Complete the function that returns an array of length n, starting with the given number x and the squares of the previous number. If n is negative or zero, return an empty array/list.
+
+// Examples
+// 2, 5  -->  [2, 4, 16, 256, 65536]
+// 3, 3  -->  [3, 9, 81]
+
+function squaresPrev(x, n) {
+    if(n<=0){
+        return []
+    }else{
+        let res = [x]
+        for(let i = 1 ; i<n ; i++){
+            res.push(res[i-1]*res[i-1])
+        }
+        return res
+    }
+}
+
+//====================================================================

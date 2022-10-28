@@ -396,3 +396,100 @@ function squaresPrev(x, n) {
 }
 
 //====================================================================
+/*
+ Given two or more arrays, write a function that combines
+ their elements into one array without any repetition. 
+ E.g mergeArrays([1,2,3,3,3], [1,4,5,2]) // should return [1,2,3,4,5]
+*/
+function mergeArrays(...arrays){
+    return Array.from(new Set(arrays.reduce((jointArray, subArray) => {
+        jointArray = jointArray.concat(subArray)
+        return jointArray
+    }, [])))
+}
+
+// console.log(mergeArrays([1,2,3,3,3], [1,4,5,2]));
+
+function mergeArraysBis(...arrays) {
+    let jointArray = []
+    arrays.forEach(array => {
+        jointArray = [...jointArray, ...array] //just a concat
+    });
+    return Array.from(new Set(jointArray))
+}
+
+// console.log(mergeArraysBis([1,2,3,3,3], [1,4,5,2]));
+
+//=====================================================================
+/* 
+ Given two or more arrays, write a function that combines
+ their elements into one array without any repetition. 
+ E.g  chunkArray([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13], 5)
+ should return [[1, 2, 3, 4, 5], [6, 7, 8, 9, 10], [11, 12, 13]]
+*/
+
+function chunkArray(array, size){
+    let res = []
+    let arrayCpy = [...array]
+    // let arrayCpy = array.slice()
+    while(arrayCpy.length>0){
+        res.push(arrayCpy.splice(0, size))
+    }
+    return res
+}
+
+function chunkArrayBis(array, size){
+    let res = []
+    for(let i=0 ; i<array.length ; i+=size){
+        res.push(array.slice(i, i+size))
+    }
+    return res
+}
+
+function chunkArrayTer(array, size){
+    if(array.length <= size){
+        return [array]
+    }else{
+        return [array.slice(0, size), ...chunkArrayTer(array.slice(size), size)]
+    }
+}
+
+// console.log(chunkArrayTer([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13], 5));
+
+//=================================================================
+// https://www.codewars.com/kata/596343a24489a8b2a00000a2
+// Fix My Phone Numbers
+// Oh thank goodness you're here! The last intern has completely ruined everything!
+
+// All of our customer's phone numbers have been scrambled, and we need those phone numbers to annoy them with endless sales calls!
+
+// The Format
+// Phone numbers are stored as strings and comprise 11 digits, eg '02078834982' and must always start with a 0.
+
+// However, something strange has happened and now all of the phone numbers contain lots of random characters, whitespace and some are not phone numbers at all!
+
+// For example, '02078834982' has somehow become 'efRFS:)0207ERGQREG88349F82!' and there are lots more lines that we need to check.
+
+// The Task
+// Given a string, you must decide whether or not it contains a valid phone number. If it does, return the corrected phone number as a string ie. '02078834982' with no whitespace or special characters, else return "Not a phone number".
+
+function isItANum(str) {
+    let nums = Array.from(Array(10).keys())
+    let potentialNumber = str.split('').filter(char => char !==' ' && nums.includes(+char)) // apparently unary (+) operator with +' ' gives me 0
+    if(potentialNumber.length === 11 && potentialNumber[0]==='0'){
+        return potentialNumber.join('')
+    }else{
+        return "Not a phone number"
+    }
+}
+
+function isItANumBis(s) {
+    let r = s.split('').filter(c=>'0123456789'.includes(c)).join('')
+    return r.length==11 && r[0]=='0' && r || "Not a phone number"
+  }
+
+// console.log(isItANum("S:)0207ERGQREG88349F82!efRF)"))// "02078834982"
+// console.log(isItANum("sjfniebienvr12312312312ehfWh"))// "Not a phone number")
+// console.log(isItANum('0T & Q h M B Q & F6668742699'));
+
+//=========================================================================

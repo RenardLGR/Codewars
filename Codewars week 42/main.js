@@ -493,3 +493,73 @@ function isItANumBis(s) {
 // console.log(isItANum('0T & Q h M B Q & F6668742699'));
 
 //=========================================================================
+// https://www.codewars.com/kata/5277c8a221e209d3f6000b56
+
+// Write a function that takes a string of braces, and determines if the order of the braces is valid. It should return true if the string is valid, and false if it's invalid.
+
+// This Kata is similar to the Valid Parentheses https://www.codewars.com/kata/valid-parentheses Kata, but introduces new characters: brackets [], and curly braces {}. Thanks to @arnedag for the idea!
+
+// All input strings will be nonempty, and will only consist of parentheses, brackets and curly braces: ()[]{}.
+
+// What is considered Valid?
+// A string of braces is considered valid if all braces are matched with the correct brace.
+
+// Examples
+// "(){}[]"   =>  True
+// "([{}])"   =>  True
+// "(}"       =>  False
+// "[(])"     =>  False
+// "[({})](]" =>  False
+
+function validBraces(braces){
+    let bracesCpy = braces
+
+    //relace '()', '[]' and '{}' with nothing, repeat until done
+    let isDone = false
+    while(!isDone){
+        if(bracesCpy.includes('()') || bracesCpy.includes('[]') || bracesCpy.includes('{}')){
+            bracesCpy = bracesCpy.replace('()', '')
+            bracesCpy = bracesCpy.replace('[]', '')
+            bracesCpy = bracesCpy.replace('{}', '')
+        }else{
+            isDone = true
+        }
+    }
+    return bracesCpy.length === 0
+}
+
+// console.log(validBraces('(({{[[]]}}))')) //true
+// console.log(validBraces('{}({})[]')) //true
+// console.log(validBraces('({})[({})]')) //true
+// console.log(validBraces('())({}}{()][][')) //false
+
+//========================================================================
+// https://www.codewars.com/kata/valid-parentheses
+// Write a function that takes a string of parentheses, and determines if the order of the parentheses is valid. The function should return true if the string is valid, and false if it's invalid.
+
+// Examples
+// "()"              =>  true
+// ")(()))"          =>  false
+// "("               =>  false
+// "(())((()())())"  =>  true
+// Constraints
+// 0 <= input.length <= 100
+
+function validParentheses(parens) {
+    let parensCpy = parens
+
+    //relace '()' with nothing, repeat until done
+    let isDone = false
+
+    while(!isDone){
+        if(parensCpy.includes('()')){
+            parensCpy = parensCpy.replace('()', '')
+        }else{
+            isDone = true
+        }
+    }
+
+    return parensCpy.length === 0
+}
+
+//===========================================================================

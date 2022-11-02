@@ -215,6 +215,76 @@ function countPhotos(road){
 
     return res
 }
+//==============================================================
+// https://www.codewars.com/kata/5878520d52628a092f0002d0/train/javascript
+// Given a string, return a new string that has transformed based on the input:
+
+// Change case of every character, ie. lower case to upper case, upper case to lower case.
+// Reverse the order of words from the input.
+// Note: You will have to handle multiple spaces, and leading/trailing spaces.
+
+// For example:
+
+// "Example Input" ==> "iNPUT eXAMPLE"
+// You may assume the input only contain English alphabet and spaces.
+
+function stringTransformer(str) { //efficient
+    let strCaseSwitched = ''
+    for(let i=0 ; i<str.length ; i++){
+        strCaseSwitched+= str[i].toLowerCase() === str[i] ? str[i].toUpperCase() : str[i].toLowerCase()
+    }
+    return strCaseSwitched.split(' ').reverse().join(' ')
+}
+
+function stringTransformerBis(str) { //one liner
+    return str.split('').map(char => char.toLowerCase()===char ? char.toUpperCase() : char.toLowerCase()).join('').split(' ').reverse().join(' ')
+}
+
+// console.log(stringTransformer('  Xof   Tksi   Owlcw   Zve Omj Gqso Enzv')); //=>'eNZV gQSO oMJ zVE   oWLCW   tKSI   xOF  '
+// console.log(stringTransformerBis('  Xof   Tksi   Owlcw   Zve Omj Gqso Enzv')); //=>'eNZV gQSO oMJ zVE   oWLCW   tKSI   xOF  '
+//==============================================================
+// https://www.codewars.com/kata/6357825a00fba284e0189798
+// The task
+// You have to make a program capable of returning the sum of all the elements of a triangle with side of size n+1n+1n+1.
+
+// The problem
+// Your solution has to support 0≤n≤1060\leq n \leq 10^60≤n≤10 
+// 6
+//  . Brute-forcing will not work!
+
+// The definition
+// A triangle element aija_{ij}a 
+// ij
+// ​
+//   where iii is the column and jjj is the row can be defined as aij=2j+i+1a_{ij}=2j + i + 1a 
+// ij
+// ​
+//  =2j+i+1 where 0≤j≤i≤n0\leq j\leq i\leq n0≤j≤i≤n
+
+// Examples
+// For n = 2:
+
+// 1  2  3      \
+//    4  5       \__ 1+2+3+4+5+7 sums to: 22
+//       7       /
+// sum(2) = 22
+// For n = 3:
+
+// 1  2  3  4   \
+//    4  5  6    \__ 1+2+3+4+4+5+6+7+8+10 sums to: 50
+//       7  8    /
+//         10   /
+// sum(3) = 50
+// Hints
+// Euler transform (Optional)
+// Sums of powers
+
+
+// OEIS A002412
+// Wolfram Alpha to the rescue ;-)
+const getSum = n => (n + 1n) * (n + 2n) * (4n * n + 3n) / 6n;
+
+//I did not understand...
 
 //==============================================================
 // https://www.codewars.com/kata/59f3178e3640cef6d90000d5/train/javascript
@@ -230,26 +300,28 @@ function countPhotos(road){
 function sumOfIntegersCombinations(arr, targetSum){
     let maxLen = arr.length
 
-    let combinations = []
+    let answers = []
 
-    findNumbers(maxLen, targetSum, arr, combinations, [], 0)
+    findNumbers(targetSum, arr, answers, [], 0)
 
     return combinations
     //helper func
-    function findNumbers(maxLen, targetSum, inputArr, combinations, temp, index){
-        if(temp.reduce((acc, cur) => acc+cur, 0)===targetSum){
-            combinations.push([...temp])
-            return
-        }
-        for(let i=0 ; i<arr.length ; i++){
-
-            if(temp.reduce((acc, cur) => acc+cur, 0)<targetSum){
-                temp.push(inputArr[index])
-                findNumbers(maxLen, targetSum, inputArr, combinations, temp, i)
-                // removing element from list (backtracking)
-                temp.splice(temp.indexOf(arr[i]), 1);
+    function findNumbers(sum, inputArr, answers, temp, index){
+        if(sum===0){
+            if(temp.length<=maxLen){
+                answers.push([...temp])
+                return
             }
+        }
 
+        for(let i=0 ; i<inputArr.length ; i++){
+            if( (sum-inputArr[i])>=0){
+                temp.push(arr[i])
+
+                findNumbers(sum-arr[i], inputArr, answers, temp, index)
+
+                temp.slice(temp.indexOf(arr[i]), 1)
+            }
         }
     }
 }

@@ -281,10 +281,14 @@ function stringTransformerBis(str) { //one liner
 
 
 // OEIS A002412
-// Wolfram Alpha to the rescue ;-)
-const getSum = n => (n + 1n) * (n + 2n) * (4n * n + 3n) / 6n;
-
-//I did not understand...
+// https://www.wolframalpha.com/input?i=OEIS+A002412
+function getSum(num){
+    // OEIS A002412
+    // https://www.wolframalpha.com/input?i=OEIS+A002412
+    //Wolfram Alpha is in this link 1 term behind, replace n with n+1 and we have this result :
+    //We also use the BigInt notation by appending a n ; since the function is called with a BigInt, every Number of our function must now be a BigInt
+    return (num + 1n) * (num + 2n) * (4n * num + 3n) / 6n;
+}
 
 //==============================================================
 // https://www.codewars.com/kata/59f3178e3640cef6d90000d5/train/javascript
@@ -307,23 +311,72 @@ function sumOfIntegersCombinations(arr, targetSum){
     return combinations
     //helper func
     function findNumbers(sum, inputArr, answers, temp, index){
-        if(sum===0){
-            if(temp.length<=maxLen){
-                answers.push([...temp])
-                return
-            }
+        if(sum === 0){
+            answers.push([...temp])
+            return
         }
-
         for(let i=0 ; i<inputArr.length ; i++){
-            if( (sum-inputArr[i])>=0){
-                temp.push(arr[i])
-
-                findNumbers(sum-arr[i], inputArr, answers, temp, index)
-
-                temp.slice(temp.indexOf(arr[i]), 1)
+            if(sum - inputArr[i]>=0){
+                temp.push(inputArr[i]);
+                findNumbers(sum-inputArr[i], inputArr, answers, [...temp, inputArr[i]], i)
+                temp.splice(temp.indexOf(inputArr[i]), 1);
             }
+
         }
     }
 }
-//TODO
 // console.log(sumOfIntegersCombinations([3,6,9,12],12));
+
+//====================================================================
+// https://www.codewars.com/kata/550498447451fbbd7600041c
+// Given two arrays a and b write a function comp(a, b) (orcompSame(a, b)) that checks whether the two arrays have the "same" elements, with the same multiplicities (the multiplicity of a member is the number of times it appears). "Same" means, here, that the elements in b are the elements in a squared, regardless of the order.
+
+// Examples
+// Valid arrays
+// a = [121, 144, 19, 161, 19, 144, 19, 11]  
+// b = [121, 14641, 20736, 361, 25921, 361, 20736, 361]
+// comp(a, b) returns true because in b 121 is the square of 11, 14641 is the square of 121, 20736 the square of 144, 361 the square of 19, 25921 the square of 161, and so on. It gets obvious if we write b's elements in terms of squares:
+
+// a = [121, 144, 19, 161, 19, 144, 19, 11] 
+// b = [11*11, 121*121, 144*144, 19*19, 161*161, 19*19, 144*144, 19*19]
+// Invalid arrays
+// If, for example, we change the first number to something else, comp is not returning true anymore:
+
+// a = [121, 144, 19, 161, 19, 144, 19, 11]  
+// b = [132, 14641, 20736, 361, 25921, 361, 20736, 361]
+// comp(a,b) returns false because in b 132 is not the square of any number of a.
+
+// a = [121, 144, 19, 161, 19, 144, 19, 11]  
+// b = [121, 14641, 20736, 36100, 25921, 361, 20736, 361]
+// comp(a,b) returns false because in b 36100 is not the square of any number of a.
+
+// Remarks
+// a or b might be [] or {} (all languages except R, Shell).
+// a or b might be nil or null or None or nothing (except in C++, COBOL, Crystal, D, Dart, Elixir, Fortran, F#, Haskell, Nim, OCaml, Pascal, Perl, PowerShell, Prolog, PureScript, R, Racket, Rust, Shell, Swift).
+// If a or b are nil (or null or None, depending on the language), the problem doesn't make sense so return false.
+
+function comp(array1, array2) {
+    if (array1 && array2) { //check for valid input ; comp([], []) returns true as expected
+        let array1SquaredSorted = array1.map(num => num * num).sort()
+        let array2Sorted = array2.sort()
+
+        if(array1SquaredSorted.length !== array2Sorted.length){
+            return false
+        }
+        let res = true
+        for(let i=0 ; i<array1SquaredSorted.length ; i++){ //make sure every element matches its image
+            if(array1SquaredSorted[i] !== array2Sorted[i]){
+                res = false
+            }
+        }
+        //return array1SquaredSorted.every((num, idx) => num === array2Sorted[idx]) //no for loop version
+        return res
+    }else{
+        return false
+    }
+}
+
+// console.log(comp([], []));
+// console.log(comp([10, 2, 7, 7, 10, 4, 4, 1, 2, 0, 8, 5, 0, 7, 7, 1, 0, 1, 3, 7] , [49, 25, 4, 100, 1, 0, 0, 49, 16, 4, 9, 1, 1, 49, 64, 100, 1, 49, 49, 16]));
+
+//=================================================================

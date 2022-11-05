@@ -413,3 +413,42 @@ function barTriang(p1, p2, p3){
 // console.log(barTriang([4, 2], [12, 2], [6, 10]));
 
 //=====================================================================
+// https://www.codewars.com/kata/5873b2010565844b9100026d
+// There are no explanations. You have to create the code that gives the following results in Python, Ruby, and Haskell:
+
+// one_two_three(0) == [0, 0]
+// one_two_three(1) == [1, 1]
+// one_two_three(2) == [2, 11]
+// one_two_three(3) == [3, 111]
+// one_two_three(19) == [991, 1111111111111111111]
+// And it should give the following results in Javascript, Scala, D, Go, and Rust:
+
+// oneTwoThree(0) == ['0', '0']
+// oneTwoThree(1) == ['1', '1']
+// oneTwoThree(3) == ['3', '111']
+// oneTwoThree(19) == ['991', '1111111111111111111']
+// oneTwoThree(49) == [ '999994', '1111111111111111111111111111111111111111111111111' ]
+
+function oneTwoThree(n) {
+    //The sum of numbers of answer[0] is equal to n
+    //answer[1] is '1' repeated n times
+    if(n===0){
+        return ['0', '0']
+    }
+
+    let answer = []
+    //generates answer[0]
+    let ans0 = '9'.repeat(Math.floor(n/9))
+    let temp = n%9
+    ans0 = temp===0 ? ans0 : ans0+temp
+
+    //generates answer[1]
+    let ans1 = '1'.repeat(n)
+
+    return [ans0, ans1]
+}
+
+// console.log(oneTwoThree(19));
+// console.log(oneTwoThree(49));
+
+//================================================================

@@ -352,3 +352,59 @@ function Xbonacci(signature, n){
 //console.log(Xbonacci([1,0,0,0,0,0,0,0,0,0], 20)) // -> [1,0,0,0,0,0,0,0,0,0,1,1,2,4,8,16,32,64,128,256]
 
 //=====================================================================
+// https://www.codewars.com/kata/55d24f55d7dd296eb9000030
+// Write a program that finds the summation of every number from 1 to num. The number will always be a positive integer greater than 0.
+
+// For example:
+
+// summation(2) -> 3
+// 1 + 2
+
+// summation(8) -> 36
+// 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8
+
+function gaussSummation(n){
+    return n*(n+1)/2
+}
+
+//=======================================================================
+// https://www.codewars.com/kata/55b42574ff091733d900002f
+// Make a program that filters a list of strings and returns a list with only your friends name in it.
+
+// If a name has exactly 4 letters in it, you can be sure that it has to be a friend of yours! Otherwise, you can be sure he's not...
+
+// Ex: Input = ["Ryan", "Kieran", "Jason", "Yous"], Output = ["Ryan", "Yous"]
+
+// i.e.
+
+// friend ["Ryan", "Kieran", "Mark"] `shouldBe` ["Ryan", "Mark"]
+// Note: keep the original order of the names in the output.
+
+function friend(friends){
+    return friends.filter(f => f.length === 4)
+}
+
+//=======================================================================
+// https://www.codewars.com/kata/56269eb78ad2e4ced1000013
+// You might know some pretty large perfect squares. But what about the NEXT one?
+
+// Complete the findNextSquare method that finds the next integral perfect square after the one passed as a parameter. Recall that an integral perfect square is an integer n such that sqrt(n) is also an integer.
+
+//A perfect square is the square of a natural number
+
+// If the parameter is itself not a perfect square then -1 should be returned. You may assume the parameter is non-negative.
+
+// Examples:(Input --> Output)
+
+// 121 --> 144
+// 625 --> 676
+// 114 --> -1 since 114 is not a perfect square
+
+function findNextSquare(sq) {
+    let root = Math.sqrt(sq)
+    if(root%1 === 0){//check if input is a perfect square
+        return (root+1)*(root+1)
+    }else{
+        return -1
+    }
+}

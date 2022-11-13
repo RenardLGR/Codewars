@@ -407,4 +407,72 @@ function findNextSquare(sq) {
     }else{
         return -1
     }
+    //cold use a ternary
+}
+
+//======================================================================
+// https://www.codewars.com/kata/517abf86da9663f1d2000003/train/javascript
+// Complete the method/function so that it converts dash/underscore delimited words into camel casing. The first word within the output should be capitalized only if the original word was capitalized (known as Upper Camel Case, also often referred to as Pascal case). The next words should be always capitalized.
+
+// Examples
+// "the-stealth-warrior" gets converted to "theStealthWarrior"
+// "The_Stealth_Warrior" gets converted to "TheStealthWarrior"
+
+function toCamelCase(str){
+    //Some strings contain both - and _ as a separation, first two methods replace every - with a _
+    return str.split('-').join('_').split('_').map((word, idx) => idx===0 ? word : word.slice(0,1).toUpperCase()+word.slice(1)).join('')
+}
+
+//==========================================================================
+// https://www.codewars.com/kata/5679aa472b8f57fb8c000047
+// You are going to be given an array of integers. Your job is to take that array and find an index N where the sum of the integers to the left of N is equal to the sum of the integers to the right of N. If there is no index that would make this happen, return -1.
+
+// For example:
+
+// Let's say you are given the array {1,2,3,4,3,2,1}:
+// Your function will return the index 3, because at the 3rd position of the array, the sum of left side of the index ({1,2,3}) and the sum of the right side of the index ({3,2,1}) both equal 6.
+
+// Let's look at another one.
+// You are given the array {1,100,50,-51,1,1}:
+// Your function will return the index 1, because at the 1st position of the array, the sum of left side of the index ({1}) and the sum of the right side of the index ({50,-51,1,1}) both equal 1.
+
+// Last one:
+// You are given the array {20,10,-80,10,10,15,35}
+// At index 0 the left side is {}
+// The right side is {10,-80,10,10,15,35}
+// They both are equal to 0 when added. (Empty arrays are equal to 0 in this problem)
+// Index 0 is the place where the left side and right side are equal.
+
+// Note: Please remember that in most programming/scripting languages the index of an array starts at 0.
+
+// Input:
+// An integer array of length 0 < arr < 1000. The numbers in the array can be any integer positive or negative.
+
+// Output:
+// The lowest index N where the side to the left of N is equal to the side to the right of N. If you do not find an index that fits these rules, then you will return -1.
+
+// Note:
+// If you are given an array with multiple answers, return the lowest correct index.
+
+function findEvenIndex(arr){
+    let res = -1
+    for(let i=0 ; i<arr.length ; i++){
+        let before = arr.slice(0, i)
+        let after = arr.slice(i+1)
+        if(before.reduce((acc, cur) => acc+cur, 0) === after.reduce((acc, cur) => acc+cur, 0)){
+            res=i
+            return res
+        }
+    }
+    return res
+}
+
+
+function findEvenIndexBis(arr){
+    return arr.findIndex((el, idx) => sum(arr.slice(0, idx))===sum(arr.slice(i+1)))
+
+    //helper
+    function sum(arr){
+        return arr.reduce((acc, cur) => acc+cur, 0)
+    }
 }

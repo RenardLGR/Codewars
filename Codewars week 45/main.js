@@ -261,3 +261,75 @@ let decodeMorsePlus = function(morseCode){
 // Part3/3 of the series, too difficult
 
 //==================================================================
+// https://www.codewars.com/kata/55c04b4cc56a697bb0000048
+// Complete the function scramble(str1, str2) that returns true if a portion of str1 characters can be rearranged to match str2, otherwise returns false.
+
+// Notes:
+
+// Only lower case letters will be used (a-z). No punctuation or digits will be included.
+// Performance needs to be considered.
+// Examples
+// scramble('rkqodlw', 'world') ==> True
+// scramble('cedewaraaossoqqyt', 'codewars') ==> True
+// scramble('katas', 'steak') ==> False
+
+function scramble(str1, str2) {
+    let freq1 = str1.split('').reduce((acc, cur) => {
+        acc[cur] = (acc[cur] || 0) + 1
+        return acc
+    }, {})
+
+    return str2.split('').every(el => --freq1[el] >= 0)
+}
+
+//========================================================================
+// https://www.codewars.com/kata/55f4a44eb72a0fa91600001e
+// Implement a function that receives a string, and lets you extend it with repeated calls. When no argument is passed you should return a string consisting of space-separated words you've received earlier.
+
+// Note: there will always be at least 1 string; all inputs will be non-empty.
+
+// For example:
+
+// createMessage("Hello")("World!")("how")("are")("you?")() === "Hello World! how are you?"
+
+function createMessage(str) {
+    return function(s){
+        if(s){
+            return createMessage(str+' '+s)
+        }else{
+            return str
+        }
+    }
+}
+
+//============================================================================
+// https://www.codewars.com/kata/63431f9b9943dd4cee787da5/train/javascript
+// SEE DESC
+
+// calculate resistance of circuit
+function calculateResistance(circuit) {
+    let res = compute(circuit)
+    if(res===0){
+        throw new Error("Short Circuit!")
+    }
+    if(res===Infinity){
+        throw new Error("Broken Circuit!")
+    }
+    return res
+
+    //helper
+    function compute([isSeries, ...circuits]){
+        return isSeries ? circuits.reduce(reduceSeries, 0) : 1/circuits.reduce(reduceParallel, 0)
+    }
+
+    //helpers reducers
+    function reduceSeries(acc, cur){
+        return Array.isArray(cur) ? acc+compute(cur) : acc+cur
+    }
+
+    function reduceParallel(acc, cur){
+        return Array.isArray(cur) ? acc+ 1/compute(cur) : acc+ 1/cur
+    }
+}
+
+//========================================================================

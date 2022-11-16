@@ -333,3 +333,50 @@ function calculateResistance(circuit) {
 }
 
 //========================================================================
+// https://www.codewars.com/kata/578aa45ee9fd15ff4600090d/train/javascript
+// You will be given an array of numbers. You have to sort the odd numbers in ascending order while leaving the even numbers at their original positions.
+
+// Examples
+// [7, 1]  =>  [1, 7]
+// [5, 8, 6, 3, 4]  =>  [3, 8, 6, 5, 4]
+// [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]  =>  [1, 8, 3, 6, 5, 4, 7, 2, 9, 0]
+
+function sortArray(array) {
+    let oddSorted = array.filter(e => e%2===1 || e%2===-1).sort((a,b) => a-b) //.sort() converts the argument into string and sort them
+    
+    return array.map(e => {
+        if(e%2===1 || e%2===-1){ //need to take care of negative numbers too
+            return oddSorted.shift()
+        }else{
+            return e
+        }
+    })
+}
+
+// console.log(sortArray([9, 8, 7, 6, 5, 4, 3, 2, 1, 0])); // -> [1, 8, 3, 6, 5, 4, 7, 2, 9, 0]
+// console.log(sortArray([5, 3,  2, 8, 1, 4, 11]));
+
+//=====================================================================
+// https://www.codewars.com/kata/5a430359e1ce0e35540000b1/
+// Given an array of strings of the same letter type. Return a new array, which will differ in that the length of each element is equal to the average length of the elements of the previous array.
+
+// A few examples:
+
+// ['u', 'y'] =>  ['u', 'y'] // average length is 1
+// ['aa', 'bbb', 'cccc'] => ['aaa', 'bbb', 'ccc'] // average length is 3
+// ['aa', 'bb', 'ddd', 'eee'] => ['aaa', 'bbb', 'ddd', 'eee'] // average length is 2.5 round up to 3
+// If the average length is not an integer, use Math.round().
+// The input array's length > 1
+
+function averageLength(arr) { 
+    let average = Math.round(arr.reduce((a, c) => a+c.length, 0)/arr.length)
+    return arr.map(s => s[0].repeat(average))
+}
+
+
+function averageLengthBis(arr){
+    let average = Math.round(arr.join('').length/arr.length)
+    return arr.map(s => s[0].repeat(average))
+}
+
+//=========================================================================

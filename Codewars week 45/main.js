@@ -380,3 +380,73 @@ function averageLengthBis(arr){
 }
 
 //=========================================================================
+// https://www.codewars.com/kata/56606694ec01347ce800001b/train/javascript
+// Implement a function that accepts 3 integer values a, b, c. The function should return true if a triangle can be built with the sides of given length and false in any other case.
+
+// (In this case, all triangles must have surface greater than 0 to be accepted).
+
+function isTriangle(a,b,c){
+    //A trinagle can be built if the sum of the two shortest sides is greater than the greater side. (a triangle with an interior angle of 180° is not considered as a triangle here)
+    let sides = [a, b, c].sort((a,b) => b-a) //sort descending
+    return sides[0] < sides[1]+sides[2]
+}
+
+//=======================================================================
+// https://www.codewars.com/kata/55fd2d567d94ac3bc9000064
+// Given the triangle of consecutive odd numbers:
+
+//              1
+//           3     5
+//        7     9    11
+//    13    15    17    19
+// 21    23    25    27    29
+// ...
+// Calculate the sum of the numbers in the nth row of this triangle (starting at index 1) e.g.: (Input --> Output)
+
+// 1 -->  1
+// 2 --> 3 + 5 = 8
+
+function rowSumOddNumbers(n) {
+    //naive way : build the triangle
+    let nthRow = 1 //given row
+    let row = [1] //array of elements of a given row
+    let nb = 1 //increase at each step, only odd will populate our row
+    while(nthRow<=n){ //stops when reach target row
+        let temp = []
+        while(temp.length<nthRow){ //populate array of elements of a given row
+            if(nb%2===1){
+                temp.push(nb)
+            }
+            nb++
+        }
+        row=temp.slice()
+        nthRow++
+    }
+    let res = row.reduce((acc, cur) => acc+cur, 0)
+    return res
+}
+
+// console.log(rowSumOddNumbers(1)); // -> 1
+// console.log(rowSumOddNumbers(3)); // -> 27
+// console.log(rowSumOddNumbers(5)); // -> 125
+// console.log(rowSumOddNumbers(42)); // => 74088
+
+function rowSumOddNumbersBis(n){
+  /* The rows' start numbers are Hogben's centered polygonal numbers:
+     1, 3, 7, 13, 21, 31, 43 = b[n] = n^2 - n + 1.
+     <https://oeis.org/A002061>
+     
+     The sum of one row is given by:
+     s[n] = n^2 + n(b[n] - 1).
+     <https://www.quora.com/What-is-the-sum-of-n-consecutive-odd-integers/answer/Xavier-Dectot>
+     
+     Inline b[n]:
+     s[n] = n^2 + n(n^2 - n + 1 - 1)
+          = n^2 + n(n^2 - n)
+          = n^2 + n^3 - n^2
+          = n^3
+     ... oh. */
+  return n * n * n;
+}
+
+//=========================================================================

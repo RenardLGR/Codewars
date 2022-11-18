@@ -496,3 +496,146 @@ function moveZerosBis(arr){
 }
 
 //================================================================================
+//Given a number, return an array of its prime factor
+
+// O(n) solution :
+
+function primeFactors(n) {
+    const factors = [];
+    let divisor = 2;
+  
+    while (n >= 2) {
+      if (n % divisor == 0) {
+        if(!factors.includes(divisor)){
+            factors.push(divisor);
+        }
+        n = n / divisor;
+      } else {
+        divisor++;
+      }
+    }
+    return factors;
+}
+
+// console.log(primeFactors(8));
+
+//===========================================================================
+// https://leetcode.com/problems/ugly-number/
+
+// An ugly number is a positive integer whose prime factors are limited to 2, 3, and 5.
+
+// Given an integer n, return true if n is an ugly number.
+
+// Example 1:
+
+// Input: n = 6
+// Output: true
+// Explanation: 6 = 2 × 3
+// Example 2:
+
+// Input: n = 1
+// Output: true
+// Explanation: 1 has no prime factors, therefore all of its prime factors are limited to 2, 3, and 5.
+// Example 3:
+
+// Input: n = 14
+// Output: false
+// Explanation: 14 is not ugly since it includes the prime factor 7.
+ 
+
+// Constraints:
+
+// -231 <= n <= 231 - 1
+
+var isUgly = function(n) {
+    // A non-positive integer cannot be ugly
+    if (n <= 0) {
+        return false;
+    }
+    if(n===1){
+        return true
+    }
+    if(n===0){
+        return false
+    }
+    
+    let temp = n
+    while(temp%2===0){
+        temp=temp/2
+    }
+    while(temp%3===0){
+        temp=temp/3
+    }
+    while(temp%5===0){
+        temp=temp/5
+    }
+    
+    return temp === 1
+};
+
+//======================================================================
+// https://www.codewars.com/kata/578553c3a1b8d5c40300037c
+// Given an array of ones and zeroes, convert the equivalent binary value to an integer.
+
+// Eg: [0, 0, 0, 1] is treated as 0001 which is the binary representation of 1.
+
+// Examples:
+
+// Testing: [0, 0, 0, 1] ==> 1
+// Testing: [0, 0, 1, 0] ==> 2
+// Testing: [0, 1, 0, 1] ==> 5
+// Testing: [1, 0, 0, 1] ==> 9
+// Testing: [0, 0, 1, 0] ==> 2
+// Testing: [0, 1, 1, 0] ==> 6
+// Testing: [1, 1, 1, 1] ==> 15
+// Testing: [1, 0, 1, 1] ==> 11
+// However, the arrays can have varying lengths, not just limited to 4.
+
+const binaryArrayToNumber = arr => {
+    return parseInt(arr.join(''), 2)
+}
+
+//=========================================================================
+// https://www.codewars.com/kata/582cb0224e56e068d800003c
+// Nathan loves cycling.
+
+// Because Nathan knows it is important to stay hydrated, he drinks 0.5 litres of water per hour of cycling.
+
+// You get given the time in hours and you need to return the number of litres Nathan will drink, rounded to the smallest value.
+
+// For example:
+
+// time = 3 ----> litres = 1
+
+// time = 6.7---> litres = 3
+
+// time = 11.8--> litres = 5
+
+function litres(time) {
+    return Math.floor(time/2)
+}
+
+//==============================================================================
+// https://www.codewars.com/kata/5949481f86420f59480000e7
+// Given a list of integers, determine whether the sum of its elements is odd or even.
+
+// Give your answer as a string matching "odd" or "even".
+
+// If the input array is empty consider it as: [0] (array with a zero).
+
+// Examples:
+// Input: [0]
+// Output: "even"
+
+// Input: [0, 1, 4]
+// Output: "odd"
+
+// Input: [0, -1, -5]
+// Output: "even"
+
+function oddOrEven(arr) {
+    return arr.length!==0 ? (arr.reduce((acc, cur) => acc+cur, 0)%2===0 ? "even" : "odd") : "even"
+    //return arr.reduce((a,b)=>a+b,0) % 2 ? 'odd' : 'even' //would suffice
+}
+
+//===============================================================================

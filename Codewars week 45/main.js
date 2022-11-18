@@ -457,6 +457,8 @@ function rowSumOddNumbersBis(n){
 // pigIt('Pig latin is cool'); // igPay atinlay siay oolcay
 // pigIt('Hello world !');     // elloHay orldway !
 
+//Note : there is no ',' nor '.' and '?' and '!' will be separated with a space
+
 function pigIt(str){
     let words = str.split(' ')
     let pigs = words.map(w => {
@@ -470,3 +472,27 @@ function pigIt(str){
 }
 
 //===============================================================================
+// https://www.codewars.com/kata/52597aa56021e91c93000cb0
+// Write an algorithm that takes an array and moves all of the zeros to the end, preserving the order of the other elements.
+
+// moveZeros([false,1,0,1,2,0,1,3,"a"]) // returns[false,1,1,2,1,3,"a",0,0]
+
+function moveZeros(arr) {
+    let nbZeroes = 0
+    let res = arr.filter(e => {
+        if(e === 0){
+            nbZeroes++
+            return false
+        }else{
+            return true
+        }
+    })
+
+    return res.concat(Array(nbZeroes).fill(0))
+}
+
+function moveZerosBis(arr){
+    return arr.filter(e => e!==0).concat(arr.filter(e => e===0))
+}
+
+//================================================================================

@@ -639,3 +639,100 @@ function oddOrEven(arr) {
 }
 
 //===============================================================================
+//Write a function that tells us if a number is odd or even 
+
+function oddOrEven(n){
+    // The bitwise AND (&) operator returns a 1 in each bit position for which the corresponding bits of both operands are 1s.
+    return `${n} is ${n & 1 ? "odd" : "even"}`
+    // return `${n} is ${n%2===0 ? "even" : "odd"}`
+}
+
+// console.log(oddOrEven(5));
+// console.log(oddOrEven(6));
+
+//===============================================================================
+// https://www.codewars.com/kata/52685f7382004e774f0001f7
+// Write a function, which takes a non-negative integer (seconds) as input and returns the time in a human-readable format (HH:MM:SS)
+
+// HH = hours, padded to 2 digits, range: 00 - 99
+// MM = minutes, padded to 2 digits, range: 00 - 59
+// SS = seconds, padded to 2 digits, range: 00 - 59
+// The maximum time never exceeds 359999 (99:59:59)
+
+// You can find some examples in the test fixtures.
+
+function humanReadable (seconds) {
+    let d = new Date(seconds*1000) //convert sec to millisec in order to use Date() object
+    //Date.toUTCString() returns a string like 'Mon, 05 Jan 1970 03:59:59 GMT' (seconds = 359999)
+    let day = d.toUTCString().split(' ')[1] //take the day between 01 and 05
+    day = day.toString()-1
+    let time = d.toUTCString().split(' ')[4] //take the time as : '03:59:59'
+    let timeFormated = time.split(':')
+
+    for(let i=0 ; i<day ; i++){ //adds 24 hrs for each day
+        timeFormated[0] = +timeFormated[0] + 24
+    }
+    return timeFormated.join(':')
+}
+
+// console.log(humanReadable(45296)) // -> 12:34:56
+// console.log(humanReadable(359999)) // -> 99:59:59
+
+//=============================================================================
+// https://www.codewars.com/kata/5951d30ce99cf2467e000013/train/javascript
+// Given an array of 3 non-negative integers a, b and c, determine if they form a pythagorean triple.
+
+// A pythagorean triple is formed when:
+
+// c2 = a2 + b2
+// where c is the largest value of a, b, c.
+
+// For example: a = 3, b = 4, c = 5 forms a pythagorean triple, because 52 = 32 + 42
+
+// Return Values
+// 1 if a, b and c form a pythagorean triple
+// 0 if a, b and c do not form a pythagorean triple
+// For Python: return True or False
+// For JavaScript: return true or false
+
+function isPythagoreanTriple(integers) { //fun way
+    let cpy = integers.slice()
+    for(let i=0 ; i<3 ; i++){
+        if(cpy[0]*cpy[0] === cpy[1]*cpy[1] + cpy[2]*cpy[2]){
+            return true
+        }else{
+            cpy.push(cpy.shift())
+        }
+    }
+    return false
+}
+
+function isPythagoreanTripleBis(integers) {
+    let sorted = integers.slice().sort((a, b) => b-a) //sort decreasingly
+    return sorted[0]**2 === (sorted[1]**2 + sorted[2]**2)
+}
+
+//======================================================================
+//Create a function, given a size, returns every combinations of bits of that size
+function everyCombination(size){
+    let combinations = []
+    
+    createSequences(size, [])
+    return combinations
+
+    //Closure:
+    function createSequences(size, inProgress){
+        if(size===0){
+        combinations.push(inProgress)
+        }else{
+            createSequences(size-1, [...inProgress, 0])
+            createSequences(size-1, [...inProgress, 1])
+        }
+    }
+    
+    
+}
+
+// console.log(everyCombination(4));
+
+//===========================================================================

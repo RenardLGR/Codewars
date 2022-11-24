@@ -371,4 +371,53 @@ function countSmileysTer(arr) {
 }
 
 //======================================================================
+// https://www.codewars.com/kata/55225023e1be1ec8bc000390
+// Jenny has written a function that returns a greeting for a user. However, she's in love with Johnny, and would like to greet him slightly different. She added a special case to her function, but she made a mistake.
 
+// Can you help her?
+
+function greet(name){
+    if(name === "Johnny"){
+        return "Hello, my love!";
+    }else{
+        return "Hello, " + name + "!";
+    }
+}
+
+function greetBis(name){
+    return "Hello, " + (name == "Johnny" ? "my love" : name) + "!";
+}
+
+//===================================================================
+// https://www.codewars.com/kata/5262119038c0985a5b00029f
+// Define a function that takes an integer argument and returns a logical value true or false depending on if the integer is a prime.
+
+// Per Wikipedia, a prime number ( or a prime ) is a natural number greater than 1 that has no positive divisors other than 1 and itself.
+
+// Requirements
+// You can assume you will be given an integer input.
+// You can not assume that the integer will be only positive. You may be given negative numbers as well ( or 0 ).
+// NOTE on performance: There are no fancy optimizations required, but still the most trivial solutions might time out. Numbers go up to 2^31 ( or similar, depending on language ). Looping all the way up to n, or n/2, will be too slow.
+// Example
+// is_prime(1)  /* false */
+// is_prime(2)  /* true  */
+// is_prime(-1) /* false */
+
+
+function isPrime(num) {
+    if(num<2){
+        return false
+    }else{
+        let res = true
+        for(let i=2 ; i<=Math.sqrt(num) ; i++){ //num=2 and num=3 won't even enter the loop btw
+            if(num%i === 0){
+                res = false
+                break //or just return false
+            }
+        }
+        return res
+    }
+}
+
+
+//=======================================================================================

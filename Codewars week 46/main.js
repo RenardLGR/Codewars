@@ -500,3 +500,26 @@ function longestConsec(strarr, k) {
 // console.log(longestConsec([it,wkppv,ixoyx,3452,zzzzzzzzzzzz], 15)); // => ''
 
 //==================================================================================
+// https://www.codewars.com/kata/530e15517bc88ac656000716
+// ROT13 is a simple letter substitution cipher that replaces a letter with the letter 13 letters after it in the alphabet. ROT13 is an example of the Caesar cipher.
+
+// Create a function that takes a string and returns the string ciphered with Rot13. If there are numbers or special characters included in the string, they should be returned as they are. Only letters from the latin/english alphabet should be shifted, like in the original Rot13 "implementation".
+
+function rot13(message){
+    let alphabetL = 'abcdefghijklmnopqrstuvwxyz'.repeat(2)
+    let alphabetU = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.repeat(2)
+
+    return message.split('').map(char => {
+        if(alphabetL.includes(char.toLowerCase())){ //if it is a letter
+            if(char === char.toLowerCase()){ //check casing
+                return alphabetL[alphabetL.indexOf(char)+13]
+            }else{
+                return alphabetU[alphabetU.indexOf(char)+13]
+            }
+        }else{
+            return char
+        }
+    }).join('')
+}
+
+//======================================================================================

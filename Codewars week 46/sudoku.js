@@ -69,11 +69,12 @@
 function sudoku(puzzle) {
     let cpy=puzzle.slice()
     //cpy is an array of lines which is an array of indices
+    //cpy will be modified when we find new numbers
     let puzzlePossibilities = buildPuzzlePossibilities(cpy)
     //puzzlePossibilities is the same array, with a list of possibilities instead of zeroes (other number unchanged)
 
     let isDone = false
-    let it = 1000
+    let it = 1000 //if after 1000 iterations, there is still zeroes...
 
     while(!isDone && it>0){
         isDone = true

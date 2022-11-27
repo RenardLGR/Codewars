@@ -523,3 +523,123 @@ function rot13(message){
 }
 
 //======================================================================================
+// https://www.codewars.com/kata/555eded1ad94b00403000071
+// Task:
+// Your task is to write a function which returns the sum of following series upto nth term(parameter).
+
+// Series: 1 + 1/4 + 1/7 + 1/10 + 1/13 + 1/16 +...
+// Rules:
+// You need to round the answer to 2 decimal places and return it as String.
+
+// If the given value is 0 then it should return 0.00
+
+// You will only be given Natural Numbers as arguments.
+
+// Examples:(Input --> Output)
+// 1 --> 1 --> "1.00"
+// 2 --> 1 + 1/4 --> "1.25"
+// 5 --> 1 + 1/4 + 1/7 + 1/10 + 1/13 --> "1.57"
+
+function SeriesSum(n) {
+    //the nth term is under the form 1/(3*n-2)
+    let res = 0
+    for(let i=1 ; i<=n ; i++){
+        res+=nth(i)
+    }
+
+    return res.toFixed(2)
+
+    function nth(n){
+        return 1 / (3 * n - 2)
+    }
+}
+
+// console.log(SeriesSum(1));
+// console.log(SeriesSum(2));
+// console.log(SeriesSum(5));
+
+//=========================================================================================
+// https://www.codewars.com/kata/5513795bd3fafb56c200049e
+// Create a function with two arguments that will return an array of the first n multiples of x.
+
+// Assume both the given number and the number of times to count will be positive numbers greater than 0.
+
+// Return the results as an array or list ( depending on language ).
+
+// Examples
+// countBy(1,10) === [1,2,3,4,5,6,7,8,9,10]
+// countBy(2,5) === [2,4,6,8,10]
+
+function countBy(x, n) {
+    let res = []
+    for(let i=1 ; i<=n ; i++){
+        res.push(i*x)
+    }
+
+    return res
+}
+
+//===============================================================================
+// https://www.codewars.com/kata/576b93db1129fcf2200001e6
+// Sum all the numbers of a given array ( cq. list ), except the highest and the lowest element ( by value, not by index! ).
+
+// The highest or lowest element respectively is a single element at each edge, even if there are more than one with the same value.
+
+// Mind the input validation.
+
+// Example
+// { 6, 2, 1, 8, 10 } => 16
+// { 1, 1, 11, 2, 3 } => 6
+// [ 0, 1, 6, 10, 10 ] => 17
+// Input validation
+// If an empty value ( null, None, Nothing etc. ) is given instead of an array, or the given array is an empty list or a list with only 1 element, return 0.
+
+function sumArray(array) {
+    if(array){ //normal case
+        if(array.length === 0){ //edge case
+            return 0
+        }
+    
+        return array.sort((a, b) => a-b).reduce((acc, cur, idx, arr) => {
+            if(idx!==0 && idx!==arr.length-1){
+                return acc+cur
+            }else{
+                return acc
+            }
+        }, 0)
+    }else{ //edge case
+        return 0
+    }
+}
+
+// console.log(sumArray([ 0, 1, 6, 10, 10 ]));
+
+//====================================================================
+// https://www.codewars.com/kata/56f69d9f9400f508fb000ba7
+// You take your son to the forest to see the monkeys. You know that there are a certain number there (n), but your son is too young to just appreciate the full number, he has to start counting them from 1.
+
+// As a good parent, you will sit and count with him. Given the number (n), populate an array with all numbers up to and including that number, but excluding zero.
+
+// For example(Input --> Output):
+
+// 10 --> [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+//  1 --> [1]
+
+function monkeyCount(n) {
+    return [...Array(n+1).keys()].slice(1)
+    // return Array.from(Array(n+1).keys()).slice(1)
+}
+
+//====================================================================
+// https://www.codewars.com/kata/56f6ad906b88de513f000d96
+// It's bonus time in the big city! The fatcats are rubbing their paws in anticipation... but who is going to make the most money?
+
+// Build a function that takes in two arguments (salary, bonus). Salary will be an integer, and bonus a boolean.
+
+// If bonus is true, the salary should be multiplied by 10. If bonus is false, the fatcat did not make enough money and must receive only his stated salary.
+
+// Return the total figure the individual will receive as a string prefixed with "£" (= "\u00A3", JS, Go, Java, Scala, and Julia), "$" (C#, C++, Ruby, Clojure, Elixir, PHP, Python, Haskell, and Lua) or "¥" (Rust).
+
+function bonusTime(salary, bonus) {
+    return `£${bonus ? salary*10 : salary}`
+}

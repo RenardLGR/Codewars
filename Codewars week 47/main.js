@@ -53,3 +53,44 @@ function sumMix(x){
 }
 
 //============================================================
+// https://www.codewars.com/kata/59f08f89a5e129c543000069/train/javascript
+// In this Kata, you will be given an array of strings and your task is to remove all consecutive duplicate letters from each string in the array.
+
+// For example:
+
+// dup(["abracadabra","allottee","assessee"]) = ["abracadabra","alote","asese"].
+
+// dup(["kelless","keenness"]) = ["keles","kenes"].
+
+// Strings will be lowercase only, no spaces. See test cases for more examples.
+
+function dup(array) {
+    return array.map(string => {
+        let res = ''
+        for(let i=0 ; i<string.length ; i++){
+            if(res.slice(-1)!==string[i]){ //check if the last letter added is different from the current letter
+                res+=string[i]
+            }
+        }
+        return res
+    })
+}
+
+// console.log(dup(["abracadabra","allottee","assessee"]));
+
+//==============================================================
+// https://www.codewars.com/kata/5772da22b89313a4d50012f7
+// Create a function that gives a personalized greeting. This function takes two parameters: name and owner.
+
+// Use conditionals to return the proper message:
+
+// case	return
+// name equals owner	'Hello boss'
+// otherwise	'Hello guest'
+
+function greet (name, owner) {
+    return `Hello ${name===owner ? 'boss' : 'guest'}`
+}
+
+console.log(greet('Daniel', 'Daniel')) // -> 'Hello boss'
+console.log(greet('Greg', 'Daniel')) // -> 'Hello guest'

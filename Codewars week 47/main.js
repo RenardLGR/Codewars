@@ -176,3 +176,129 @@ function setAlarm(employed, vacation){
 }
 
 //===================================================================
+// https://www.codewars.com/kata/56414fdc6488ee99db00002c/train/javascript
+// Your job is to figure out the index of which vowel is missing from a given string:
+
+// A has an index of 0,
+// E has an index of 1,
+// I has an index of 2,
+// O has an index of 3,
+// U has an index of 4.
+// Notes: There is no need for string validation and every sentence given will contain all vowels but one. Also, you won't need to worry about capitals.
+
+// Examples
+// "John Doe hs seven red pples under his bsket"          =>  0  ; missing: "a"
+// "Bb Smith sent us six neatly arranged range bicycles"  =>  3  ; missing: "o"
+
+function absentVowel(x){
+    let vowels = ['a', 'e', 'i', 'o', 'u']
+    let lowercase = x.toLowerCase()
+
+    for(let i=0 ; i<vowels.length ; i++){
+        if(!lowercase.includes(vowels[i])){
+            return i
+        }
+    }
+}
+
+function absentVowelBis(x){
+    let vowels = ['a', 'e', 'i', 'o', 'u']
+    let lowercase = x.toLowerCase()
+
+    for(let i=0 ; i<vowels.length ; i++){
+        if(lowercase.indexOf(vowels[i]) === -1){
+            return i
+        }
+    }
+}
+
+//==================================================================
+// https://www.codewars.com/kata/52742f58faf5485cae000b9a
+// Your task in order to complete this Kata is to write a function which formats a duration, given as a number of seconds, in a human-friendly way.
+
+// The function must accept a non-negative integer. If it is zero, it just returns "now". Otherwise, the duration is expressed as a combination of years, days, hours, minutes and seconds.
+
+// It is much easier to understand with an example:
+
+// * For seconds = 62, your function should return 
+//     "1 minute and 2 seconds"
+// * For seconds = 3662, your function should return
+//     "1 hour, 1 minute and 2 seconds"
+// For the purpose of this Kata, a year is 365 days and a day is 24 hours.
+
+// Note that spaces are important.
+
+// Detailed rules
+// The resulting expression is made of components like 4 seconds, 1 year, etc. In general, a positive integer and one of the valid units of time, separated by a space. The unit of time is used in plural if the integer is greater than 1.
+
+// The components are separated by a comma and a space (", "). Except the last component, which is separated by " and ", just like it would be written in English.
+
+// A more significant units of time will occur before than a least significant one. Therefore, 1 second and 1 year is not correct, but 1 year and 1 second is.
+
+// Different components have different unit of times. So there is not repeated units like in 5 seconds and 1 second.
+
+// A component will not appear at all if its value happens to be zero. Hence, 1 minute and 0 seconds is not valid, but it should be just 1 minute.
+
+// A unit of time must be used "as much as possible". It means that the function should not return 61 seconds, but 1 minute and 1 second instead. Formally, the duration specified by of a component must not be greater than any valid more significant unit of time.
+
+
+function formatDuration (seconds) {
+    // 1 sec is 1 sec
+    // 1 min is 60 secs
+    // 1 hour is 3600 secs
+    // 1 day is 86400 secs
+    // 1 year is 31 536 000 secs
+
+    if(seconds===0){ //edge case
+        return "now"
+    }
+
+    let remain = seconds
+    let year = Math.floor(remain/31536000)
+    remain = remain - (year*31536000)
+    let day = Math.floor(remain/86400)
+    remain = remain - (day*86400)
+    let hour = Math.floor(remain/3600)
+    remain = remain - (hour*3600)
+    let minute = Math.floor(remain/60)
+    remain = remain - (minute*60)
+    let second = remain
+
+    let units = ["year", "day", "hour", "minute", "second"]
+    let arr = [year, day, hour, minute, second]
+
+    if(arr.filter(t => t!==0).length === 1){ //if there is only one unit pouplated, there would be no "and" in our answer
+        let res = ''
+        arr.forEach((time, unit) =>{
+            if(time !== 0){
+                res = time === 1 ? '1 ' + units[unit] : time + ' ' + units[unit] + 's'
+            }
+        })
+        return res
+    }else{ //if there is multiple units pouplated, there would be "and" in our answer
+        let revUnits = ["year", "day", "hour", "minute", "second"].slice().reverse()
+        let revArr = [year, day, hour, minute, second].slice().reverse()
+        //Let's reverse them so I know the first non-zero element will be preceded by an 'and'
+        //Other units will be preceded by an ' ,'
+        //I will then append the other units on the left of res
+        let isAndWritten = false
+        let res = ''
+        revArr.forEach((time, unit) => {
+            if(time !== 0){
+                if(!isAndWritten){ // if we need 'and'
+                    res = ' and ' + (time === 1 ? '1 ' + revUnits[unit] : time + ' ' + revUnits[unit] + 's') + res
+                    isAndWritten = true // 'and' no more needed
+                }else{ // if we don't
+                    res = ', ' + (time === 1 ? '1 ' + revUnits[unit] : time + ' ' + revUnits[unit] + 's') + res
+                }
+            }
+        })
+        res = res.slice(2) //remove the first ', '
+        return res
+    }
+}
+
+
+// console.log(formatDuration(3662)) // -> "1 hour, 1 minute and 2 seconds"
+
+//==============================================================

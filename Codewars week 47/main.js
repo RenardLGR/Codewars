@@ -4,6 +4,166 @@ const alphaU = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 //==========================================================
+function bubbleSort(arr){ //we will sort from samllest to biggest here
+    let cpy = arr.slice()
+    let isDone = false
+    while(!isDone){
+        isDone = true
+        for(let i=0 ; i<cpy.length-1 ; i++){
+            if(cpy[i] > cpy[i+1]){
+                isDone = false
+                let temp = cpy[i+1]
+                cpy[i+1] = cpy[i]
+                cpy[i] = temp
+            }
+        }
+    }
+    return cpy
+}
+
+// console.log(bubbleSort([1, 7, 5, 8, 9 ,1, 11, 5, 0]))
+
+function binarySearch(arr, target){
+    let min = 0
+    let max = arr.length-1
+    while(max-min >= 0){
+        let med = Math.floor((min+max)/2)
+        if(arr[med] === target){
+            return med
+        }else{
+            if(arr[med] > target){
+                max = med - 1
+            }else{
+                min = med + 1
+            }
+        }
+    }
+    return -1
+}
+
+// console.log(binarySearch([1, 2, 3, 5, 7, 8, 9], 3));
+// console.log(binarySearch([1, 2, 3, 5, 7, 8, 9], 6));
+
+//=========================================================
+//Write merge sort algorithm
+function mergesortAttempt(arr){
+
+    if(arr.length === 1){
+        return arr
+    }else{
+        let middle = Math.floor(arr.length/2)
+        let leftsubarr = arr.slice(0, middle)
+        let rightsubarr = arr.slice(middle)
+        let sortedLeft = mergesortAttempt(leftsubarr)
+        let sortedRight = mergesortAttempt(rightsubarr)
+        return merge(sortedLeft, sortedRight)
+    }
+
+
+    function merge(left, right){
+        let res = []
+        let leftcpy = left.slice()
+        let rightcpy = right.slice()
+        while(leftcpy.length > 0 || rightcpy.length > 0){ //while any of the arrays are populated
+            if(leftcpy.length > 0 && rightcpy.length > 0){ //if both arrays are populated, push the smallest
+                res.push(leftcpy[0] > rightcpy[0] ? rightcpy.shift() : leftcpy.shift())
+            }else{//one of the array is depleted : concat to the result, the non-empty array
+                res = res.concat(leftcpy.length > 0 ? leftcpy : rightcpy)
+                leftcpy = [] //trigger exit while
+                rightcpy = [] //trigger exit while
+            }
+        }
+
+        return res
+    }
+
+    console.log(merge([2, 5], [3, 7]));
+}
+
+//=========================================================
+// Write a function that given a size, return every combinations of bits of that size
+function everyBitsComb(size){
+    let res = []
+    buildSolutions(size, [])
+    return res
+
+    function buildSolutions(size, inProgress){
+        if(size === 0){
+            res.push(inProgress.slice())
+            // return
+        }else{
+            buildSolutions(size-1, [...inProgress, 0])
+            buildSolutions(size-1, [...inProgress, 1])
+        }
+    }
+}
+
+// console.log(everyBitsComb(4))
+
+//=============================================================
+// Write a isPrime function
+
+function isPrime(num){
+    if(num<2){
+        return false
+    }
+    for(let i=2 ; i<Math.ceil(Math.sqrt(num)) ; i++){
+        if(num % i === 0){
+            return false
+        }
+    }
+    return true
+}
+
+// console.log(isPrime(5));
+// console.log(isPrime(10));
+// console.log(isPrime(11));
+
+//============================================================
+// https://eloquentjavascript.net/03_functions.html#p_s9LmvfKAdX
+// Consider this puzzle: by starting from the number 1 and repeatedly either adding 5 or multiplying by 3, an infinite set of numbers can be produced. How would you write a function that, given a number, tries to find a sequence of such additions and multiplications that produces that number?
+
+// For example, the number 13 could be reached by first multiplying by 3 and then adding 5 twice, whereas the number 15 cannot be reached at all.
+
+function findSequence(target){
+    let res = ''
+
+    buildSequences(target, '1', 1)
+
+    return res
+
+    function buildSequences(target, sequence, current){
+        if(current>target){
+            return
+        }else if(current===target){
+            res = sequence
+            return
+        }else{
+            buildSequences(target, `(${sequence} * 3)`, current*3)
+            buildSequences(target, `(${sequence} + 5)`, current+5)
+        }
+    }
+}
+
+// console.log(findSequence(13));
+// console.log(findSequence(24)); // → (((1 * 3) + 5) * 3)
+
+function findSequenceBis(target){
+
+    return find(1, '1')
+
+    function find(current, history){
+        if(current===target){
+            return history
+        }else if(current > target){
+            return null
+        }else{
+            return find(current*3, `(${history} * 3)`) || find(current+5, `(${history} + 5)`)
+        }
+    }
+}
+
+// console.log(findSequenceBis(24)); // → (((((1 * 3) * 3) + 5) + 5) + 5)
 
 
 //==========================================================

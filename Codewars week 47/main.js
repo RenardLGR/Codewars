@@ -462,3 +462,56 @@ function formatDuration (seconds) {
 // console.log(formatDuration(3662)) // -> "1 hour, 1 minute and 2 seconds"
 
 //==============================================================
+// https://www.codewars.com/kata/515e188a311df01cba000003
+// The function is not returning the correct values. Can you figure out why?
+
+// Example (Input --> Output ):
+
+// 3 --> "Earth"
+
+function getPlanetName(id){
+    let name;
+    switch(id){
+      case 1:
+        name = 'Mercury'
+        break;
+      case 2:
+        name = 'Venus'
+        break;
+      case 3:
+        name = 'Earth'
+        break;
+      case 4:
+        name = 'Mars'
+        break;
+      case 5:
+        name = 'Jupiter'
+        break;
+      case 6:
+        name = 'Saturn'
+        break;
+      case 7:
+        name = 'Uranus'
+        break;
+      case 8:
+        name = 'Neptune'
+        break;
+    }
+    
+    return name;
+}
+
+//===========================================================
+// https://www.codewars.com/kata/55cb632c1a5d7b3ad0000145
+// Alex just got a new hula hoop, he loves it but feels discouraged because his little brother is better than him
+
+// Write a program where Alex can input (n) how many times the hoop goes round and it will return him an encouraging message :)
+
+// If Alex gets 10 or more hoops, return the string "Great, now move on to tricks".
+// If he doesn't get 10 hoops, return the string "Keep at it until you get it".
+
+function hoopCount (n) {
+    return n>=10 ? "Great, now move on to tricks" : "Keep at it until you get it"
+}
+
+//===========================================================

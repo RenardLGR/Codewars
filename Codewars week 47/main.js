@@ -4,7 +4,7 @@ const alphaU = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 //==========================================================
-function bubbleSort(arr){ //we will sort from samllest to biggest here
+function bubbleSort(arr){ //we will sort from smallest to biggest here
     let cpy = arr.slice()
     let isDone = false
     while(!isDone){
@@ -79,7 +79,7 @@ function mergesortAttempt(arr){
 
     console.log(merge([2, 5], [3, 7]));
 }
-
+// console.log(mergesortAttempt([5, 1, 2, 3, 8, 10, 9, 11, 52, 0]));
 //=========================================================
 // Write a function that given a size, return every combinations of bits of that size
 function everyBitsComb(size){

@@ -122,6 +122,130 @@ function findSequence(target){
 // console.log(findSequence(15))
 // console.log(findSequence(24))
 
+function findSequenceBis(target){
+    let res = ''
+
+    buildSequences(target, '1', 1)
+
+    return res
+
+    function buildSequences(target, sequence, current){
+        if(current>target){
+            return
+        }else if(current===target){
+            res = sequence
+            return
+        }else{
+            buildSequences(target, `(${sequence} * 3)`, current*3)
+            buildSequences(target, `(${sequence} + 5)`, current+5)
+        }
+    }
+}
+
+//==========================================================
+function deliverHouse1() {
+    setTimeout( () => {
+        console.log('House 1 delivered');
+    }, 3000)
+}
+
+function deliverHouse2(){
+    setTimeout( () => {
+        console.log('House 2 delivered');
+    }, 1000)
+}
+
+function deliverHouse3(){
+    setTimeout( () => {
+        console.log('House 3 delivered');
+    }, 2000)
+}
+
+// deliverHouse1()
+// deliverHouse2()
+// deliverHouse3()
+
+// 2 -> 3 -> 1 in 3 seconds
+
+function deliverHousescbHell() {
+    setTimeout( () => {
+        console.log('House 1 delivered');
+        setTimeout( () => {
+            console.log('House 2 delivered');
+            setTimeout( () => {
+                console.log('House 3 delivered');
+                
+            }, 2000)
+        }, 1000)
+    }, 3000)
+}
+
+//deliverHousescbHell()
+
+// 1 -> 2 -> 3 in 6 seconds
+
+
+
+function deliverHouse1Promises() {
+    return new Promise( (resolve, reject) => {
+        setTimeout( () => {
+            resolve('House 1 delivered')
+        }, 3000)
+    })
+}
+
+function deliverHouse2Promises() {
+    return new Promise( (resolve, reject) => {
+        setTimeout( () => {
+            resolve('House 2 delivered')
+        }, 1000)
+    })
+}
+
+function deliverHouse3Promises() {
+    return new Promise( (resolve, reject) => {
+        setTimeout( () => {
+            resolve('House 3 delivered')
+        }, 2000)
+    })
+}
+
+// deliverHouse1Promises()
+//     .then(res => console.log(res))
+//     .then(deliverHouse2Promises)
+//     .then(res => console.log(res))
+//     .then(deliverHouse3Promises)
+//     .then(res => console.log(res))
+//     .catch(err => console.log(err))
+
+//1 -> 2 -> 3 in 6 seconds
+
+
+async function deliverHousesAsyncAwait() {
+    const house1 = await deliverHouse1Promises()
+    const house2 = await deliverHouse2Promises()
+    const house3 = await deliverHouse3Promises()
+
+    console.log(house1,house2, house3);
+}
+
+//deliverHousesAsyncAwait()
+
+//1 2 3 in 6 seconds
+
+
+async function getDoggo(){
+    try{
+        const res = await fetch('https://dog.ceo/api/breeds/image/random')
+        const data = await res.json()
+        console.log(data.message);
+    }catch(err){
+        console.log(err);
+    }
+}
+
+//getDoggo()
+
 //===========================================================
 // https://www.codewars.com/kata/52449b062fb80683ec000024
 // The marketing team is spending way too much time typing in hashtags.
@@ -186,4 +310,46 @@ function strayTer(numbers){
     return sorted[0] === sorted[1] ? sorted[sorted.length-1] : sorted[0]
 }
 
+function strayQuater(numbers) {
+    return numbers.find(number => numbers.indexOf(number) === numbers.lastIndexOf(number))
+}
+
 //=====================================================
+// https://www.codewars.com/kata/525c65e51bf619685c000059
+// Pete likes to bake some cakes. He has some recipes and ingredients. Unfortunately he is not good in maths. Can you help him to find out, how many cakes he could bake considering his recipes?
+
+// Write a function cakes(), which takes the recipe (object) and the available ingredients (also an object) and returns the maximum number of cakes Pete can bake (integer). For simplicity there are no units for the amounts (e.g. 1 lb of flour or 200 g of sugar are simply 1 or 200). Ingredients that are not present in the objects, can be considered as 0.
+
+// Examples:
+
+// cakes({flour: 500, sugar: 200, eggs: 1}, {flour: 1200, sugar: 1200, eggs: 5, milk: 200}); -> 2
+
+// cakes({apples: 3, flour: 300, sugar: 150, milk: 100, oil: 100}, {sugar: 500, flour: 2000, milk: 2000}); -> 0
+
+function cakes(recipe, available) {
+    let res = Infinity
+    for(let ingredient in recipe){
+        if(ingredient in available){
+            let possibleCakes = Math.floor(available[ingredient] / recipe[ingredient])
+            if(possibleCakes < res){
+                res = possibleCakes
+            }
+        }else{
+            return 0
+        }
+    }
+
+    return res
+}
+
+function cakesBis(recipe, available){
+    return Object.keys(recipe).reduce((nCakes, ing) => {
+        if(ing in available){
+            return Math.min(nCakes, Math.floor(available[ing] / recipe[ing]))
+        }else{
+            return 0
+        }
+    }, Infinity)
+}
+
+//================================================

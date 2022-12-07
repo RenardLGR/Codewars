@@ -67,7 +67,7 @@
 //This function will run through every lines searching for a case like that, then every cols, then every squares
 
 function sudoku(puzzle) {
-    let cpy=puzzle.slice()
+    let cpy=puzzle.slice().map(subarr => subarr.slice())
     //cpy is an array of lines which is an array of indices
     //cpy will be modified when we find new numbers
     let puzzlePossibilities = buildPuzzlePossibilities(cpy)

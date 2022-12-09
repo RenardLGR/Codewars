@@ -398,3 +398,67 @@ function orderWeight(strng) {
 // console.log(orderWeight("103 123 4444 99 2000")); // => "2000 103 123 4444 99"
 
 //======================================================
+// https://www.codewars.com/kata/51ba717bb08c1cd60f00002f
+// A format for expressing an ordered list of integers is to use a comma separated list of either
+
+// individual integers - no duplicates
+// or a range of integers denoted by the starting integer separated from the end integer in the range by a dash, '-'. The range includes all integers in the interval including both endpoints. It is not considered a range unless it spans at least 3 numbers. For example "12,13,15-17"
+// Complete the solution so that it takes a list of integers in increasing order and returns a correctly formatted string in the range format.
+
+// Example:
+
+// solution([-10, -9, -8, -6, -3, -2, -1, 0, 1, 3, 4, 5, 7, 8, 9, 10, 11, 14, 15, 17, 18, 19, 20]);
+//  returns "-10--8,-6,-3-1,3-5,7-11,14,15,17-20"
+//        -10 to -8 ... -3 to 1 ... 3 to 5 ...
+// Courtesy of rosettacode.org
+
+
+function rangeExtraction(list){
+    let ranges = []
+    for(let i=0 ; i<list.length ; i++){
+        let subarr = [list[i]]
+        while( (list[i+1]-list[i]) === 1){
+            subarr.push(list[i+1])
+            i++
+        }
+        ranges.push(subarr)
+    }
+    //Given [-10, -9, -8, -6, -3, -2, -1, 0, 1, 3, 4, 5, 7, 8, 9, 10, 11, 14, 15, 17, 18, 19, 20]
+    //ranges = [ [ -10, -9, -8 ], [ -6 ], [ -3, -2, -1, 0, 1 ], [ 3, 4, 5 ], [ 7, 8, 9, 10, 11 ], [ 14, 15 ], [ 17, 18, 19, 20 ] ]
+
+    return ranges.reduce((acc, subarr) => {
+        if(subarr.length === 1){
+            acc+= ','+subarr[0]
+        }else if(subarr.length === 2){ // apparently the subarr [14, 15] should return 14,15 and not 14-15
+            acc+= ',' + subarr[0] + ',' + subarr[1]
+        }else{
+            acc+= ',' + subarr[0] + '-' + subarr.slice(-1)
+        }
+        return acc
+    }, '').slice(1)
+    //removes the first ','
+}
+
+// console.log(rangeExtraction([-10, -9, -8, -6, -3, -2, -1, 0, 1, 3, 4, 5, 7, 8, 9, 10, 11, 14, 15, 17, 18, 19, 20])); // -> -10--8,-6,-3-1,3-5,7-11,14,15,17-20
+// console.log(rangeExtraction([-6, -3, -2, -1, 0, 1, 3, 4, 5, 7, 8, 9, 10, 11, 14, 15, 17, 18, 19, 20])); // -> -6,-3-1,3-5,7-11,14,15,17-20
+
+function rangeExtractionBis(list){
+    // 5-undefined returns NaN
+    // NaN > 0 returns false
+    // a range is at least 3 succeeding numbers
+    return list.reduce((acc, cur, i) => {
+        if(i===0){ //init
+            return ''+i
+        }
+        if(list[i-1] === cur-1 && list[i+1] === cur+1){ //If I am inside a range
+            return acc
+        }
+        if(list[i-2] === cur-2 && list[i-1] === cur-1){//If it is the end of a range - note if I was inside a range, the previous statement would have triggered
+            return acc + '-' + cur
+        }
+
+        return acc + ',' + cur
+    })
+}
+
+//===================================================

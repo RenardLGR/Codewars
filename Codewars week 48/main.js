@@ -491,3 +491,45 @@ function firstNonRepeatingLetterBis(s){
 }
 
 //=====================================================
+// https://www.codewars.com/kata/59342039eb450e39970000a6
+// Given a number n, return the number of positive odd numbers below n, EASY!
+
+// Examples (Input -> Output)
+// 7  -> 3 (because odd numbers below 7 are [1, 3, 5])
+// 15 -> 7 (because odd numbers below 15 are [1, 3, 5, 7, 9, 11, 13])
+// Expect large Inputs!
+
+function oddCount(n){
+    return Math.floor(n/2)
+}
+
+//======================================================
+// https://www.codewars.com/kata/55edaba99da3a9c84000003b
+// Complete the function which takes two arguments and returns all numbers which are divisible by the given divisor. First argument is an array of numbers and the second is the divisor.
+
+// Example(Input1, Input2 --> Output)
+// [1, 2, 3, 4, 5, 6], 2 --> [2, 4, 6]
+
+function divisibleBy(numbers, divisor){
+    return numbers.filter(n => n%divisor === 0)
+}
+
+
+//===========================================================
+// https://www.codewars.com/kata/534ea96ebb17181947000ada
+// Your task is to split the chocolate bar of given dimension n x m into small squares. Each square is of size 1x1 and unbreakable. Implement a function that will return minimum number of breaks needed.
+
+// For example if you are given a chocolate bar of size 2 x 1 you can split it to single squares in just one break, but for size 3 x 1 you must do two breaks.
+
+// If input data is invalid you should return 0 (as in no breaks are needed if we do not have any chocolate to split). Input will always be a non-negative integer.
+
+function breakChocolate(n, m) {
+    //his breaking technique is by taking one piece at the time
+    if (n === 0 || m === 0) {
+        return 0
+    } else {
+        return n * m - 1
+    }
+}
+
+//============================================================

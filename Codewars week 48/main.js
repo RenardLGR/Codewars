@@ -524,7 +524,7 @@ function divisibleBy(numbers, divisor){
 // If input data is invalid you should return 0 (as in no breaks are needed if we do not have any chocolate to split). Input will always be a non-negative integer.
 
 function breakChocolate(n, m) {
-    //his breaking technique is by taking one piece at the time
+    //It is (m-1)+(n-1)*m = m*n-1 breaks
     if (n === 0 || m === 0) {
         return 0
     } else {
@@ -533,3 +533,197 @@ function breakChocolate(n, m) {
 }
 
 //============================================================
+// https://www.codewars.com/kata/55983863da40caa2c900004e
+// Create a function that takes a positive integer and returns the next bigger number that can be formed by rearranging its digits. For example:
+
+// 12 ==> 21
+// 513 ==> 531
+// 2017 ==> 2071
+// nextBigger(num: 12)   // returns 21
+// nextBigger(num: 513)  // returns 531
+// nextBigger(num: 2017) // returns 2071
+// If the digits can't be rearranged to form a bigger number, return -1 (or nil in Swift):
+
+// 9 ==> -1
+// 111 ==> -1
+// 531 ==> -1
+// nextBigger(num: 9)   // returns nil
+// nextBigger(num: 111) // returns nil
+// nextBigger(num: 531) // returns nil
+
+function nextBigger(n){
+    //NOT WORKING
+    //It appears that a number written in decreasing order will return -1
+    //otherwise, starting from the end, switch the first instance where a number on the left is greater than the number on the right
+    //We will loop from the end, make a single change if we can ; if no changes were made, result should be -1
+    let numberString = ''+n
+    let res = ''
+    let isDone = false
+    for(let i=numberString.length-1 ; (i>=0 && !isDone) ; i--){
+        if(+numberString[i] > +numberString[i-1]){ //if change must be made
+            isDone = true //exit the loop
+            res = numberString[i] + numberString[i-1] + res //switch
+            res = numberString.slice(0, i-1) + res //append the rest of the left part
+        }else{ //if no change
+            res = numberString[i] + res
+        }
+    }
+    return res === numberString ? -1 : +res
+}
+
+// console.log(nextBigger(12));
+// console.log(nextBigger(513));
+// console.log(nextBigger(2017));
+// console.log(nextBigger(9));
+// console.log(nextBigger(111));
+// console.log(nextBigger(531));
+// console.log(nextBigger(3350)); // -> 3503 ; my code doesn't work for this case
+
+
+function nextBiggerBis(n){
+    //naive : add 1, check if the frequency is identical, repeat until the length is different
+    //WORKS? BUT TOO LONG
+    let numberString = ''+n
+    let inputFrequency = frequencyGenerator(numberString)
+
+    let res = n + 1
+    let isDone = false
+    while(res.toString().length === numberString.length && !isDone){
+        let tempFreq = frequencyGenerator(''+res)
+        if(areFreqIdentical(inputFrequency, tempFreq)){ //result found
+            isDone = true
+        }else{
+            res++
+        }
+    }
+
+    return isDone ? res : -1
+
+
+    //helpers
+    function frequencyGenerator(string){
+        return string.split('').reduce((acc, cur) => {
+            acc[cur] = (acc[cur] || 0) + 1
+            return acc
+        },{})
+    }
+
+    // console.log(frequencyGenerator('55531')) // => { '1': 1, '3': 1, '5': 3 }
+
+    function areFreqIdentical(freq1, freq2){
+        if(Object.keys(freq1).length !== Object.keys(freq2).length){
+            return false
+        }else{
+            for(let key in freq1){
+                if(freq1[key] !== freq2[key]){
+                    return false
+                }
+            }
+            return true
+        }
+    }
+    // console.log(areFreqIdentical(frequencyGenerator('55531'), frequencyGenerator('31555'))); // -> true
+    // console.log(areFreqIdentical(frequencyGenerator('55531'), frequencyGenerator('31556'))); // -> false
+}
+
+// console.log(nextBiggerBis(12));
+// console.log(nextBiggerBis(513));
+// console.log(nextBiggerBis(2017));
+// console.log(nextBiggerBis(9));
+// console.log(nextBiggerBis(111));
+// console.log(nextBiggerBis(531));
+// console.log(nextBiggerBis(3350)); // -> 3503
+
+function nextBiggerTer(n) {
+    //create an array of every permutation, sort them, select the next one
+    //WORKS? BUT TOO LONG
+    let permutations = []
+    let numberString = ''+n
+
+    permute(numberString, 0, numberString.length-1)
+
+    permutations = permutations.map(p => +p).sort((a,b) => a-b)
+    
+    for(let i=0 ; i<permutations.length ; i++){
+        if(permutations[i] > n){
+            return permutations[i]
+        }
+    }
+    return -1
+
+    //helpers
+    //https://www.geeksforgeeks.org/write-a-c-program-to-print-all-permutations-of-a-given-string/?ref=lbp
+    function permute(str, l, r) {
+        if (l == r)
+            permutations.push(str)
+        else {
+            for (let i = l; i <= r; i++) {
+                str = swap(str, l, i);
+                permute(str, l + 1, r);
+                str = swap(str, l, i);
+            }
+        }
+    }
+
+    function swap(a, i, j) {
+        let temp;
+        let charArray = a.split("");
+        temp = charArray[i];
+        charArray[i] = charArray[j];
+        charArray[j] = temp;
+        return (charArray).join("");
+    }
+}
+
+// console.log(nextBiggerTer(12));
+// console.log(nextBiggerTer(513));
+// console.log(nextBiggerTer(2017));
+// console.log(nextBiggerTer(9));
+// console.log(nextBiggerTer(111));
+// console.log(nextBiggerTer(531));
+// console.log(nextBiggerTer(3350)); // -> 3503
+
+
+function nextBiggerQuater(n) {
+    //Finally made it working
+    // https://www.geeksforgeeks.org/find-next-greater-number-set-digits/
+    //It appears that a number written in decreasing order will return -1
+    //otherwise, starting from the end, find the first instance where a number on the left is greater than the number on the right. Call that number d
+    //Swap d with smallest number greater than d on his right
+    //sort all digits from where d was
+    //We will loop from the end, if no changes were made, result should be -1
+
+    //Example with 534976
+
+    // Traverse the given number from rightmost digit, keep traversing till you find a digit which is smaller than the previously traversed digit. For example, if the input number is “534976”, we stop at 4 because 4 is smaller than next digit 9. If we do not find such a digit, then output is “Not Possible”.
+    // Now search the right side of above found digit ‘d’ for the smallest digit greater than ‘d’. For “534976″, the right side of 4 contains “976”. The smallest digit greater than 4 is 6.
+    // Swap the above found two digits, we get 536974 in above example.
+    // Now sort all digits from position next to ‘d’ to the end of number. The number that we get after sorting is the output. For above example, we sort digits in bold 536974. We get “536479” which is the next greater number for input 534976.
+
+    let numberString = ''+n
+    let res = ''
+    let isDone = false
+    for(let i=numberString.length-1 ; (i>=0 && !isDone) ; i--){
+        if(+numberString[i] > +numberString[i-1]){ //if change must be made
+            isDone = true //exit the loop
+            let d = numberString[i-1]
+            let right = numberString.slice(i)
+            let rightMin = Math.min(...right.split('').map(e => +e).filter(e => e>+d)) //find the value of the smallest number greater than d on d's right
+            numberString = numberString.slice(0, i-1) + rightMin + numberString.slice(i)//replace d with the smallest number on its right
+            right = right.replace(rightMin, d) //replace the value of the smallest number on d's right with d
+            right = right.split('').sort().join('') //sort the right part
+            res = numberString.slice(0, i) + right // build res
+        }else{ //if no change
+            res = numberString[i] + res
+        }
+    }
+    return res === numberString ? -1 : +res
+}
+
+// console.log(nextBiggerQuater(12));
+// console.log(nextBiggerQuater(513));
+// console.log(nextBiggerQuater(2017));
+// console.log(nextBiggerQuater(9));
+// console.log(nextBiggerQuater(111));
+// console.log(nextBiggerQuater(531));
+// console.log(nextBiggerQuater(3350)); // -> 3503

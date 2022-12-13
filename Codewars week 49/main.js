@@ -93,3 +93,55 @@ function expressionMatter(a, b, c) {
 
 
 //==============================================================
+// https://www.codewars.com/kata/54a91a4883a7de5d7800009c
+// Your job is to write a function which increments a string, to create a new string.
+
+// If the string already ends with a number, the number should be incremented by 1.
+// If the string does not end with a number. the number 1 should be appended to the new string.
+// Examples:
+
+// foo -> foo1
+
+// foobar23 -> foobar24
+
+// foo0042 -> foo0043
+
+// foo9 -> foo10
+
+// foo099 -> foo100
+
+// fo99obar99 -> fo99obar100
+
+// Attention: If the number has leading zeros the amount of digits should be considered.
+
+function incrementString (string) {
+    if(!/[0-9]/.test(string[string.length - 1])){ //check if it doens't end with a number
+        return string + '1'
+    }else{ //if it ends with a number
+        let number = ''
+        let end = string.length - 1
+
+        while(/[0-9]/.test(string[end])){
+            number = string[end] + number
+            end--
+        }
+        let numberLen = number.length
+
+        let incremented = parseInt(number) + 1
+        incremented = '' + incremented
+        while(incremented.length < numberLen){
+            incremented = '0' + incremented
+        }
+
+        let res = string.slice(0, string.length - numberLen) + incremented
+
+        return res
+    }
+}
+
+// console.log(incrementString('foo'));
+// console.log(incrementString('foo24'));
+// console.log(incrementString('foo0042'));
+// console.log(incrementString('foo99'));
+
+//==========================================================

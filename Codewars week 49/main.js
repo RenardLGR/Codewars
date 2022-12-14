@@ -145,3 +145,171 @@ function incrementString (string) {
 // console.log(incrementString('foo99'));
 
 //==========================================================
+// https://www.codewars.com/kata/52b7ed099cdc285c300001cd
+// Write a function called sumIntervals/sum_intervals() that accepts an array of intervals, and returns the sum of all the interval lengths. Overlapping intervals should only be counted once.
+
+// Intervals
+// Intervals are represented by a pair of integers in the form of an array. The first value of the interval will always be less than the second value. Interval example: [1, 5] is an interval from 1 to 5. The length of this interval is 4.
+
+// Overlapping Intervals
+// List containing overlapping intervals:
+
+// [
+//    [1,4],
+//    [7, 10],
+//    [3, 5]
+// ]
+// The sum of the lengths of these intervals is 7. Since [1, 4] and [3, 5] overlap, we can treat the interval as [1, 5], which has a length of 4.
+
+// Examples:
+// sumIntervals( [
+//    [1,2],
+//    [6, 10],
+//    [11, 15]
+// ] ) => 9
+
+// sumIntervals( [
+//    [1,4],
+//    [7, 10],
+//    [3, 5]
+// ] ) => 7
+
+// sumIntervals( [
+//    [1,5],
+//    [10, 20],
+//    [1, 6],
+//    [16, 19],
+//    [5, 11]
+// ] ) => 19
+
+// sumIntervals( [
+//    [0, 20],
+//    [-100000000, 10],
+//    [30, 40]
+// ] ) => 100000030
+// Tests with large intervals
+// Your algorithm should be able to handle large intervals. All tested intervals are subsets of the range [-1000000000, 1000000000].
+
+function sumIntervals(intervals) {
+    //WORKS BUT TOO MUCH TIME
+    //Step 1 : Gather the interval together [[1, 4] , [7, 10] , [3, 5]] => [[1, 5] , [7, 10]]
+    //Note : As [1, 5] gives a length of 4 , we can conclude 5 is excluded, meaning [1, 5] can not merge with [6 , 11] but can merge [5, 11]
+    //Step 2 : Reduce it to find the result
+
+    let isDone = false
+    let merged = intervals.slice().map(subarr => subarr.slice())
+    while(!isDone){
+        isDone = true
+        for(let i=0 ; i<merged.length ; i++){
+            for(let j=i+1 ; j<merged.length ; j++){
+                //Overlapping case : [3, 8] [6, 12] => [3, 12]
+                // Case 1 : If the lower bound of the first interval is included in the second interval, replace that bound with the lower bound of the second interval
+                // Case 2 : Indentically, if the upper bound of the first interval is included in the second interval, replace that bound with the upper bound of the second interval
+                //Both case 1 and case 2 can happen
+                // If case 1 or case 2 were true, replace the first interval with the result, remove the second interval
+                //This part works also if interval 1 is included in interval 2 : [4,6] [3, 7] => [3, 7]
+                //Interval 2 is included in interval 1 (case 3) : [3, 10] [4, 7] => [3, 10]
+                let firstInterval = merged[i]
+                let secondInterval = merged[j]
+                let temp = firstInterval.slice()
+                let deleteSecondInterval = false //if changes were made
+
+                if(firstInterval[0] >= secondInterval[0] && firstInterval[0] <= secondInterval[1]){ //case 1
+                    temp[0] = secondInterval[0]
+                    deleteSecondInterval = true
+                    isDone = false
+                }
+
+                if(firstInterval[1] >= secondInterval[0] && firstInterval[1] <= secondInterval[1]){ //case 2
+                    temp[1] = secondInterval[1]
+                    deleteSecondInterval = true
+                    isDone = false
+                }
+
+                if(secondInterval[0] > firstInterval[0] && secondInterval[0] < firstInterval[1] && secondInterval[1] > firstInterval[0] && secondInterval[1] < firstInterval[1]){ //case 3
+                    deleteSecondInterval = true
+                    isDone = false
+                }
+
+                if(deleteSecondInterval){ //if changes were made
+                    merged.splice(i, 1, [...temp]) //replace first interval with a cpy of temp
+                    merged.splice(j, 1) //remove the second interval
+                }
+            }
+        }
+    }
+
+    // merged : [[1, 4] , [7, 10] , [3, 5]] => [[1, 5] , [7, 10]]
+    return merged.reduce((acc, subarr) => {
+        acc = acc + subarr[1] - subarr[0]
+        return acc
+    }, 0)
+}
+
+// console.log(sumIntervals([[1, 4] , [7, 10] , [3, 5]])); // => 7
+// console.log(sumIntervals([ [1, 20] , [2, 19] , [5, 15] , [8, 12] ])); // => 19
+
+function sumIntervalsBis(intervals){
+    //WORKS BUT TOO MUCH MEMORY
+    //add to an array each element of each intervals, set it (removes duplicates), take its size
+    //Note : As [1, 5] gives a length of 4 , we can conclude 5 is excluded, meaning [1, 5] are the elements [1, 2, 3, 4]
+    let allElements = []
+    for(let i=0 ; i<intervals.length ; i++){
+        for(let j=intervals[i][0] ; j<intervals[i][1] ; j++){
+            allElements.push(j)
+        }
+    }
+    return new Set(allElements).size
+}
+
+// console.log(sumIntervalsBis([[1, 4] , [7, 10] , [3, 5]])); // => 7
+// console.log(sumIntervalsBis([ [1, 20] , [2, 19] , [5, 15] , [8, 12] ])); // => 19
+
+
+function sumIntervalsTer(intervals){
+    //WORKS BUT WAY TOOOO LOOONG
+    //add to an array each element of each intervals if not already present, takes its length
+    //Note : As [1, 5] gives a length of 4 , we can conclude 5 is excluded, meaning [1, 5] are the elements [1, 2, 3, 4]
+    let allElements = []
+    for(let i=0 ; i<intervals.length ; i++){
+        for(let j=intervals[i][0] ; j<intervals[i][1] ; j++){
+            if(!allElements.includes(j)){
+                allElements.push(j)
+            }
+        }
+    }
+    return allElements.length
+}
+
+// console.log(sumIntervalsTer([[1, 4] , [7, 10] , [3, 5]])); // => 7
+// console.log(sumIntervalsTer([ [1, 20] , [2, 19] , [5, 15] , [8, 12] ])); // => 19
+
+function sumIntervalsQuater(intervals){
+    //sort them by their starting value
+    // [[1, 4] , [7, 10] , [3, 5]] => [[1, 4] , [3, 5] , [7, 10]]
+    //keep track of their min & max, append intervals while it can :
+    //the lower bound should be smaller or equal than max (union) but the upper bound should be bigger than max (union and not inclusion)
+    //add to the result, go to next interval 
+    let res = 0
+    let sorted = intervals.sort((a,b) => a[0] - b[0])
+    let min = sorted[0][0]
+    let max = sorted[0][1]
+    for(let i=0 ; i<sorted.length ; i++){
+        if(sorted[i][0] <= max){//check if appending is possible
+            if(sorted[i][1] > max){ //check if not included
+                max = sorted[i][1]
+            }
+        }else{//next interval
+            res+= max-min
+            min = sorted[i][0]
+            max = sorted[i][1]
+        }
+    }
+
+    return res + max - min
+}
+
+// console.log(sumIntervalsQuater([[1, 4] , [7, 10] , [3, 5]])); // => 7
+// console.log(sumIntervalsTer([ [1, 20] , [2, 19] , [5, 15] , [8, 12] ])); // => 19
+
+//=========================================================

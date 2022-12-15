@@ -313,3 +313,82 @@ function sumIntervalsQuater(intervals){
 // console.log(sumIntervalsTer([ [1, 20] , [2, 19] , [5, 15] , [8, 12] ])); // => 19
 
 //=========================================================
+// https://www.codewars.com/kata/57814d79a56c88e3e0000786
+// Implement a pseudo-encryption algorithm which given a string S and an integer N concatenates all the odd-indexed characters of S with all the even-indexed characters of S, this process should be repeated N times.
+
+// Examples:
+
+// encrypt("012345", 1)  =>  "135024" (odds are 1 3 5)
+// encrypt("012345", 2)  =>  "135024"  (odds are 3 0 4) ->  "304152"
+// encrypt("012345", 3)  =>  "135024"  ->  "304152"  ->  "012345"
+
+// encrypt("01234", 1)  =>  "13024"
+// encrypt("01234", 2)  =>  "13024"  ->  "32104"
+// encrypt("01234", 3)  =>  "13024"  ->  "32104"  ->  "20314"
+// Together with the encryption function, you should also implement a decryption function which reverses the process.
+
+// If the string S is an empty value or the integer N is not positive, return the first argument without changes.
+
+// This kata is part of the Simple Encryption Series:
+
+// Simple Encryption #1 - Alternating Split
+// https://www.codewars.com/kata/57814d79a56c88e3e0000786
+// Simple Encryption #2 - Index-Difference
+// https://www.codewars.com/kata/5782b5ad202c0ef42f0012cb/train/javascript
+// Simple Encryption #3 - Turn The Bits Around
+// https://www.codewars.com/kata/57d0329442e44e65e8000bb5/train/javascript
+// Simple Encryption #4 - Qwerty
+// https://www.codewars.com/kata/57f14afa5f2f226d7d0000f4/train/javascript
+
+function encryptAltSplit(text, n) {
+    if(text === null){ //null edge case
+        return null
+    }
+    let res = text
+    while (n>0){
+        let left = ''
+        let right = ''
+        for(let i=0 ; i<res.length ; i++){
+            if(i%2===1){
+                left += res[i]
+            }else{
+                right += res[i]
+            }
+        }
+        res = left + right
+        n--
+    }
+
+    return res
+}
+
+// console.log(encryptAltSplit("012345", 2)); // -> 304152
+// console.log(encryptAltSplit("012345", 3)); // -> 012345
+
+function decryptAltSplit(encryptedText, n) {
+    if(encryptedText === null){ //null edge case
+        return null
+    }
+    let res = encryptedText
+    let temp = ''
+    let half = Math.floor(encryptedText.length/2)
+    while(n>0){
+        let left = res.slice(0, half)
+        let right = res.slice(half)
+        temp = ''
+        for(let i=0 ; i<=half ; i++){
+            temp += (right[i] !== undefined) ? right[i] : ''
+            temp += (left[i] !== undefined) ? left[i] : ''
+        }
+        res = temp
+        n--
+    }
+
+    return res
+}
+
+
+// console.log(decryptAltSplit("304152", 2)); // -> 012345
+// console.log(decryptAltSplit("hsi  etTi sats!", 1)); // -> This is a test!
+
+//==========================================================

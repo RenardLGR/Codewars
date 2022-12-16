@@ -392,3 +392,142 @@ function decryptAltSplit(encryptedText, n) {
 // console.log(decryptAltSplit("hsi  etTi sats!", 1)); // -> This is a test!
 
 //==========================================================
+// https://www.codewars.com/kata/5782b5ad202c0ef42f0012cb/train/javascript
+// For encrypting strings this region of chars is given (in this order!):
+
+// all letters (ascending, first all UpperCase, then all LowerCase)
+// all digits (ascending)
+// the following chars: .,:;-?! '()$%&"
+// These are 77 chars! (This region is zero-based.)
+
+// Write two methods:
+
+// function encrypt(text)
+// function decrypt(encryptedText)
+// Prechecks:
+
+// If the input-string has chars, that are not in the region, throw an Exception(C#, Python) or Error(JavaScript).
+// If the input-string is null or empty return exactly this value!
+// For building the encrypted string:
+
+// For every second char do a switch of the case.
+// For every char take the index from the region. Take the difference from the region-index of the char before (from the input text! Not from the fresh encrypted char before!). (Char2 = Char1-Char2)
+// Replace the original char by the char of the difference-value from the region. In this step the first letter of the text is unchanged.
+// Replace the first char by the mirror in the given region. ('A' -> '"', 'B' -> '&', ...)
+// Simple example:
+
+// Input: "Business"
+// Step 1: "BUsInEsS"
+// Step 2: "B61kujla"
+// B -> U
+// B (1) - U (20) = -19
+// -19 + 77 = 58
+// Region[58] = "6"
+// U -> s
+// U (20) - s (44) = -24
+// -24 + 77 = 53
+// Region[53] = "1"
+// Step 3: "&61kujla"
+
+// This kata is part of the Simple Encryption Series:
+
+// Simple Encryption #1 - Alternating Split
+// https://www.codewars.com/kata/57814d79a56c88e3e0000786
+// Simple Encryption #2 - Index-Difference
+// https://www.codewars.com/kata/5782b5ad202c0ef42f0012cb/train/javascript
+// Simple Encryption #3 - Turn The Bits Around
+// https://www.codewars.com/kata/57d0329442e44e65e8000bb5/train/javascript
+// Simple Encryption #4 - Qwerty
+// https://www.codewars.com/kata/57f14afa5f2f226d7d0000f4/train/javascript
+
+function encryptRegion(text) {
+    if(text === null){
+        return null
+    }
+    
+    if(text === ''){
+        return ''
+    }
+
+    let region = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,:;-?! '()$%&"`
+    // length of region = 77
+    let step1 = []
+
+    for(let char of text){
+        if(!region.includes(char)){
+            throw new Error()
+        }
+    }
+
+    for(let indx in text){ //step 1
+        step1.push(indx%2 === 1 ? (text[indx].toUpperCase() === text[indx] ? text[indx].toLowerCase() : text[indx].toUpperCase()) : text[indx])
+    }
+
+    let step2 = [step1[0]]
+
+    for(let i=1 ; i<text.length ; i++){ //step 2
+        let regionIdx = region.indexOf(step1[i])
+        let beforeCharRegionIdx = region.indexOf(step1[i-1])
+
+        let differenceIdx = beforeCharRegionIdx - regionIdx < 0 ? beforeCharRegionIdx - regionIdx + 77 : beforeCharRegionIdx - regionIdx
+
+        step2.push(region[differenceIdx])
+    }
+
+    let step3 = step2.slice()
+    step3[0] = region[76 - region.indexOf(step3[0])] //step 3
+
+    return step3.join('')
+}
+
+// console.log(encryptRegion('Business')); // -> &61kujla
+// console.log(encryptRegion('This is a test!')); // -> 5MyQa9p0riYplZc
+// console.log(encryptRegion('Do the kata \"Kobayashi-Maru-Test!\" Endless fun and excitement when finding a solution!')); // -> $-Wy,dM79H'i'o$n0C&I.ZTcMJw5vPlZc Hn!krhlaa:khV mkL;gvtP-S7Rt1Vp2RV:wV9VuhO Iz3dqb.U0w
+
+function decryptRegion(encryptedText) {
+    if(encryptedText === null){
+        return null
+    }
+    
+    if(encryptedText === ''){
+        return ''
+    }
+
+    let region = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,:;-?! '()$%&"`
+
+    for(let char of encryptedText){
+        if(!region.includes(char)){
+            throw new Error()
+        }
+    }
+
+    let step3 = encryptedText.split('')
+
+    let step2 = step3.slice()
+    step2[0] = region[76 - region.indexOf(step3[0])] // reverse step 3
+
+    let step1 = step2.slice()
+
+    for(let i=1 ; i<step2.length ; i++){ // reverse step 2
+        let differenceIdx = region.indexOf(step2[i])
+        let beforeCharRegionIdx = region.indexOf(step1[i-1])
+
+        let regionIdx = beforeCharRegionIdx - differenceIdx < 0 ? beforeCharRegionIdx - differenceIdx + 77 : beforeCharRegionIdx - differenceIdx
+
+        step1[i] = region[regionIdx]
+    }
+    
+    let res = step1[0]
+
+    for(let i=1 ; i<step1.length ; i++){ // reverse step 1
+        res += i%2===0 ? step1[i] : (step1[i].toUpperCase() === step1[i] ? step1[i].toLowerCase() : step1[i].toUpperCase())
+    }
+
+    return res
+}
+
+// console.log(decryptRegion('&61kujla')); // -> Business
+// console.log(decryptRegion('5MyQa9p0riYplZc')); // -> This is a test!
+// console.log(decryptRegion("$-Wy,dM79H'i'o$n0C&I.ZTcMJw5vPlZc Hn!krhlaa:khV mkL;gvtP-S7Rt1Vp2RV:wV9VuhO Iz3dqb.U0w")); // -> Do the kata \"Kobayashi-Maru-Test!\" Endless fun and excitement when finding a solution!
+
+//===================================================

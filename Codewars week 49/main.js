@@ -581,5 +581,197 @@ function decryptRegion(encryptedText) {
 // Simple Encryption #4 - Qwerty
 // https://www.codewars.com/kata/57f14afa5f2f226d7d0000f4/train/javascript
 
-let q = 'ste'
-console.log(q);
+function encryptBits(text) {
+    if(text === null){
+        return null
+    }
+    
+    if(text === ''){
+        return ''
+    }
+
+    let region = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 .`
+    // length of region = 64
+
+    for(let char of text){
+        if(!region.includes(char)){
+            throw new Error()
+        }
+    }
+
+    let bits = text.split('').map(char => {
+        let b = region.indexOf(char).toString(2)
+        while(b.length < 6){ // add leading zeroes
+            b = '0' + b
+        }
+        return b
+    })
+
+    let step1 = [bits[0]]
+    for(let i=0 ; i<bits.length - 1 ; i++){
+        let pos5I = step1[i][4]
+        let pos1IPlusOne = bits[i+1][0]
+
+        let currI = step1[i].slice(0, 4) + pos1IPlusOne + step1[i].slice(5)
+        let followingI = pos5I + bits[i+1].slice(1)
+
+        step1[i] = currI
+        step1.push(followingI)
+    }
+
+
+    let step2 = step1.map(bits => {
+        const inverseBit = b => b==='0' ? '1' : '0'
+        let res = bits.slice(0, 1) + inverseBit(bits[1]) + bits.slice(2, 3) + inverseBit(bits[3]) + bits.slice(4)
+        return res
+    })
+
+    let step3 = step2.map(bits => {
+        let res = bits.slice(3) + bits.slice(0, 3)
+        return res
+    })
+
+    
+    let step4 = step3.map(bits => {
+        let res = bits[1] + bits[0] + bits[3] + bits[2] + bits[5] + bits[4]
+        return res
+    })
+
+    let step5 = step4.map(bits => {
+        return bits.split('').reverse().join('')
+    })
+
+    let step6 = step5.map(bits => {
+        let res = bits[2] + bits.slice(1,2) + bits[0] + bits.slice(3)
+        return res
+    })
+
+    let res = step6.map(bits => {
+        let numerical = parseInt(bits, 2)
+        return region[numerical]
+    })
+
+    return res.join('')
+}
+
+// console.log(encryptBits('B9')); // -> rw
+// console.log(encryptBits('Abc')); // -> KyU
+// console.log(encryptBits('This is a test.')); // -> jvLdRPdQXV8Rd5x
+
+function decryptBits(encryptedText) {
+    if(encryptedText === null){
+        return null
+    }
+    
+    if(encryptedText === ''){
+        return ''
+    }
+
+    let region = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 .`
+    // length of region = 64
+
+    for(let char of encryptedText){
+        if(!region.includes(char)){
+            throw new Error()
+        }
+    }
+
+    let bits = encryptedText.split('').map(char => {
+        let b = region.indexOf(char).toString(2)
+        while(b.length < 6){ // add leading zeroes
+            b = '0' + b
+        }
+        return b
+    })
+
+    let step5 = bits.map(bits => {
+        let res = bits[2] + bits.slice(1,2) + bits[0] + bits.slice(3)
+        return res
+    })
+
+    let step4 = step5.map(bits => {
+        return bits.split('').reverse().join('')
+    })
+
+    let step3 = step4.map(bits => {
+        let res = bits[1] + bits[0] + bits[3] + bits[2] + bits[5] + bits[4]
+        return res
+    })
+
+    let step2 = step3.map(bits => {
+        let res = bits.slice(3) + bits.slice(0, 3)
+        return res
+    })
+
+    let step1 = step2.map(bits => {
+        const inverseBit = b => b==='0' ? '1' : '0'
+        let res = bits.slice(0, 1) + inverseBit(bits[1]) + bits.slice(2, 3) + inverseBit(bits[3]) + bits.slice(4)
+        return res
+    })
+
+
+    let res = [step1[0]]
+    for(let i=0 ; i<step1.length - 1 ; i++){
+        let pos5I = res[i][4]
+        let pos1IPlusOne = step1[i+1][0]
+
+        let currI = res[i].slice(0, 4) + pos1IPlusOne + res[i].slice(5)
+        let followingI = pos5I + step1[i+1].slice(1)
+
+        res[i] = currI
+        res.push(followingI)
+    }
+
+    return res.map(bits => {
+        let numerical = parseInt(bits, 2)
+        return region[numerical]
+    }).join('')
+}
+
+// console.log(decryptBits('rw')); // -> B9
+// console.log(decryptBits('KyU')); // -> Abc
+// console.log(decryptBits('jvLdRPdQXV8Rd5x')); // -> This is a test.
+//=======================================================
+// https://www.codewars.com/kata/57f14afa5f2f226d7d0000f4/train/javascript
+//TODO
+
+//========================================================
+// https://www.codewars.com/kata/55f73be6e12baaa5900000d4
+// Messi goals function
+// Messi is a soccer player with goals in three leagues:
+
+// LaLiga
+// Copa del Rey
+// Champions
+// Complete the function to return his total number of goals in all three leagues.
+
+// Note: the input will always be valid.
+
+// For example:
+
+// 5, 10, 2  -->  17
+
+function goals (laLigaGoals, copaDelReyGoals, championsLeagueGoals) {
+    return [...arguments].reduce((acc, cur) => acc+cur, 0)
+}
+
+function goalsBis (laLigaGoals, copaDelReyGoals, championsLeagueGoals) {
+    return laLigaGoals + copaDelReyGoals + championsLeagueGoals;
+}
+
+
+//===============================================
+// https://www.codewars.com/kata/563a631f7cbbc236cf0000c2
+// Terminal game move function
+// In this game, the hero moves from left to right. The player rolls the dice and moves the number of spaces indicated by the dice two times.
+
+// Create a function for the terminal game that takes the current position of the hero and the roll (1-6) and return the new position.
+
+// Example:
+// move(3, 6) should equal 15
+
+function move (position, roll) {
+    return position + roll*2
+}
+
+//====================================================

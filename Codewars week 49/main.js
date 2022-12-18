@@ -733,7 +733,140 @@ function decryptBits(encryptedText) {
 // console.log(decryptBits('jvLdRPdQXV8Rd5x')); // -> This is a test.
 //=======================================================
 // https://www.codewars.com/kata/57f14afa5f2f226d7d0000f4/train/javascript
-//TODO
+// You have to write two methods to encrypt and decrypt strings. Both methods have two parameters:
+
+// 1. The string to encrypt/decrypt
+// 2. The Qwerty-Encryption-Key (000-999) 
+// The rules are very easy:
+
+// The crypting-regions are these 3 lines from your keyboard:
+// 1. "qwertyuiop"
+// 2. "asdfghjkl"
+// 3. "zxcvbnm,."
+
+// If a char of the string is not in any of these regions, take the char direct in the output.
+// If a char of the string is in one of these regions: Move it by the part of the key in the 
+// region and take this char at the position from the region. 
+// If the movement is over the length of the region, continue at the beginning.
+// The encrypted char must have the same case like the decrypted char! 
+// So for upperCase-chars the regions are the same, but with pressed "SHIFT"!
+
+// The Encryption-Key is an integer number from 000 to 999. E.g.: 127
+
+// The first digit of the key (e.g. 1) is the movement for the first line.
+// The second digit of the key (e.g. 2) is the movement for the second line.
+// The third digit of the key (e.g. 7) is the movement for the third line.
+
+// (Consider that the key is an integer! When you got a 0 this would mean 000. A 1 would mean 001. And so on.)
+// You do not need to do any prechecks. The strings will always be not null and will always have a length > 0. You do not have to throw any exceptions.
+
+// An Example:
+
+// Encrypt "Ball" with key 134
+// 1. "B" is in the third region line. Move per 4 places in the region. -> ">" (Also "upperCase"!)
+// 2. "a" is in the second region line. Move per 3 places in the region. -> "f"
+// 3. "l" is in the second region line. Move per 3 places in the region. -> "d"
+// 4. "l" is in the second region line. Move per 3 places in the region. -> "d"
+// --> Output would be ">fdd"
+// Hint: Don't forget: The regions are from an US-Keyboard!
+// In doubt google for "US Keyboard."
+
+// This kata is part of the Simple Encryption Series:
+
+// Simple Encryption #1 - Alternating Split
+// https://www.codewars.com/kata/57814d79a56c88e3e0000786
+// Simple Encryption #2 - Index-Difference
+// https://www.codewars.com/kata/5782b5ad202c0ef42f0012cb/train/javascript
+// Simple Encryption #3 - Turn The Bits Around
+// https://www.codewars.com/kata/57d0329442e44e65e8000bb5/train/javascript
+// Simple Encryption #4 - Qwerty
+// https://www.codewars.com/kata/57f14afa5f2f226d7d0000f4/train/javascript
+
+function encryptKeyboard(text, key) {
+    let regions = {
+        firstLineLower : 'qwertyuiop'.repeat(2),
+        firstLineUpper : 'QWERTYUIOP'.repeat(2),
+        secondLineLower : 'asdfghjkl'.repeat(2),
+        secondLineUpper : 'ASDFGHJKL'.repeat(2),
+        thirdLineLower : 'zxcvbnm,.'.repeat(2),
+        thirdLineUpper : 'ZXCVBNM<>'.repeat(2),
+    }
+
+    let stringKey = key.toString()
+    while(stringKey.length < 3){
+        stringKey = '0' + stringKey
+    }
+
+    let res = ''
+    for(let i=0 ; i<text.length ; i++){
+        let char = text[i]
+        let isCharInRegions = false
+        let lineIndx = -1
+        for(let keyboardLine in regions){
+            lineIndx++
+            if(regions[keyboardLine].includes(char)){
+                let keyIndx = Math.floor(lineIndx/2)
+                let charIndex = regions[keyboardLine].indexOf(char)
+                let rightShift = Number(stringKey[keyIndx])
+
+                isCharInRegions = true
+
+                res += regions[keyboardLine][charIndex + rightShift]
+            }
+        }
+
+        if(!isCharInRegions){
+            res += char
+        }
+    }
+
+    return res
+}
+
+// console.log(encryptKeyboard('Ball', 134)); // -> >fdd
+
+function decryptKeyboard(text, key) {
+    let regions = {
+        firstLineLower : 'qwertyuiop'.repeat(2),
+        firstLineUpper : 'QWERTYUIOP'.repeat(2),
+        secondLineLower : 'asdfghjkl'.repeat(2),
+        secondLineUpper : 'ASDFGHJKL'.repeat(2),
+        thirdLineLower : 'zxcvbnm,.'.repeat(2),
+        thirdLineUpper : 'ZXCVBNM<>'.repeat(2),
+    }
+
+    let stringKey = key.toString()
+    while(stringKey.length < 3){
+        stringKey = '0' + stringKey
+    }
+
+    let res = ''
+    for(let i=0 ; i<text.length ; i++){
+        let char = text[i]
+        let isCharInRegions = false
+        let lineIndx = -1
+        for(let keyboardLine in regions){
+            lineIndx++
+            if(regions[keyboardLine].includes(char)){
+                let keyIndx = Math.floor(lineIndx/2)
+                let charIndex = regions[keyboardLine].lastIndexOf(char)
+                let lefttShift = Number(stringKey[keyIndx])
+
+                isCharInRegions = true
+
+                res += regions[keyboardLine][charIndex - lefttShift]
+            }
+        }
+
+        if(!isCharInRegions){
+            res += char
+        }
+    }
+
+    return res
+}
+
+// console.log(decryptKeyboard('>fdd', 134)); // -> Ball
 
 //========================================================
 // https://www.codewars.com/kata/55f73be6e12baaa5900000d4
@@ -775,3 +908,106 @@ function move (position, roll) {
 }
 
 //====================================================
+// https://www.codewars.com/kata/57ea5b0b75ae11d1e800006c
+// Write a function that takes an array of strings as an argument and returns a sorted array containing the same strings, ordered from shortest to longest.
+
+// For example, if this array were passed as an argument:
+
+// ["Telescopes", "Glasses", "Eyes", "Monocles"]
+
+// Your function would return the following array:
+
+// ["Eyes", "Glasses", "Monocles", "Telescopes"]
+
+// All of the strings in the array passed to your function will be different lengths, so you will not have to decide how to order multiple strings of the same length.
+
+function sortByLength (array) {
+    return array.sort((a,b) => a.length - b.length)
+}
+
+//=========================================================
+// https://www.codewars.com/kata/55c28f7304e3eaebef0000da
+// Unfinished Loop - Bug Fixing #1
+// Oh no, Timmy's created an infinite loop! Help Timmy find and fix the bug in his unfinished for loop!
+
+function createArray(number){
+    let newArray = [];
+    
+    for(let counter = 1 ; counter <= number ; counter++){
+      newArray.push(counter);
+    }
+    
+    return newArray;
+}
+
+//==========================================================
+// https://www.codewars.com/kata/5625618b1fe21ab49f00001f
+// Debugging sayHello function
+// The starship Enterprise has run into some problem when creating a program to greet everyone as they come aboard. It is your job to fix the code and get the program working again!
+
+// Example output:
+
+// Hello, Mr. Spock
+
+function sayHello(name) {
+    return 'Hello, ' + name
+}
+
+//==========================================================
+// https://www.codewars.com/kata/56f699cd9400f5b7d8000b55
+// You're at the zoo... all the meerkats look weird. Something has gone terribly wrong - someone has gone and switched their heads and tails around!
+
+// Save the animals by switching them back. You will be given an array which will have three values (tail, body, head). It is your job to re-arrange the array so that the animal is the right way round (head, body, tail).
+
+// Same goes for all the other arrays/lists that you will get in the tests: you have to change the element positions with the same exact logics
+
+// Simples!
+
+function fixTheMeerkat(arr) {
+    return [arr[2], arr[1], arr[0]]
+}
+
+function fixTheMeerkatBis(arr) {
+    return arr.reverse()
+}
+
+//===============================================================
+// https://www.codewars.com/kata/57d814e4950d8489720008db
+// This kata is from check py.checkio.org
+
+// You are given an array with positive numbers and a non-negative number N. You should find the N-th power of the element in the array with the index N. If N is outside of the array, then return -1. Don't forget that the first element has the index 0.
+
+// Let's look at a few examples:
+
+// array = [1, 2, 3, 4] and N = 2, then the result is 3^2 == 9;
+// array = [1, 2, 3] and N = 3, but N is outside of the array, so the result is -1.
+
+function nthPower(array, n){
+    return array[n] === undefined ? -1 : Math.pow(array[n], n)
+}
+
+function nthPowerBis(array, n){
+    return array.length > n ? Math.pow(array[n], n) : -1
+}
+
+//==================================================================
+// https://www.codewars.com/kata/57089707fe2d01529f00024a
+// If/else syntax debug
+// While making a game, your partner, Greg, decided to create a function to check if the user is still alive called checkAlive/CheckAlive/check_alive. Unfortunately, Greg made some errors while creating the function.
+
+// checkAlive/CheckAlive/check_alive should return true if the player's health is greater than 0 or false if it is 0 or below.
+
+// The function receives one parameter health which will always be a whole number between -10 and 10.
+
+function checkAlive(health) {
+    if (health > 0) {
+        return true
+    } else {
+        return false
+    }
+}
+
+function checkAliveBis(health) {
+    return health > 0
+}
+

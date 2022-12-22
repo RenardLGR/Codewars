@@ -506,3 +506,75 @@ function permutations(string) {
 // console.log(permutations('aabb')); // -> [ 'aabb', 'abab', 'abba', 'baab', 'baba', 'bbaa' ]
 
 //=======================================================
+// https://www.codewars.com/kata/52f787eb172a8b4ae1000a34
+// Write a program that will calculate the number of trailing zeros in a factorial of a given number.
+
+// N! = 1 * 2 * 3 *  ... * N
+
+// Be careful 1000! has 2568 digits...
+
+// For more info, see: http://mathworld.wolfram.com/Factorial.html
+
+// Examples
+// zeros(6) = 1
+// # 6! = 1 * 2 * 3 * 4 * 5 * 6 = 720 --> 1 trailing zero
+
+// zeros(12) = 2
+// # 12! = 479001600 --> 2 trailing zeros
+// Hint: You're not meant to calculate the factorial. Find another way to find the number of zeros.
+
+function zeroesFac(n) {
+    // Every 2*5 makes a trailing zero
+    // There are plenty of 2s so we just have to count every 5s
+    // 5 is one 5, 10 is one ... 25 is 2
+
+    //A bit long...
+
+    let res = 0
+    for(let i=5 ; i<=n ; i=i+5){
+        let temp = i
+        let isDone = false
+        while(!isDone){
+            isDone = true
+            if(temp%5 === 0){
+                isDone = false
+                res++
+                temp = temp/5
+            }
+        }
+    }
+
+    return res
+}
+
+// console.log(zeroesFac(12)); // -> 2
+// console.log(zeroesFac(30)); // -> 7
+// console.log(zeroesFac(97974760)); // -> 24493686
+// console.log(zeroesFac(926054989)); // -> 231513738
+
+function zeroesFacBis(n){
+    // Every 2*5 makes a trailing zero
+    // There are plenty of 2s so we just have to count every 5s
+    // 5 is one 5, 10 is one ... 25 is 2
+
+    let maxPower = 0
+    while(Math.pow(5, maxPower) <= n){
+        maxPower++
+    }
+    maxPower--
+
+    let res = 0
+    for(let i=1 ; i<=maxPower ; i++){
+        let powerOfFive = Math.pow(5, i)
+        res+= Math.floor(n/powerOfFive)
+    }
+
+    return res
+}
+
+// console.log(zeroesFacBis(12)); // -> 2
+// console.log(zeroesFacBis(30)); // -> 7
+// console.log(zeroesFacBis(97974760)); // -> 24493686
+// console.log(zeroesFacBis(926054989)); // -> 231513738
+
+//==========================================================

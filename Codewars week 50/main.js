@@ -7,15 +7,15 @@ const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 //==========================================================
 //Write a bubble sort algo
 //n² complexity
-function bubbleSort(arr){ //we will sort from smallest to biggest here
+function bubbleSort(arr) { //we will sort from smallest to biggest here
     let res = arr.slice('')
     let isDone = false
-    while(!isDone){
+    while (!isDone) {
         isDone = true
-        for(let i=0 ; i<res.length-1 ; i++){
-            if(res[i] > res[i+1]){
-                let temp = res[i+1]
-                res[i+1] = res[i]
+        for (let i = 0; i < res.length - 1; i++) {
+            if (res[i] > res[i + 1]) {
+                let temp = res[i + 1]
+                res[i + 1] = res[i]
                 res[i] = temp
                 isDone = false
             }
@@ -27,11 +27,11 @@ function bubbleSort(arr){ //we will sort from smallest to biggest here
 //========================
 //Write a merge sort algo
 // n log(n) complexity
-function mergeSort(array){
-    if(array.length === 1){
+function mergeSort(array) {
+    if (array.length === 1) {
         return array
-    }else{
-        let middle = Math.floor(array.length/2)
+    } else {
+        let middle = Math.floor(array.length / 2)
         let leftSubArr = array.slice(0, middle)
         let rightSubArr = array.slice(middle)
         let sortedLeft = mergeSort(leftSubArr)
@@ -39,15 +39,15 @@ function mergeSort(array){
         return merge(sortedLeft, sortedRight)
     }
 
-    function merge(arr1, arr2){ //sorted from smallest to biggest
+    function merge(arr1, arr2) { //sorted from smallest to biggest
         let res = []
         let a1cpy = arr1.slice()
         let a2cpy = arr2.slice()
-        while(a1cpy.length !==0 || a2cpy.length !==0){
-            while(a1cpy.length !==0 && a2cpy.length !==0){
+        while (a1cpy.length !== 0 || a2cpy.length !== 0) {
+            while (a1cpy.length !== 0 && a2cpy.length !== 0) {
                 res.push(a1cpy[0] > a2cpy[0] ? a2cpy.shift() : a1cpy.shift())
             }
-            res = res.concat(a1cpy.length !==0 ? a1cpy : a2cpy)
+            res = res.concat(a1cpy.length !== 0 ? a1cpy : a2cpy)
             a1cpy = []
             a2cpy = []
         }
@@ -59,18 +59,18 @@ function mergeSort(array){
 //======================
 //Write a binary search function, from a sorted array, find the index of a target value, -1 if it doens't exists
 // logn complexity
-function binarySearch(sortedArr, target){
+function binarySearch(sortedArr, target) {
     let min = 0
-    let max = sortedArr.length-1
-    while(max-min>=0){
-        let middle = Math.floor((min+max)/2)
-        if(sortedArr[middle] === target){
+    let max = sortedArr.length - 1
+    while (max - min >= 0) {
+        let middle = Math.floor((min + max) / 2)
+        if (sortedArr[middle] === target) {
             return middle
-        }else{
-            if(sortedArr[middle] < target){
-                min = middle+1
-            }else{
-                max = middle-1
+        } else {
+            if (sortedArr[middle] < target) {
+                min = middle + 1
+            } else {
+                max = middle - 1
             }
         }
     }
@@ -81,20 +81,20 @@ function binarySearch(sortedArr, target){
 
 //==================
 // Write a function that given a size, return every combinations of bits of that size
-function everyBitsComb(size){
+function everyBitsComb(size) {
     let res = []
 
     findComb(size, [])
 
     return res
 
-    function findComb(size, inProgress){
-        if(size===0){
+    function findComb(size, inProgress) {
+        if (size === 0) {
             res.push(inProgress.slice())
             // return
-        }else{
-            findComb(size-1, [...inProgress, 0])
-            findComb(size-1, [...inProgress, 1])
+        } else {
+            findComb(size - 1, [...inProgress, 0])
+            findComb(size - 1, [...inProgress, 1])
         }
     }
 }
@@ -105,17 +105,17 @@ function everyBitsComb(size){
 // Consider this puzzle: by starting from the number 1 and repeatedly either adding 5 or multiplying by 3, an infinite set of numbers can be produced. How would you write a function that, given a number, tries to find a sequence of such additions and multiplications that produces that number?
 
 // For example, the number 13 could be reached by first multiplying by 3 and then adding 5 twice, whereas the number 15 cannot be reached at all.
-function findSequence(target){
+function findSequence(target) {
 
     return find(target, 1, '1')
 
-    function find(target, total, inProgressSequence){
-        if(total>target){
+    function find(target, total, inProgressSequence) {
+        if (total > target) {
             return null
-        }else if(total === target){
+        } else if (total === target) {
             return inProgressSequence
-        }else{
-            return find(target, total+5, `(${inProgressSequence})+5`) || find(target, total*3, `(${inProgressSequence})*3`)
+        } else {
+            return find(target, total + 5, `(${inProgressSequence})+5`) || find(target, total * 3, `(${inProgressSequence})*3`)
         }
     }
 }
@@ -123,41 +123,41 @@ function findSequence(target){
 // console.log(findSequence(15))
 // console.log(findSequence(24))
 
-function findSequenceBis(target){
+function findSequenceBis(target) {
     let res = ''
 
     buildSequences(target, '1', 1)
 
     return res
 
-    function buildSequences(target, sequence, current){
-        if(current>target){
+    function buildSequences(target, sequence, current) {
+        if (current > target) {
             return
-        }else if(current===target){
+        } else if (current === target) {
             res = sequence
             return
-        }else{
-            buildSequences(target, `(${sequence} * 3)`, current*3)
-            buildSequences(target, `(${sequence} + 5)`, current+5)
+        } else {
+            buildSequences(target, `(${sequence} * 3)`, current * 3)
+            buildSequences(target, `(${sequence} + 5)`, current + 5)
         }
     }
 }
 
 //==========================================================
 function deliverHouse1() {
-    setTimeout( () => {
+    setTimeout(() => {
         console.log('House 1 delivered');
     }, 3000)
 }
 
-function deliverHouse2(){
-    setTimeout( () => {
+function deliverHouse2() {
+    setTimeout(() => {
         console.log('House 2 delivered');
     }, 1000)
 }
 
-function deliverHouse3(){
-    setTimeout( () => {
+function deliverHouse3() {
+    setTimeout(() => {
         console.log('House 3 delivered');
     }, 2000)
 }
@@ -169,13 +169,13 @@ function deliverHouse3(){
 // 2 -> 3 -> 1 in 3 seconds
 
 function deliverHousescbHell() {
-    setTimeout( () => {
+    setTimeout(() => {
         console.log('House 1 delivered');
-        setTimeout( () => {
+        setTimeout(() => {
             console.log('House 2 delivered');
-            setTimeout( () => {
+            setTimeout(() => {
                 console.log('House 3 delivered');
-                
+
             }, 2000)
         }, 1000)
     }, 3000)
@@ -188,24 +188,24 @@ function deliverHousescbHell() {
 
 
 function deliverHouse1Promises() {
-    return new Promise( (resolve, reject) => {
-        setTimeout( () => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
             resolve('House 1 delivered')
         }, 3000)
     })
 }
 
 function deliverHouse2Promises() {
-    return new Promise( (resolve, reject) => {
-        setTimeout( () => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
             resolve('House 2 delivered')
         }, 1000)
     })
 }
 
 function deliverHouse3Promises() {
-    return new Promise( (resolve, reject) => {
-        setTimeout( () => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
             resolve('House 3 delivered')
         }, 2000)
     })
@@ -227,7 +227,7 @@ async function deliverHousesAsyncAwait() {
     const house2 = await deliverHouse2Promises()
     const house3 = await deliverHouse3Promises()
 
-    console.log(house1,house2, house3);
+    console.log(house1, house2, house3);
 }
 
 //deliverHousesAsyncAwait()
@@ -235,12 +235,12 @@ async function deliverHousesAsyncAwait() {
 //1 2 3 in 6 seconds
 
 
-async function getDoggo(){
-    try{
+async function getDoggo() {
+    try {
         const res = await fetch('https://dog.ceo/api/breeds/image/random')
         const data = await res.json()
         console.log(data.message);
-    }catch(err){
+    } catch (err) {
         console.log(err);
     }
 }
@@ -391,15 +391,15 @@ function getPINs(observed) {
     return combinations
 
     //recursive
-    function getCombination(index, inProgress){
-        if(index > observed.length-1){
+    function getCombination(index, inProgress) {
+        if (index > observed.length - 1) {
             combinations.push(inProgress)
             return
         }
 
         let adjacents = getAdjacent(observed[index])
         adjacents.forEach(adj => {
-            getCombination(index+1, inProgress + adj)
+            getCombination(index + 1, inProgress + adj)
         })
     }
 
@@ -480,12 +480,12 @@ function permutations(string) {
 
     //rec
     // https://www.geeksforgeeks.org/write-a-c-program-to-print-all-permutations-of-a-given-string/?ref=lbp
-    function permute(string, answer){
+    function permute(string, answer) {
 
         if (string.length === 0) {
             res.push(answer);
         }
-        
+
         for (let i = 0; i < string.length; i++) {
             let ch = string[i];
             let left_substr = string.slice(0, i);
@@ -496,7 +496,7 @@ function permutations(string) {
     }
 
     //helper
-    function removeDuplicates(arr){
+    function removeDuplicates(arr) {
         let set = new Set(arr)
         return Array.from(set)
     }
@@ -531,15 +531,15 @@ function zeroesFac(n) {
     //A bit long...
 
     let res = 0
-    for(let i=5 ; i<=n ; i=i+5){
+    for (let i = 5; i <= n; i = i + 5) {
         let temp = i
         let isDone = false
-        while(!isDone){
+        while (!isDone) {
             isDone = true
-            if(temp%5 === 0){
+            if (temp % 5 === 0) {
                 isDone = false
                 res++
-                temp = temp/5
+                temp = temp / 5
             }
         }
     }
@@ -552,21 +552,21 @@ function zeroesFac(n) {
 // console.log(zeroesFac(97974760)); // -> 24493686
 // console.log(zeroesFac(926054989)); // -> 231513738
 
-function zeroesFacBis(n){
+function zeroesFacBis(n) {
     // Every 2*5 makes a trailing zero
     // There are plenty of 2s so we just have to count every 5s
     // 5 is one 5, 10 is one ... 25 is 2
 
     let maxPower = 0
-    while(Math.pow(5, maxPower) <= n){
+    while (Math.pow(5, maxPower) <= n) {
         maxPower++
     }
     maxPower--
 
     let res = 0
-    for(let i=1 ; i<=maxPower ; i++){
+    for (let i = 1; i <= maxPower; i++) {
         let powerOfFive = Math.pow(5, i)
-        res+= Math.floor(n/powerOfFive)
+        res += Math.floor(n / powerOfFive)
     }
 
     return res
@@ -594,3 +594,137 @@ function unusualFiveBis() {
 }
 
 //=============================================================
+// https://www.codewars.com/kata/5270d0d18625160ada0000e4
+// Greed is a dice game played with five six-sided dice. Your mission, should you choose to accept it, is to score a throw according to these rules. You will always be given an array with five six-sided dice values.
+
+//  Three 1's => 1000 points
+//  Three 6's =>  600 points
+//  Three 5's =>  500 points
+//  Three 4's =>  400 points
+//  Three 3's =>  300 points
+//  Three 2's =>  200 points
+//  One   1   =>  100 points
+//  One   5   =>   50 point
+// A single dice can only be counted once in each roll. For example, a given "5" can only count as part of a triplet (contributing to the 500 points) or as a single 50 points, but not both in the same roll.
+
+// Example scoring
+
+//  Throw       Score
+//  ---------   ------------------
+//  5 1 3 4 1   250:  50 (for the 5) + 2 * 100 (for the 1s)
+//  1 1 1 3 1   1100: 1000 (for three 1s) + 100 (for the other 1)
+//  2 4 4 5 4   450:  400 (for three 4s) + 50 (for the 5)
+// In some languages, it is possible to mutate the input to the function. This is something that you should never do. If you mutate the input, you will not be able to pass all the tests.
+
+function score(dices) {
+    //this algo works for an input of any length :)
+    let cpySortedDices = dices.slice().sort((a, b) => a - b) //smallest to biggest
+
+    let res = 0
+    while (cpySortedDices.length > 0) {
+        if (cpySortedDices.slice(0, 3).every((d, idx, arr) => d === arr[0] && arr.length === 3)) { //if all 3 are equals and I have an array of length 3
+            switch (cpySortedDices[0]) {
+                case 6:
+                    res += 600
+                    cpySortedDices.splice(0, 3)
+                    break;
+
+                case 5:
+                    res += 500
+                    cpySortedDices.splice(0, 3)
+                    break;
+
+                case 4:
+                    res += 400
+                    cpySortedDices.splice(0, 3)
+                    break;
+
+                case 3:
+                    res += 300
+                    cpySortedDices.splice(0, 3)
+                    break;
+
+                case 2:
+                    res += 200
+                    cpySortedDices.splice(0, 3)
+                    break;
+
+                case 1:
+                    res += 1000
+                    cpySortedDices.splice(0, 3)
+                    break;
+
+                default:
+                    break;
+            }
+        }else{
+            switch (cpySortedDices[0]) {
+                case 1:
+                    res += 100
+                    break;
+
+                case 5:
+                    res += 50
+                    break;
+                
+                default:
+                    break;
+            }
+            cpySortedDices.shift()
+        }
+    }
+
+    return res
+}
+
+// console.log(score([2, 3, 4, 6, 2])) // -> 0
+// console.log(score([4, 4, 4, 3, 3])) // -> 400
+// console.log(score([2, 4, 4, 5, 4])) // -> 450
+
+//==========================================================
+// https://www.codewars.com/kata/5503013e34137eeeaa001648
+
+// Jamie is a programmer, and James' girlfriend. She likes diamonds, and wants a diamond string from James. Since James doesn't know how to make this happen, he needs your help.
+
+// Task
+// You need to return a string that looks like a diamond shape when printed on the screen, using asterisk (*) characters. Trailing spaces should be removed, and every line must be terminated with a newline character (\n).
+
+// Return null/nil/None/... if the input is an even number or negative, as it is not possible to print a diamond of even or negative size.
+
+// Examples
+// A size 3 diamond:
+
+//  *
+// ***
+//  *
+// ...which would appear as a string of " *\n***\n *\n"
+
+// A size 5 diamond:
+
+//   *
+//  ***
+// *****
+//  ***
+//   *
+// ...that is:
+
+// "  *\n ***\n*****\n ***\n  *\n"
+
+function diamond(n){
+    if(n%2 === 1 && n>0){
+        let res = '*'.repeat(n) + '\n' //starts from the middle
+        for(let i=1 ; i<Math.ceil(n/2) ; i++){
+            res = ' '.repeat(i) + '*'.repeat(n - 2*i) + '\n' + res //add one line above
+            res = res + ' '.repeat(i) + '*'.repeat(n - 2*i) + '\n' //add one line below
+        }
+        return res
+    }else{
+        return null
+    }
+}
+
+
+// console.log(diamond(1)) // => "*\n"
+// console.log(diamond(5))
+
+//==========================================================

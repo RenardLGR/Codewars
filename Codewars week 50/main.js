@@ -755,3 +755,125 @@ function twoOldestAges(ages){
     // return the two oldest/oldest ages within the array of ages passed in.
     return ages.sort((a,b) => a-b).slice(-2)
 }
+
+
+//================================================================
+// https://www.codewars.com/kata/571ec274b1c8d4a61c0000c8/train/javascript
+// ...
+
+function helloWorld(){
+    let str = "Hello World!"
+    console.log(str)
+}
+
+//=================================================================
+// https://www.codewars.com/kata/529eef7a9194e0cbc1000255
+// An anagram is the result of rearranging the letters of a word to produce a new word (see wikipedia).
+
+// Note: anagrams are case insensitive
+
+// Complete the function to return true if the two arguments given are anagrams of each other; return false otherwise.
+
+// Examples
+// "foefet" is an anagram of "toffee"
+
+// "Buckethead" is an anagram of "DeathCubeK"
+
+var isAnagram = function(test, original) {
+    if(test.length !== original.length) return false
+
+    let testFreq = letterFreq(test)
+    let originalFreq = letterFreq(original)
+    let res = true
+
+    for(let letter in testFreq){
+        if(testFreq[letter] !== originalFreq[letter]){
+            res = false
+        }
+    }
+
+    return res
+
+    function letterFreq(string){
+        return string.toLowerCase().split('').reduce((acc, cur) => {
+            acc[cur] = (acc[cur] || 0) + 1
+            return acc
+        }, {})
+    }
+};
+
+
+var isAnagramBis = function(test, original) {
+    if(test.length !== original.length) return false
+
+    let testSorted = test.toLowerCase().split('').sort()
+    let originalSorted = original.toLowerCase().split('').sort()
+
+    return testSorted.every((letter, idx) => letter === originalSorted[idx])
+};
+
+
+var isAnagramTer = function(test, original) {
+    let t = test.toLowerCase().split('').sort().join('')
+    let o = original.toLowerCase().split('').sort().join('')
+
+    return t === o
+}
+
+//===============================================================
+// https://www.codewars.com/kata/5933a1f8552bc2750a0000ed
+// Return the Nth Even Number
+
+// Example(Input --> Output)
+
+// 1 --> 0 (the first even number is 0)
+// 3 --> 4 (the 3rd even number is 4 (0, 2, 4))
+// 100 --> 198
+// 1298734 --> 2597466
+// The input will not be 0.
+
+function nthEven(n){
+    return n*2 - 2
+}
+
+//===================================================================
+// https://www.codewars.com/kata/5202ef17a402dd033c000009
+// A string is considered to be in title case if each word in the string is either (a) capitalised (that is, only the first letter of the word is in upper case) or (b) considered to be an exception and put entirely into lower case unless it is the first word, which is always capitalised.
+
+// Write a function that will convert a string into title case, given an optional list of exceptions (minor words). The list of minor words will be given as a string with each word separated by a space. Your function should ignore the case of the minor words string -- it should behave in the same way even if the case of the minor word string is changed.
+
+// Arguments (Haskell)
+// First argument: space-delimited list of minor words that must always be lowercase except for the first word in the string.
+// Second argument: the original string to be converted.
+// Arguments (Other languages)
+// First argument (required): the original string to be converted.
+// Second argument (optional): space-delimited list of minor words that must always be lowercase except for the first word in the string. The JavaScript/CoffeeScript tests will pass undefined when this argument is unused.
+// Example
+// titleCase('a clash of KINGS', 'a an the of') // should return: 'A Clash of Kings'
+// titleCase('THE WIND IN THE WILLOWS', 'The In') // should return: 'The Wind in the Willows'
+// titleCase('the quick brown fox') // should return: 'The Quick Brown Fox'
+
+function titleCase(title, minorWords) {
+    //first letter/word is always capitalized
+    //every word is capitalized but those inside minor words
+
+    if(title === '') return ''
+
+    let sanitizedExceptions = minorWords ? minorWords.split(' ').map(word => word.toLowerCase()) : [] //edge case with an undefined argument
+  
+    return title.toLowerCase().split(' ').map((word, idx) => {
+        if(idx === 0){ //first word is always capitalized
+            return word[0].toUpperCase() + word.slice(1)
+        }else{
+            if(sanitizedExceptions.includes(word)){
+                return word
+            }else{
+                return word[0].toUpperCase() + word.slice(1)
+            }
+        }
+    }).join(' ')
+}
+
+// console.log(titleCase('THE WIND IN THE WILLOWS', 'The In')); // => The Wind in the Willows
+
+//===============================================================

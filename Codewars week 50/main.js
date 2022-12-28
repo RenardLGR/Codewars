@@ -877,3 +877,49 @@ function titleCase(title, minorWords) {
 // console.log(titleCase('THE WIND IN THE WILLOWS', 'The In')); // => The Wind in the Willows
 
 //===============================================================
+// https://www.codewars.com/kata/5324945e2ece5e1f32000370
+// Given the string representations of two integers, return the string representation of the sum of those integers.
+
+// For example:
+
+// sumStrings('1','2') // => '3'
+// A string representation of an integer will contain no characters besides the ten numerals "0" to "9".
+
+// I have removed the use of BigInteger and BigDecimal in java
+
+// Python: your solution need to work with huge numbers (about a milion digits), converting to int will not work.
+
+function sumStrings(a,b) { 
+    let maxLength = Math.max(a.length, b.length)
+    let sanitizedA = a
+    let sanitizedB = b
+    let res = ''
+    while(sanitizedA.length < maxLength + 1){ //one extra zero is added in a case of a carry
+        sanitizedA = '0' + sanitizedA
+    }
+
+    while(sanitizedB.length < maxLength + 1){ //one extra zero is added in a case of a carry
+        sanitizedB = '0' + sanitizedB
+    }
+
+    let carry = false
+    for(let i=maxLength ; i>=0 ; i--){
+        let c = carry ? 1 : 0
+        let sum = (+sanitizedA[i] + +sanitizedB[i] + c).toString()
+        carry = sum.length === 2
+        res = sum[sum.length - 1] + res
+    }
+
+    while(res[0] === '0'){ //remove leading zeroes
+        res = res.slice(1)
+    }
+
+    return res
+}
+
+// console.log(sumStrings('123','456')); // -> '579'
+// console.log(sumStrings('712569312664357328695151392', '8100824045303269669937')); // -> '712577413488402631964821329'
+// console.log(sumStrings('00103', '08567')); // -> '8670'
+
+
+//========================================================

@@ -955,3 +955,63 @@ function generateRange(min, max, step){
 }
 
 //=============================================================
+// https://www.codewars.com/kata/586c1cf4b98de0399300001d
+// Create a combat function that takes the player's current health and the amount of damage recieved, and returns the player's new health. Health can't be less than 0.
+
+function combat(health, damage) {
+    let res = health - damage
+    return res > 0 ? res : 0
+}
+
+function combatBis(health, damage) {
+	return health < damage ? 0 : health - damage
+}
+
+//===============================================================
+// https://www.codewars.com/kata/5aba780a6a176b029800041c
+// Given a Divisor and a Bound , Find the largest integer N , Such That ,
+
+// Conditions :
+// N is divisible by divisor
+
+// N is less than or equal to bound
+
+// N is greater than 0.
+
+// Notes
+// The parameters (divisor, bound) passed to the function are only positive values .
+// It's guaranteed that a divisor is Found .
+// Input >> Output Examples
+// maxMultiple (2,7) ==> return (6)
+// Explanation:
+// (6) is divisible by (2) , (6) is less than or equal to bound (7) , and (6) is > 0 .
+
+// maxMultiple (10,50)  ==> return (50)
+// Explanation:
+// (50) is divisible by (10) , (50) is less than or equal to bound (50) , and (50) is > 0 .*
+
+// maxMultiple (37,200) ==> return (185)
+// Explanation:
+// (185) is divisible by (37) , (185) is less than or equal to bound (200) , and (185) is > 0 .
+
+function maxMultiple(divisor, bound){
+    let res
+    for(let i=bound ; i>0 ; i--){
+        if(i%divisor === 0){
+            res = i
+            break
+        }
+    }
+
+    return res
+}
+
+function maxMultipleBis(divisor, bound){
+    //bound % divisor = remainder
+    //there is a number k such as divisor*k + remainder = bound
+    //divisor*k is the answer
+    //answer = bound - remainder
+    return bound - (bound % divisor)
+}
+
+//=============================================================

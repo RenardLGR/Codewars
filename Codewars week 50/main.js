@@ -1015,3 +1015,78 @@ function maxMultipleBis(divisor, bound){
 }
 
 //=============================================================
+// https://www.codewars.com/kata/57ec8bd8f670e9a47a000f89
+// The wide-mouth frog is particularly interested in the eating habits of other creatures.
+
+// He just can't stop asking the creatures he encounters what they like to eat. But, then he meets the alligator who just LOVES to eat wide-mouthed frogs!
+
+// When he meets the alligator, it then makes a tiny mouth.
+
+// Your goal in this kata is to create complete the mouth_size method this method takes one argument animal which corresponds to the animal encountered by the frog. If this one is an alligator (case-insensitive) return small otherwise return wide.
+
+function mouthSize(animal) {
+    return animal.toLowerCase() === "alligator" ? "small" : "wide"
+}
+
+//===============================================================
+// https://www.codewars.com/kata/54ff0d1f355cfd20e60001fc
+// In mathematics, the factorial of a non-negative integer n, denoted by n!, is the product of all positive integers less than or equal to n. For example: 5! = 5 * 4 * 3 * 2 * 1 = 120. By convention the value of 0! is 1.
+
+// Write a function to calculate factorial for a given input. If input is below 0 or above 12 throw an exception of type ArgumentOutOfRangeException (C#) or IllegalArgumentException (Java) or RangeException (PHP) or throw a RangeError (JavaScript) or ValueError (Python) or return -1 (C).
+
+// More details about factorial can be found here.
+
+
+function factorial(n) {
+    if (n < 0 || n > 12) {
+        throw new RangeError()
+    } else {
+        let res = 1
+        for (let i = 2; i <= n; i++) {
+            res = res * i
+        }
+        return res
+    }
+}
+
+function factorialBis(n) {
+    if (n < 0 || n > 12) {
+        throw new RangeError()
+    } else {
+        return n >= 1 ? n * factorial(n-1) : 1
+    }
+}
+
+//=================================================================
+// https://www.codewars.com/kata/56200d610758762fb0000002
+// Fix the function
+// I created this function to add five to any number that was passed in to it and return the new value. It doesn't throw any errors but it returns the wrong number.
+
+// Can you help me fix the function?
+
+function addFive(num) {
+    var total = num + 5
+    return total
+}
+
+//===================================================================
+// https://www.codewars.com/kata/52f3149496de55aded000410
+// Write a function named sumDigits which takes a number as input and returns the sum of the absolute value of each of the number's decimal digits.
+
+// For example: (Input --> Output)
+
+// 10 --> 1
+// 99 --> 18
+// -32 --> 5
+// Let's assume that all numbers in the input will be integer values.
+
+function sumDigits(number) {
+    let numbers = '0123456789'
+    return number.toString().split('').reduce((acc, cur) => numbers.includes(cur) ? acc + +cur : acc, 0)
+}
+
+function sumDigitsBis(number){
+    return Math.abs(number).toString().split('').reduce((acc, cur) => acc + +cur, 0)
+}
+
+//================================================================

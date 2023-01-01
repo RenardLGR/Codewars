@@ -1090,3 +1090,144 @@ function sumDigitsBis(number){
 }
 
 //================================================================
+// https://www.codewars.com/kata/5c8bfa44b9d1192e1ebd3d15
+// Wolves have been reintroduced to Great Britain. You are a sheep farmer, and are now plagued by wolves which pretend to be sheep. Fortunately, you are good at spotting them.
+
+// Warn the sheep in front of the wolf that it is about to be eaten. Remember that you are standing at the front of the queue which is at the end of the array:
+
+// [sheep, sheep, sheep, sheep, sheep, wolf, sheep, sheep]      (YOU ARE HERE AT THE FRONT OF THE QUEUE)
+//    7      6      5      4      3            2      1
+// If the wolf is the closest animal to you, return "Pls go away and stop eating my sheep". Otherwise, return "Oi! Sheep number N! You are about to be eaten by a wolf!" where N is the sheep's position in the queue.
+
+// Note: there will always be exactly one wolf in the array.
+
+// Examples
+// Input: ["sheep", "sheep", "sheep", "wolf", "sheep"]
+// Output: "Oi! Sheep number 1! You are about to be eaten by a wolf!"
+
+// Input: ["sheep", "sheep", "wolf"]
+// Output: "Pls go away and stop eating my sheep"
+
+function warnTheSheep(queue) {
+    for (let i = queue.length - 1 ; i>=0 ; i--){
+        if(queue[i] === "wolf"){
+            if(i === queue.length - 1){
+                return "Pls go away and stop eating my sheep"
+            }else{
+                return `Oi! Sheep number ${queue.length - 1 - i}! You are about to be eaten by a wolf!`
+            }
+        }
+    }
+}
+
+
+// console.log(warnTheSheep(["sheep", "sheep", "sheep", "wolf", "sheep"])); // -> Oi! Sheep number 1! You are about to be eaten by a wolf!
+
+function warnTheSheepBis(queue) {
+    let position = queue.reverse().indexOf('wolf')
+    return position === 0 ? "Pls go away and stop eating my sheep" : `Oi! Sheep number ${position}! You are about to be eaten by a wolf!`
+}
+
+// console.log(warnTheSheepBis(["sheep", "sheep", "sheep", "wolf", "sheep"])); // -> Oi! Sheep number 1! You are about to be eaten by a wolf!
+//==============================================================
+// https://www.codewars.com/kata/5ac6932b2f317b96980000ca
+// Task
+// Given a list of digits, return the smallest number that could be formed from these digits, using the digits only once (ignore duplicates).
+
+// Notes:
+// Only positive integers will be passed to the function (> 0 ), no negatives or zeros.
+// Input >> Output Examples
+// minValue ({1, 3, 1})  ==> return (13)
+// Explanation:
+// (13) is the minimum number could be formed from {1, 3, 1} , Without duplications
+
+// minValue({5, 7, 5, 9, 7})  ==> return (579)
+// Explanation:
+// (579) is the minimum number could be formed from {5, 7, 5, 9, 7} , Without duplications
+
+// minValue({1, 9, 3, 1, 7, 4, 6, 6, 7}) return  ==> (134679)
+// Explanation:
+// (134679) is the minimum number could be formed from {1, 9, 3, 1, 7, 4, 6, 6, 7} , Without duplications
+
+function minValue(values){
+    //remove duplicate from array
+    //sort ascending
+    //concat
+
+    return +values.filter((d, i, arr) => i===arr.indexOf(d)).sort((a, b) => a-b).reduce((acc, cur) => acc + cur, '')
+}
+
+function minValue(values){
+    //set it
+    //sort ascending
+    //join
+
+    return Number(Array.from(new Set(values)).sort().join(''))
+}
+
+// console.log(minValue([1, 9, 1, 3, 7, 4, 6, 6, 7])); // -> 134679
+
+//===========================================================
+// https://www.codewars.com/kata/56fa3c5ce4d45d2a52001b3c
+// Exclusive "or" (xor) Logical Operator
+// Overview
+// In some scripting languages like PHP, there exists a logical operator (e.g. &&, ||, and, or, etc.) called the "Exclusive Or" (hence the name of this Kata). The exclusive or evaluates two booleans. It then returns true if exactly one of the two expressions are true, false otherwise. For example:
+
+// false xor false == false // since both are false
+// true xor false == true // exactly one of the two expressions are true
+// false xor true == true // exactly one of the two expressions are true
+// true xor true == false // Both are true.  "xor" only returns true if EXACTLY one of the two expressions evaluate to true.
+// Task
+// Since we cannot define keywords in Javascript (well, at least I don't know how to do it), your task is to define a function xor(a, b) where a and b are the two expressions to be evaluated. Your xor function should have the behaviour described above, returning true if exactly one of the two expressions evaluate to true, false otherwise.
+
+function xor(a, b) {
+    //the bitwise operator ^ returns 0 if both boolean are identical otherwise 1
+    return (a ^ b) === 1
+}
+
+function xorBis(a, b){
+    return a !== b
+}
+
+function xorTer(a, b) {
+    //the bitwise operator ^ returns 0 if both boolean are identical otherwise 1
+    //bang will convert a truthy value into a boolean false, double bang converts a truthy into a boolean true
+    return !!(a ^ b)
+}
+
+//=============================================================
+// https://www.codewars.com/kata/57fb09ef2b5314a8a90001ed
+// Description:
+// Replace all vowel to exclamation mark in the sentence. aeiouAEIOU is vowel.
+
+// Examples
+// replace("Hi!") === "H!!"
+// replace("!Hi! Hi!") === "!H!! H!!"
+// replace("aeiou") === "!!!!!"
+// replace("ABCDE") === "!BCD!"
+
+function vowToBang(s){
+    let vowels = "aeiouAEIOU"
+    return s.split('').map(char => vowels.includes(char) ? '!' : char).join('')
+}
+
+function vowToBangBis(s){
+    return s.replace(/[aeoiu]/ig, '!')  
+}
+
+//==========================================================
+// https://www.codewars.com/kata/57a55c8b72292d057b000594
+// You need to write a function that reverses the words in a given string. A word can also fit an empty string. If this is not clear enough, here are some examples:
+
+// As the input may have trailing spaces, you will also need to ignore unneccesary whitespace.
+
+// Example (Input --> Output)
+
+// "Hello World" --> "World Hello"
+// "Hi There." --> "There. Hi"
+// Happy coding!
+
+function reverseWord(sentence){
+    return sentence.split(' ').reverse().join(' ')
+}
+

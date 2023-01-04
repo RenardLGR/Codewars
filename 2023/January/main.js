@@ -139,3 +139,39 @@ function seatsInTheater(nCols, nRows, col, row) {
 }
 
 //=========================================================
+// https://www.codewars.com/kata/570a6a46455d08ff8d001002
+// Numbers ending with zeros are boring.
+
+// They might be fun in your world, but not here.
+
+// Get rid of them. Only the ending ones.
+
+// 1450 -> 145
+// 960000 -> 96
+// 1050 -> 105
+// -1050 -> -105
+// Zero alone is fine, don't worry about it. Poor guy anyway
+
+
+function noBoringZeros(n) {
+    if(n===0){
+        return 0
+    }else{
+        let s = n.toString()
+        while(s[s.length - 1] === '0'){
+            s = s.slice(0, -1)
+        }
+        return +s
+    }
+}
+
+// console.log(noBoringZeros(960000)); // -> 96
+
+function noBoringZerosBis(n) {
+    while(n%10===0 && n!==0){
+        n = n/10
+    }
+    return n
+}
+
+//===========================================================

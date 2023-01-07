@@ -220,3 +220,83 @@ function perimeter(n) {
 // console.log(perimeter(7)); // 216
 
 //=========================================================
+// https://www.codewars.com/kata/54d512e62a5e54c96200019e
+// Given a positive number n > 1 find the prime factor decomposition of n. The result will be a string with the following form :
+
+//  "(p1**n1)(p2**n2)...(pk**nk)"
+// with the p(i) in increasing order and n(i) empty if n(i) is 1.
+
+// Example: n = 86240 should return "(2**5)(5)(7**2)(11)"
+
+function primeFactors(n){
+    if(n<2) return "(" + n + ")" //edge
+
+    let pFactors = [] //Array of array [factor, power]
+    let temp = n //non mutating the input
+    let factor = 2
+
+    while(temp > 1){ //when temp/(fac**n) = 1, fac, n of N, the algo is done
+        if(isPrime(factor) && temp%factor === 0){ //check prime and divisibility
+            //Is checking prime necessary? If all factors of 2 and 3 have been gathered, there won't be any for 6, 8, etc
+            let power = 1
+            while(temp % Math.pow(factor, power) === 0){ //divisibility to which power
+                power++
+            }
+            power-- //one step too much
+            pFactors.push([factor, power])
+            temp = temp/(Math.pow(factor, power))
+        }
+        factor++
+    }
+
+    return pFactors.reduce((acc , [factor, power]) => {
+        return power === 1 ? acc + `(${factor})` : acc + `(${factor}**${power})`
+    }, '')
+
+
+    function isPrime(n){
+        if(n<2){
+            return false
+        }else{
+            for(let i=2 ; i<Math.ceil(Math.sqrt(n)) ; i++){
+                if(n%i === 0){
+                    return false
+                }
+            }
+            return true
+        }
+    }
+}
+
+// console.log(primeFactors(1)) // (1)
+// console.log(primeFactors(86240)); // "(2**5)(5)(7**2)(11)"
+// console.log(primeFactors(7775460)); // "(2**2)(3**3)(5)(7)(11**2)(17)"
+
+function primeFactorsBis(n){
+    if(n<2) return "(" + n + ")" //edge
+
+    let res = ''
+    let factor = 2
+
+    while(n > 1){
+        let pow = 0
+        while(n%factor === 0){
+            pow++
+            n = n/factor
+        }
+
+        if(pow > 0){
+            res += pow===1 ? `(${factor})` : `(${factor}**${pow})`
+        }
+
+        factor++
+    }
+
+    return res
+}
+
+// console.log(primeFactorsBis(1)) // (1)
+// console.log(primeFactorsBis(86240)); // "(2**5)(5)(7**2)(11)"
+// console.log(primeFactorsBis(7775460)); // "(2**2)(3**3)(5)(7)(11**2)(17)"
+
+//=============================================

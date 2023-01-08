@@ -300,3 +300,110 @@ function primeFactorsBis(n){
 // console.log(primeFactorsBis(7775460)); // "(2**2)(3**3)(5)(7)(11**2)(17)"
 
 //=============================================
+// https://www.codewars.com/kata/5629db57620258aa9d000014
+// Given two strings s1 and s2, we want to visualize how different the two strings are. We will only take into account the lowercase letters (a to z). First let us count the frequency of each lowercase letters in s1 and s2.
+
+// s1 = "A aaaa bb c"
+
+// s2 = "& aaa bbb c d"
+
+// s1 has 4 'a', 2 'b', 1 'c'
+
+// s2 has 3 'a', 3 'b', 1 'c', 1 'd'
+
+// So the maximum for 'a' in s1 and s2 is 4 from s1; the maximum for 'b' is 3 from s2. In the following we will not consider letters when the maximum of their occurrences is less than or equal to 1.
+
+// We can resume the differences between s1 and s2 in the following string: "1:aaaa/2:bbb" where 1 in 1:aaaa stands for string s1 and aaaa because the maximum for a is 4. In the same manner 2:bbb stands for string s2 and bbb because the maximum for b is 3.
+
+// The task is to produce a string in which each lowercase letters of s1 or s2 appears as many times as its maximum if this maximum is strictly greater than 1; these letters will be prefixed by the number of the string where they appear with their maximum value and :. If the maximum is in s1 as well as in s2 the prefix is =:.
+
+// In the result, substrings (a substring is for example 2:nnnnn or 1:hhh; it contains the prefix) will be in decreasing order of their length and when they have the same length sorted in ascending lexicographic order (letters and digits - more precisely sorted by codepoint); the different groups will be separated by '/'. See examples and "Example Tests".
+
+// Hopefully other examples can make this clearer.
+
+// s1 = "my&friend&Paul has heavy hats! &"
+// s2 = "my friend John has many many friends &"
+// mix(s1, s2) --> "2:nnnnn/1:aaaa/1:hhh/2:mmm/2:yyy/2:dd/2:ff/2:ii/2:rr/=:ee/=:ss"
+
+// s1 = "mmmmm m nnnnn y&friend&Paul has heavy hats! &"
+// s2 = "my frie n d Joh n has ma n y ma n y frie n ds n&"
+// mix(s1, s2) --> "1:mmmmmm/=:nnnnnn/1:aaaa/1:hhh/2:yyy/2:dd/2:ff/2:ii/2:rr/=:ee/=:ss"
+
+// s1="Are the kids at home? aaaaa fffff"
+// s2="Yes they are here! aaaaa fffff"
+// mix(s1, s2) --> "=:aaaaaa/2:eeeee/=:fffff/1:tt/2:rr/=:hh"
+// Note for Swift, R, PowerShell
+// The prefix =: is replaced by E:
+
+// s1 = "mmmmm m nnnnn y&friend&Paul has heavy hats! &"
+// s2 = "my frie n d Joh n has ma n y ma n y frie n ds n&"
+// mix(s1, s2) --> "1:mmmmmm/E:nnnnnn/1:aaaa/1:hhh/2:yyy/2:dd/2:ff/2:ii/2:rr/E:ee/E:ss"
+
+function mix(s1, s2) {
+    //We will have an array of Array [letter, maxFreq(s1, s2), (s1 || s2)]
+    //We will sort this array by their maxFreq and if equal, the string they are coming from 1 first, 2 then, = then
+    let alphaL = 'abcdefghijklmnopqrstuvwxyz'
+    let arr1 = 'abcdefghijklmnopqrstuvwxyz'.split('').map(letter => [letter, 0, 1])
+    let arr2 = 'abcdefghijklmnopqrstuvwxyz'.split('').map(letter => [letter, 0, 2])
+
+    let freq1 = s1.split('').reduce((acc, cur) => {
+        if(alphaL.includes(cur)){ //if it is indeed a lower case letter
+            acc[cur] = (acc[cur] || 0) + 1
+        }
+        return acc
+    }, {})
+    let freq2 = s2.split('').reduce((acc, cur) => {
+        if(alphaL.includes(cur)){ //if it is indeed a lower case letter
+            acc[cur] = (acc[cur] || 0) + 1
+        }
+        return acc
+    }, {})
+
+    for(let letter in freq1){ //populate the freq of each letter
+        let idx = arr1.findIndex(subarr => subarr[0] === letter)
+        arr1[idx][1] = freq1[letter]
+    }
+    for(let letter in freq2){ //populate the freq of each letter
+        let idx = arr2.findIndex(subarr => subarr[0] === letter)
+        arr2[idx][1] = freq2[letter]
+    }
+
+    let res = [] //this will be an array of the freq we keep
+    for(let i=0 ; i<arr1.length ; i++){ //arr1 and arr2 are the same length
+        let letter = arr1[i][0]
+        let f1 = arr1[i].slice()
+        let f2 = arr2[i].slice()
+        let max = Math.max(f1[1], f2[1])
+
+        if(max > 1){ //exclude 0 freq and 1 freq
+            if(f1[1] === f2[1]){
+                res.push([letter, max, '='])
+            }else if(f1[1] > f2[1]){
+                res.push([letter, max, 1])
+            }else{
+                res.push([letter, max, 2])
+            }
+        }
+    }
+
+    res.sort((subarrA, subarrB) => {
+        let order = [1, 2, "="]
+        if(subarrA[1] === subarrB[1]){ //if their freq are equal, sort alphabetically
+            return order.indexOf(subarrA[2]) - order.indexOf(subarrB[2])
+        }else{
+            return subarrB[1] - subarrA[1]
+        }
+    })
+    
+    let resString = res.reduce((acc, [letter, freq, group]) => {
+        acc += group + ':' + letter.repeat(freq) + '/'
+        return acc
+    }, '')
+    return resString.slice(0, -1) //remove last slash
+}
+
+// console.log(mix("mmmmm m nnnnn y&friend&Paul has heavy hats! &" , "my frie n d Joh n has ma n y ma n y frie n ds n&")); // "1:mmmmmm/=:nnnnnn/1:aaaa/1:hhh/2:yyy/2:dd/2:ff/2:ii/2:rr/=:ee/=:ss"
+
+//It works, it could do some refactoring and drying
+
+//=======================================================

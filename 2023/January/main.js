@@ -341,7 +341,7 @@ function primeFactorsBis(n){
 
 function mix(s1, s2) {
     //We will have an array of Array [letter, maxFreq(s1, s2), (s1 || s2)]
-    //We will sort this array by their maxFreq and if equal, the string they are coming from 1 first, 2 then, = then
+    //We will sort this array by their maxFreq and if equal, the string they are coming from : 1 first, 2 then, = then
     let alphaL = 'abcdefghijklmnopqrstuvwxyz'
     let arr1 = 'abcdefghijklmnopqrstuvwxyz'.split('').map(letter => [letter, 0, 1])
     let arr2 = 'abcdefghijklmnopqrstuvwxyz'.split('').map(letter => [letter, 0, 2])
@@ -407,3 +407,58 @@ function mix(s1, s2) {
 //It works, it could do some refactoring and drying
 
 //=======================================================
+// https://www.codewars.com/kata/5a2fd38b55519ed98f0000ce
+// Your goal is to return multiplication table for number that is always an integer from 1 to 10.
+
+// For example, a multiplication table (string) for number == 5 looks like below:
+
+// 1 * 5 = 5
+// 2 * 5 = 10
+// 3 * 5 = 15
+// 4 * 5 = 20
+// 5 * 5 = 25
+// 6 * 5 = 30
+// 7 * 5 = 35
+// 8 * 5 = 40
+// 9 * 5 = 45
+// 10 * 5 = 50
+// P. S. You can use \n in string to jump to the next line.
+
+// Note: newlines should be added between rows, but there should be no trailing newline at the end. If you're unsure about the format, look at the sample tests.
+
+function multiTable(number) {
+    let res = ''
+    for(let i=1 ; i<=10 ; i++){
+        res += `${i} * ${number} = ${i*number}` + '\n'
+    }
+
+    return res.slice(0, -1) //removes last \n
+}
+
+//=======================================================
+// Oh no! Timmy hasn't followed instructions very carefully and forgot how to use the new String Template feature, Help Timmy with his string template so it works as he expects!
+function buildString(...template){
+    return `I like ${template.join(', ')}!`;
+}
+
+//=======================================================
+// https://www.codewars.com/kata/56ff6a70e1a63ccdfa0001b1
+// SpeedCode #2 - Array Madness
+// Objective
+// Given two integer arrays a, b, both of length >= 1, create a program that returns true if the sum of the squares of each element in a is strictly greater than the sum of the cubes of each element in b.
+
+// E.g.
+
+// arrayMadness([4, 5, 6], [1, 2, 3]); // returns true since 4 ** 2 + 5 ** 2 + 6 ** 2 > 1 ** 3 + 2 ** 3 + 3 ** 3
+// Get your timer out. Are you ready? Ready, get set, GO!!!
+
+function arrayMadness(a, b) {
+    return a.reduce((acc, cur) => acc + Math.pow(cur, 2), 0) > b.reduce((acc, cur) => acc + Math.pow(cur, 3), 0)
+}
+
+function arrayMadnessBis(a, b) {
+    return a.reduce( (sum, el) => sum + el ** 2, 0) >
+           b.reduce( (sum, el) => sum + el ** 3, 0);
+}
+
+//======================================================

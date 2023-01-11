@@ -12,9 +12,9 @@ const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 // Note: You can expect all of the inputs to be the same length.
 
-function tripleTrouble(one, two, three){
+function tripleTrouble(one, two, three) {
     let res = ""
-    for(let i=0 ; i<one.length ; i++){
+    for (let i = 0; i < one.length; i++) {
         res += one[i] + two[i] + three[i]
     }
     return res
@@ -28,14 +28,14 @@ function tripleTrouble(one, two, three){
 
 // The arguments will always be non empty strings, and normal letters.
 
-function correctTail(body, tail){
+function correctTail(body, tail) {
     return body[body.length - 1] === tail
 }
 
-function correctTailBis(body, tail){
+function correctTailBis(body, tail) {
     return body.endsWith(tail)
 }
-    
+
 //==============================================================
 // https://www.codewars.com/kata/571edd157e8954bab500032d
 // In javascript, Number is one of basic data types. It can be positive: 1,2,3, negative:-1,-100 , integer:123,456, decimal:3.1415926,-8.88 etc..
@@ -49,42 +49,42 @@ function correctTailBis(body, tail){
 
 // In the end, click "Submit" to submit your code pass this kata.
 
-function justScoping(){
+function justScoping() {
     let v1 = 50,
-    v2 = 100,
-    v3 = 150,
-    v4 = 200,
-    v5 = 2,
-    v6 = 250;
-    
-    function equal1(){
-        let a = v1,   
-        b = v1;   
+        v2 = 100,
+        v3 = 150,
+        v4 = 200,
+        v5 = 2,
+        v6 = 250;
+
+    function equal1() {
+        let a = v1,
+            b = v1;
         return a + b;
     }
-    
+
     //Please refer to the example above to complete the following functions
-    function equal2(){
-        let a =  v4, //set number value to a
-        b =  v2; //set number value to b
+    function equal2() {
+        let a = v4, //set number value to a
+            b = v2; //set number value to b
         return a - b;
     }
-    
-    function equal3(){
-        let a =  v5, //set number value to a
-        b =  v1; //set number value to b
+
+    function equal3() {
+        let a = v5, //set number value to a
+            b = v1; //set number value to b
         return a * b;
     }
 
-    function equal4(){
-        let a =  v4, //set number value to a
-        b =  v5; //set number value to b
+    function equal4() {
+        let a = v4, //set number value to a
+            b = v5; //set number value to b
         return a / b;
     }
 
-    function equal5(){
-        let a =  v6, //set number value to a
-        b =  v3; //set number value to b
+    function equal5() {
+        let a = v6, //set number value to a
+            b = v3; //set number value to b
         return a % b;
     }
 }
@@ -154,11 +154,11 @@ function seatsInTheater(nCols, nRows, col, row) {
 
 
 function noBoringZeros(n) {
-    if(n===0){
+    if (n === 0) {
         return 0
-    }else{
+    } else {
         let s = n.toString()
-        while(s[s.length - 1] === '0'){
+        while (s[s.length - 1] === '0') {
             s = s.slice(0, -1)
         }
         return +s
@@ -168,8 +168,8 @@ function noBoringZeros(n) {
 // console.log(noBoringZeros(960000)); // -> 96
 
 function noBoringZerosBis(n) {
-    while(n%10===0 && n!==0){
-        n = n/10
+    while (n % 10 === 0 && n !== 0) {
+        n = n / 10
     }
     return n
 }
@@ -196,21 +196,21 @@ function perimeter(n) {
     let memo = {}
     let res = 0
 
-    for(let i=1 ; i<=n+1 ; i++){
+    for (let i = 1; i <= n + 1; i++) {
         res += 4 * fibRecMemo(i)
     }
 
     return res
 
-    function fibRecMemo(n){
-        if(n<2){
+    function fibRecMemo(n) {
+        if (n < 2) {
             return n
         }
-        
-        if(memo[n]){
+
+        if (memo[n]) {
             return memo[n]
-        }else{
-            memo[n] = fibRecMemo(n-2) + fibRecMemo(n-1)
+        } else {
+            memo[n] = fibRecMemo(n - 2) + fibRecMemo(n - 1)
             return memo[n]
         }
     }
@@ -228,38 +228,38 @@ function perimeter(n) {
 
 // Example: n = 86240 should return "(2**5)(5)(7**2)(11)"
 
-function primeFactors(n){
-    if(n<2) return "(" + n + ")" //edge
+function primeFactors(n) {
+    if (n < 2) return "(" + n + ")" //edge
 
     let pFactors = [] //Array of array [factor, power]
     let temp = n //non mutating the input
     let factor = 2
 
-    while(temp > 1){ //when temp/(fac**n) = 1, fac, n of N, the algo is done
-        if(isPrime(factor) && temp%factor === 0){ //check prime and divisibility
+    while (temp > 1) { //when temp/(fac**n) = 1, fac, n of N, the algo is done
+        if (isPrime(factor) && temp % factor === 0) { //check prime and divisibility
             //Is checking prime necessary? If all factors of 2 and 3 have been gathered, there won't be any for 6, 8, etc
             let power = 1
-            while(temp % Math.pow(factor, power) === 0){ //divisibility to which power
+            while (temp % Math.pow(factor, power) === 0) { //divisibility to which power
                 power++
             }
             power-- //one step too much
             pFactors.push([factor, power])
-            temp = temp/(Math.pow(factor, power))
+            temp = temp / (Math.pow(factor, power))
         }
         factor++
     }
 
-    return pFactors.reduce((acc , [factor, power]) => {
+    return pFactors.reduce((acc, [factor, power]) => {
         return power === 1 ? acc + `(${factor})` : acc + `(${factor}**${power})`
     }, '')
 
 
-    function isPrime(n){
-        if(n<2){
+    function isPrime(n) {
+        if (n < 2) {
             return false
-        }else{
-            for(let i=2 ; i<Math.ceil(Math.sqrt(n)) ; i++){
-                if(n%i === 0){
+        } else {
+            for (let i = 2; i < Math.ceil(Math.sqrt(n)); i++) {
+                if (n % i === 0) {
                     return false
                 }
             }
@@ -272,21 +272,21 @@ function primeFactors(n){
 // console.log(primeFactors(86240)); // "(2**5)(5)(7**2)(11)"
 // console.log(primeFactors(7775460)); // "(2**2)(3**3)(5)(7)(11**2)(17)"
 
-function primeFactorsBis(n){
-    if(n<2) return "(" + n + ")" //edge
+function primeFactorsBis(n) {
+    if (n < 2) return "(" + n + ")" //edge
 
     let res = ''
     let factor = 2
 
-    while(n > 1){
+    while (n > 1) {
         let pow = 0
-        while(n%factor === 0){
+        while (n % factor === 0) {
             pow++
-            n = n/factor
+            n = n / factor
         }
 
-        if(pow > 0){
-            res += pow===1 ? `(${factor})` : `(${factor}**${pow})`
+        if (pow > 0) {
+            res += pow === 1 ? `(${factor})` : `(${factor}**${pow})`
         }
 
         factor++
@@ -347,40 +347,40 @@ function mix(s1, s2) {
     let arr2 = 'abcdefghijklmnopqrstuvwxyz'.split('').map(letter => [letter, 0, 2])
 
     let freq1 = s1.split('').reduce((acc, cur) => {
-        if(alphaL.includes(cur)){ //if it is indeed a lower case letter
+        if (alphaL.includes(cur)) { //if it is indeed a lower case letter
             acc[cur] = (acc[cur] || 0) + 1
         }
         return acc
     }, {})
     let freq2 = s2.split('').reduce((acc, cur) => {
-        if(alphaL.includes(cur)){ //if it is indeed a lower case letter
+        if (alphaL.includes(cur)) { //if it is indeed a lower case letter
             acc[cur] = (acc[cur] || 0) + 1
         }
         return acc
     }, {})
 
-    for(let letter in freq1){ //populate the freq of each letter
+    for (let letter in freq1) { //populate the freq of each letter
         let idx = arr1.findIndex(subarr => subarr[0] === letter)
         arr1[idx][1] = freq1[letter]
     }
-    for(let letter in freq2){ //populate the freq of each letter
+    for (let letter in freq2) { //populate the freq of each letter
         let idx = arr2.findIndex(subarr => subarr[0] === letter)
         arr2[idx][1] = freq2[letter]
     }
 
     let res = [] //this will be an array of the freq we keep
-    for(let i=0 ; i<arr1.length ; i++){ //arr1 and arr2 are the same length
+    for (let i = 0; i < arr1.length; i++) { //arr1 and arr2 are the same length
         let letter = arr1[i][0]
         let f1 = arr1[i].slice()
         let f2 = arr2[i].slice()
         let max = Math.max(f1[1], f2[1])
 
-        if(max > 1){ //exclude 0 freq and 1 freq
-            if(f1[1] === f2[1]){
+        if (max > 1) { //exclude 0 freq and 1 freq
+            if (f1[1] === f2[1]) {
                 res.push([letter, max, '='])
-            }else if(f1[1] > f2[1]){
+            } else if (f1[1] > f2[1]) {
                 res.push([letter, max, 1])
-            }else{
+            } else {
                 res.push([letter, max, 2])
             }
         }
@@ -388,13 +388,13 @@ function mix(s1, s2) {
 
     res.sort((subarrA, subarrB) => {
         let order = [1, 2, "="]
-        if(subarrA[1] === subarrB[1]){ //if their freq are equal, sort alphabetically
+        if (subarrA[1] === subarrB[1]) { //if their freq are equal, sort alphabetically
             return order.indexOf(subarrA[2]) - order.indexOf(subarrB[2])
-        }else{
+        } else {
             return subarrB[1] - subarrA[1]
         }
     })
-    
+
     let resString = res.reduce((acc, [letter, freq, group]) => {
         acc += group + ':' + letter.repeat(freq) + '/'
         return acc
@@ -428,8 +428,8 @@ function mix(s1, s2) {
 
 function multiTable(number) {
     let res = ''
-    for(let i=1 ; i<=10 ; i++){
-        res += `${i} * ${number} = ${i*number}` + '\n'
+    for (let i = 1; i <= 10; i++) {
+        res += `${i} * ${number} = ${i * number}` + '\n'
     }
 
     return res.slice(0, -1) //removes last \n
@@ -437,7 +437,7 @@ function multiTable(number) {
 
 //=======================================================
 // Oh no! Timmy hasn't followed instructions very carefully and forgot how to use the new String Template feature, Help Timmy with his string template so it works as he expects!
-function buildString(...template){
+function buildString(...template) {
     return `I like ${template.join(', ')}!`;
 }
 
@@ -457,8 +457,8 @@ function arrayMadness(a, b) {
 }
 
 function arrayMadnessBis(a, b) {
-    return a.reduce( (sum, el) => sum + el ** 2, 0) >
-           b.reduce( (sum, el) => sum + el ** 3, 0);
+    return a.reduce((sum, el) => sum + el ** 2, 0) >
+        b.reduce((sum, el) => sum + el ** 3, 0);
 }
 
 //======================================================
@@ -480,19 +480,19 @@ function arrayMadnessBis(a, b) {
 
 function listSquared(m, n) {
     let res = []
-    for(let i=m ; i<=n ; i++){
-        let sumSquaredDivisors = divisors(i).reduce((acc, cur) => acc + cur**2, 0)
-        if(Math.sqrt(sumSquaredDivisors)%1 === 0){//checks if the sum of their squared divisors is itself a square
+    for (let i = m; i <= n; i++) {
+        let sumSquaredDivisors = divisors(i).reduce((acc, cur) => acc + cur ** 2, 0)
+        if (Math.sqrt(sumSquaredDivisors) % 1 === 0) {//checks if the sum of their squared divisors is itself a square
             res.push([i, sumSquaredDivisors])
         }
     }
-    
+
     return res
 
-    function divisors(number){ //return an array containing every divisors
+    function divisors(number) { //return an array containing every divisors
         let res = []
-        for(let i=1 ; i<=number ; i++){
-            if(number%i === 0){
+        for (let i = 1; i <= number; i++) {
+            if (number % i === 0) {
                 res.push(i)
             }
         }
@@ -506,3 +506,111 @@ function listSquared(m, n) {
 // console.log(listSquared(250, 500)); // [[287, 84100]]
 
 //===============================================
+// https://www.codewars.com/kata/5808e2006b65bff35500008f
+// When provided with a letter, return its position in the alphabet.
+
+// Input :: "a"
+
+// Ouput :: "Position of alphabet: 1"
+
+function alphaPosition(letter) {
+    return 'Position of alphabet: ' + ('abcdefghijklmnopqrstuvwxyz'.indexOf(letter) + 1)
+}
+
+//==============================================
+// https://www.codewars.com/kata/571effabb625ed9b0600107a
+// In javascript, Array is one of basic data types. To define an empty array, you can use var arr=new Array() or var arr=[]
+
+// Array has an attribute: length, if there is an array named arr, using arr.length to know how many elements are contained in the array.
+
+// Each element in the array has an index, use arr[index] to get the value of element.
+
+// index always start from 0, so the first element of array is arr[0], the last element of array is arr[arr.length-1].
+
+// If we want to add new elements to the array, you can use the array method: push(). It can add an element to the end of the array. Instead, if we want to remove the last element of the array, you can use the array method: pop(). for example:
+
+// var arr=[1,2,3];     //define an array arr contains elements 1 2 3
+// arr.push(4);         //add element 4 to arr
+// console.log(arr)     //[1,2,3,4]
+// arr.pop();           //remove the last element from arr
+// console.log(arr)     //[1,2,3]
+// Task
+// I've written five functions. Each function receives a parameter arr which is an array. Complete the functions using arr inside the function bodies.
+
+//     1. getLength(arr)    should return length of arr
+//     2. getFirst(arr)     should return the first element of arr
+//     3. getLast(arr)      should return the last element of arr
+//     4. pushElement(arr)  should push an element to arr, and then return arr
+//     5. popElement(arr)   should pop an element from arr, and then return arr
+// When you have finished the work, click "Run Tests" to see if your code is working properly.
+
+// In the end, click "Submit" to submit your code pass this kata.
+
+function getLength(arr) {
+    //return length of arr
+    return arr.length
+}
+function getFirst(arr) {
+    //return the first element of arr
+    return arr[0]
+}
+function getLast(arr) {
+    //return the last element of arr
+    return arr[arr.length - 1]
+}
+function pushElement(arr) {
+    var el = 1;
+    //push el to arr
+    arr.push(el)
+    return arr
+}
+function popElement(arr) {
+    //pop an element from arr
+    arr.pop()
+    return arr
+}
+
+//================================================
+// https://www.codewars.com/kata/569e09850a8e371ab200000b
+// This is the first step to understanding FizzBuzz.
+
+// Your inputs: a positive integer, n, greater than or equal to one. n is provided, you have NO CONTROL over its value.
+
+// Your expected output is an array of positive integers from 1 to n (inclusive).
+
+// Your job is to write an algorithm that gets you from the input to the output.
+
+function preFizz(n) {
+    let res = Array.from(Array(n+1).keys())
+    res.shift()
+    return res
+}
+
+function preFizzBis(n){
+    let res = []
+    for(let i=1 ; i<=n ; i++){
+        res.push(i)
+    }
+    return res
+}
+// console.log(preFizz(5)); // [1,2,3,4,5]
+
+//===============================================
+// https://www.codewars.com/kata/59fca81a5712f9fa4700159a
+// Task Overview
+// Given a non-negative integer n, write a function to_binary/ToBinary which returns that number in a binary format.
+
+// to_binary(1)  /* should return 1 */
+// to_binary(5)  /* should return 101 */
+// to_binary(11) /* should return 1011 */
+// Example:
+
+// toBinary(1)  /* should return 1 */
+// toBinary(5)  /* should return 101 */
+// toBinary(11) /* should return 1011 */
+
+function toBinary(n){
+    return +n.toString(2)
+}
+
+//==================================================

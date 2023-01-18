@@ -888,3 +888,62 @@ function partsSumsTer(ls){
 // console.log(partsSumsTer([0, 1, 3, 6, 10])) // [20, 20, 19, 16, 10, 0]
 
 //==============================================
+// https://www.codewars.com/kata/57a5b0dfcf1fa526bb000118
+// Define a function that removes duplicates from an array of numbers and returns it as a result.
+
+// The order of the sequence has to stay the same.
+
+function distinct(a) {
+    return Array.from((new Set(a)).keys())
+}
+
+function distinctBis(a) {
+    return a.filter((el, idx, arr) => idx === arr.indexOf(el))
+}
+
+function distinctTer(a){
+    // return [...new Set(a)]
+    return Array.from(new Set(a))
+}
+
+// console.log(distinct([1,1,2]));
+// console.log(distinctBis([1,1,2]));
+// console.log(distinctTer([1,1,2]));
+
+//================================================
+// https://www.codewars.com/kata/55902c5eaa8069a5b4000083
+// The company you work for has just been awarded a contract to build a payment gateway. In order to help move things along, you have volunteered to create a function that will take a float and return the amount formatting in dollars and cents.
+
+// 39.99 becomes $39.99
+
+// The rest of your team will make sure that the argument is sanitized before being passed to your function although you will need to account for adding trailing zeros if they are missing (though you won't have to worry about a dangling period).
+
+// Examples:
+
+// 3 needs to become $3.00
+
+// 3.1 needs to become $3.10
+// Good luck! Your team knows they can count on you!
+
+function formatMoney(amount){
+    let [int, dec] = amount.toString().split('.')
+
+    if(dec === undefined){
+        dec = '00'
+    }
+
+    while(dec.length < 2){
+        dec += '0'
+    }
+
+    return `$${int}.${dec}`
+}
+
+// console.log(formatMoney(93));
+// console.log(formatMoney(93.9));
+
+function formatMoneyBis(amount){
+    return '$' + amount.toFixed(2);
+}
+
+//====================================================

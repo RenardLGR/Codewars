@@ -997,3 +997,83 @@ function pickPeaks(arr){
 // console.log(pickPeaks([1, 2, 2, 2, 3])); // { pos: [  ], peaks: [  ] }
 
 //===================================================
+// https://www.codewars.com/kata/559d2284b5bb6799e9000047
+// What if we need the length of the words separated by a space to be added at the end of that same word and have it returned as an array?
+
+// Example(Input --> Output)
+
+// "apple ban" --> ["apple 5", "ban 3"]
+// "you will win" -->["you 3", "will 4", "win 3"]
+// Your task is to write a function that takes a String and returns an Array/list with the length of each word added to each element .
+
+// Note: String will have at least one element; words will always be separated by a space.
+
+function addLength(str) {
+    return str.split(' ').map(word => word + ' ' + word.length)
+}
+
+//=====================================================
+// https://www.codewars.com/kata/5abd66a5ccfd1130b30000a9
+// Scenario
+// Several people are standing in a row divided into two teams.
+// The first person goes into team 1, the second goes into team 2, the third goes into team 1, and so on.
+
+// Task
+// Given an array of positive integers (the weights of the people), return a new array/tuple of two integers, where the first one is the total weight of team 1, and the second one is the total weight of team 2.
+
+// Notes
+// Array size is at least 1.
+// All numbers will be positive.
+// Input >> Output Examples
+// rowWeights([13, 27, 49])  ==>  return (62, 27)
+// Explanation:
+// The first element 62 is the total weight of team 1, and the second element 27 is the total weight of team 2.
+
+// rowWeights([50, 60, 70, 80])  ==>  return (120, 140)
+// Explanation:
+// The first element 120 is the total weight of team 1, and the second element 140 is the total weight of team 2.
+
+// rowWeights([80])  ==>  return (80, 0)
+// Explanation:
+// The first element 80 is the total weight of team 1, and the second element 0 is the total weight of team 2.
+
+function rowWeights(array){
+    return array.reduce((acc, cur, idx) => {
+        if(idx%2 === 0){ //team 1
+            acc[0] += cur
+        }else{ //team 2
+            acc[1] += cur
+        }
+
+        return acc
+    },  [0, 0])
+}
+
+// console.log(rowWeights([80])); // [ 80, 0 ]
+// console.log(rowWeights([50, 60, 70, 80])); // [120, 140]
+
+function rowWeightsBis(array) {
+    return array.reduce((acc, cur, idx) => {
+        acc[idx%2] += cur
+        return acc
+    }, [0, 0])
+}
+
+// console.log(rowWeightsBis([80])); // [ 80, 0 ]
+// console.log(rowWeightsBis([50, 60, 70, 80])); // [120, 140]
+
+//==================================================
+// https://www.codewars.com/kata/57158fb92ad763bb180004e7
+// You have an award-winning garden and every day the plants need exactly 40mm of water. You created a great piece of JavaScript to calculate the amount of water your plants will need when you have taken into consideration the amount of rain water that is forecast for the day. Your jealous neighbour hacked your computer and filled your code with bugs.
+
+// Your task is to debug the code before your plants die!
+
+function rainAmount(mm){
+    if (mm < 40) {
+         return "You need to give your plant " + (40 - mm) + "mm of water"
+    }else{
+         return "Your plant has had more than enough water for today!"
+    };
+}
+
+//===================================================

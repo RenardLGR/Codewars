@@ -1077,3 +1077,76 @@ function rainAmount(mm){
 }
 
 //===================================================
+// https://www.codewars.com/kata/52a89c2ea8ddc5547a000863
+
+// You are given a node that is the beginning of a linked list. This list contains a dangling piece and a loop. Your objective is to determine the length of the loop.
+
+// For example in the following picture the size of the dangling piece is 3 and the loop size is 12:
+// SEE IMG
+
+// Use the `getNext' method or 'next' property to get the following node.
+// node.getNext()
+// node.next
+// Notes:
+
+// do NOT mutate the nodes!
+// in some cases there may be only a loop, with no dangling piece
+// Thanks to shadchnev, I broke all of the methods from the Hash class.
+
+// Don't miss dmitry's article in the discussion after you pass the Kata !!
+
+function loop_size(node) {
+    let loopArr = [];
+    let idx = 0
+    while(loopArr.indexOf(node) < 0) { //while whe haven't seen it
+      loopArr.push(node);
+      node = node.next;
+      idx++
+    }
+  
+    return idx - loopArr.indexOf(node); //return where we are at minus where we found our first appearance : loop is completed
+}
+
+//Seems to work but too slow??
+
+// https://en.wikipedia.org/wiki/Cycle_detection#Floyd.27s_tortoise_and_hare
+// https://fr.wikipedia.org/wiki/Algorithme_du_li%C3%A8vre_et_de_la_tortue
+// The basic idea is that you have 2 pointers:
+
+// One moving to the next node by 1 ( slow pointer)
+// Second pointer which moves by 2 nodes (fast pointer)
+// If the list you are in is indeed a loop, both should meet at some point as both will be going round-and round.
+// This gives us a node inside of the loop, but not the size.
+// Starting from this node we will loop again until we see it back, giving so the size of the loop.
+
+function loop_sizeBis(node){
+    // https://en.wikipedia.org/wiki/Cycle_detection#Floyd.27s_tortoise_and_hare
+    // https://fr.wikipedia.org/wiki/Algorithme_du_li%C3%A8vre_et_de_la_tortue
+    // The basic idea is that you have 2 pointers:
+
+    // One moving to the next node by 1 ( slow pointer)
+    // Second pointer which moves by 2 nodes (fast pointer)
+    // If the list you are in is indeed a loop, both should meet at some point as both will be going round-and round.
+    // This gives us a node inside of the loop, but not the size.
+    // Starting from this node we will loop again until we see it back, giving so the size of the loop.
+
+    let slow = node //will increase by one
+    let fast = node.next //will increase by two
+
+    while(slow !== fast){ //find a node inside of the loop
+        slow = slow.next
+        fast = fast.next.next
+    }
+    let loopNode = slow //while loop stops when two nodes are equal ; i.e it is a node inside of the loop
+
+    let size = 1
+    let nextInLoop = loopNode.next
+    while(nextInLoop !== loopNode){ //find the size of the loop
+        nextInLoop = nextInLoop.next
+        size++
+    }
+
+    return size
+}
+
+//==========================================================

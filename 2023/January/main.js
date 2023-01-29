@@ -1203,3 +1203,56 @@ function derive(coefficient,exponent) {
 }
 
 //==================================================
+// https://www.codewars.com/kata/580a094553bd9ec5d800007d
+// As a treat, I'll let you read part of the script from a classic 'I'm Alan Partridge episode:
+
+// Lynn: Alan, there’s that teacher chap.
+// Alan: Michael, if he hits me, will you hit him first?
+// Michael: No, he’s a customer. I cannot hit customers. I’ve been told. I’ll go and get some stock.
+// Alan: Yeah, chicken stock.
+// Phil: Hello Alan.
+// Alan: Lynn, hand me an apple pie. And remove yourself from the theatre of conflict.
+// Lynn: What do you mean?
+// Alan: Go and stand by the yakults. The temperature inside this apple turnover is 1,000 degrees. If I squeeze it, a jet of molten Bramley apple is going to squirt out. Could go your way, could go mine. Either way, one of us is going down.
+// Alan is known for referring to the temperature of the apple turnover as Hotter than the sun!. According to space.com the temperature of the sun's corona is 2,000,000 degrees Celsius, but we will ignore the science for now.
+
+// Task
+// Your job is simple, if x squared is more than 1000, return It's hotter than the sun!!, else, return Help yourself to a honeycomb Yorkie for the glovebox.
+
+function apple(x){
+    return x**2 > 1000 ? "It's hotter than the sun!!" : "Help yourself to a honeycomb Yorkie for the glovebox."
+}
+
+//====================================================
+// https://www.codewars.com/kata/545991b4cbae2a5fda000158
+// Create a method that accepts a list and an item, and returns true if the item belongs to the list, otherwise false.
+
+function include(arr, item){
+    return arr.includes(item)
+}
+
+//====================================================
+// https://www.codewars.com/kata/5761a717780f8950ce001473
+// Philip's just turned four and he wants to know how old he will be in various years in the future such as 2090 or 3044. His parents can't keep up calculating this so they've begged you to help them out by writing a programme that can answer Philip's endless questions.
+
+// Your task is to write a function that takes two parameters: the year of birth and the year to count years in relation to. As Philip is getting more curious every day he may soon want to know how many years it was until he would be born, so your function needs to work with both dates in the future and in the past.
+
+// Provide output in this format: For dates in the future: "You are ... year(s) old." For dates in the past: "You will be born in ... year(s)." If the year of birth equals the year requested return: "You were born this very year!"
+
+// "..." are to be replaced by the number, followed and proceeded by a single space. Mind that you need to account for both "year" and "years", depending on the result.
+
+// Good Luck!
+
+function  calculateAge(born, target) {
+    if(born === target){
+        return "You were born this very year!"
+    }else if(born > target){
+        let temp = born - target
+        return `You will be born in ${temp} year${temp===1 ? '' : 's'}.`
+    }else{
+        let temp = target - born
+        return `You are ${temp} year${temp===1 ? '' : 's'} old.`
+    }
+}
+
+//====================================================

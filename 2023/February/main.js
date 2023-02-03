@@ -137,3 +137,86 @@ function howManyLightsabersDoYouOwn(name) {
 }
 
 //================================================================
+// https://www.codewars.com/kata/5848565e273af816fb000449
+// Acknowledgments:
+// I thank yvonne-liu for the idea and for the example tests :)
+
+// Description:
+// Encrypt this!
+
+// You want to create secret messages which can be deciphered by the Decipher this! kata. Here are the conditions:
+
+// Your message is a string containing space separated words.
+// You need to encrypt each word in the message using the following rules:
+// The first letter must be converted to its ASCII code.
+// The second letter must be switched with the last letter
+// Keepin' it simple: There are no special characters in the input.
+// Examples:
+// encryptThis("Hello") === "72olle"
+// encryptThis("good") === "103doo"
+// encryptThis("hello world") === "104olle 119drlo"
+
+var encryptThis = function(text) {
+    let words = text.split(' ')
+    words = words.map(w => {
+        switch (w.length) { //no empty words
+            case 1:
+                return w[0].charCodeAt()
+                break;
+            case 2:
+                return w[0].charCodeAt() + w[1]
+                break;
+            default:
+                let first = w[0].charCodeAt()
+                console.log(first);
+                let second = w[w.length - 1]
+                let last = w[1]
+                return first + second + w.slice(2, -1) + last
+                break;
+        }
+    })
+
+    return words.join(' ')
+}
+
+// console.log(encryptThis("A")); // 65
+// console.log(encryptThis("A wise old owl lived in an oak")); //119esi 111dl 111lw 108dvei 105n 97n 111ka
+
+//=================================================
+// https://www.codewars.com/kata/581e014b55f2c52bb00000f8/train/javascript
+// You are given a secret message you need to decipher. Here are the things you need to know to decipher it:
+
+// For each word:
+
+// the second and the last letter is switched (e.g. Hello becomes Holle)
+// the first letter is replaced by its character code (e.g. H becomes 72)
+// Note: there are no special characters used, only letters and spaces
+
+// Examples
+
+// decipherThis('72olle 103doo 100ya'); // 'Hello good day'
+// decipherThis('82yade 115te 103o'); // 'Ready set go'
+
+function decipherThis(str) {
+    let words = str.split(' ')
+    words = words.map(w => {
+        let charCode = parseInt(w)
+        let first = String.fromCharCode(charCode)
+        if(charCode.toString().length === w.length){//if the word consists only of numbers : i.e. one letterword
+            return first
+        }else if(charCode.toString().length === w.length - 1){ //if it is a two letter word
+            return first + w[w.length - 1]
+        }else{
+            let second = w[w.length - 1]
+            let last = w[charCode.toString().length]
+            return first + second + w.slice(charCode.toString().length + 1, -1) + last
+        }
+    })
+
+    return words.join(' ')
+}
+
+// console.log(decipherThis('72olle 103doo 100ya')); // 'Hello good day'
+// console.log(decipherThis('82yade 115te 103o')); // 'Ready set go'
+
+//=============================================

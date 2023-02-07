@@ -261,3 +261,42 @@ function encapsulateThat(){
 }
 
 //===============================================
+// https://www.codewars.com/kata/565f5825379664a26b00007c
+// Write a function that returns the total surface area and volume of a box as an array: [area, volume]
+
+function getSize(width, height, depth){
+    let areas = width*height*2 + width*depth*2 + height*depth*2
+    return [areas, width*height*depth]
+}
+
+
+//=================================================
+// https://www.codewars.com/kata/5302d846be2a9189af0001e4
+// Create a method sayHello/say_hello/SayHello that takes as input a name, city, and state to welcome a person. Note that name will be an array consisting of one or more values that should be joined together with one space between each, and the length of the name array in test cases will vary.
+
+// Example:
+
+// sayHello(['John', 'Smith'], 'Phoenix', 'Arizona')
+// This example will return the string Hello, John Smith! Welcome to Phoenix, Arizona!
+
+function sayHello( name, city, state ) {
+    return `Hello, ${name.join(' ')}! Welcome to ${city}, ${state}!`
+}
+
+//===================================================
+// https://www.codewars.com/kata/57cc40b2f8392dbf2a0003ce
+// *** No Loops Allowed ***
+
+// You will be given an array a and a value x. All you need to do is check whether the provided array contains the value, without using a loop.
+
+// Array can contain numbers or strings. x can be either. Return true if the array contains the value, false if not. With strings you will need to account for case.
+
+// Looking for more, loop-restrained fun? Check out the other kata in the series:
+
+// No Loops 1 - Small enough?
+// https://www.codewars.com/kata/no-loops-1-small-enough
+
+function aIncludesX(a,x){
+    return a.includes(x)
+}
+

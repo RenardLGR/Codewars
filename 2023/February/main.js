@@ -300,3 +300,95 @@ function aIncludesX(a,x){
     return a.includes(x)
 }
 
+//========================================================
+// https://www.codewars.com/kata/57cc4853fa9fc57a6a0002c2/train/javascript
+// *** No Loops Allowed ***
+
+// You will be given an array (a) and a limit value (limit). You must check that all values in the array are below or equal to the limit value. If they are, return true. Else, return false.
+
+// You can assume all values in the array are numbers.
+
+// Do not use loops. Do not modify input array.
+
+// Looking for more, loop-restrained fun? Check out the other kata in the series:
+
+// https://www.codewars.com/kata/no-loops-2-you-only-need-one
+
+// https://www.codewars.com/kata/no-loops-3-copy-within
+
+function smallEnough(a, limit){
+    return a.every(e => e <= limit)
+}
+
+//==========================================================
+// https://www.codewars.com/kata/no-loops-3-copy-within
+// *** No Loops Allowed ***
+
+// For this kata you need to return the provided array, with the same length as provided, but with some of the values copied, and that copied section duplicated over another section. An example should help:
+
+// You will be given an array, a start and stop index for the 'copy', and an index to insert it to.
+
+// For example function copy(array, start, stop, place){}
+
+// where:
+
+// array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; start = 5; stop = 8; place = 2;
+
+// In this example, the copy bit begins at (and includes) index 5. So, the first value copied is 6. The copy stops at (and does not include) index 8, and so includes all values up to and including 8 (index 8 is '9' and is not included).
+
+// This means the copied element is [6, 7, 8];
+
+// You now have to put this copied element into the array at the index specified by 'place'. Note the copied bit also remains at it's original location, hence 'copy', not 'move'. When inserted, the copied elements overwrite others in the array so that the length does not increase.
+
+// so in this example [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; becomes: [1, 2, 6, 7, 8, 6, 7, 8, 9, 10];
+
+// [1, 2, (6, 7, 8), 6, 7, 8, 9, 10]; <- brackets for highlighting insertion only
+
+// Makes sense? Give it a go... hint... there is an array method that is very helpful for this job. So for that reason, you aren't allowed to use loops... :D
+
+// Looking for more, loop-restrained fun? Check out the other kata in the series:
+
+// https://www.codewars.com/kata/no-loops-1-small-enough
+
+// https://www.codewars.com/kata/no-loops-2-you-only-need-one
+
+function copyWithin(array, start, stop, place){
+    let cpy = array.slice()
+    let within = array.slice(start, stop)
+    cpy.splice(place, stop-start, ...within)
+    return cpy
+}
+
+// console.log(copyWithin( [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 5, 8, 2 )); // [1, 2, 6, 7, 8, 6, 7, 8, 9, 10]
+
+//===================================================
+// https://www.codewars.com/kata/55ca77fa094a2af31f00002a
+// Messi's Goal Total
+// Use variables to find the sum of the goals Messi scored in 3 competitions
+
+// Information
+// Messi goal scoring statistics:
+
+// Competition	Goals
+// La Liga	43
+// Champions League	10
+// Copa del Rey	5
+// Task
+// Create these three variables and store the appropriate values using the table above:
+// laLigaGoals
+// championsLeagueGoals
+// copaDelReyGoals
+// Create a fourth variable named totalGoals that stores the sum of all of Messi's goals for this year.
+
+function messiGoals(){
+    var laLigaGoals = 43
+    var championsLeagueGoals = 10
+    var copaDelReyGoals = 5
+
+    var totalGoals = laLigaGoals + championsLeagueGoals + copaDelReyGoals
+    return totalGoals
+}
+
+// console.log(messiGoals()); // 58
+
+//======================================================

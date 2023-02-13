@@ -101,6 +101,50 @@ function everyBitsComb(size) {
 // console.log(everyBitsComb(4));
 
 //=====================
+//Write a function that returns every permutation of an array. An array of length n has n! permutations, beacuase I have n choices for the first char, (n-1) for the following one, etc.
+
+function permutator(arr){
+    let res = []
+    permute(0, [], arr)
+    //console.log(res.length);
+    return res
+    function permute(len, inProgress, workingArr){
+        if(len===arr.length){
+            res.push(inProgress.slice())
+        }
+        for(let i=0 ; i<workingArr.length ; i++){
+            let newWorkingArr = workingArr.slice();
+            let curr = newWorkingArr.splice(i, 1);
+            permute(len + 1, inProgress.concat(curr), newWorkingArr);
+        }
+    }
+}
+
+// console.log(permutator([1, 2, 3]));
+// console.log(permutator(['a','b','c','d']));
+
+function permutatorBis(arr) {
+    let res = [];
+    backtrack([], arr);
+    console.log(res.length);
+    return res;
+
+    function backtrack(temp, workingArr) {
+        if (!workingArr.length) {
+            res.push(temp);
+        }
+        for (let i = 0; i < workingArr.length; i++) {
+            let curr = workingArr[i];
+            let remaining = workingArr.slice(0, i).concat(workingArr.slice(i + 1));
+            backtrack(temp.concat([curr]), remaining);
+        }
+    }
+}
+//Quite close with the previous one
+// console.log(permutatorBis([1, 2, 3]));
+// console.log(permutatorBis(['a','b','c','d']));
+
+//=====================
 // https://eloquentjavascript.net/03_functions.html#p_s9LmvfKAdX
 // Consider this puzzle: by starting from the number 1 and repeatedly either adding 5 or multiplying by 3, an infinite set of numbers can be produced. How would you write a function that, given a number, tries to find a sequence of such additions and multiplications that produces that number?
 

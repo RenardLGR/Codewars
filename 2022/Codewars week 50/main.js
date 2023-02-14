@@ -144,6 +144,30 @@ function permutatorBis(arr) {
 // console.log(permutatorBis([1, 2, 3]));
 // console.log(permutatorBis(['a','b','c','d']));
 
+function permutatorTer(arr) {
+    let res = [];
+    generate(0, arr);
+    console.log(res.length);
+    return res;
+
+    function generate(start, arr) {
+        if (start === arr.length - 1) {
+            res.push(arr.slice());
+        }
+        for (let i = start; i < arr.length; i++) {
+            //swapping
+            [arr[start], arr[i]] = [arr[i], arr[start]];
+            generate(start + 1, arr);
+            //swapping back
+            [arr[start], arr[i]] = [arr[i], arr[start]];
+        }
+    }
+}
+
+//With swapping
+// console.log(permutatorTer([1, 2, 3]));
+// console.log(permutatorTer(['a','b','c','d']));
+
 //=====================
 // https://eloquentjavascript.net/03_functions.html#p_s9LmvfKAdX
 // Consider this puzzle: by starting from the number 1 and repeatedly either adding 5 or multiplying by 3, an infinite set of numbers can be produced. How would you write a function that, given a number, tries to find a sequence of such additions and multiplications that produces that number?

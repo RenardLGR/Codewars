@@ -392,3 +392,67 @@ function messiGoals(){
 // console.log(messiGoals()); // 58
 
 //======================================================
+// Write a function that gives every permutations of an array
+function permutator(arr){
+    let res = []
+    permute(0, [], arr)
+    //console.log(res.length);
+    return res
+    function permute(len, inProgress, workingArr){
+        if(len===arr.length){
+            res.push(inProgress.slice())
+        }
+        for(let i=0 ; i<workingArr.length ; i++){
+            let newWorkingArr = workingArr.slice()
+            let cur = newWorkingArr.splice(i, 1)
+            let newInProg = inProgress.concat(cur)
+            permute(len + 1, newInProg, newWorkingArr);
+        }
+    }
+}
+
+// console.log(permutator([1, 2, 3]));
+// console.log(permutator(['a','b','c','d']));
+
+function permutatorBis(arr){
+    let res = []
+    permute([], arr)
+    // console.log(res.length);
+    return res
+
+    function permute(inProg, workingArray){
+        if(workingArray.length === 0){
+            res.push(inProg.slice())
+        }
+        for(let i=0 ; i<workingArray.length ; i++){
+            let cur = workingArray[i]
+            let temp = workingArray.slice(0, i).concat(workingArray.slice(i+1))
+            permute(inProg.concat([cur]), temp)
+        }
+    }
+}
+
+// console.log(permutatorBis([1, 2, 3]));
+// console.log(permutatorBis(['a','b','c','d']));
+
+
+//===========================================
+// https://www.codewars.com/kata/52e1476c8147a7547a000811/train/javascript
+// You need to write regex that will validate a password to make sure it meets the following criteria:
+
+// At least six characters long
+// contains a lowercase letter
+// contains an uppercase letter
+// contains a digit
+// only contains alphanumeric characters (note that '_' is not alphanumeric)
+
+function repwd(pwd){
+    const REGEXP = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/
+    const isValidPassword = REGEXP.test(pwd);
+    
+    return isValidPassword
+}
+
+// console.log(repwd('myPassword123')); // true
+
+//================================================

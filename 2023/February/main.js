@@ -513,3 +513,94 @@ function dataReverseBis(data){
 }
 
 //=====================================
+// https://www.codewars.com/kata/59f3178e3640cef6d90000d5/train/javascript
+// Consider the array [3,6,9,12]. If we generate all the combinations with repetition that sum to 12, we get 5 combinations: [12], [6,6], [3,9], [3,3,6], [3,3,3,3]. The length of the sub-arrays (such as [3,3,3,3] should be less than or equal to the length of the initial array ([3,6,9,12]).
+
+// Given an array of positive integers and a number n, count all combinations with repetition of integers that sum to n. For example:
+
+// findNSumTo([3,6,9,12],12) = 5.
+// More examples in the test cases.
+
+function findNSumTo(arr, tgt){
+    let maxLen = arr.length
+    let res= []
+    find(0, 0, [])
+    //Delete equivalent combinations [3,9] <==> [9,3]
+    res = res.map(suba => suba.sort((a,b) => a-b)).map(suba => suba.join(''))
+    let set = new Set(res)
+
+    return set.size
+    function find(sum, length, inProg){
+        if(sum === tgt && length<=maxLen){
+            res.push(inProg.slice())
+        }
+        if(sum > tgt || length > maxLen){
+            return
+        }
+        for(let i=0 ; i<arr.length ; i++){
+            find(sum+arr[i], length+1, [...inProg, arr[i]])
+        }
+    }
+}
+
+// console.log(findNSumTo([3,6,9,12],12)) // 5
+
+function findNSumToBis(arr, tgt){
+    let maxLen = arr.length
+    let res= []
+    find(0, 0, 0, [])
+
+    return res.length
+
+    function find(sum, length, index, inProg){
+        if(sum === tgt && length<=maxLen){
+            res.push(inProg.slice())
+        }
+        if(sum > tgt || length > maxLen){
+            return
+        }
+        for(let i=index ; i<arr.length ; i++){
+            find(sum+arr[i], length+1, i, [...inProg, arr[i]])
+        }
+    }
+}
+
+// console.log(findNSumToBis([3,6,9,12],12)) // 5
+
+//===========================================
+// https://www.codewars.com/kata/63431f9b9943dd4cee787da5/train/javascript
+// SEE
+
+// calculate resistance of circuit
+function calculateResistance(circuit) {
+    let res = compute(circuit)
+    if(res === 0){
+        throw new Error("Short Circuit!")
+    }
+
+    if(res === Infinity){
+        throw new Error("Broken Circuit!")
+    }
+
+    return res
+
+    function compute(c){
+        let isSeries = c[0]
+        return isSeries ? c.slice(1).reduce(addSeries, 0) : 1 / c.slice(1).reduce(addParallel, 0)
+    }
+
+    function addSeries(acc, cur) {
+        if(Array.isArray(cur)){
+            return acc + compute(cur)
+        }
+        return acc + cur
+    }
+    function addParallel(acc, cur){
+        if(Array.isArray(cur)){
+            return acc + 1/compute(cur)
+        }
+        return acc + 1/cur
+    }
+}
+
+//========================================

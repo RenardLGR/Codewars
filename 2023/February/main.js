@@ -604,3 +604,55 @@ function calculateResistance(circuit) {
 }
 
 //========================================
+// https://www.codewars.com/kata/514a6336889283a3d2000001
+// JavaScript Arrays support a filter function (starting in JavaScript 1.6). Use the filter functionality to complete the function given.
+
+// The solution would work like the following:
+
+// getEvenNumbers([2,4,5,6]) // should == [2,4,6]
+
+function getEvenNumbers(numbersArray){
+    return numbersArray.filter(n => n%2===0)
+}
+
+
+//===========================================
+// https://www.codewars.com/kata/5a03b3f6a1c9040084001765
+// Find the total sum of internal angles (in degrees) in an n-sided simple polygon. N will be greater than 2.
+
+function angleSum(n) {
+    // The sum of the angles in any polygon is equal to the number of sides in the polygon minus two, all multiplied by 180 degrees.
+    return (n-2) * 180
+}
+
+//==============================================
+// https://www.codewars.com/kata/556196a6091a7e7f58000018
+// Given a sequence of numbers, find the largest pair sum in the sequence.
+
+// For example
+
+// [10, 14, 2, 23, 19] -->  42 (= 23 + 19)
+// [99, 2, 2, 23, 19]  --> 122 (= 99 + 23)
+// Input sequence contains minimum two elements and every element is an integer.
+
+function largestPairSum (numbers) {
+    let res = -Infinity
+    for(let i=0 ; i<numbers.length ; i++){
+        for(let j=i+1 ; j<numbers.length ; j++){
+            let temp = numbers[i] + numbers[j]
+            if(temp > res){
+                res = temp
+            }
+        }
+    }
+
+    return res
+}
+
+function largestPairSumBis(numbers){
+    let sorted = numbers.sort((a,b) => b-a)
+
+    return sorted[0] + sorted[1]
+}
+
+//============================================

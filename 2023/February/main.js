@@ -656,3 +656,54 @@ function largestPairSumBis(numbers){
 }
 
 //============================================
+// https://www.codewars.com/kata/525f4206b73515bffb000b21
+// We need to sum big numbers and we require your help.
+
+// Write a function that returns the sum of two numbers. The input numbers are strings and the function must return a string.
+
+// Example
+// add("123", "321"); -> "444"
+// add("11", "99");   -> "110"
+// Notes
+// The input numbers are big.
+// The input is a string of only digits
+// The numbers are positives
+
+function addStrings(a, b) {
+    return (BigInt(a) + BigInt(b)).toString()
+}
+
+// console.log(addStrings('63829983432984289347293874', '90938498237058927340892374089')); //91002328220491911630239667963
+
+function addStringsBis(a, b) {
+    //No Big Int version
+    let maxLength = Math.max(a.length, b.length)
+    let sanitizedA = a
+    let sanitizedB = b
+    let res = ''
+    while(sanitizedA.length < maxLength + 1){ //one extra zero is added in a case of a carry
+        sanitizedA = '0' + sanitizedA
+    }
+
+    while(sanitizedB.length < maxLength + 1){ //one extra zero is added in a case of a carry
+        sanitizedB = '0' + sanitizedB
+    }
+
+    let carry = false
+    for(let i=maxLength ; i>=0 ; i--){
+        let c = carry ? 1 : 0
+        let sum = (+sanitizedA[i] + +sanitizedB[i] + c).toString()
+        carry = sum.length === 2
+        res = sum[sum.length - 1] + res
+    }
+
+       while(res[0] === '0'){ //remove leading zeroes
+        res = res.slice(1)
+    }
+
+    return res
+}
+
+// console.log(addStringsBis('63829983432984289347293874', '90938498237058927340892374089')) // 91002328220491911630239667963
+
+//====================================

@@ -99,20 +99,20 @@ function getDrinkByProfession(param) {
             return "Anything with Alcohol"
             break;
         case "programmer":
-            return 	"Hipster Craft Beer"
+            return "Hipster Craft Beer"
             break;
         case "bike gang member":
             return "Moonshine"
             break;
         case "politician":
-            return 	"Your tax dollars"
+            return "Your tax dollars"
             break;
         case "rapper":
-            return 	"Cristal"
+            return "Cristal"
             break;
 
         default:
-            return 	"Beer"
+            return "Beer"
             break;
     }
 }
@@ -156,7 +156,7 @@ function howManyLightsabersDoYouOwn(name) {
 // encryptThis("good") === "103doo"
 // encryptThis("hello world") === "104olle 119drlo"
 
-var encryptThis = function(text) {
+var encryptThis = function (text) {
     let words = text.split(' ')
     words = words.map(w => {
         switch (w.length) { //no empty words
@@ -202,11 +202,11 @@ function decipherThis(str) {
     words = words.map(w => {
         let charCode = parseInt(w)
         let first = String.fromCharCode(charCode)
-        if(charCode.toString().length === w.length){//if the word consists only of numbers : i.e. one letterword
+        if (charCode.toString().length === w.length) {//if the word consists only of numbers : i.e. one letterword
             return first
-        }else if(charCode.toString().length === w.length - 1){ //if it is a two letter word
+        } else if (charCode.toString().length === w.length - 1) { //if it is a two letter word
             return first + w[w.length - 1]
-        }else{
+        } else {
             let second = w[w.length - 1]
             let last = w[charCode.toString().length]
             return first + second + w.slice(charCode.toString().length + 1, -1) + last
@@ -239,23 +239,23 @@ function decipherThis(str) {
 
 // As long as the tests pass, go for it!
 
-function encapsulateThat(){
+function encapsulateThat() {
 
-    class Queue{
-        constructor(){
+    class Queue {
+        constructor() {
             this.queue = []
         }
     };
-    
-    Queue.prototype.enqueue = function(item) {
+
+    Queue.prototype.enqueue = function (item) {
         this.queue.push(item)
     };
-    
-    Queue.prototype.dequeue = function() {
+
+    Queue.prototype.dequeue = function () {
         return this.queue.shift()
     };
-    
-    Queue.prototype.size = function() {
+
+    Queue.prototype.size = function () {
         return this.queue.length
     };
 }
@@ -264,9 +264,9 @@ function encapsulateThat(){
 // https://www.codewars.com/kata/565f5825379664a26b00007c
 // Write a function that returns the total surface area and volume of a box as an array: [area, volume]
 
-function getSize(width, height, depth){
-    let areas = width*height*2 + width*depth*2 + height*depth*2
-    return [areas, width*height*depth]
+function getSize(width, height, depth) {
+    let areas = width * height * 2 + width * depth * 2 + height * depth * 2
+    return [areas, width * height * depth]
 }
 
 
@@ -279,7 +279,7 @@ function getSize(width, height, depth){
 // sayHello(['John', 'Smith'], 'Phoenix', 'Arizona')
 // This example will return the string Hello, John Smith! Welcome to Phoenix, Arizona!
 
-function sayHello( name, city, state ) {
+function sayHello(name, city, state) {
     return `Hello, ${name.join(' ')}! Welcome to ${city}, ${state}!`
 }
 
@@ -296,7 +296,7 @@ function sayHello( name, city, state ) {
 // No Loops 1 - Small enough?
 // https://www.codewars.com/kata/no-loops-1-small-enough
 
-function aIncludesX(a,x){
+function aIncludesX(a, x) {
     return a.includes(x)
 }
 
@@ -316,7 +316,7 @@ function aIncludesX(a,x){
 
 // https://www.codewars.com/kata/no-loops-3-copy-within
 
-function smallEnough(a, limit){
+function smallEnough(a, limit) {
     return a.every(e => e <= limit)
 }
 
@@ -352,10 +352,10 @@ function smallEnough(a, limit){
 
 // https://www.codewars.com/kata/no-loops-2-you-only-need-one
 
-function copyWithin(array, start, stop, place){
+function copyWithin(array, start, stop, place) {
     let cpy = array.slice()
     let within = array.slice(start, stop)
-    cpy.splice(place, stop-start, ...within)
+    cpy.splice(place, stop - start, ...within)
     return cpy
 }
 
@@ -380,7 +380,7 @@ function copyWithin(array, start, stop, place){
 // copaDelReyGoals
 // Create a fourth variable named totalGoals that stores the sum of all of Messi's goals for this year.
 
-function messiGoals(){
+function messiGoals() {
     var laLigaGoals = 43
     var championsLeagueGoals = 10
     var copaDelReyGoals = 5
@@ -393,16 +393,16 @@ function messiGoals(){
 
 //======================================================
 // Write a function that gives every permutations of an array
-function permutator(arr){
+function permutator(arr) {
     let res = []
     permute(0, [], arr)
     //console.log(res.length);
     return res
-    function permute(len, inProgress, workingArr){
-        if(len===arr.length){
+    function permute(len, inProgress, workingArr) {
+        if (len === arr.length) {
             res.push(inProgress.slice())
         }
-        for(let i=0 ; i<workingArr.length ; i++){
+        for (let i = 0; i < workingArr.length; i++) {
             let newWorkingArr = workingArr.slice()
             let cur = newWorkingArr.splice(i, 1)
             let newInProg = inProgress.concat(cur)
@@ -414,19 +414,19 @@ function permutator(arr){
 // console.log(permutator([1, 2, 3]));
 // console.log(permutator(['a','b','c','d']));
 
-function permutatorBis(arr){
+function permutatorBis(arr) {
     let res = []
     permute([], arr)
     // console.log(res.length);
     return res
 
-    function permute(inProg, workingArray){
-        if(workingArray.length === 0){
+    function permute(inProg, workingArray) {
+        if (workingArray.length === 0) {
             res.push(inProg.slice())
         }
-        for(let i=0 ; i<workingArray.length ; i++){
+        for (let i = 0; i < workingArray.length; i++) {
             let cur = workingArray[i]
-            let temp = workingArray.slice(0, i).concat(workingArray.slice(i+1))
+            let temp = workingArray.slice(0, i).concat(workingArray.slice(i + 1))
             permute(inProg.concat([cur]), temp)
         }
     }
@@ -446,10 +446,10 @@ function permutatorBis(arr){
 // contains a digit
 // only contains alphanumeric characters (note that '_' is not alphanumeric)
 
-function repwd(pwd){
+function repwd(pwd) {
     const REGEXP = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/
     const isValidPassword = REGEXP.test(pwd);
-    
+
     return isValidPassword
 }
 
@@ -492,9 +492,9 @@ function repwd(pwd){
 function dataReverse(data) {
     let bytes = []
     let temp = ''
-    for(let i=0 ; i<data.length ; i++){
-        temp+=data[i]
-        if(temp.length === 8){
+    for (let i = 0; i < data.length; i++) {
+        temp += data[i]
+        if (temp.length === 8) {
             bytes.push(temp)
             temp = ''
         }
@@ -504,10 +504,10 @@ function dataReverse(data) {
     return bytes.reverse().join('').split('').map(b => Number(b))
 }
 
-function dataReverseBis(data){
+function dataReverseBis(data) {
     let res = []
-    for(let i=0 ; i<data.length ; i+=8){
-        res.unshift(...data.slice(i, i+8))
+    for (let i = 0; i < data.length; i += 8) {
+        res.unshift(...data.slice(i, i + 8))
     }
     return res
 }
@@ -521,46 +521,46 @@ function dataReverseBis(data){
 // findNSumTo([3,6,9,12],12) = 5.
 // More examples in the test cases.
 
-function findNSumTo(arr, tgt){
+function findNSumTo(arr, tgt) {
     let maxLen = arr.length
-    let res= []
+    let res = []
     find(0, 0, [])
     //Delete equivalent combinations [3,9] <==> [9,3]
-    res = res.map(suba => suba.sort((a,b) => a-b)).map(suba => suba.join(''))
+    res = res.map(suba => suba.sort((a, b) => a - b)).map(suba => suba.join(''))
     let set = new Set(res)
 
     return set.size
-    function find(sum, length, inProg){
-        if(sum === tgt && length<=maxLen){
+    function find(sum, length, inProg) {
+        if (sum === tgt && length <= maxLen) {
             res.push(inProg.slice())
         }
-        if(sum > tgt || length > maxLen){
+        if (sum > tgt || length > maxLen) {
             return
         }
-        for(let i=0 ; i<arr.length ; i++){
-            find(sum+arr[i], length+1, [...inProg, arr[i]])
+        for (let i = 0; i < arr.length; i++) {
+            find(sum + arr[i], length + 1, [...inProg, arr[i]])
         }
     }
 }
 
 // console.log(findNSumTo([3,6,9,12],12)) // 5
 
-function findNSumToBis(arr, tgt){
+function findNSumToBis(arr, tgt) {
     let maxLen = arr.length
-    let res= []
+    let res = []
     find(0, 0, 0, [])
 
     return res.length
 
-    function find(sum, length, index, inProg){
-        if(sum === tgt && length<=maxLen){
+    function find(sum, length, index, inProg) {
+        if (sum === tgt && length <= maxLen) {
             res.push(inProg.slice())
         }
-        if(sum > tgt || length > maxLen){
+        if (sum > tgt || length > maxLen) {
             return
         }
-        for(let i=index ; i<arr.length ; i++){
-            find(sum+arr[i], length+1, i, [...inProg, arr[i]])
+        for (let i = index; i < arr.length; i++) {
+            find(sum + arr[i], length + 1, i, [...inProg, arr[i]])
         }
     }
 }
@@ -574,32 +574,32 @@ function findNSumToBis(arr, tgt){
 // calculate resistance of circuit
 function calculateResistance(circuit) {
     let res = compute(circuit)
-    if(res === 0){
+    if (res === 0) {
         throw new Error("Short Circuit!")
     }
 
-    if(res === Infinity){
+    if (res === Infinity) {
         throw new Error("Broken Circuit!")
     }
 
     return res
 
-    function compute(c){
+    function compute(c) {
         let isSeries = c[0]
         return isSeries ? c.slice(1).reduce(addSeries, 0) : 1 / c.slice(1).reduce(addParallel, 0)
     }
 
     function addSeries(acc, cur) {
-        if(Array.isArray(cur)){
+        if (Array.isArray(cur)) {
             return acc + compute(cur)
         }
         return acc + cur
     }
-    function addParallel(acc, cur){
-        if(Array.isArray(cur)){
-            return acc + 1/compute(cur)
+    function addParallel(acc, cur) {
+        if (Array.isArray(cur)) {
+            return acc + 1 / compute(cur)
         }
-        return acc + 1/cur
+        return acc + 1 / cur
     }
 }
 
@@ -611,8 +611,8 @@ function calculateResistance(circuit) {
 
 // getEvenNumbers([2,4,5,6]) // should == [2,4,6]
 
-function getEvenNumbers(numbersArray){
-    return numbersArray.filter(n => n%2===0)
+function getEvenNumbers(numbersArray) {
+    return numbersArray.filter(n => n % 2 === 0)
 }
 
 
@@ -622,7 +622,7 @@ function getEvenNumbers(numbersArray){
 
 function angleSum(n) {
     // The sum of the angles in any polygon is equal to the number of sides in the polygon minus two, all multiplied by 180 degrees.
-    return (n-2) * 180
+    return (n - 2) * 180
 }
 
 //==============================================
@@ -635,12 +635,12 @@ function angleSum(n) {
 // [99, 2, 2, 23, 19]  --> 122 (= 99 + 23)
 // Input sequence contains minimum two elements and every element is an integer.
 
-function largestPairSum (numbers) {
+function largestPairSum(numbers) {
     let res = -Infinity
-    for(let i=0 ; i<numbers.length ; i++){
-        for(let j=i+1 ; j<numbers.length ; j++){
+    for (let i = 0; i < numbers.length; i++) {
+        for (let j = i + 1; j < numbers.length; j++) {
             let temp = numbers[i] + numbers[j]
-            if(temp > res){
+            if (temp > res) {
                 res = temp
             }
         }
@@ -649,8 +649,8 @@ function largestPairSum (numbers) {
     return res
 }
 
-function largestPairSumBis(numbers){
-    let sorted = numbers.sort((a,b) => b-a)
+function largestPairSumBis(numbers) {
+    let sorted = numbers.sort((a, b) => b - a)
 
     return sorted[0] + sorted[1]
 }
@@ -681,23 +681,23 @@ function addStringsBis(a, b) {
     let sanitizedA = a
     let sanitizedB = b
     let res = ''
-    while(sanitizedA.length < maxLength + 1){ //one extra zero is added in a case of a carry
+    while (sanitizedA.length < maxLength + 1) { //one extra zero is added in a case of a carry
         sanitizedA = '0' + sanitizedA
     }
 
-    while(sanitizedB.length < maxLength + 1){ //one extra zero is added in a case of a carry
+    while (sanitizedB.length < maxLength + 1) { //one extra zero is added in a case of a carry
         sanitizedB = '0' + sanitizedB
     }
 
     let carry = false
-    for(let i=maxLength ; i>=0 ; i--){
+    for (let i = maxLength; i >= 0; i--) {
         let c = carry ? 1 : 0
         let sum = (+sanitizedA[i] + +sanitizedB[i] + c).toString()
         carry = sum.length === 2
         res = sum[sum.length - 1] + res
     }
 
-       while(res[0] === '0'){ //remove leading zeroes
+    while (res[0] === '0') { //remove leading zeroes
         res = res.slice(1)
     }
 
@@ -761,14 +761,119 @@ class PaginationHelper {
     pageIndex(itemIndex) {
         // determines what page an item is on. Zero based indexes
         // this method should return -1 for itemIndex values that are out of range
-        if(itemIndex < 0){
+        if (itemIndex < 0) {
             return -1
-        }else if(itemIndex >= this.itemCount()){
+        } else if (itemIndex >= this.itemCount()) {
             return -1
-        }else{
-            return Math.floor(itemIndex/this.itemsPerPage)
+        } else {
+            return Math.floor(itemIndex / this.itemsPerPage)
         }
     }
 }
 
-//====================================
+//=========================================
+// https://www.codewars.com/kata/53f40dff5f9d31b813000774
+// There is a secret string which is unknown to you. Given a collection of random triplets from the string, recover the original string.
+
+// A triplet here is defined as a sequence of three letters such that each letter occurs somewhere before the next in the given string. "whi" is a triplet for the string "whatisup".
+
+// As a simplification, you may assume that no letter occurs more than once in the secret string.
+
+// You can assume nothing about the triplets given to you other than that they are valid triplets and that they contain sufficient information to deduce the original string. In particular, this means that the secret string will never contain letters that do not occur in one of the triplets given to you.
+
+var recoverSecret = function (triplets) {
+    let res = ''
+    solve(triplets)
+    return res
+
+    function solve(triplets){
+        if(triplets.length === 0){
+            return
+        }
+
+        for(let [first] of triplets){
+            if(triplets.every(tuple => tuple.indexOf(first) <= 0 )){ //if the current first is first index everywhere
+                res += first
+                let workingArr = triplets.map(tuple => { //clean up
+                    if(tuple[0] === first){
+                        tuple.shift() //remove first item
+                    }
+                    return tuple
+                }).filter(tuple => tuple.length > 0) //discard empty tuples
+                return solve(workingArr)
+            }
+        }
+    }
+}
+
+function recoverSecretBis(triplets){
+    let res = ''
+    let isDone = false
+
+    while(!isDone){
+        isDone = true
+        for(let [first] of triplets){
+            if(triplets.every(tuple => tuple.indexOf(first) <= 0 )){ //if the current first is first index everywhere
+                res += first
+                isDone = false
+                let workingArr = triplets.map(tuple => { //clean up
+                    if(tuple[0] === first){
+                        tuple.shift() //remove first item
+                    }
+                    return tuple
+                }).filter(tuple => tuple.length > 0) //discard empty tuples
+                triplets = workingArr
+                break
+            }
+        }
+    }
+
+    return res
+}
+
+
+// Example : 
+// let triplets = [
+//     [ 't', 'u', 'p' ],
+//     [ 'w', 'h', 'i' ],
+//     [ 't', 's', 'u' ],
+//     [ 'a', 't', 's' ],
+//     [ 'h', 'a', 'p' ],
+//     [ 't', 'i', 's' ],
+//     [ 'w', 'h', 's' ]
+// ]
+
+// console.log(recoverSecret(triplets)); // whatisup
+// console.log(recoverSecretBis(triplets)); // whatisup
+
+//We will run through triplets, take the first letter :
+//If the index of the first letter is either 0 or non-existant (-1) in every triplets, we add it to our result and delete every occurances of this first letter if it is the first letter as well.
+
+// Here, 't' is not the first index in every triplets ([ 'a', 't', 's' ] makes it unvalid), we go to the next triplet
+//'w' meets the condition, our result is updated to 'w' and our array is now :
+
+// [
+//     [ 't', 'u', 'p' ],
+//     [ 'h', 'i' ],
+//     [ 't', 's', 'u' ],
+//     [ 'a', 't', 's' ],
+//     [ 'h', 'a', 'p' ],
+//     [ 't', 'i', 's' ],
+//     [ 'h', 's' ]
+// ]
+
+// We start over, 'h' meets our condition, our result is updated to 'wh', and our array is now :
+
+// [
+//     [ 't', 'u', 'p' ],
+//     [ 'i' ],
+//     [ 't', 's', 'u' ],
+//     [ 'a', 't', 's' ],
+//     [ 'a', 'p' ],
+//     [ 't', 'i', 's' ],
+//     [ 's' ]
+// ]
+
+// We keep continuing that until every array is emptied.
+
+//===========================================

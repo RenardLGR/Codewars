@@ -250,3 +250,412 @@ class RomanNumerals {
 
 // console.log(RomanNumerals.fromRoman('MDCLXVI')); // 1666
 // console.log(RomanNumerals.toRoman(1990)) // 'MCMXC'
+
+//==============================================
+// https://www.codewars.com/kata/52bb6539a4cf1b12d90005b7
+// Write a method that takes a field for well-known board game "Battleship" as an argument and returns true if it has a valid disposition of ships, false otherwise. Argument is guaranteed to be 10*10 two-dimension array. Elements in the array are numbers, 0 if the cell is free and 1 if occupied by ship.
+
+// Battleship (also Battleships or Sea Battle) is a guessing game for two players. Each player has a 10x10 grid containing several "ships" and objective is to destroy enemy's forces by targetting individual cells on his field. The ship occupies one or more cells in the grid. Size and number of ships may differ from version to version. In this kata we will use Soviet/Russian version of the game.
+
+
+// Before the game begins, players set up the board and place the ships accordingly to the following rules:
+// There must be single battleship (size of 4 cells), 2 cruisers (size 3), 3 destroyers (size 2) and 4 submarines (size 1). Any additional ships are not allowed, as well as missing ships.
+// Each ship must be a straight line, except for submarines, which are just single cell.
+
+// The ship cannot overlap or be in contact with any other ship, neither by edge nor by corner.
+
+// This is all you need to solve this kata. If you're interested in more information about the game, visit this link.
+// https://en.wikipedia.org/wiki/Battleship_(game)
+
+function validateBattlefield(field) {
+    //submarines are easy to find, they have no neighbors, we will find them first and remove them from the battlefield
+    //we will them loop through each line looking for horizontal ships, check if they have no neighbors, add them
+    //do the same for each col finding vertical ships
+    //compare the result with the excpected result
+    //finally run through the field and check if there is no reamining part of ships. If there is, they are ships that are neither horizontal nor vertical nor isolated (so sub with a sub neighbor in diagonal i.e. diagonal ships) which is against the rule
+
+    let res = true
+
+    let subCt = 0 //size 1, 4 of them
+    let destrCt = 0 //size 2, 3 of them
+    let cruisCt = 0 //size 3, 2 of them
+    let battleshipCt = 0 //size 4, 1 of them
+
+    validateSubs()
+    if(subCt !== 4){
+        console.log('validateSubs returned false');
+        return false
+    }
+
+    validateHorizontalShips()
+    if(!res){ //res being false here means we had a ship with a neighbor invalidating rule 3
+        console.log('validateHorizontalShips returned false');
+        return false
+
+    }
+
+    validateVerticalShips()
+    if(!res){ //res being false here means we had a ship with a neighbor invalidating rule 3
+        console.log('validateVerticalShips returned false');
+        return false
+    }
+
+    //last run
+    for(let line=0 ; line<=9 ; line++){
+        for(let col=0 ; col<=9 ; col++){
+            if(field[line][col] === 1){ //if we have part of a ship still
+                res = false
+            }
+        }
+    }
+    if(!res){ //res being false here means we had a diagonal ship
+        console.log('We still have ships! Return false');
+        return false
+    }
+
+    if(subCt!==4 || destrCt!==3 || cruisCt!==2 || battleshipCt!==1){
+        console.log("We have the wrong number of ships! Return false");
+        return false
+    }
+
+    return true
+
+
+    function getNeighbors(line, col){
+        let arr = []
+        for(let i=line-1; i<=line+1 ; i++){
+            for(let j=col-1 ; j<=col+1 ; j++){
+                if(i>=0 && i<=9 && j>=0 && j<=9){//don't go outside
+                    if(!(i===line && j===col)){//don't add yourself
+                        arr.push([i,j])
+                    }
+                }
+            }
+        }
+
+        return arr
+    }
+    // console.log(getNeighbors(0, 0)); //[ [ 0, 1 ], [ 1, 0 ], [ 1, 1 ] ]
+    // console.log(getNeighbors(9, 9)); //[ [ 8, 8 ], [ 8, 9 ], [ 9, 8 ] ]
+
+    //This function check if subs are valid (they have no neighbors) and remove them for the battlefield
+    function validateSubs(){
+        for(let line=0 ; line<=9 ; line++){
+            for(let col=0 ; col<=9 ; col++){
+                if(field[line][col] === 1){ //if we have part of a ship
+                    let neigbors = getNeighbors(line, col)
+                    //if this part of a ship is isolated, we have a sub
+                    if(neigbors.every(n => {
+                        return field[n[0]][n[1]] !== 1
+                    })){
+                        subCt++
+                        //remove sub from the battlefield
+                        field[line][col] = 0
+                    }
+                }
+            }
+        }
+    }
+
+    //This function adds (to the total) the different horizontal ships and removes them from the battlefield if an invalid ship is found, terminate and changes the status of res
+    function validateHorizontalShips(){
+        for(let line=0 ; line<=9 ; line++){
+            for(let col=0 ; col<=9 ; col++){
+                if(field[line][col] === 1){ //if we have part of a ship
+                    if(col<9 && field[line][col+1]===1){ //if we have an horizontal ship
+                        let head = [line, col]
+                        let body = []
+                        let tempC = col+1
+                        while(tempC<=9 && field[line][tempC]===1){
+                            //as long as the ship continues on the right, increase body
+                            body.push([line, tempC])
+                            tempC++
+                        }
+                        let tail = body.pop() //last item of body is actually the tail
+
+                        console.log(head, body, tail);
+
+                        //check for invalid neighbors alongside the ship, if so res=false
+                        let headNeighbors = getNeighbors(head[0], head[1])
+                        headNeighbors.forEach(couple => {
+                            //the only neighbor allowed is the neighbor immediately right
+                            if(field[couple[0]][couple[1]]===1 && couple[1]!==col+1 && couple[0]!==line){
+                                console.log("Head issue");
+                                res = false
+                            }
+                        })
+
+                        body.forEach(el => {
+                            let elNeighbors = getNeighbors(el[0], el[1])
+                                //the only neighbors allowed are immediately left and immediately right
+                                elNeighbors.forEach(couple => {
+                                    if(field[couple[0]][couple[1]]===1){
+                                        let left = [el[0], el[1]-1]
+                                        let right = [el[0], el[1]+1]
+                                        if( (couple[0]===left[0]&&couple[1]===left[1]) || (couple[0]===right[0]&&couple[1]===right[1])){
+                                            return
+                                        }
+                                        console.log("Body issue");
+                                        res = false
+                                    }
+                                })
+                        })
+
+                        let tailNeighbors = getNeighbors(tail[0], tail[1])
+                        tailNeighbors.forEach(couple => {
+                            //the only neighbor allowed is the neighbor immediately left
+                            if(field[couple[0]][couple[1]]===1 && couple[1]!==tail[1]-1 && couple[0]!==tail[0]){
+                                console.log("Tail issue");
+                                res = false
+                            }
+                        })
+
+                        //check the length of the ship
+                        let length = 2+body.length
+                        if(length>4){//max length is 4
+                            res = false
+                        }
+                        if(length===2){
+                            destrCt++
+                        }
+                        if(length===3){
+                            cruisCt++
+                        }
+                        if(length===4){
+                            battleshipCt++
+                        }
+
+                        //remove the ship
+                        field[head[0]][head[1]] = 0
+                        body.forEach(couple => {
+                            field[couple[0]][couple[1]] = 0
+                        })
+                        field[tail[0]][tail[1]] = 0
+                    }
+                }
+            }
+        }
+    }
+
+    //This function adds (to the total) the different horizontal ships and removes them from the battlefield if an invalid ship is found, terminate and changes the status of res
+    function validateVerticalShips(){
+        for(let col=0 ; col<=9 ; col++){
+            for(let line=0 ; line<=9 ; line++){
+                if(field[line][col] === 1){ //if we have part of a ship
+                    if(line<9 && field[line+1][col]===1){ //if we have vertical ship
+                        let head = [line, col]
+                        let body = []
+                        let tempL = line+1
+                        while(tempL<=9 && field[tempL][col]===1){
+                            //as long as the ship continues to the bottom, increase body
+                            body.push([tempL, col])
+                            tempL++
+                        }
+                        let tail = body.pop() //last item of body is actually the tail
+
+                        //check for invalid neighbors alongside the ship, if so res=false
+                        let headNeighbors = getNeighbors(head[0], head[1])
+                        headNeighbors.forEach(couple => {
+                            //the only neighbor allowed is the neighbor immediately below
+                            if(field[couple[0]][couple[1]]===1 && couple[0]!==line+1 && couple[1]!==col){
+                                res = false
+                            }
+                        })
+
+                        body.forEach(el => {
+                            let elNeighbors = getNeighbors(el[0], el[1])
+                                //the only neighbors allowed are immediately above and immediately below
+                                elNeighbors.forEach(couple => {
+                                    if(field[couple[0]][couple[1]]===1){
+                                        let above = [el[0]-1, el[1]]
+                                        let below = [el[0]+1, el[1]]
+                                        if( (couple[0]===above[0]&&couple[1]===above[1]) || (couple[0]===below[0]&&couple[1]===below[1]) ){
+                                            return
+                                        }
+                                        console.log("Body issue");
+                                        res = false
+                                    }
+                                })
+                        })
+
+                        let tailNeighbors = getNeighbors(tail[0], tail[1])
+                        tailNeighbors.forEach(couple => {
+                            //the only neighbor allowed is the neighbor immediately above
+                            if(field[couple[0]][couple[1]]===1 && couple[0]!==tail[0]-1 && couple[1]!==tail[1]){
+                                res = false
+                            }
+                        })
+
+                        //check the length of the ship
+                        let length = 2+body.length
+                        if(length>4){//max length is 4
+                            res = false
+                        }
+                        if(length===2){
+                            destrCt++
+                        }
+                        if(length===3){
+                            cruisCt++
+                        }
+                        if(length===4){
+                            battleshipCt++
+                        }
+
+                        //remove the ship
+                        field[head[0]][head[1]] = 0
+                        body.forEach(couple => {
+                            field[couple[0]][couple[1]] = 0
+                        })
+                        field[tail[0]][tail[1]] = 0
+                    }
+                }
+            }
+        }
+    }
+}
+
+// console.log(validateBattlefield([
+//     [1, 0, 0, 0, 0, 1, 1, 0, 0, 0],
+//     [1, 0, 1, 0, 0, 0, 0, 0, 1, 0],
+//     [1, 0, 1, 0, 1, 1, 1, 0, 1, 0],
+//     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+//     [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+//     [0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+//     [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+//     [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+//     [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+//     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+// ])) //true
+
+function validateBattlefieldBis(field){
+    //Check if any part of a ship has a diagonal neighbor. If so, false
+    //For each part of a ship, add the corresponding horizontal or vertical ship. Remove them so we don't count them multiple times
+    //Check if the amount of ships is respected
+
+    let res = true
+    let subCt = 0 //size 1, 4 of them
+    let destrCt = 0 //size 2, 3 of them
+    let cruisCt = 0 //size 3, 2 of them
+    let battleshipCt = 0 //size 4, 1 of them
+
+    checkForDiagonalNeighbors()
+    countShips()
+
+
+    if(subCt!==4 || destrCt!==3 || cruisCt!==2 || battleshipCt!==1){
+        console.log("We have the wrong number of ships! Return false");
+        return false
+    }
+
+    return res
+
+    function getDiagonalNeighbors(line, col){
+        let res = []
+        if(line-1>=0 && col-1>=0){ //top left
+            res.push([line-1, col-1])
+        }
+        if(line-1>=0 && col+1<=9){ //top right
+            res.push([line-1, col+1])
+        }
+        if(line+1<=9 && col-1>=0){ //bottom left
+            res.push([line+1, col-1])
+        }
+        if(line+1<=9 && col+1<=9){ //bottom right
+            res.push([line+1, col+1])
+        }
+        return res
+    }
+
+    function checkForDiagonalNeighbors(){
+        for(let line=0 ; line<=9 ; line++){
+            for(let col=0 ; col<=9 ; col++){
+                if(field[line][col]===1){ //if we have a part of a ship
+                    let diagNeighb = getDiagonalNeighbors(line, col)
+                    diagNeighb.forEach(([l, c]) => {
+                        if(field[l][c]===1){//if a diagonal neighbor is a ship
+                            console.log("We have a neighbor issue");
+                            res = false
+                        }
+                    })
+                }
+            }
+        }
+    }
+
+    function countShips(){
+        for(let line=0 ; line<=9 ; line++){
+            for(let col=0 ; col<=9 ; col++){
+                if(field[line][col]===1){
+                    let goRight = field[line][col+1]===1 //check horizontal ships
+                    let goDown = field[line+1][col]===1 //check vertical ships
+
+                    if(!goRight && !goDown){ //if we neither go right or down, we have a submarine (single cell)
+                        subCt++
+                        field[line][col]=0
+                    }
+
+                    if(goRight){ //horizontal ships counter
+                        let shipLen = 0
+                        let tempC = col
+                        while(tempC<=9 && field[line][tempC]===1){
+                            field[line][tempC]=0
+                            shipLen++
+                            tempC++
+                        }
+                        if(shipLen>4){//max length is 4
+                            res = false
+                            console.log("We have an horizontal ship too long!");
+                        }
+                        if(shipLen===2){
+                            destrCt++
+                        }
+                        if(shipLen===3){
+                            cruisCt++
+                        }
+                        if(shipLen===4){
+                            battleshipCt++
+                        }
+                    }
+
+                    if(goDown){ //vertical ships counter
+                        let shipLen = 0
+                        let tempL = line
+                        while(tempL<=9 && field[tempL][col]===1){
+                            field[tempL][col]=0
+                            shipLen++
+                            tempL++
+                        }
+                        if(shipLen>4){//max length is 4
+                            res = false
+                            console.log("We have a vertical ship too long!");
+                        }
+                        if(shipLen===2){
+                            destrCt++
+                        }
+                        if(shipLen===3){
+                            cruisCt++
+                        }
+                        if(shipLen===4){
+                            battleshipCt++
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// console.log(validateBattlefieldBis([
+//     [1, 0, 0, 0, 0, 1, 1, 0, 0, 0],
+//     [1, 0, 1, 0, 0, 0, 0, 0, 1, 0],
+//     [1, 0, 1, 0, 1, 1, 1, 0, 1, 0],
+//     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+//     [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+//     [0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+//     [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+//     [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+//     [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+//     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+// ])) //true
+
+//================================================

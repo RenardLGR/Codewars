@@ -659,3 +659,230 @@ function validateBattlefieldBis(field){
 // ])) //true
 
 //================================================
+// https://www.codewars.com/kata/55e7280b40e1c4a06d0000aa
+// John and Mary want to travel between a few towns A, B, C ... Mary has on a sheet of paper a list of distances between these towns. ls = [50, 55, 57, 58, 60]. John is tired of driving and he says to Mary that he doesn't want to drive more than t = 174 miles and he will visit only 3 towns.
+
+// Which distances, hence which towns, they will choose so that the sum of the distances is the biggest possible to please Mary and John?
+
+// Example:
+// With list ls and 3 towns to visit they can make a choice between: [50,55,57],[50,55,58],[50,55,60],[50,57,58],[50,57,60],[50,58,60],[55,57,58],[55,57,60],[55,58,60],[57,58,60].
+
+// The sums of distances are then: 162, 163, 165, 165, 167, 168, 170, 172, 173, 175.
+
+// The biggest possible sum taking a limit of 174 into account is then 173 and the distances of the 3 corresponding towns is [55, 58, 60].
+
+// The function chooseBestSum (or choose_best_sum or ... depending on the language) will take as parameters t (maximum sum of distances, integer >= 0), k (number of towns to visit, k >= 1) and ls (list of distances, all distances are positive or zero integers and this list has at least one element). The function returns the "best" sum ie the biggest possible sum of k distances less than or equal to the given limit t, if that sum exists, or otherwise nil, null, None, Nothing, depending on the language. In that case with C, C++, D, Dart, Fortran, F#, Go, Julia, Kotlin, Nim, OCaml, Pascal, Perl, PowerShell, Reason, Rust, Scala, Shell, Swift return -1.
+
+// Examples:
+// ts = [50, 55, 56, 57, 58] choose_best_sum(163, 3, ts) -> 163
+
+// xs = [50] choose_best_sum(163, 3, xs) -> nil (or null or ... or -1 (C++, C, D, Rust, Swift, Go, ...)
+
+// ys = [91, 74, 73, 85, 73, 81, 87] choose_best_sum(230, 3, ys) -> 228
+
+// Notes:
+// try not to modify the input list of distances ls
+// in some languages this "list" is in fact a string (see the Sample Tests).
+
+function chooseBestSum(t, k, ls) {
+    // Assume, a town is visited only once
+    //Recursively, we will try every combination of 3 towns
+    let res = null
+    let resArr = []
+    solve([], 0, 0, ls)
+    //console.log(resArr);
+    return res
+
+    function solve(inProgress, sum, length, workingArr){
+        //Exit recursive case
+        if(length===k){
+            if(sum>res && sum<=t){
+                res = sum
+                resArr = inProgress
+            }
+            return
+        }
+        //Recursive call
+        for(let i=0 ; i<workingArr.length ; i++){
+            let newWorkingArr = workingArr.slice()
+            let cur = newWorkingArr.splice(i, 1)
+            solve(inProgress.concat(cur), sum+cur[0], length+1, newWorkingArr)
+        }
+    }
+}
+
+// console.log(chooseBestSum(174, 3, [50, 55, 57, 58, 60])); // 173 with [ 55, 58, 60 ]
+// console.log(chooseBestSum(163, 3, [50, 55, 56, 57, 58])); // 163
+// console.log(chooseBestSum(163, 3, [50])); // null
+// console.log(chooseBestSum(230, 3, [91, 74, 73, 85, 73, 81, 87])); // 228
+// console.log(chooseBestSum(430, 8, [100, 76, 56, 44, 89, 73, 68, 56, 64, 123, 2333,  144, 50, 132, 123, 34, 89])); //null
+
+
+//This function takes too much time if the number of town to visit increases too much
+//We will do a sort first on the list of distances, with the biggest values first. We will then drop those values if the prefix is already too big
+
+function chooseBestSumBis(t, k, ls) {
+    // Assume, a town is visited only once
+    //Recursively, we will try every combination of 3 towns
+    let res = null
+    let resArr = []
+    let sorted = ls.sort((a, b) => b - a) //sort in descending order
+    solve([], 0, 0, sorted)
+    //console.log(resArr);
+    return res
+
+    function solve(inProgress, sum, length, workingArr){
+        //Drop prefix
+        if(sum>t){
+            return
+        }
+        //Exit recursive case
+        if(length===k){
+            if(sum>res && sum<=t){
+                res = sum
+                resArr = inProgress
+            }
+            return
+        }
+        //Recursive call
+        for(let i=0 ; i<workingArr.length ; i++){
+            let newWorkingArr = workingArr.slice()
+            let cur = newWorkingArr.splice(i, 1)
+            solve(inProgress.concat(cur), sum+cur[0], length+1, newWorkingArr)
+        }
+    }
+}
+
+// console.log(chooseBestSumBis(174, 3, [50, 55, 57, 58, 60])); // 173 with [ 55, 58, 60 ]
+// console.log(chooseBestSumBis(163, 3, [50, 55, 56, 57, 58])); // 163
+// console.log(chooseBestSumBis(163, 3, [50])); // null
+// console.log(chooseBestSumBis(230, 3, [91, 74, 73, 85, 73, 81, 87])); // 228
+// console.log(chooseBestSumBis(430, 8, [100, 76, 56, 44, 89, 73, 68, 56, 64, 123, 2333,  144, 50, 132, 123, 34, 89])); //null
+
+//Much faster, but not enough
+//Here : We drop the sorting, we drop the prefix earlier (before the recursive call)
+//Abort earlier if we have a perfect result
+
+function chooseBestSumTer(t, k, ls) {
+    // Assume, a town is visited only once
+    //Recursively, we will try every combination of 3 towns
+    let res = null
+    let resArr = []
+    let isResPerfect //If we hit the target, don't try anything else
+    let nCalls = 0
+    solve([], 0, 0, ls)
+    console.log(nCalls);
+    //console.log(resArr);
+    return res
+
+    function solve(inProgress, sum, length, workingArr){
+        nCalls++
+        //Exit recursive case
+        if(length===k){
+            if(sum>res && sum<=t){
+                res = sum
+                resArr = inProgress
+                if(sum===t){
+                    isResPerfect = true
+                }
+            }
+            return
+        }
+        //Recursive call
+        for(let i=0 ; i<workingArr.length ; i++){
+            let newWorkingArr = workingArr.slice()
+            let cur = newWorkingArr.splice(i, 1)
+            let newSum = sum+cur[0]
+            //If the prefix has a chance of succeeding
+            if(newSum<=t && !isResPerfect){
+                solve(inProgress.concat(cur), newSum, length+1, newWorkingArr)
+            }
+        }
+    }
+}
+
+// console.log(chooseBestSumTer(174, 3, [50, 55, 57, 58, 60])); // 173 with [ 55, 58, 60 ]
+// console.log(chooseBestSumTer(163, 3, [50, 55, 56, 57, 58])); // 163
+// console.log(chooseBestSumTer(163, 3, [50])); // null
+// console.log(chooseBestSumTer(230, 3, [91, 74, 73, 85, 73, 81, 87])); // 228
+// console.log(chooseBestSumTer(430, 8, [100, 76, 56, 44, 89, 73, 68, 56, 64, 123, 2333,  144, 50, 132, 123, 34, 89])); //null
+console.log(chooseBestSumTer(880, 8, [100, 76, 56, 44, 89, 73, 68, 56, 64, 123, 2333,  144, 50, 132, 123, 34, 89])); //876
+
+//Still too slow...
+//Here we will get every combinations, get the one closest but smaller to/than the target
+
+function chooseBestSumQuater(t, k, ls) {
+    // Assume, a town is visited only once
+    // Get every combinations, get the one closest but smaller to/than the target
+    let res = null
+    let resArr = []
+    let nCalls = 0
+    let everyCom = getCombinations(ls, k)
+    console.log(nCalls);
+    everyCom.forEach(com => {
+        let sum = com.reduce((acc, cur) => acc+cur, 0)
+        if(sum>res && sum<=t){
+            res = sum
+            resArr = com
+        }
+    })
+
+    return res
+
+    function getCombinations(arr, n) {
+        const combinations = [];
+      
+        function generateCombinations(currentCombination, start) {
+            nCalls++
+          if (currentCombination.length === n) {
+            combinations.push(currentCombination);
+            return;
+          }
+          for (let i = start; i < arr.length; i++) {
+            generateCombinations([...currentCombination, arr[i]], i + 1);
+          }
+        }
+      
+        generateCombinations([], 0);
+        return combinations;
+      }
+}
+
+// console.log(chooseBestSumQuater(174, 3, [50, 55, 57, 58, 60])); // 173 with [ 55, 58, 60 ]
+// console.log(chooseBestSumQuater(163, 3, [50, 55, 56, 57, 58])); // 163
+// console.log(chooseBestSumQuater(163, 3, [50])); // null
+// console.log(chooseBestSumQuater(230, 3, [91, 74, 73, 85, 73, 81, 87])); // 228
+// console.log(chooseBestSumQuater(430, 8, [100, 76, 56, 44, 89, 73, 68, 56, 64, 123, 2333,  144, 50, 132, 123, 34, 89])); //null
+console.log(chooseBestSumQuater(880, 8, [100, 76, 56, 44, 89, 73, 68, 56, 64, 123, 2333,  144, 50, 132, 123, 34, 89])); //876
+
+function chooseBestSumBis(t, k, ls) {
+    // Assume, a town is visited only once
+    //Recursively, we will try every combination of 3 towns
+    let res = null
+    let resArr = []
+    let sorted = ls.sort((a, b) => b - a) //sort in descending order
+    solve([], 0, 0, sorted)
+    //console.log(resArr);
+    return res
+
+    function solve(inProgress, sum, length, workingArr){
+        //Drop prefix
+        if(sum>t){
+            return
+        }
+        //Exit recursive case
+        if(length===k){
+            if(sum>res && sum<=t){
+                res = sum
+                resArr = inProgress
+            }
+            return
+        }
+        //Recursive call
+        for(let i=0 ; i<workingArr.length ; i++){
+            let newWorkingArr = workingArr.slice()
+            let cur = newWorkingArr.splice(i, 1)
+            solve(inProgress.concat(cur), sum+cur[0], length+1, newWorkingArr)
+        }
+    }
+}

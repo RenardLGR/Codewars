@@ -806,7 +806,7 @@ function chooseBestSumTer(t, k, ls) {
 // console.log(chooseBestSumTer(163, 3, [50])); // null
 // console.log(chooseBestSumTer(230, 3, [91, 74, 73, 85, 73, 81, 87])); // 228
 // console.log(chooseBestSumTer(430, 8, [100, 76, 56, 44, 89, 73, 68, 56, 64, 123, 2333,  144, 50, 132, 123, 34, 89])); //null
-console.log(chooseBestSumTer(880, 8, [100, 76, 56, 44, 89, 73, 68, 56, 64, 123, 2333,  144, 50, 132, 123, 34, 89])); //876
+// console.log(chooseBestSumTer(880, 8, [100, 76, 56, 44, 89, 73, 68, 56, 64, 123, 2333,  144, 50, 132, 123, 34, 89])); //876
 
 //Still too slow...
 //Here we will get every combinations, get the one closest but smaller to/than the target
@@ -853,21 +853,27 @@ function chooseBestSumQuater(t, k, ls) {
 // console.log(chooseBestSumQuater(163, 3, [50])); // null
 // console.log(chooseBestSumQuater(230, 3, [91, 74, 73, 85, 73, 81, 87])); // 228
 // console.log(chooseBestSumQuater(430, 8, [100, 76, 56, 44, 89, 73, 68, 56, 64, 123, 2333,  144, 50, 132, 123, 34, 89])); //null
-console.log(chooseBestSumQuater(880, 8, [100, 76, 56, 44, 89, 73, 68, 56, 64, 123, 2333,  144, 50, 132, 123, 34, 89])); //876
+// console.log(chooseBestSumQuater(880, 8, [100, 76, 56, 44, 89, 73, 68, 56, 64, 123, 2333,  144, 50, 132, 123, 34, 89])); //876
 
-function chooseBestSumBis(t, k, ls) {
+//Attempt 1, 2 and 3 has many unnecessary calculations (looping through already visited combinations), attempt 4 (above) doesn't loop through unnecessary combinations but doesn't use prefixes : we can refactor that :
+
+function chooseBestSumQuinques(t, k, ls) {
     // Assume, a town is visited only once
-    //Recursively, we will try every combination of 3 towns
+    //Recursively, we will try every combination of 3 (or k in general) towns
     let res = null
     let resArr = []
-    let sorted = ls.sort((a, b) => b - a) //sort in descending order
-    solve([], 0, 0, sorted)
+
+    solve([], 0, 0, ls)
     //console.log(resArr);
     return res
 
     function solve(inProgress, sum, length, workingArr){
-        //Drop prefix
+        //Drop prefix if it is already too big
         if(sum>t){
+            return
+        }
+        //Drop if we can't get the desired length (happens when try to produce a combination starting from the last few elements of the list)
+        if(length+workingArr.length < k){
             return
         }
         //Exit recursive case
@@ -880,9 +886,18 @@ function chooseBestSumBis(t, k, ls) {
         }
         //Recursive call
         for(let i=0 ; i<workingArr.length ; i++){
-            let newWorkingArr = workingArr.slice()
-            let cur = newWorkingArr.splice(i, 1)
-            solve(inProgress.concat(cur), sum+cur[0], length+1, newWorkingArr)
+            let cur = workingArr[i]
+            solve([...inProgress, cur], sum+cur, length+1, workingArr.slice(i+1))
         }
     }
 }
+
+
+// console.log(chooseBestSumQuinques(174, 3, [50, 55, 57, 58, 60])); // 173 with [ 55, 58, 60 ]
+// console.log(chooseBestSumQuinques(163, 3, [50, 55, 56, 57, 58])); // 163
+// console.log(chooseBestSumQuinques(163, 3, [50])); // null
+// console.log(chooseBestSumQuinques(230, 3, [91, 74, 73, 85, 73, 81, 87])); // 228
+// console.log(chooseBestSumQuinques(430, 8, [100, 76, 56, 44, 89, 73, 68, 56, 64, 123, 2333,  144, 50, 132, 123, 34, 89])); //null
+// console.log(chooseBestSumQuinques(880, 8, [100, 76, 56, 44, 89, 73, 68, 56, 64, 123, 2333,  144, 50, 132, 123, 34, 89])); //876
+
+//==========================================

@@ -856,6 +856,7 @@ function chooseBestSumQuater(t, k, ls) {
 // console.log(chooseBestSumQuater(880, 8, [100, 76, 56, 44, 89, 73, 68, 56, 64, 123, 2333,  144, 50, 132, 123, 34, 89])); //876
 
 //Attempt 1, 2 and 3 has many unnecessary calculations (looping through already visited combinations), attempt 4 (above) doesn't loop through unnecessary combinations but doesn't use prefixes : we can refactor that :
+//In fact attemp 1, 2 and 3 were finding every permutation of an array instead of every combination of an array.
 
 function chooseBestSumQuinques(t, k, ls) {
     // Assume, a town is visited only once
@@ -901,3 +902,112 @@ function chooseBestSumQuinques(t, k, ls) {
 // console.log(chooseBestSumQuinques(880, 8, [100, 76, 56, 44, 89, 73, 68, 56, 64, 123, 2333,  144, 50, 132, 123, 34, 89])); //876
 
 //==========================================
+//Write a function that generates every combination of length n of an array. Array.length >= n
+//A permutation is rearranging the order of an array
+//A combination is a subset of a set
+
+function getCombinations(arr, n){
+    let res = []
+    solve([], arr)
+    return res
+
+    function solve(inProgress, workingArr){
+        if(inProgress.length === n){
+            res.push(inProgress)
+            return
+        }
+
+        for(let i=0 ; i<workingArr.length ; i++){
+            let cur = workingArr[i]
+            solve([...inProgress, cur], workingArr.slice(i+1))
+        }
+    }
+}
+
+// console.log(getCombinations([1, 2, 3, 4], 3)); //[ [ 1, 2, 3 ], [ 1, 2, 4 ], [ 1, 3, 4 ], [ 2, 3, 4 ] ]
+
+function getCombinationsBis(arr, n){
+    let res = []
+    solve([], 0)
+    return res
+
+    function solve(inProgress, start){
+        if(inProgress.length === n){
+            res.push(inProgress)
+            return
+        }
+        for(let i=start ; i<arr.length ; i++){
+            solve([...inProgress, arr[i]], i+1)
+        }
+    }
+}
+
+// console.log(getCombinationsBis([1, 2, 3, 4], 3)); //[ [ 1, 2, 3 ], [ 1, 2, 4 ], [ 1, 3, 4 ], [ 2, 3, 4 ] ]
+
+//========================================
+// https://www.codewars.com/kata/55e2adece53b4cdcb900006c
+// Two tortoises named A and B must run a race. A starts with an average speed of 720 feet per hour. Young B knows she runs faster than A, and furthermore has not finished her cabbage.
+
+// When she starts, at last, she can see that A has a 70 feet lead but B's speed is 850 feet per hour. How long will it take B to catch A?
+
+// More generally: given two speeds v1 (A's speed, integer > 0) and v2 (B's speed, integer > 0) and a lead g (integer > 0) how long will it take B to catch A?
+
+// The result will be an array [hour, min, sec] which is the time needed in hours, minutes and seconds (round down to the nearest second) or a string in some languages.
+
+// If v1 >= v2 then return nil, nothing, null, None or {-1, -1, -1} for C++, C, Go, Nim, Pascal, COBOL, Erlang, [-1, -1, -1] for Perl,[] for Kotlin or "-1 -1 -1".
+
+// Examples:
+// (form of the result depends on the language)
+
+// race(720, 850, 70) => [0, 32, 18] or "0 32 18"
+// race(80, 91, 37)   => [3, 21, 49] or "3 21 49"
+// Note:
+// See other examples in "Your test cases".
+
+// In Fortran - as in any other language - the returned string is not permitted to contain any redundant trailing whitespace: you can use dynamically allocated character strings.
+
+// ** Hints for people who don't know how to convert to hours, minutes, seconds:
+
+// Tortoises don't care about fractions of seconds
+// Think of calculation by hand using only integers (in your code use or simulate integer division)
+// or Google: "convert decimal time to hours minutes seconds"
+
+function tortoiseRace(v1, v2, lead) {
+    if(v1 >= v2){ //edge
+        return null
+    }
+
+    v1 = v1/3600 // ft/hour to ft/sec
+    v2 = v2/3600 // ft/hour to ft/sec
+    // We search t such as v1*t + lead = v2*t
+    // <=> t = lead/(v2-v1)
+    let t = Math.floor(lead/(v2-v1)) //t in sec
+
+    let hrs = Math.floor(t/3600)
+    t = t-hrs*3600
+    let mins = Math.floor(t/60)
+    t = t-mins*60
+
+    return [hrs, mins, t]
+}
+
+// console.log(tortoiseRace(720, 850, 70)); //[ 0, 32, 18 ]
+// console.log(tortoiseRace(80, 91, 37)); //[ 3, 21, 49 ]
+
+
+function tortoiseRaceBis(v1, v2, lead) {
+    if(v1 >= v2){ //edge
+        return null
+    }
+
+    // We search t such as v1*t + lead = v2*t
+    // <=> t = lead/(v2-v1)
+    let t = lead/(v2-v1) //t in hrs 
+
+    return [Math.floor(t), Math.floor(t*60%60),Math.floor(t*3600%60)]
+}
+
+// console.log(tortoiseRaceBis(720, 850, 70)); //[ 0, 32, 18 ]
+// console.log(tortoiseRaceBis(80, 91, 37)); //[ 3, 21, 49 ]
+
+//===========================================

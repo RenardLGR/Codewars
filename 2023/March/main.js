@@ -1266,7 +1266,7 @@ function determinant(m) {
         return m[0][0]*m[1][1] - m[0][1]*m[1][0]
     }
     else{
-        //The minor matrix will be found from elements from the first line
+        //The minor matrices will be found from elements from the first line
         let sign = 1
         let res = 0
         for(let i=0 ; i<m.length ; i++){
@@ -1300,4 +1300,64 @@ function determinant(m) {
 //     [4,-2,3,5]
 // ])); //108
 
+function determinantBis(m) {
+    if(m.length === 1){
+        return m[0][0]
+    }
+    else if(m.length === 2){
+        return m[0][0]*m[1][1] - m[0][1]*m[1][0]
+    }
+    else{
+        //The minor matrices will be found from elements from the first col
+        return m.reduce((acc, line, idx, arr) => {
+            //Take each lines without the current index, remove the first elem
+            let minor_arr = arr.slice(0, idx).concat(arr.slice(idx+1)).map(lin => lin.slice(1))
+
+            let sign = idx%2===0 ? 1 : -1
+            return acc + sign*line[0]*determinantBis(minor_arr)
+        }, 0)
+
+    }
+}
+
+// console.log(determinantBis([[2,4,2],[3,1,1],[1,2,0]])); //10
+// console.log(determinantBis([
+//     [2,4,5,6],
+//     [-1,5,6,9],
+//     [3,7,1,-6],
+//     [4,-2,3,5]
+// ])); //108
+
 //================================================
+// https://www.codewars.com/kata/52e88b39ffb6ac53a400022e
+// Take the following IPv4 address: 128.32.10.1
+
+// This address has 4 octets where each octet is a single byte (or 8 bits).
+
+// 1st octet 128 has the binary representation: 10000000
+// 2nd octet 32 has the binary representation: 00100000
+// 3rd octet 10 has the binary representation: 00001010
+// 4th octet 1 has the binary representation: 00000001
+// So 128.32.10.1 == 10000000.00100000.00001010.00000001
+
+// Because the above IP address has 32 bits, we can represent it as the unsigned 32 bit number: 2149583361
+
+// Complete the function that takes an unsigned 32 bit number and returns a string representation of its IPv4 address.
+
+// Examples
+// 2149583361 ==> "128.32.10.1"
+// 32         ==> "0.0.0.32"
+// 0          ==> "0.0.0.0"
+
+function int32ToIp(int32){
+    //String it into a 32-chars long binary number, cut it into 4 pieces of 8-chars long binary number. Get a base 10 number of these 4 binary numbers. Return
+    let bin = int32.toString(2)
+    while (bin.length < 32){
+        bin = '0'+bin
+    }
+    return [bin.slice(0, 8), bin.slice(8, 16), bin.slice(16, 24), bin.slice(24)].map(bin => parseInt(bin, 2)).join('.')
+}
+
+// console.log(int32ToIp(2149583361)); // 128.32.10.1
+
+//=================================

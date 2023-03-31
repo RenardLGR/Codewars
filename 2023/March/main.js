@@ -1360,4 +1360,103 @@ function int32ToIp(int32){
 
 // console.log(int32ToIp(2149583361)); // 128.32.10.1
 
-//=================================
+//=========================================
+// https://www.codewars.com/kata/5547cc7dcad755e480000004
+// A friend of mine takes the sequence of all numbers from 1 to n (where n > 0).
+// Within that sequence, he chooses two numbers, a and b.
+// He says that the product of a and b should be equal to the sum of all numbers in the sequence, excluding a and b.
+// Given a number n, could you tell me the numbers he excluded from the sequence?
+// The function takes the parameter: n (n is always strictly greater than 0) and returns an array or a string (depending on the language) of the form:
+
+// [(a, b), ...] or [[a, b], ...] or {{a, b}, ...} or or [{a, b}, ...]
+// with all (a, b) which are the possible removed numbers in the sequence 1 to n.
+
+// [(a, b), ...] or [[a, b], ...] or {{a, b}, ...} or ... will be sorted in increasing order of the "a".
+
+// It happens that there are several possible (a, b). The function returns an empty array (or an empty string) if no possible numbers are found which will prove that my friend has not told the truth! (Go: in this case return nil).
+
+// Examples:
+// removNb(26) should return [(15, 21), (21, 15)]
+// or
+// removNb(26) should return { {15, 21}, {21, 15} }
+// or
+// removeNb(26) should return [[15, 21], [21, 15]]
+// or
+// removNb(26) should return [ {15, 21}, {21, 15} ]
+// or
+// removNb(26) should return "15 21, 21 15"
+// or
+
+// in C:
+// removNb(26) should return  {{15, 21}{21, 15}} tested by way of strings.
+// Function removNb should return a pointer to an allocated array of Pair pointers, each one also allocated. 
+// Note
+// See examples of returns for each language in "RUN SAMPLE TESTS"
+
+function removeNb(n) {
+    //We want a couple (a,b) such as a.b = sumtoN-a-b
+    let sumToN = n*(n+1)/2
+    let res = []
+
+    for(let i=1 ; i<=n ; i++){
+        for(let j=1 ; j<=n ; j++){
+            let a = i
+            let b = j
+            if(a*b === sumToN-a-b){
+                res.push([a,b])
+            }
+        }
+    }
+
+    return res
+}
+
+// console.log(removeNb(26)); // [[15, 21], [21, 15]]
+
+//Works but the second loop could be started from i as one result [a,b] gives us also [b, a]
+
+function removeNbBis(n) {
+    //We want a couple (a,b) such as a.b = sumtoN-a-b
+    let sumToN = n*(n+1)/2
+    let res = []
+
+    for(let i=1 ; i<=n ; i++){
+        for(let j=i ; j<=n ; j++){
+            let a = i
+            let b = j
+            if(a*b === sumToN-a-b){
+                res.push([a,b])
+                res.push([b,a])
+            }
+        }
+    }
+
+    return res
+}
+
+// console.log(removeNbBis(26)); // [[15, 21], [21, 15]]
+
+
+//Let's have a purely mathematical approach:
+
+function removeNbTer(n){
+    //We want a couple (a,b) such as a.b = sumtoN-a-b
+    //with sumToN = n*(n+1)/2
+    //<=> a*b = n*(n+1)/2 - a - b
+    //<=> a*b + b = n*(n+1)/2 - a
+    //<=> b(a+1) = n*(n+1)/2 - a
+    //<=> b = n*(n+1) / 2*(a+1) - a/(a+1)   a+1 =/= 0
+    //We also know a and b are natural, strictly positive, smaller or equal than n
+
+    let res = []
+    for(let a=1 ; a<=n ; a++){
+        let b = (n*(n+1)) / (2*(a+1)) - a/(a+1)
+        if(b%1===0 && b<=n){
+            res.push([a, b])
+        }
+    }
+
+    return res
+}
+
+// console.log(removeNbTer(26)); // [[15, 21], [21, 15]]

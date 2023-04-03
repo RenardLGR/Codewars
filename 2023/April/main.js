@@ -176,7 +176,7 @@ function fibonacci(n) {
 
 function fibonacciBis(n){
     let memo = {}
-    return function fibClosure(memo, n){
+    return function fibInside(memo, n){
         if (n < 2) {
             return n;
         }
@@ -184,9 +184,39 @@ function fibonacciBis(n){
         if(memo[n]){
             return memo[n]
         }else{
-            return memo[n] = fibClosure(memo, n - 1) + fibClosure(memo, n - 2)
+            return memo[n] = fibInside(memo, n - 1) + fibInside(memo, n - 2)
         }
     }(memo, n) //return function call
 }
 
 //=============================================
+// https://www.codewars.com/kata/525f47c79f2f25a4db000025
+// Write a function that accepts a string, and returns true if it is in the form of a phone number.
+// Assume that any integer from 0-9 in any of the spots will produce a valid phone number.
+
+// Only worry about the following format:
+// (123) 456-7890 (don't forget the space after the close parentheses)
+
+// Examples:
+
+// "(123) 456-7890"  => true
+// "(1111)555 2345"  => false
+// "(098) 123 4567"  => false
+
+function validPhoneNumber(phoneNumber){
+    // The ^ and $ symbols at the beginning and end of the pattern ensure that the pattern matches the entire string, not just a substring. The \d character class matches any digit from 0-9, and the {3} and {4} quantifiers specify that there should be exactly three and four of these digits, respectively. The parentheses and hyphen are matched literally, and the space after the closing parenthesis is also matched literally. The backslashes \ are used to escape the parentheses and the hyphens, indicating that the regular expression is looking for those specific characters in the input string.
+
+    // let pattern = /^\(\d{3}\)\ \d{3}\-\d{4}$/
+    //The hyphen and the space don't necessary need a backslash \ 
+    let pattern = /^\(\d{3}\) \d{3}-\d{4}$/
+
+    return pattern.test(phoneNumber)
+}
+
+// console.log(validPhoneNumber("(123) 456-7890")); // true
+// console.log(validPhoneNumber("(123)456-7890")); // false (missing space)
+// console.log(validPhoneNumber("(123) 456-789")); // false (missing digit)
+// console.log(validPhoneNumber("(123) 456-78901")); // false (extra digit)
+// console.log(validPhoneNumber("1234567890")); // false (missing parentheses and hyphen)
+
+//================================================

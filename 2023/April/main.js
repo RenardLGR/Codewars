@@ -257,3 +257,191 @@ function ipsBetween(start, end){
 // console.log(ipsBetween("20.0.0.10", "20.0.1.0")); //246
 
 //===========================================================
+// https://www.codewars.com/kata/55d5434f269c0c3f1b000058
+// Write a function
+
+// tripledouble(num1,num2)
+// which takes numbers num1 and num2 and returns 1 if there is a straight triple of a number at any place in num1 and also a straight double of the same number in num2.
+
+// If this isn't the case, return 0
+
+// Examples
+// tripledouble(451999277, 41177722899) == 1 // num1 has straight triple 999s and 
+//                                           // num2 has straight double 99s
+
+// tripledouble(1222345, 12345) == 0 // num1 has straight triple 2s but num2 has only a single 2
+
+// tripledouble(12345, 12345) == 0
+
+// tripledouble(666789, 12345667) == 1
+
+function tripledouble(num1, num2) {
+    let string1 = num1.toString()
+    let string2 = num2.toString()
+
+    let possibility1 = ['000', '111', '222', '333', '444', '555', '666', '777', '888', '999']
+    let possibility2 = ['00', '11', '22', '33', '44', '55', '66', '77', '88', '99']
+
+    let triples = []
+    let res = 0
+
+    for(let i=0 ; i<possibility1.length ; i++){
+        if(string1.includes(possibility1[i])){
+            triples.push(i)
+        }
+    }
+
+    triples.forEach(val => {
+        if(string2.includes(possibility2[+val])){
+            res = 1
+        }
+    })
+
+    return res
+}
+
+// console.log(tripledouble(451999277, 41177722899)) // 1
+// console.log(tripledouble(1222345, 12345)) // 0
+// console.log(tripledouble(12345, 12345)) // 0
+// console.log(tripledouble(666789, 12345667)) // 1
+
+function tripledoubleBis(num1, num2){
+    for(let i=0 ; i<=9 ; i++){
+        if(num1.toString().includes(i.toString().repeat(3)) &&
+        num2.toString().includes(i.toString().repeat(2))
+        ){
+            return 1
+        }
+    }
+    return 0
+}
+
+// console.log(tripledoubleBis(451999277, 41177722899)) // 1
+// console.log(tripledoubleBis(1222345, 12345)) // 0
+// console.log(tripledoubleBis(12345, 12345)) // 0
+// console.log(tripledoubleBis(666789, 12345667)) // 1
+
+//==========================================
+// https://www.codewars.com/kata/57ea70aa5500adfe8a000110
+// In this kata you have to write a method that folds a given array of integers by the middle x-times.
+
+// An example says more than thousand words:
+
+// Fold 1-times:
+// [1,2,3,4,5] -> [6,6,3]
+
+// A little visualization (NOT for the algorithm but for the idea of folding):
+
+//  Step 1         Step 2        Step 3       Step 4       Step5
+//                      5/           5|         5\          
+//                     4/            4|          4\      
+// 1 2 3 4 5      1 2 3/         1 2 3|       1 2 3\       6 6 3
+// ----*----      ----*          ----*        ----*        ----*
+
+
+// Fold 2-times:
+// [1,2,3,4,5] -> [9,6]
+// As you see, if the count of numbers is odd, the middle number will stay. Otherwise the fold-point is between the middle-numbers, so all numbers would be added in a way.
+
+// The array will always contain numbers and will never be null. The parameter runs will always be a positive integer greater than 0 and says how many runs of folding your method has to do.
+
+// If an array with one element is folded, it stays as the same array.
+
+// The input array should not be modified!
+
+// Have fun coding it and please don't forget to vote and rank this kata! :-)
+
+// I have created other katas. Have a look if you like coding and challenges.
+
+function foldArray(array, times){
+    let folded = array.slice()
+    for(let i=0 ; i<times ; i++){
+        folded = foldOne(folded)
+    }
+
+    return folded
+
+    function foldOne(array){
+        if(array.length === 1){
+            return array
+        }
+
+        let res = []
+        //Add first to last, second to second to last, etc.
+        for(let i=0 ; i<Math.floor(array.length/2) ; i++){
+            res.push(array[i] + array[array.length-i-1])
+        }
+        //Add middle element if odd length
+        if(array.length%2 === 1){
+            res.push(array[Math.floor(array.length/2)])
+        }
+        return res
+    }
+}
+
+// console.log(foldArray([1,2,3,4,5], 1)) // [6,6,3]
+// console.log(foldArray([1,2,3,4,5], 2)) // [9,6]
+
+//===============================================
+// https://www.codewars.com/kata/5418a1dd6d8216e18a0012b2
+// In this Kata, you will implement the Luhn Algorithm, which is used to help validate credit card numbers.
+
+// Given a positive integer of up to 16 digits, return true if it is a valid credit card number, and false if it is not.
+
+// Here is the algorithm:
+
+// Double every other digit, scanning from right to left, starting from the second digit (from the right).
+
+// Another way to think about it is: if there are an even number of digits, double every other digit starting with the first; if there are an odd number of digits, double every other digit starting with the second:
+
+// 1714 ==> [1*, 7, 1*, 4] ==> [2, 7, 2, 4]
+
+// 12345 ==> [1, 2*, 3, 4*, 5] ==> [1, 4, 3, 8, 5]
+
+// 891 ==> [8, 9*, 1] ==> [8, 18, 1]
+// If a resulting number is greater than 9, replace it with the sum of its own digits (which is the same as subtracting 9 from it):
+
+// [8, 18*, 1] ==> [8, (1+8), 1] ==> [8, 9, 1]
+
+// or:
+
+// [8, 18*, 1] ==> [8, (18-9), 1] ==> [8, 9, 1]
+// Sum all of the final digits:
+
+// [8, 9, 1] ==> 8 + 9 + 1 = 18
+// Finally, take that sum and divide it by 10. If the remainder equals zero, the original credit card number is valid.
+
+// 18 (modulus) 10 ==> 8 , which is not equal to 0, so this is not a valid credit card number
+
+
+function validateCreditCardNumber(n){
+    let array = n.toString().split('').map(c => +c)
+    let doubled = []
+    let isDoubled = false
+    for(let i=array.length-1 ; i>=0 ; i--){
+        if(isDoubled){
+            let double = array[i]*2
+            if(double > 9){
+                doubled.unshift(double%10 + 1)
+            }else{
+                doubled.unshift(double)
+            }
+            isDoubled = false
+        }else{
+            doubled.unshift(array[i])
+            isDoubled = true
+        }
+    }
+
+    let reduced = doubled.reduce((acc, cur) => acc+cur, 0)
+
+    return reduced%10 === 0
+}
+
+// console.log(validateCreditCardNumber(1714)) // false
+// console.log(validateCreditCardNumber(123)) // false
+// console.log(validateCreditCardNumber(1)) // false
+// console.log(validateCreditCardNumber(2121)) // true
+// console.log(validateCreditCardNumber(1230)) // true
+
+//======================================

@@ -773,3 +773,171 @@ function deepCompareImbricatedArrays(arr1, arr2){
 // console.log( compareDeep([[1,1],1], [1,[1,1]]) ) //false
 
 //===============================================
+// https://www.codewars.com/kata/526dbd6c8c0eb53254000110
+// In this example you have to validate if a user input string is alphanumeric. The given string is not nil/null/NULL/None, so you don't have to check that.
+
+// The string has the following conditions to be alphanumeric:
+
+// At least one character ("" is not valid)
+// Allowed characters are uppercase / lowercase latin letters and digits from 0 to 9
+// No whitespaces / underscore
+
+function isAlphanumeric(string){
+    if(string === ''){
+        return false
+    }
+
+    //In this implementation, the regular expression pattern /^[a-zA-Z0-9]+$/ matches a string that contains one or more characters (+) that are uppercase or lowercase letters (a-z, A-Z) or digits (0-9) from the beginning of the string (^) to the end of the string ($).
+
+    let pattern = /^[a-zA-Z0-9]+$/;
+    return pattern.test(string);
+}
+
+// console.log(isAlphanumeric("Mazinkaiser")) //true
+// console.log(isAlphanumeric("hello world_")) //false
+// console.log(isAlphanumeric("PassW0rd")) //true
+
+function isAlphanumericBis(string){
+    // This pattern matches a string that contains one or more characters (+) that are either uppercase letters (A-Z) or digits (0-9) from the beginning of the string (^) to the end of the string ($), ignoring case (i flag).
+    return /^[A-Z0-9]+$/i.test(string)
+}
+
+
+//=================================================
+// https://www.codewars.com/kata/525c7c5ab6aecef16e0001a5
+// In this kata we want to convert a string into an integer. The strings simply represent the numbers in words.
+
+// Examples:
+
+// "one" => 1
+// "twenty" => 20
+// "two hundred forty-six" => 246
+// "seven hundred eighty-three thousand nine hundred and nineteen" => 783919
+// Additional Notes:
+
+// The minimum number is "zero" (inclusively)
+// The maximum number, which must be supported is 1 million (inclusively)
+// The "and" in e.g. "one hundred and twenty-four" is optional, in some cases it's present and in others it's not
+// All tested numbers are valid, you don't need to validate them
+
+function parseIntReloaded(string) {
+    const numbers = {
+        "sero": 0,
+        "one": 1,
+        "two": 2,
+        "three": 3,
+        "four": 4,
+        "five": 5,
+        "six": 6,
+        "seven": 7,
+        "eight": 8,
+        "nine": 9,
+        "ten": 10,
+        "eleven": 11,
+        "twelve": 12,
+        "thirteen": 13,
+        "fourteen": 14,
+        "fifteen": 15,
+        "sixteen": 16,
+        "seventeen": 17,
+        "eighteen": 18,
+        "nineteen": 19,
+        "twenty": 20,
+        "thirty": 30,
+        "forty": 40,
+        "fifty": 50,
+        "sixty": 60,
+        "seventy": 70,
+        "eighty": 80,
+        "ninety": 90,
+    }
+
+    const multipliers = {
+        "hundred": 100,
+        "thousand": 1000,
+        "million": 1000000
+    }
+
+    let res = 0
+
+    //Add every number, when we encounter a multiplier, substract the remainder and add the product of the ramainder with the multiplier
+    string.split(' ').forEach(n => {
+        if(n.includes('-')){ //case number with a dash
+            res += getNumberFromDash(n)
+        }else{ //case number with no dash
+            if(multipliers[n]){ //multiplier case
+                res += (res%multipliers[n] * multipliers[n]) - res%multipliers[n]
+            }
+            if(numbers[n]){ //number case
+                res += numbers[n]
+            }
+        }
+        //'and' case is just ignored
+    })
+
+    return res
+
+    //return the value of numbers with a dash
+    function getNumberFromDash(string){
+        return string.split('-').reduce((acc, cur) => acc+numbers[cur], 0)
+    }
+}
+
+// console.log(parseIntReloaded("seven hundred eighty-three thousand nine hundred and nineteen")) // 783919
+
+
+function parseIntReloadedBis(string){
+    //Same as above but cleaner
+
+    const numbers = {
+        "sero": 0,
+        "one": 1,
+        "two": 2,
+        "three": 3,
+        "four": 4,
+        "five": 5,
+        "six": 6,
+        "seven": 7,
+        "eight": 8,
+        "nine": 9,
+        "ten": 10,
+        "eleven": 11,
+        "twelve": 12,
+        "thirteen": 13,
+        "fourteen": 14,
+        "fifteen": 15,
+        "sixteen": 16,
+        "seventeen": 17,
+        "eighteen": 18,
+        "nineteen": 19,
+        "twenty": 20,
+        "thirty": 30,
+        "forty": 40,
+        "fifty": 50,
+        "sixty": 60,
+        "seventy": 70,
+        "eighty": 80,
+        "ninety": 90,
+    }
+
+    const multipliers = {
+        "hundred": 100,
+        "thousand": 1000,
+        "million": 1000000
+    }
+
+    //split by dash '-' or space ' '
+    return string.split(/ |-/).reduce((acc, cur) => {
+        if(multipliers[cur]){
+            return acc += acc%multipliers[cur] * multipliers[cur] - acc%multipliers[cur]
+        }
+        if(numbers[cur]){
+            return acc += numbers[cur]
+        }
+        return acc //'and' case
+    }, 0)
+}
+
+// console.log(parseIntReloadedBis("seven hundred eighty-three thousand nine hundred and nineteen")) // 783919
+
+//=================================================

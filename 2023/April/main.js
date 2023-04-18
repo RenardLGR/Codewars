@@ -941,3 +941,208 @@ function parseIntReloadedBis(string){
 // console.log(parseIntReloadedBis("seven hundred eighty-three thousand nine hundred and nineteen")) // 783919
 
 //=================================================
+// https://www.codewars.com/kata/534e01fbbb17187c7e0000c6
+// Your task, is to create a NxN spiral with a given size.
+
+// For example, spiral with size 5 should look like this:
+
+// 00000
+// ....0
+// 000.0
+// 0...0
+// 00000
+// and with the size 10:
+
+// 0000000000
+// .........0
+// 00000000.0
+// 0......0.0
+// 0.0000.0.0
+// 0.0..0.0.0
+// 0.0....0.0
+// 0.000000.0
+// 0........0
+// 0000000000
+// Return value should contain array of arrays, of 0 and 1, with the first row being composed of 1s. For example for given size 5 result should be:
+
+// [[1,1,1,1,1],[0,0,0,0,1],[1,1,1,0,1],[1,0,0,0,1],[1,1,1,1,1]]
+// Because of the edge-cases for tiny spirals, the size will be at least 5.
+
+// General rule-of-a-thumb is, that the snake made with '1' cannot touch to itself.
+
+function spiralize(n) {
+    //The spirale always start at [0,0] and go right, then down, then left, then up. the spirale stops once the last line drawn has a length strictly smaller than 3 (elbow included)
+
+    let directions = {
+        right: 'down',
+        down: 'left',
+        left: 'up',
+        up: 'right'
+    }
+
+    let matrix = Array(n).fill().map(e => Array(n).fill(0))
+
+    let isDone = false
+    let position = [0, 0]
+    let direction = 'right'
+    let lastLineLength = 0
+
+    while(!isDone){
+        isDone = true
+        let startPosition = position.slice()
+        let newPosition =  drawLine(startPosition, direction)
+
+        if(lastLineLength >= 3){
+            isDone = false
+        }
+
+        lastLineLength = 0 //reset last line length
+        position = newPosition //update last pos
+        direction = directions[direction] //update direction
+    }
+
+    return matrix
+
+    function drawLine(start, direction) {
+        //this draws a line and returns the position where the last position was drawed
+        //a line stops getting drawn 2 steps before another line
+        let [startL, startC] = start
+        let newPosition = [startL, startC] //get updated each draw, returned at the end
+
+        switch (direction) {
+            case 'right':
+                for(let i=startC ; i<n ; i++){
+                    if(i+1<n && matrix[startL][i+1] === 1){
+                        break
+                    }
+                    matrix[startL][i] = 1
+                    lastLineLength++
+                    newPosition = [startL, i]
+                }
+                break;
+
+            case 'down':
+                for(let i=startL ; i<n ; i++){
+                    if(i+1<n && matrix[i+1][startC] === 1){
+                        break
+                    }
+                    matrix[i][startC] = 1
+                    lastLineLength++
+                    newPosition = [i, startC]
+                }
+                break;
+
+            case 'left':
+                for(let i=startC ; i>=0 ; i--){
+                    if(i-1>=0 && matrix[startL][i-1] === 1){
+                        break
+                    }
+                    matrix[startL][i] = 1
+                    lastLineLength++
+                    newPosition = [startL, i]
+                }
+                break;
+
+            case 'up':
+                for(let i=startL ; i>=0 ; i--){
+                    if(i-1>=0 && matrix[i-1][startC] === 1){
+                        break
+                    }
+                    matrix[i][startC] = 1
+                    lastLineLength++
+                    newPosition = [i, startC]
+                }
+                break;
+
+            default:
+                break;
+        }
+
+        return newPosition
+    }
+}
+
+// console.log(spiralize(5));
+// console.log(spiralize(8));
+
+
+
+function spiralizeBis(n){
+    //The spirale always start at [0,0] and go right, then down, then left, then up. the spirale stops after n turns
+    let directions = {
+        right: 'down',
+        down: 'left',
+        left: 'up',
+        up: 'right'
+    }
+
+    let matrix = Array(n).fill().map(e => Array(n).fill(0))
+
+    let position = [0, 0]
+    let direction = 'right'
+    for(let i=0 ; i<n ; i++){
+        let startPosition = position.slice()
+        let newPosition =  drawLine(startPosition, direction)
+
+        position = newPosition //update last pos
+        direction = directions[direction] //update direction
+    }
+
+    return matrix
+
+    function drawLine(start, direction) {
+        //this draws a line and returns the position where the last position was drawed
+        //a line stops getting drawn 2 steps before another line
+        let [startL, startC] = start
+        let newPosition = [startL, startC] //get updated each draw, returned at the end
+
+        switch (direction) {
+            case 'right':
+                for(let i=startC ; i<n ; i++){
+                    if(i+1<n && matrix[startL][i+1] === 1){
+                        break
+                    }
+                    matrix[startL][i] = 1
+                    newPosition = [startL, i]
+                }
+                break;
+
+            case 'down':
+                for(let i=startL ; i<n ; i++){
+                    if(i+1<n && matrix[i+1][startC] === 1){
+                        break
+                    }
+                    matrix[i][startC] = 1
+                    newPosition = [i, startC]
+                }
+                break;
+
+            case 'left':
+                for(let i=startC ; i>=0 ; i--){
+                    if(i-1>=0 && matrix[startL][i-1] === 1){
+                        break
+                    }
+                    matrix[startL][i] = 1
+                    newPosition = [startL, i]
+                }
+                break;
+
+            case 'up':
+                for(let i=startL ; i>=0 ; i--){
+                    if(i-1>=0 && matrix[i-1][startC] === 1){
+                        break
+                    }
+                    matrix[i][startC] = 1
+                    newPosition = [i, startC]
+                }
+                break;
+
+            default:
+                break;
+        }
+
+        return newPosition
+    }
+}
+
+//============================================

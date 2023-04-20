@@ -1146,3 +1146,50 @@ function spiralizeBis(n){
 }
 
 //============================================
+// https://www.codewars.com/kata/559536379512a64472000053
+// Everyone knows passphrases. One can choose passphrases from poems, songs, movies names and so on but frequently they can be guessed due to common cultural references. You can get your passphrases stronger by different means. One is the following:
+
+// choose a text in capital letters including or not digits and non alphabetic characters,
+
+// shift each letter by a given number but the transformed letter must be a letter (circular shift),
+// replace each digit by its complement to 9,
+// keep such as non alphabetic and non digit characters,
+// downcase each letter in odd position, upcase each letter in even position (the first character is in position 0),
+// reverse the whole result.
+// Example:
+// your text: "BORN IN 2015!", shift 1
+
+// 1 + 2 + 3 -> "CPSO JO 7984!"
+
+// 4 "CpSo jO 7984!"
+
+// 5 "!4897 Oj oSpC"
+
+// With longer passphrases it's better to have a small and easy program. Would you write it?
+
+// https://en.wikipedia.org/wiki/Passphrase
+
+function playPass(string, shift) {
+    string = string.toUpperCase()
+    const alphaU = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.repeat(2)
+    const numbers = '0123456789'
+
+    let step1234 = ''
+    for(let i=0 ; i<string.length ; i++){
+        //Step 1, 2, 3
+        if(alphaU.includes(string[i])){
+            step1234 += alphaU[alphaU.indexOf(string[i]) + shift]
+        }else if(numbers.includes(string[i])){
+            step1234 += 9 - Number(string[i])
+        }else{
+            step1234 += string[i]
+        }
+    }
+
+    //Step 4, 5
+    return step1234.split('').map((el, i) => i%2===1 ? el.toLowerCase() : el).reverse().join('')
+}
+
+// console.log(playPass("BORN IN 2015!", 1)); // "!4897 Oj oSpC"
+
+//================================================

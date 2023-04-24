@@ -1246,3 +1246,71 @@ function highestFreq(arr){
 // console.log(highestFreq([11,10,8,11,7,6,4,10,11,10])); //11
 
 //==========================================
+// https://www.codewars.com/kata/52f78966747862fc9a0009ae
+// Your job is to create a calculator which evaluates expressions in Reverse Polish notation.
+// https://en.wikipedia.org/wiki/Reverse_Polish_notation
+
+// For example expression 5 1 2 + 4 * + 3 - (which is equivalent to 5 + ((1 + 2) * 4) - 3 in normal notation) should evaluate to 14.
+
+// For your convenience, the input is formatted such that a space is provided between every token.
+
+// Empty expression should evaluate to 0.
+
+// Valid operations are +, -, *, /.
+
+// You may assume that there won't be exceptional situations (like stack underflow or division by zero).
+
+function polishCalc(expr) {
+    if(expr.length === 0){
+        //empty string edge case
+        return 0
+    }
+    //As long as there is an operator in the expression, take the two preceeding numbers and do the operation, replace all three of these elments with the result of the operation. Repeat. Input is always correct
+    let operators = '+-*/'
+    let elements = expr.split(' ')
+    let isDone = false
+    while(!isDone){
+        isDone = true
+        for(let i=0 ; i<elements.length ; i++){
+            if(operators.includes(elements[i])){
+                isDone = false
+                //eval() wouldn't work anyway
+                switch (elements[i]) {
+                    case '+':
+                        let valPlus = Number(elements[i - 2]) + Number([elements[i - 1]])
+                        //Replacing with the result
+                        elements.splice(i - 2, 3, valPlus)
+                        break;
+
+                    case '-':
+                        let valMinus = Number(elements[i - 2]) - Number([elements[i - 1]])
+                        //Replacing with the result
+                        elements.splice(i - 2, 3, valMinus)
+                        break;
+
+                    case '*':
+                        let valMult = Number(elements[i - 2]) * Number([elements[i - 1]])
+                        //Replacing with the result
+                        elements.splice(i - 2, 3, valMult)
+                        break;
+
+                    case '/':
+                        let valDivide = Number(elements[i - 2]) / Number([elements[i - 1]])
+                        //Replacing with the result
+                        elements.splice(i - 2, 3, valDivide)
+                        break;
+
+                    default:
+                        break;
+                }
+                break //restart the loop
+            }
+        }
+    }
+
+    return Number(elements[0])
+}
+
+// console.log(polishCalc('5 1 2 + 4 * + 3 -')) // 14
+
+//==========================================

@@ -1274,7 +1274,7 @@ function polishCalc(expr) {
         for(let i=0 ; i<elements.length ; i++){
             if(operators.includes(elements[i])){
                 isDone = false
-                //eval() wouldn't work anyway
+                //some would make eval() work here
                 switch (elements[i]) {
                     case '+':
                         let valPlus = Number(elements[i - 2]) + Number([elements[i - 1]])
@@ -1314,3 +1314,44 @@ function polishCalc(expr) {
 // console.log(polishCalc('5 1 2 + 4 * + 3 -')) // 14
 
 //==========================================
+// https://www.codewars.com/kata/58223370aef9fc03fd000071
+// DESCRIPTION:
+// Given a variable n,
+
+// If n is an integer, Return a string with dash'-'marks before and after each odd integer, but do not begin or end the string with a dash mark. If n is negative, then the negative sign should be removed.
+
+// If n is not an integer, return the string "NaN".
+
+// Ex:
+
+// dashatize(274) -> '2-7-4'
+// dashatize(6815) -> '68-1-5'
+
+function dashatize(num) {
+    if(typeof num !== 'number'){
+        return "NaN"
+    }
+
+    //Encapsulate each odd number with "-", then replace every "--" with "-"
+    let string = num.toString().split('').map(el =>{
+        if(+el%2 === 1){
+            return "-" + el + "-"
+        }else{
+            return el
+        }
+    }).join('').replace(/--/g, "-")
+
+    //remove starting and ending "-"
+    if(string[0] === "-"){
+        string = string.slice(1)
+    }
+    if(string[string.length-1] === "-"){
+        string = string.slice(0, string.length-1)
+    }
+    return string
+}
+
+// console.log(dashatize(974302)) // "9-7-4-3-02"
+// console.log(dashatize(-28369)) // "28-3-6-9"
+
+//==================================================

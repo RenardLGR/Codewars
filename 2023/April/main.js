@@ -1355,3 +1355,36 @@ function dashatize(num) {
 // console.log(dashatize(-28369)) // "28-3-6-9"
 
 //==================================================
+// https://www.codewars.com/kata/52223df9e8f98c7aa7000062
+// How can you tell an extrovert from an introvert at NSA?
+// Va gur ryringbef, gur rkgebireg ybbxf ng gur BGURE thl'f fubrf.
+
+// I found this joke on USENET, but the punchline is scrambled. Maybe you can decipher it?
+// According to Wikipedia, ROT13 is frequently used to obfuscate jokes on USENET.
+//https://en.wikipedia.org/wiki/ROT13
+
+// For this task you're only supposed to substitute characters. Not spaces, punctuation, numbers, etc.
+
+// Test examples:
+
+// "EBG13 rknzcyr." -> "ROT13 example."
+
+// "This is my first ROT13 excercise!" -> "Guvf vf zl svefg EBG13 rkprepvfr!"
+
+function rot13(str) {
+    const alphaL = 'abcdefghijklmnopqrstuvwxyz'
+    const alphaU = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    return str.split('').map(e => {
+        if(alphaL.includes(e)){
+            return alphaL[(alphaL.indexOf(e) + 13) % 26]
+        }
+        if(alphaU.includes(e)){
+            return alphaU[(alphaU.indexOf(e) + 13) % 26]
+        }
+        return e
+    }).join('')
+}
+
+// console.log(rot13("EBG13 rknzcyr.")) //  "ROT13 example."
+
+//==============================================

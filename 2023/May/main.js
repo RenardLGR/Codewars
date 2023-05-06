@@ -168,3 +168,45 @@ function josephusSurvivor(n,k){
 // console.log(josephusSurvivor(7,3)) //4
 
 //========================================================
+// https://www.codewars.com/kata/54d4c8b08776e4ad92000835
+// A perfect power is a classification of positive integers:
+// https://en.wikipedia.org/wiki/Perfect_power
+// In mathematics, a perfect power is a positive integer that can be expressed as an integer power of another positive integer. More formally, n is a perfect power if there exist natural numbers m > 1, and k > 1 such that mk = n.
+
+// Your task is to check wheter a given integer is a perfect power. If it is a perfect power, return a pair m and k with mk = n as a proof. Otherwise return Nothing, Nil, null, NULL, None or your language's equivalent.
+
+// Note: For a perfect power, there might be several pairs. For example 81 = 3^4 = 9^2, so (3,4) and (9,2) are valid solutions. However, the tests take care of this, so if a number is a perfect power, return any pair that proves it.
+
+// Examples
+// Test.describe("perfect powers", function(){
+//   Test.it("should work for some examples",function(){
+//     Test.assertSimilar(isPP(4), [2,2], "4 = 2^2");
+//     Test.assertSimilar(isPP(9), [3,2], "9 = 3^2");
+//     Test.assertEquals( isPP(5), null, "5 isn't a perfect number");
+//   });
+// });
+
+function isPerfectPower(n){
+    //Are prime numbers perfect numbers? In which case we should go up to n
+    for(let i=2 ; i<=Math.sqrt(n) ; i++){
+        if(n%i === 0){
+            let power = 0
+            let temp = n
+            //Check if I can divide up to 1, in which case I have a perect power
+            while(temp>1){
+                temp = temp / i
+                power++
+            }
+            if(temp===1){
+                return [i,power]
+            }
+        }
+    }
+
+    return null
+}
+
+// console.log(isPerfectPower(8)) //[2,4]
+// console.log(isPerfectPower(9)) //[3,2]
+// console.log(isPerfectPower(10)) //null
+

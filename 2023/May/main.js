@@ -210,3 +210,74 @@ function isPerfectPower(n){
 // console.log(isPerfectPower(9)) //[3,2]
 // console.log(isPerfectPower(10)) //null
 
+//=======================================================
+// https://www.codewars.com/kata/54d7660d2daf68c619000d95
+// Common denominators
+
+// You will have a list of rationals in the form
+
+// { {numer_1, denom_1} , ... {numer_n, denom_n} } 
+// or
+// [ [numer_1, denom_1] , ... [numer_n, denom_n] ] 
+// or
+// [ (numer_1, denom_1) , ... (numer_n, denom_n) ] 
+// where all numbers are positive ints. You have to produce a result in the form:
+
+// (N_1, D) ... (N_n, D) 
+// or
+// [ [N_1, D] ... [N_n, D] ] 
+// or
+// [ (N_1', D) , ... (N_n, D) ] 
+// or
+// {{N_1, D} ... {N_n, D}} 
+// or
+// "(N_1, D) ... (N_n, D)"
+// depending on the language (See Example tests) in which D is as small as possible and
+
+// N_1/D == numer_1/denom_1 ... N_n/D == numer_n,/denom_n.
+// Example:
+// convertFracs [(1, 2), (1, 3), (1, 4)] `shouldBe` [(6, 12), (4, 12), (3, 12)]
+// Note:
+// Due to the fact that the first translations were written long ago - more than 6 years - these first translations have only irreducible fractions.
+
+// Newer translations have some reducible fractions. To be on the safe side it is better to do a bit more work by simplifying fractions even if they don't have to be.
+
+// Note for Bash:
+// input is a string, e.g "2,4,2,6,2,8" output is then "6 12 4 12 3 12"
+
+function convertFrac(lst){
+    // The Least Common Multiple (LCM) of two integers is the smallest positive integer that is perfectly divisible by both integers.
+    // For example, the LCM of 6 and 8 is 24.
+    // We will be looking for the LCM of all denominators and transform every fractions with a denominator matching the LCM.
+    // The samllest common denominator is the LCM.
+
+    
+    const denominators = lst.map(frac => frac[1])
+    const commonDenom = denominators.reduce((acc, cur) => LCM(acc, cur), 1)
+
+    let res = lst.map((frac) => {
+        return [frac[0]*commonDenom/frac[1], commonDenom]
+    }) //[ [ 6, 12 ], [ 4, 12 ], [ 3, 12 ] ]
+
+    return res.map(arr => '('+arr[0]+','+arr[1]+')').join('')
+
+    function LCM(num1, num2){
+        //From the biggest of num1 and num2, we will test every number and stop when our result can be devided by both num1 and num2
+        let res = num1 > num2 ? num1 : num2
+
+        while(res%num1!==0 || res%num2!==0){
+            res++
+        }
+
+        return res
+    }
+    // console.log(LCM(6, 8)) //24
+    // LCM can also be found with the formula LCM = (num1*num2) / GCD
+    // The Highest Common Factor (HCF) or Greatest Common Divisor (GCD) of two integers is the largest integer that can exactly divide both integers (without a remainder).
+    // For example, the GCD of 60 and 72 is 12.
+    // https://www.programiz.com/javascript/examples/lcm
+}
+
+// console.log(convertFrac([ [1, 2], [1, 3], [1, 4] ])); // '(6,12)(4,12)(3,12)'
+
+//================================================

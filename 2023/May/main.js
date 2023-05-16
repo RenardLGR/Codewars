@@ -344,3 +344,129 @@ Object.assign(Array.prototype, {
 });
 
 //======================================================
+// https://www.codewars.com/kata/54eb33e5bc1a25440d000891
+// My little sister came back home from school with the following task: given a squared sheet of paper she has to cut it in pieces which, when assembled, give squares the sides of which form an increasing sequence of numbers. At the beginning it was lot of fun but little by little we were tired of seeing the pile of torn paper. So we decided to write a program that could help us and protects trees.
+
+// Task
+// Given a positive integral number n, return a strictly increasing sequence (list/array/string depending on the language) of numbers, so that the sum of the squares is equal to n².
+
+// If there are multiple solutions (and there will be), return as far as possible the result with the largest possible values:
+
+// Examples
+// decompose(11) must return [1,2,4,10]. Note that there are actually two ways to decompose 11², 11² = 121 = 1 + 4 + 16 + 100 = 1² + 2² + 4² + 10² but don't return [2,6,9], since 9 is smaller than 10.
+
+// For decompose(50) don't return [1, 1, 4, 9, 49] but [1, 3, 5, 8, 49] since [1, 1, 4, 9, 49] doesn't form a strictly increasing sequence.
+
+// Note
+// Neither [n] nor [1,1,1,…,1] are valid solutions. If no valid solution exists, return nil, null, Nothing, None (depending on the language) or "[]" (C) ,{} (C++), [] (Swift, Go).
+
+// The function "decompose" will take a positive integer n and return the decomposition of N = n² as:
+
+// [x1 ... xk] or
+// "x1 ... xk" or
+// Just [x1 ... xk] or
+// Some [x1 ... xk] or
+// {x1 ... xk} or
+// "[x1,x2, ... ,xk]"
+// depending on the language (see "Sample tests")
+
+// Note for Bash
+// decompose 50 returns "1,3,5,8,49"
+// decompose 4  returns "Nothing"
+// Hint
+// Very often xk will be n-1.
+
+function decompose(n) {
+    // Given n, find [a, b, c, ...] such as a² + b² + c² + ... = n²
+    // We have 1 <= a < b < c < ... < n
+    // If there are multiple solutions, return the solution containing the largest number.
+    // If no solution are possible return null
+
+    // Try every combinations, starting from the biggest number (n-1) so the first result found satisfies condition the largets number condition
+
+    let target = n*n
+
+    let res = null
+    solve([], n-1, target)
+
+    if(res) return res.reverse()
+    return null
+
+    function solve(inProgress, curr, target){
+        //target is n², that we will substract i², when reached 0, we have a solution
+        if(res){
+            return
+        }
+        if(target < 0){
+            return
+        }
+        if(target === 0){
+            // console.log(inProgress);
+            res = inProgress
+            return
+        }
+        for(let i=curr ; i>=1 ; i--){
+            //Try with and without the number
+            solve([...inProgress, i], i-1, target-i*i)
+            solve([...inProgress], i-1, target)
+        }
+    }
+}
+
+// console.log(decompose(4)); // null
+// console.log(decompose(11)); // [ 1, 2, 4, 10 ]
+// console.log(decompose(44)); // [ 2, 3, 5, 7, 43 ]
+// console.log(decompose(50)); // [ 1, 3, 5, 8, 49 ]
+//This program struggles with big numbers
+
+//Same code than above, but optimized
+function decomposeBis(n){
+    // Given n, find [a, b, c, ...] such as a² + b² + c² + ... = n²
+    // We have 1 <= a < b < c < ... < n
+    // If there are multiple solutions, return the solution containing the largest number.
+    // If no solution are possible return null
+
+    // Try every combinations, starting from the biggest number (n-1) so the first result found satisfies condition the largets number condition
+
+    let target = n*n
+
+    let res = null
+    solve([], n-1, target)
+
+    if(res) return res.reverse()
+    return null
+
+    function solve(inProgress, curr, target){
+        //target is n², that we will substract i², when reached 0, we have a solution
+        if(res){
+            return
+        }
+        if(target < 0){
+            return
+        }
+        if(target === 0){
+            // console.log(inProgress);
+            res = inProgress
+            return
+        }
+
+        for(let i=curr ; i>=1 ; i--){
+            //Try with and without the number
+            let newTarget = target-i*i
+            if(newTarget >= 0){
+                //We can skip every values that would lead to a newTarget being negative, calculate the next step
+                let max = Math.floor(Math.sqrt(newTarget))
+                //Make sure we skip numbers and don't add any (this happens when max==1)
+                max = i-1 < max ? i-i : max
+                solve([...inProgress, i], max, newTarget)
+            }
+            solve([...inProgress], i-1, target)
+        }
+    }
+}
+
+// console.log(decomposeBis(4)); // null
+// console.log(decomposeBis(11)); // [ 1, 2, 4, 10 ]
+// console.log(decomposeBis(44)); // [ 2, 3, 5, 7, 43 ]
+// console.log(decomposeBis(50)); // [ 1, 3, 5, 8, 49 ]
+console.log(decomposeBis(625)); // [ 2, 5, 8, 34, 624 ]

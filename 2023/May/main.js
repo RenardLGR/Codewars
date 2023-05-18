@@ -568,3 +568,4 @@ function simple_assembler(program) {
 // console.log(simple_assembler(['mov a -10','mov b a','inc a','dec b','jnz a -2'])); // { a: 0, b: -20 }
 
 //=================================================
+

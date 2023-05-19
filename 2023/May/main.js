@@ -568,4 +568,38 @@ function simple_assembler(program) {
 // console.log(simple_assembler(['mov a -10','mov b a','inc a','dec b','jnz a -2'])); // { a: 0, b: -20 }
 
 //=================================================
+// https://www.codewars.com/kata/57f8ff867a28db569e000c4a
+// Modify the kebabize function so that it converts a camel case string into a kebab case.
 
+// "camelsHaveThreeHumps"  -->  "camels-have-three-humps"
+// "camelsHave3Humps"  -->  "camels-have-humps"
+// "CAMEL"  -->  "c-a-m-e-l"
+// Notes:
+
+// the returned string should only contain lowercase letters, input will only have alphanumerical charactersn no empty input
+
+function kebabize(str) {
+    let res = ''
+    for(let i=0 ; i<str.length ; i++){
+        if('0123456789'.includes(str[i])){
+            continue
+        }
+        if(str[i].toUpperCase() === str[i]){ //if caps
+            if(res === ''){ //we don't want to start with a dash
+                res += str[i].toLowerCase()
+            }else{
+                res += '-' + str[i].toLowerCase()
+            }
+        }else{
+            res += str[i]
+        }
+    }
+
+    return res
+}
+
+// console.log(kebabize("camelsHaveThreeHumps")); //camels-have-three-humps
+// console.log(kebabize("camelsHave3Humps")); //camels-have-humps
+// console.log(kebabize("CAMEL")); //c-a-m-e-l
+
+//===========================================

@@ -54,7 +54,7 @@
 // The above code would set register a to 5, increase its value by 1, calls the subroutine function, divide its value by 2, returns to the first call instruction, prepares the output of the program and then returns it with the end instruction. In this case, the output would be (5+1)/2 = 3.
 
 function assemblerInterpreter(program) {
-    let msg = ''
+    let msg = '' //our return value
     const registers = {}
     const instructions = {
         'mov': ((target, input) => {
@@ -100,6 +100,16 @@ function assemblerInterpreter(program) {
             }
         }),
         'cmp': ((x, y) => {
+            if(!isNaN(x)){
+                x = Number(x)
+            }else{
+                x = registers[x]
+            }
+            if(!isNaN(y)){
+                y = Number(y)
+            }else{
+                y = registers[y]
+            }
             return {'jne':x!==y, 'je':x===y, 'jge':x>=y, 'jg':x>y, 'jle':x<=y, 'jl':x<y}
         })
     }
@@ -131,40 +141,75 @@ function assemblerInterpreter(program) {
             }else if(instruction === 'div'){
                 const [target, input] = line.slice(4).split(', ')
                 instructions['div'](target, input)
-            }else if(instruction.includes(':')){
+            }else if(instruction.endsWith(':')){
                 console.log("There should'nt be a function declaration inside the run function");
             }else if(instruction === 'jmp'){
                 const label = line.split(' ')[1]
-                //todo
+                run(instructions[label])
             }else if(instruction === 'cmp'){
                 const [x, y] = line.slice(4).split(', ')
-                compareResult = instruction['cmp'](x, y)
+                compareResult = instructions['cmp'](x, y)
             }else if(instruction === 'jne'){
-                
+                const label = line.split(' ')[1]
+                console.log(compareResult[instruction]);
+                if(compareResult[instruction]){
+                    run(instructions[label])
+                }
             }else if(instruction === 'je'){
-                
+                const label = line.split(' ')[1]
+                if(compareResult[instruction]){
+                    run(instructions[label])
+                }
             }else if(instruction === 'jge'){
-                
+                const label = line.split(' ')[1]
+                if(compareResult[instruction]){
+                    run(instructions[label])
+                }
             }else if(instruction === 'jg'){
-                
+                const label = line.split(' ')[1]
+                if(compareResult[instruction]){
+                    run(instructions[label])
+                }
             }else if(instruction === 'jle'){
-                
+                const label = line.split(' ')[1]
+                if(compareResult[instruction]){
+                    run(instructions[label])
+                }
             }else if(instruction === 'jl'){
-                
+                const label = line.split(' ')[1]
+                if(compareResult[instruction]){
+                    run(instructions[label])
+                }
             }else if(instruction === 'call'){
                 const functionName = line.split(' ')[1]
                 run(instructions[functionName])
             }else if(instruction === 'ret'){
                 return
             }else if(instruction === 'msg'){
-                let args = line.slice(4).split(', ').map(a => {
-                    if(registers[a]){ //register value
-                        return registers[a]
-                    }else{ //probably text
-                        return a
+                let messageArgs = line.slice(4)
+                let sanitized = []
+                for(let i=0 ; i<messageArgs.length ; i++){
+                    if(messageArgs[i] === "'"){ //if we have a string
+                        let arg = ''
+                        let j=i+1
+                        while(j<messageArgs.length && messageArgs[j] !== "'"){
+                            arg += messageArgs[j]
+                            j++
+                        }
+                        sanitized.push(arg)
+                        i = j+2
+                    }else{ //if we have a register
+                        let arg = messageArgs[i]
+                        let j = i+1
+                        while(j<messageArgs.length && messageArgs[j] !== ','){
+                            arg += messageArgs[j]
+                            j++
+                        }
+                        sanitized.push(registers[arg])
+                        i = j+1
                     }
-                })
-                msg = args.join(' ')
+                }
+                msg = sanitized.join('')
             }else if(instruction === 'end'){
                 // console.log(registers);
                 return msg
@@ -187,7 +232,7 @@ function assemblerInterpreter(program) {
 
     console.log(sanitizedInstructions)
 
-    //main is the main function, the main function ends with the instruction 'main'
+    //main is the main function, the main function ends with the instruction 'end'
     const main = []
 
     for(let i=0, writeMain=true ; i<sanitizedInstructions.length ; i++){
@@ -195,13 +240,13 @@ function assemblerInterpreter(program) {
             main.push(sanitizedInstructions[i])
             writeMain = false
         }
-        if(sanitizedInstructions[i].includes(':')){
+        if(sanitizedInstructions[i].endsWith(':')){
             //If we have a function declaration, assign it to the instructions object as an array of instructions
             writeMain = false
             let functionName = sanitizedInstructions[i].split(':')[0]
             let j = i + 1
             let instructionsArray = []
-            while(j<sanitizedInstructions.length && !sanitizedInstructions[j].includes(':')){
+            while(j<sanitizedInstructions.length && !sanitizedInstructions[j].endsWith(':')){
                 instructionsArray.push(sanitizedInstructions[j])
                 j++
             }
@@ -213,7 +258,9 @@ function assemblerInterpreter(program) {
     }
 
     // console.log(main);
-    return run(main)
+    let res = -1
+    res = run(main) || res
+    return res
 }
 
 // assemblerInterpreter()
@@ -228,11 +275,106 @@ end
 function:
     div  a, 2
     ret`
-console.log(assemblerInterpreter(program)) // '(5+1)/2 = 3'
+// console.log(assemblerInterpreter(program)) // '(5+1)/2 = 3'
+
+var program_factorial = `mov   a, 5
+mov   b, a
+mov   c, a
+call  proc_fact
+call  print
+end
+
+proc_fact:
+    dec   b
+    mul   c, b
+    cmp   b, 1
+    jne   proc_fact
+    ret
+
+print:
+    msg   a, '! = ', c ; output text
+    ret`
+
+// console.log(assemblerInterpreter(program_factorial)) // '5! = 120'
 
 
-function sum(...args){
-    return [...args].reduce((acc, cur) => acc+cur, 0)
-}
+var program_fibonacci = `mov   a, 8            ; value
+mov   b, 0            ; next
+mov   c, 0            ; counter
+mov   d, 0            ; first
+mov   e, 1            ; second
+call  proc_fib
+call  print
+end
 
-// console.log(sum(1, 2, 3, 4, 5));
+proc_fib:
+    cmp   c, 2
+    jl    func_0
+    mov   b, d
+    add   b, e
+    mov   d, e
+    mov   e, b
+    inc   c
+    cmp   c, a
+    jle   proc_fib
+    ret
+
+func_0:
+    mov   b, c
+    inc   c
+    jmp   proc_fib
+
+print:
+    msg   'Term ', a, ' of Fibonacci series is: ', b        ; output text
+    ret`
+
+console.log(assemblerInterpreter(program_fibonacci)) // 'Term 8 of Fibonacci series is: 21'
+
+var program_mod = `mov   a, 11           ; value1
+mov   b, 3            ; value2
+call  mod_func
+msg   'mod(', a, ', ', b, ') = ', d        ; output
+end
+
+; Mod function
+mod_func:
+    mov   c, a        ; temp1
+    div   c, b
+    mul   c, b
+    mov   d, a        ; temp2
+    sub   d, c
+    ret`
+
+console.log(assemblerInterpreter(program_mod)) // 'mod(11, 3) = 2'
+
+// console.log('hello', a, ', ' )
+
+// let dummy = {'a':5, 'b':3, 'd':8}
+// let message = "'mod(', a, ', ', b, ') = ', d"
+// let res = []
+
+// for(let i=0 ; i<message.length ; i++){
+//     if(message[i] === "'"){
+//         let arg = ''
+//         let j=i+1
+//         while(j<message.length && message[j] !== "'"){
+//             arg += message[j]
+//             j++
+//         }
+//         res.push(arg)
+//         i = j+2
+//     }else{
+//         let arg = message[i]
+//         let j = i+1
+//         while(j<message.length && message[j] !== ','){
+//             arg += message[j]
+//             j++
+//         }
+//         console.log(arg);
+//         res.push(dummy[arg])
+//         i = j+1
+//     }
+// }
+
+// console.log(res);
+// console.log(res.join(''));

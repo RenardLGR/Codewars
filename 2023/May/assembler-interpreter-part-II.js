@@ -54,6 +54,7 @@
 // The above code would set register a to 5, increase its value by 1, calls the subroutine function, divide its value by 2, returns to the first call instruction, prepares the output of the program and then returns it with the end instruction. In this case, the output would be (5+1)/2 = 3.
 
 function assemblerInterpreter(program) {
+    let msg = ''
     const registers = {}
     const instructions = {
         'mov': ((target, input) => {
@@ -98,21 +99,82 @@ function assemblerInterpreter(program) {
                 registers[target] /= registers[input]
             }
         }),
+        'cmp': ((x, y) => {
+            return {'jne':x!==y, 'je':x===y, 'jge':x>=y, 'jg':x>y, 'jle':x<=y, 'jl':x<y}
+        })
     }
 
-    function runLine(...args){
-        const instruction = [...args][0]
-        switch (instruction) {
-            case 'mov':
-                const [target, input] = [...args].slice(1)
-                break;
-        
-            default:
-                break;
+    function run(programInstructions){
+        let res =''
+        let compareResult = {'jne':null, 'je':null, 'jge':null, 'jg':null, 'jle':null, 'jl':null} //result of booleans jne, je, jge, jg, jle, jl
+        for(let i=0 ; i<programInstructions.length ; i++){
+            const line = programInstructions[i]
+            const instruction = line.split(' ')[0]
+            if(instruction === 'mov'){
+                const [target, input] = line.slice(4).split(', ')
+                instructions['mov'](target, input)
+            }else if(instruction === 'inc'){
+                const target = line.split(' ')[1]
+                instructions['inc'](target)
+            }else if(instruction === 'dec'){
+                const target = line.split(' ')[1]
+                instructions['dec'](target)
+            }else if(instruction === 'add'){
+                const [target, input] = line.slice(4).split(', ')
+                instructions['add'](target, input)
+            }else if(instruction === 'sub'){
+                const [target, input] = line.slice(4).split(', ')
+                instructions['sub'](target, input)
+            }else if(instruction === 'mul'){
+                const [target, input] = line.slice(4).split(', ')
+                instructions['mul'](target, input)
+            }else if(instruction === 'div'){
+                const [target, input] = line.slice(4).split(', ')
+                instructions['div'](target, input)
+            }else if(instruction.includes(':')){
+                console.log("There should'nt be a function declaration inside the run function");
+            }else if(instruction === 'jmp'){
+                const label = line.split(' ')[1]
+                //todo
+            }else if(instruction === 'cmp'){
+                const [x, y] = line.slice(4).split(', ')
+                compareResult = instruction['cmp'](x, y)
+            }else if(instruction === 'jne'){
+                
+            }else if(instruction === 'je'){
+                
+            }else if(instruction === 'jge'){
+                
+            }else if(instruction === 'jg'){
+                
+            }else if(instruction === 'jle'){
+                
+            }else if(instruction === 'jl'){
+                
+            }else if(instruction === 'call'){
+                const functionName = line.split(' ')[1]
+                run(instructions[functionName])
+            }else if(instruction === 'ret'){
+                return
+            }else if(instruction === 'msg'){
+                let args = line.slice(4).split(', ').map(a => {
+                    if(registers[a]){ //register value
+                        return registers[a]
+                    }else{ //probably text
+                        return a
+                    }
+                })
+                msg = args.join(' ')
+            }else if(instruction === 'end'){
+                // console.log(registers);
+                return msg
+            }else{
+                console.log(instruction, "is an unknow instruction");
+            }
         }
     }
 
-    let programInstrustions = program.split(`\n`)
+    let sanitizedInstructions = program.split(`\n`)
                                     //remove multiple spaces
                                     .map(inst => inst.replace(/\s+/g, ' '))
                                     //remove comments
@@ -121,11 +183,37 @@ function assemblerInterpreter(program) {
                                     //remove empty instructions (line break, comments, etc.)
                                     .filter(inst => inst.length !== 0)
                                     //now the arguments are separated by a single space
-                                    .map(inst => inst.replace(/, /g, ' '))
+                                    //.map(inst => inst.replace(/, /g, ' '))
 
-    for(let i=0 ; i<programInstrustions.length ; i++){
+    console.log(sanitizedInstructions)
 
+    //main is the main function, the main function ends with the instruction 'main'
+    const main = []
+
+    for(let i=0, writeMain=true ; i<sanitizedInstructions.length ; i++){
+        if(writeMain && sanitizedInstructions[i]==="end"){
+            main.push(sanitizedInstructions[i])
+            writeMain = false
+        }
+        if(sanitizedInstructions[i].includes(':')){
+            //If we have a function declaration, assign it to the instructions object as an array of instructions
+            writeMain = false
+            let functionName = sanitizedInstructions[i].split(':')[0]
+            let j = i + 1
+            let instructionsArray = []
+            while(j<sanitizedInstructions.length && !sanitizedInstructions[j].includes(':')){
+                instructionsArray.push(sanitizedInstructions[j])
+                j++
+            }
+            instructions[functionName] = instructionsArray
+        }
+        if(writeMain){
+            main.push(sanitizedInstructions[i])
+        }
     }
+
+    // console.log(main);
+    return run(main)
 }
 
 // assemblerInterpreter()
@@ -147,4 +235,4 @@ function sum(...args){
     return [...args].reduce((acc, cur) => acc+cur, 0)
 }
 
-console.log(sum(1, 2, 3, 4, 5));
+// console.log(sum(1, 2, 3, 4, 5));

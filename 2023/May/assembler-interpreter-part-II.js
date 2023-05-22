@@ -55,7 +55,8 @@
 
 function assemblerInterpreter(program) {
     let msg = '' //our return value
-    const registers = {}
+    let error = false
+    const registers = {} //where we store our data
     const instructions = {
         'mov': ((target, input) => {
             //If the input is a value (i.e a number, and not a register)
@@ -95,8 +96,10 @@ function assemblerInterpreter(program) {
         'div': ((target, input) => {
             if(!isNaN(input)){
                 registers[target] /= Number(input)
+                registers[target] = Math.floor(registers[target])
             }else{
                 registers[target] /= registers[input]
+                registers[target] = Math.floor(registers[target])
             }
         }),
         'cmp': ((x, y) => {
@@ -115,7 +118,6 @@ function assemblerInterpreter(program) {
     }
 
     function run(programInstructions){
-        let res =''
         let compareResult = {'jne':null, 'je':null, 'jge':null, 'jg':null, 'jle':null, 'jl':null} //result of booleans jne, je, jge, jg, jle, jl
         for(let i=0 ; i<programInstructions.length ; i++){
             const line = programInstructions[i]
@@ -146,39 +148,45 @@ function assemblerInterpreter(program) {
             }else if(instruction === 'jmp'){
                 const label = line.split(' ')[1]
                 run(instructions[label])
+                return
             }else if(instruction === 'cmp'){
                 const [x, y] = line.slice(4).split(', ')
                 compareResult = instructions['cmp'](x, y)
             }else if(instruction === 'jne'){
                 const label = line.split(' ')[1]
-                console.log(compareResult[instruction]);
                 if(compareResult[instruction]){
                     run(instructions[label])
+                    return
                 }
             }else if(instruction === 'je'){
                 const label = line.split(' ')[1]
                 if(compareResult[instruction]){
                     run(instructions[label])
+                    return
                 }
             }else if(instruction === 'jge'){
                 const label = line.split(' ')[1]
                 if(compareResult[instruction]){
                     run(instructions[label])
+                    return
                 }
             }else if(instruction === 'jg'){
                 const label = line.split(' ')[1]
                 if(compareResult[instruction]){
                     run(instructions[label])
+                    return
                 }
             }else if(instruction === 'jle'){
                 const label = line.split(' ')[1]
                 if(compareResult[instruction]){
                     run(instructions[label])
+                    return
                 }
             }else if(instruction === 'jl'){
                 const label = line.split(' ')[1]
                 if(compareResult[instruction]){
                     run(instructions[label])
+                    return
                 }
             }else if(instruction === 'call'){
                 const functionName = line.split(' ')[1]
@@ -235,6 +243,7 @@ function assemblerInterpreter(program) {
     //main is the main function, the main function ends with the instruction 'end'
     const main = []
 
+    //This portion assigns the funcions to an array of instructions
     for(let i=0, writeMain=true ; i<sanitizedInstructions.length ; i++){
         if(writeMain && sanitizedInstructions[i]==="end"){
             main.push(sanitizedInstructions[i])
@@ -263,7 +272,6 @@ function assemblerInterpreter(program) {
     return res
 }
 
-// assemblerInterpreter()
 
 var program = `; My first program
 mov  a, 5
@@ -328,7 +336,7 @@ print:
     msg   'Term ', a, ' of Fibonacci series is: ', b        ; output text
     ret`
 
-console.log(assemblerInterpreter(program_fibonacci)) // 'Term 8 of Fibonacci series is: 21'
+// console.log(assemblerInterpreter(program_fibonacci)) // 'Term 8 of Fibonacci series is: 21'
 
 var program_mod = `mov   a, 11           ; value1
 mov   b, 3            ; value2
@@ -345,36 +353,94 @@ mod_func:
     sub   d, c
     ret`
 
-console.log(assemblerInterpreter(program_mod)) // 'mod(11, 3) = 2'
+// console.log(assemblerInterpreter(program_mod)) // 'mod(11, 3) = 2'
 
-// console.log('hello', a, ', ' )
+var program_gcd = `mov   a, 81         ; value1
+mov   b, 153        ; value2
+call  init
+call  proc_gcd
+call  print
+end
 
-// let dummy = {'a':5, 'b':3, 'd':8}
-// let message = "'mod(', a, ', ', b, ') = ', d"
-// let res = []
+proc_gcd:
+    cmp   c, d
+    jne   loop
+    ret
 
-// for(let i=0 ; i<message.length ; i++){
-//     if(message[i] === "'"){
-//         let arg = ''
-//         let j=i+1
-//         while(j<message.length && message[j] !== "'"){
-//             arg += message[j]
-//             j++
-//         }
-//         res.push(arg)
-//         i = j+2
-//     }else{
-//         let arg = message[i]
-//         let j = i+1
-//         while(j<message.length && message[j] !== ','){
-//             arg += message[j]
-//             j++
-//         }
-//         console.log(arg);
-//         res.push(dummy[arg])
-//         i = j+1
-//     }
-// }
+loop:
+    cmp   c, d
+    jg    a_bigger
+    jmp   b_bigger
 
-// console.log(res);
-// console.log(res.join(''));
+a_bigger:
+    sub   c, d
+    jmp   proc_gcd
+
+b_bigger:
+    sub   d, c
+    jmp   proc_gcd
+
+init:
+    cmp   a, 0
+    jl    a_abs
+    cmp   b, 0
+    jl    b_abs
+    mov   c, a            ; temp1
+    mov   d, b            ; temp2
+    ret
+
+a_abs:
+    mul   a, -1
+    jmp   init
+
+b_abs:
+    mul   b, -1
+    jmp   init
+
+print:
+    msg   'gcd(', a, ', ', b, ') = ', c
+    ret`
+
+// console.log(assemblerInterpreter(program_gcd)) // 'gcd(81, 153) = 9'
+
+var program_fail = `call  func1
+call  print
+end
+
+func1:
+    call  func2
+    ret
+
+func2:
+    ret
+
+print:
+    msg 'This program should return -1'`
+
+console.log(assemblerInterpreter(program_fail)) // -1
+//TDO Maybe a subroutine needs to end with a jump or a ret in order for main to return a msg
+
+
+var program_power = `mov   a, 2            ; value1
+mov   b, 10           ; value2
+mov   c, a            ; temp1
+mov   d, b            ; temp2
+call  proc_func
+call  print
+end
+
+proc_func:
+    cmp   d, 1
+    je    continue
+    mul   c, a
+    dec   d
+    call  proc_func
+
+continue:
+    ret
+
+print:
+    msg a, '^', b, ' = ', c
+    ret`
+
+// console.log(assemblerInterpreter(program_power)) // '2^10 = 1024'

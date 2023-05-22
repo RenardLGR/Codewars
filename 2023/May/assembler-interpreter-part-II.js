@@ -55,7 +55,7 @@
 
 function assemblerInterpreter(program) {
     let msg = '' //our return value
-    let error = false
+    let hasReturned = false //will check if a returned was made before the end instruction, each call will set it to false while a ret set it to true, check the last value. If no return was made, the whole program returns an error -1
     const registers = {} //where we store our data
     const instructions = {
         'mov': ((target, input) => {
@@ -94,6 +94,7 @@ function assemblerInterpreter(program) {
             }
         }),
         'div': ((target, input) => {
+            //We want integer division
             if(!isNaN(input)){
                 registers[target] /= Number(input)
                 registers[target] = Math.floor(registers[target])
@@ -155,43 +156,51 @@ function assemblerInterpreter(program) {
             }else if(instruction === 'jne'){
                 const label = line.split(' ')[1]
                 if(compareResult[instruction]){
+                    hasReturned = false
                     run(instructions[label])
                     return
                 }
             }else if(instruction === 'je'){
                 const label = line.split(' ')[1]
                 if(compareResult[instruction]){
+                    hasReturned = false
                     run(instructions[label])
                     return
                 }
             }else if(instruction === 'jge'){
                 const label = line.split(' ')[1]
                 if(compareResult[instruction]){
+                    hasReturned = false
                     run(instructions[label])
                     return
                 }
             }else if(instruction === 'jg'){
                 const label = line.split(' ')[1]
                 if(compareResult[instruction]){
+                    hasReturned = false
                     run(instructions[label])
                     return
                 }
             }else if(instruction === 'jle'){
                 const label = line.split(' ')[1]
                 if(compareResult[instruction]){
+                    hasReturned = false
                     run(instructions[label])
                     return
                 }
             }else if(instruction === 'jl'){
                 const label = line.split(' ')[1]
                 if(compareResult[instruction]){
+                    hasReturned = false
                     run(instructions[label])
                     return
                 }
             }else if(instruction === 'call'){
                 const functionName = line.split(' ')[1]
+                hasReturned = false
                 run(instructions[functionName])
             }else if(instruction === 'ret'){
+                hasReturned = true
                 return
             }else if(instruction === 'msg'){
                 let messageArgs = line.slice(4)
@@ -238,7 +247,7 @@ function assemblerInterpreter(program) {
                                     //now the arguments are separated by a single space
                                     //.map(inst => inst.replace(/, /g, ' '))
 
-    console.log(sanitizedInstructions)
+    // console.log(sanitizedInstructions)
 
     //main is the main function, the main function ends with the instruction 'end'
     const main = []
@@ -268,8 +277,10 @@ function assemblerInterpreter(program) {
 
     // console.log(main);
     let res = -1
+    let error = -1
     res = run(main) || res
-    return res
+
+    return hasReturned ? res : error
 }
 
 
@@ -417,8 +428,7 @@ func2:
 print:
     msg 'This program should return -1'`
 
-console.log(assemblerInterpreter(program_fail)) // -1
-//TDO Maybe a subroutine needs to end with a jump or a ret in order for main to return a msg
+// console.log(assemblerInterpreter(program_fail)) // -1
 
 
 var program_power = `mov   a, 2            ; value1

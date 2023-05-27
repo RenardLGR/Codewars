@@ -718,3 +718,61 @@ function presses(phrase) {
 // console.log(presses("WHERE DO U WANT 2 MEET L8R")) // 47
 
 //====================================================
+// https://www.codewars.com/kata/5226eb40316b56c8d500030f
+// In mathematics, Pascal's triangle is a triangular array of the binomial coefficients expressed with formula
+
+// nCk = n! / k!(n-k)!
+ 
+// where n denotes a row of the triangle, and k is a position of a term in the row.
+
+// Pascal's Triangle
+
+// You can read Wikipedia article on Pascal's Triangle for more information.
+// http://en.wikipedia.org/wiki/Pascal's_triangle
+
+// Task
+// Write a function that, given a depth n, returns n top rows of Pascal's Triangle flattened into a one-dimensional list/array.
+
+// Example:
+// n = 1: [1]
+// n = 2: [1,  1, 1]
+// n = 4: [1,  1, 1,  1, 2, 1,  1, 3, 3, 1]
+// Note
+// Beware of overflow. Requested terms of a triangle are guaranteed to fit into the returned type, but depending on seleced method of calculations, intermediate values can be larger.
+
+function pascalsTriangle(n) {
+    //The triangle is actually as follows :
+    //           0C0
+    //        0C1  1C1
+    //      0C2 1C2  2C2
+    //    0C3 1C3  2C3 3C3
+    //  0C4 1C4 2C4  3C4  4C4
+    //...
+    let facMemo = {}
+    let res = []
+    for(let i=0 ; i<n ; i++){
+        let subArr = []
+        for(let j=0 ; j<=i ; j++){
+            subArr.push(binomialCoefficient(i,j))
+        }
+        res.push(subArr)
+    }
+
+    return res.flat()
+
+    function binomialCoefficient(n, k){
+        return fac(n) / (fac(k) * fac(n-k))
+    }
+
+    function fac(n){
+        if(facMemo[n]){
+            return facMemo[n]
+        }else{
+            let res = (n<2) ? 1 : fac(n-1)*n
+            facMemo[n] = res
+            return res
+        }
+    }
+}
+
+console.log(pascalsTriangle(4)) // [ 1, 1, 1, 1, 2, 1, 1, 3, 3, 1 ]

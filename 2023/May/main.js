@@ -743,10 +743,10 @@ function presses(phrase) {
 function pascalsTriangle(n) {
     //The triangle is actually as follows :
     //           0C0
-    //        0C1  1C1
-    //      0C2 1C2  2C2
-    //    0C3 1C3  2C3 3C3
-    //  0C4 1C4 2C4  3C4  4C4
+    //        1C0  1C1
+    //      2C0 2C1  2C2
+    //    3C0 3C1  3C2 3C3
+    //  4C0 4C1 4C2  4C3  4C4
     //...
     let facMemo = {}
     let res = []
@@ -775,4 +775,30 @@ function pascalsTriangle(n) {
     }
 }
 
-console.log(pascalsTriangle(4)) // [ 1, 1, 1, 1, 2, 1, 1, 3, 3, 1 ]
+// console.log(pascalsTriangle(4)) // [ 1, 1, 1, 1, 2, 1, 1, 3, 3, 1 ]
+
+//floating point issue when n is over 40 : we can't make divisions...
+
+function pascalsTriangleBis(n) {
+    if(n===1) return [1]
+    if(n===2) return [1, 1, 1]
+
+    let res = [1, 1, 1]
+    let lastRow = [1, 1]
+
+    for(let i=0 ; i<n-2 ; i++){
+        let newRow = [1]
+        for(let j=1 ; j<lastRow.length ; j++){
+            newRow.push(lastRow[j-1] + lastRow[j])
+        }
+        newRow.push(1)
+        res = res.concat(newRow)
+        lastRow = newRow
+    }
+
+    return res
+}
+
+// console.log(pascalsTriangleBis(4)) // [ 1, 1, 1, 1, 2, 1, 1, 3, 3, 1 ]
+
+//==================================================

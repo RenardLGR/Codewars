@@ -839,4 +839,34 @@ function longestRepetition(s) {
 // console.log(longestRepetition("bbbaaabaaaa"))//[ 'a', 4 ]
 // console.log(longestRepetition("abbbbb"))//[ 'b', 5 ]
 
+function longestRepetitionBis(s) {
+    if(!s) return ["", 0]
+    if(s.length === 1) return [s, 1]
+
+    let char = ''
+    let len = 0
+    let tempL = 1
+    for(let i=1 ; i<s.length ; i++){
+        if(s[i] === s[i-1]){
+            tempL++
+        }else{
+            if(tempL > len){
+                len = tempL
+                char = s[i-1]
+            }
+            tempL = 1
+        }
+    }
+
+    if(tempL > len){ //check if the last repetition should be kept
+        len = tempL
+        char = s[s.length-1]
+    }
+
+    return [char, len]
+}
+
+// console.log(longestRepetitionBis("bbbaaabaaaa"))//[ 'a', 4 ]
+// console.log(longestRepetitionBis("abbbbb"))//[ 'b', 5 ]
+
 //=======================================

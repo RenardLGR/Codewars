@@ -284,3 +284,20 @@ function pathFinderShorterPath(maze) {
 // You are at start location [0, 0] in mountain area of NxN and you can only move in one of the four cardinal directions (i.e. North, East, South, West). Return minimal number of climb rounds to target location [N-1, N-1]. Number of climb rounds between adjacent locations is defined as difference of location altitudes (ascending or descending).
 
 // Location altitude is defined as an integer number (0-9).
+
+function pathFinder(area){
+    //We will only go east our south and choose the closest altitude between the two
+    let max = area.length - 1
+    let climbRounds = 0
+    let currAltitude = area[0][0]
+    let position = [0, 0]
+
+
+    function move(line, col){
+        //if I can choose between going east or going south, choose the closest altitude, go east if there are equal
+        if(line === max){
+            //can't go south exception
+            
+        }
+    }
+}

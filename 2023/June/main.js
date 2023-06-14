@@ -141,3 +141,36 @@ function mazeRunner(maze, directions) {
         return maze[l][c] === 1
     }
 }
+
+function mazeRunnerBis(maze, directions) {
+    const maxL = maze.length - 1
+    let curL
+    let curC
+
+    //initialize starting point
+    for(let line=0 ; line<=maxL ; line++){
+        for(let col=0 ; col<=maxL ; col++){
+            if(maze[line][col] === 2){
+                curL = line
+                curC = col
+            }
+        }
+    }
+
+    for(let i=0 ; i<directions.length ; i++){
+        let dir = directions[i]
+
+        if(dir === 'N') curL--
+        if(dir === 'E') curC++
+        if(dir === 'S') curL++
+        if(dir === 'W') curC--
+
+        if(curC<0 || curC>maxL || curL<0 || curL>maxL) return 'Dead' //outside case
+        if(maze[curL][curC] === 1) return 'Dead' //wall case
+        if(maze[curL][curC] === 3) return 'Finish' //finish case
+    }
+
+    return 'Lost'
+}
+
+//====================================================

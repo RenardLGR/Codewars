@@ -377,3 +377,83 @@ function pathFinderAltitudes(area){
 // 001010`)) // 4
 
 //=============================================================
+function dijkstra(area){
+    let grid = area.split('\n').map(line => line.split(''))
+    const N = grid.length
+    const distances = Array.from({length:N}, ()=> Array(N).fill(Infinity))
+    const visited = Array.from({length:N}, ()=> Array(N).fill(false))
+
+    distances[0][0] = 0 //initialize starting point
+
+    while(true){
+        let smallestD = Infinity
+        let smallest = null
+        //Grab the smallest distance non visited
+        for(let line=0 ; line<N ; line++){
+            for(let col=0 ; col<N ; col++){
+                if(!visited[line][col] && distances[line][col]<smallestD){
+                    smallestD = distances[line][col]
+                    smallest = [line, col]
+                }
+            }
+        }
+
+        //we have visited every cells
+        if(smallest === null){
+            break
+        }
+
+        visited[smallest[0]][smallest[1]] = true
+        
+        //set distances to neighbors of the smallest
+        let neighboring = getNeighbors(...smallest)
+        for(let i=0 ; i<neighboring.length ; i++){
+            const nLine = neighboring[i][0]
+            const nCol = neighboring[i][1]
+            const altitudeDifference = Math.abs(grid[smallest[0]][smallest[1]] - grid[nLine][nCol])
+
+            const newDistance = distances[smallest[0]][smallest[1]] + altitudeDifference
+            if(newDistance < distances[nLine][nCol]){
+                distances[nLine][nCol] = newDistance
+            }
+        }
+    }
+
+    return distances[N - 1][N - 1]
+
+    function getNeighbors(line, col){
+        const neighbors = []
+        const cardinalDirections = [ [-1, 0] , [0, 1] , [1, 0] , [0, -1]]
+        cardinalDirections.forEach(([dL, dC]) => {
+            let newLine = line + dL
+            let newCol = col + dC
+            //push valid neighbors
+            if(newLine>=0 && newCol>=0 && newLine<N && newCol<N){
+                neighbors.push([newLine, newCol])
+            }
+        })
+
+        return neighbors
+    }
+}
+
+console.log(dijkstra(`700000
+077770
+077770
+077770
+077770
+000007`)) // 14
+
+console.log(dijkstra(`777000
+007000
+007000
+007000
+007000
+007777`)) // 0
+
+console.log(dijkstra(`000000
+000000
+000000
+000010
+000109
+001010`)) // 4

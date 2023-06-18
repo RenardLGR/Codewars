@@ -174,3 +174,75 @@ function mazeRunnerBis(maze, directions) {
 }
 
 //====================================================
+// https://www.codewars.com/kata/55f4a44eb72a0fa91600001e/train/javascript
+// Implement a function that receives a string, and lets you extend it with repeated calls. When no argument is passed you should return a string consisting of space-separated words you've received earlier.
+
+// Note: There will always be at least 1 string; all inputs will be non-empty.
+
+// For example:
+
+// createMessage("Hello")("World!")("how")("are")("you?")() === "Hello World! how are you?"
+// Tip (helpful, but not necessary): Try using classes!
+
+// Good luck and happy coding!
+
+function createMessage(a) {
+    return function(t){
+        if(t){
+            return createMessage(a + ' ' + t)
+        }else{
+            return a
+        }
+    }
+}
+
+// console.log(createMessage("Hello")("World!")("how")("are")("you?")()) // "Hello World! how are you?"
+
+function createMessageBis(a) {
+    let text = a
+    return function b(t){
+        if(t){
+            text += ' ' + t
+            return b 
+        }else{
+            return text
+        }
+    }
+}
+
+// console.log(createMessageBis("Hello")("World!")("how")("are")("you?")()) // "Hello World! how are you?"
+
+//=========================================
+// https://www.codewars.com/kata/59f3178e3640cef6d90000d5/train/javascript
+// Consider the array [3,6,9,12]. If we generate all the combinations with repetition that sum to 12, we get 5 combinations: [12], [6,6], [3,9], [3,3,6], [3,3,3,3]. The length of the sub-arrays (such as [3,3,3,3] should be less than or equal to the length of the initial array ([3,6,9,12]).
+
+// Given an array of positive integers and a number n, count all combinations with repetition of integers that sum to n. For example:
+
+// find([3,6,9,12],12) = 5.
+// More examples in the test cases.
+
+// Good luck!
+
+function sumCombinationToTarget(arr, n){
+    let maxLength = arr.length
+    let res = []
+    solve(0, 0, [], arr)
+    return res.length
+
+    function solve(sum, length, inP, remaining){
+        if(sum > n || length > maxLength){
+            return
+        }else if(sum === n){
+            res.push(inP)
+            return
+        }
+
+        for(let i=0 ; i<remaining.length ; i++){
+            let cur = remaining[i]
+            let newRemaining = remaining.slice(i)
+            solve(sum+cur, length+1, [...inP, cur], newRemaining)
+        }
+    }
+}
+
+console.log(sumCombinationToTarget([3,6,9,12], 12)) // 5

@@ -245,4 +245,183 @@ function sumCombinationToTarget(arr, n){
     }
 }
 
-console.log(sumCombinationToTarget([3,6,9,12], 12)) // 5
+// console.log(sumCombinationToTarget([3,6,9,12], 12)) // 5
+
+//==============================================
+// https://www.codewars.com/kata/63431f9b9943dd4cee787da5/train/javascript
+// Given a circuit with fixed resistors connected in series and/or in parallel, calculate the total effective resistance of the circuit.
+
+// All resistors are given in Ω, and the result should be in Ω too (as a float; tested to ± 1e-6). Assume wires have negligible resistance. The voltage of the battery is irrelevant.
+
+// The circuit is passed to your function in the following form:
+
+// I will define a component as any number of resistors connected in series or in parallel.
+// The entire circuit counts as a component.
+// Each component is an array.
+// A series component will have the boolean true in position zero.
+// A parallel component will have the boolean false in position zero.
+// The other positions will either contain:
+// Numbers, denoting fixed resistors of that resistance.
+// Arrays, denoting nested components.
+// A series circuit with no other entries represents a single wire
+// A parallel circuit with no other entries represents a break in the circuit (see below for more details)
+// All circuits will be valid and in the form above (short circuits or broken circuits may appear, though)
+// There will be no negative resistances
+// Example circuit:
+
+//   [
+//     true, // series
+//     20, // 20Ω resistor
+//     [
+//       false, // parallel
+//       [
+//         true, // series
+//         30, // 30Ω resistor
+//         40, // 40Ω resistor
+//       ],
+//       30, // 30Ω resistor
+//     ],
+//     60, // 60Ω resistor
+//   ]
+// Looks like:
+
+// 20 + 1/(1/(30+40)+1/30) + 60 = 101Ω
+
+// Short Circuits
+// It might be the case that the circuit has zero resistance.
+
+// We don't want zero resistance, as these cause short circuits!
+
+// You should throw an Error instead of returning, with the error message Short Circuit! if this ever happens.
+
+// Broken Circuits
+// It might be the case that all the paths in the circuit have a break in them.
+
+// This creates infinite resistance, and in effect a broken circuit!
+
+// You should throw an Error instead of returning, with the error message Broken Circuit! if this ever happens.
+
+// Example Circuit:
+
+// [
+//   true, // series
+//   10, // 10Ω resistor
+//   [
+//     false, // parallel
+//     [
+//       false, // parallel, broken circuit
+//     ],
+//     [
+//       false, // parallel, broken circuit
+//     ],
+//   ],
+// ]
+
+// calculate resistance of circuit
+
+function calculateResistance(circuit) {
+    let res = compute(circuit)
+
+    // do this if a short circuit is encountered
+    if(res === 0){
+        throw new Error("Short Circuit!");
+    }
+    // do this if a broken circuit is encountered
+    if(res === Infinity){
+        throw new Error("Broken Circuit!");
+    }
+
+    return res
+
+    function compute(circuit){
+        const [inSeries, ...c] = circuit
+        if(inSeries){
+            return c.reduce(reduceInSeries, 0)
+        }else{
+            return 1 / c.reduce(reduceInParallel, 0)
+        }
+    }
+
+    function reduceInSeries(acc, cur){
+        if(Array.isArray(cur)){
+            return acc + compute(cur)
+        }else{
+            return acc + cur
+        }
+    }
+
+    function reduceInParallel(acc, cur){
+        if(Array.isArray(cur)){
+            return acc + 1 / compute(cur)
+        }else{
+            return acc + 1 / cur
+        }
+    }
+}
+
+// console.log(calculateResistance( [
+//     true,
+//     20,
+//     [
+//       false,
+//       [
+//         true,
+//         30,
+//         40,
+//       ],
+//       30,
+//     ],
+//     60,
+//   ])) // 101
+
+// console.log(calculateResistance([true, 0])); // "Short Circuit!"
+
+//============================================
+// https://www.codewars.com/kata/55e7280b40e1c4a06d0000aa/train/javascript
+// John and Mary want to travel between a few towns A, B, C ... Mary has on a sheet of paper a list of distances between these towns. ls = [50, 55, 57, 58, 60]. John is tired of driving and he says to Mary that he doesn't want to drive more than t = 174 miles and he will visit only 3 towns.
+
+// Which distances, hence which towns, they will choose so that the sum of the distances is the biggest possible to please Mary and John?
+
+// Example:
+// With list ls and 3 towns to visit they can make a choice between: [50,55,57],[50,55,58],[50,55,60],[50,57,58],[50,57,60],[50,58,60],[55,57,58],[55,57,60],[55,58,60],[57,58,60].
+
+// The sums of distances are then: 162, 163, 165, 165, 167, 168, 170, 172, 173, 175.
+
+// The biggest possible sum taking a limit of 174 into account is then 173 and the distances of the 3 corresponding towns is [55, 58, 60].
+
+// The function chooseBestSum (or choose_best_sum or ... depending on the language) will take as parameters t (maximum sum of distances, integer >= 0), k (number of towns to visit, k >= 1) and ls (list of distances, all distances are positive or zero integers and this list has at least one element). The function returns the "best" sum ie the biggest possible sum of k distances less than or equal to the given limit t, if that sum exists, or otherwise nil, null, None, Nothing, depending on the language. In that case with C, C++, D, Dart, Fortran, F#, Go, Julia, Kotlin, Nim, OCaml, Pascal, Perl, PowerShell, Reason, Rust, Scala, Shell, Swift return -1.
+
+// Examples:
+// ts = [50, 55, 56, 57, 58] choose_best_sum(163, 3, ts) -> 163
+
+// xs = [50] choose_best_sum(163, 3, xs) -> nil (or null or ... or -1 (C++, C, D, Rust, Swift, Go, ...)
+
+// ys = [91, 74, 73, 85, 73, 81, 87] choose_best_sum(230, 3, ys) -> 228
+
+// Notes:
+// try not to modify the input list of distances ls
+// in some languages this "list" is in fact a string (see the Sample Tests).
+
+function chooseBestSum(t, k, ls) {
+    let res = null
+    solve([], 0, ls)
+    return res
+
+    function solve(inP, dist, remaining){
+        if(dist > t) return
+
+        if(inP.length === k){
+            if(dist <= t && dist > res){
+                res = dist
+            }
+            return
+        }
+
+        for(let i=0 ; i<remaining.length ; i++){
+            solve([...inP, remaining[i]], dist+remaining[i], remaining.slice(i+1))
+        }
+    }
+}
+
+// console.log(chooseBestSum(163, 3, [50, 55, 56, 57, 58])); // 163
+// console.log(chooseBestSum(700, 6, [91, 74, 73, 85, 73, 81, 87])); // 491

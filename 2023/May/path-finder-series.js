@@ -460,3 +460,142 @@ function dijkstra(area){
 // 001010`)) // 4
 
 //==============================================================
+// https://www.codewars.com/kata/5a0573c446d8435b8e00009f
+// Hey, Path Finder, where are you?
+
+function IamHere(path){
+    let letters = "rlLR"
+    let nums = "0123456789"
+    // r is turn right, l is turn left, R is turn right twice, and L is turn left twice (so L & R are U-turns)
+    // the number following the letter would indicate how much steps it goes following the given direction, no numbers means we change direction but don't move
+
+    let directions = [ [-1,0] , [0,1] , [1,0] , [0,-1] ] //go north, east, south, west
+
+    let pos = [0, 0] // x and y pos
+    let currDirection = 0
+
+    let instructions = []
+    // an instruction is a letter followed by its optional number of steps
+    for(let i=0 ; i<path.length ; i++){
+        if(letters.includes(path[i])){
+            let instruction = path[i]
+            let j = i + 1
+            while(nums.includes(path[j])){
+                instruction += path[j]
+                j++
+            }
+            instructions.push(instruction)
+        }
+    }
+
+    instructions.forEach(i => {
+        let d = i[0]
+        let steps = Number(i.slice(1)) //as a side note, 'r'.slice(1) returns '' and Number('') returns 0, so we are all good here
+
+        //change the direction
+        switch (d) {
+            case 'r':
+                currDirection = (currDirection + 1) % 4;
+                break;
+
+            case 'l':
+                currDirection = (currDirection + 3) % 4;
+                break;
+
+            case 'R':
+                currDirection = (currDirection + 2) % 4; // U-turn
+                break;
+
+            case 'L':
+                currDirection = (currDirection + 2) % 4; // U-turn
+                break;
+        
+            default:
+                break;
+        }
+
+        //move if needed
+        if(steps > 0){
+            pos[0] += directions[currDirection][0] * steps
+            pos[1] += directions[currDirection][1] * steps
+        }
+    })
+
+    return pos
+}
+
+// console.log(IamHere('r5L2l4')) // [4,3]
+
+//first attempt, works but actually pos is kept after the calls and we have can have numbers without a direction preceding them, actually let's consider numbers and letters as two types of instructions one is a change of direction, the other is a movement ; pos and currDirection should be global variables (not done here)
+
+function IamHereSecondTry(path){
+    let letters = "rlLR"
+    let nums = "0123456789"
+    // r is turn right, l is turn left, R is turn right twice, and L is turn left twice (so L & R are U-turns)
+    // the string will includes numbers and moves not separated by anything, a number calls for moves while a letter calls for a direction change
+
+    let directions = [ [-1,0] , [0,1] , [1,0] , [0,-1] ] //go north, east, south, west
+
+    let pos = [0, 0] // x and y pos
+    let currDirection = 0
+
+    let instructions = []
+    // an instruction is a letter or a number
+    for(let i=0 ; i<path.length ; i++){
+        if(letters.includes(path[i])){ //letter instruction
+            let instruction = path[i]
+            instructions.push(instruction)
+        }else{ // number instruction
+            let instruction = ''
+            let j = i
+            while(nums.includes(path[j])){
+                instruction += path[j]
+                j++
+            }
+            i = j - 1
+            instructions.push(instruction)
+        }
+    }
+
+    instructions.forEach(i => {
+        //change the direction
+        if(letters.includes(i)){
+            switch (i) {
+                case 'r':
+                    currDirection = (currDirection + 1) % 4;
+                    break;
+    
+                case 'l':
+                    currDirection = (currDirection + 3) % 4;
+                    break;
+    
+                case 'R':
+                    currDirection = (currDirection + 2) % 4; // U-turn
+                    break;
+    
+                case 'L':
+                    currDirection = (currDirection + 2) % 4; // U-turn
+                    break;
+            
+                default:
+                    break;
+            }
+        }else{
+            //move
+            let steps = Number(i)
+            if(steps > 0){
+                pos[0] += directions[currDirection][0] * steps
+                pos[1] += directions[currDirection][1] * steps
+            }
+        }
+
+
+    })
+
+    return pos
+}
+
+
+//Kata completed :)
+
+//================================================

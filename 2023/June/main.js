@@ -425,3 +425,99 @@ function chooseBestSum(t, k, ls) {
 
 // console.log(chooseBestSum(163, 3, [50, 55, 56, 57, 58])); // 163
 // console.log(chooseBestSum(700, 6, [91, 74, 73, 85, 73, 81, 87])); // 491
+
+//=======================================
+// https://www.codewars.com/kata/5296bc77afba8baa690002d7/train/javascript
+// Write a function that will solve a 9x9 Sudoku puzzle. The function will take one argument consisting of the 2D puzzle array, with the value 0 representing an unknown square.
+
+// The Sudokus tested against your function will be "easy" (i.e. determinable; there will be no need to assume and test possibilities on unknowns) and can be solved with a brute-force approach.
+
+// For Sudoku rules, see the Wikipedia article.
+
+// var puzzle = [
+//             [5,3,0,0,7,0,0,0,0],
+//             [6,0,0,1,9,5,0,0,0],
+//             [0,9,8,0,0,0,0,6,0],
+//             [8,0,0,0,6,0,0,0,3],
+//             [4,0,0,8,0,3,0,0,1],
+//             [7,0,0,0,2,0,0,0,6],
+//             [0,6,0,0,0,0,2,8,0],
+//             [0,0,0,4,1,9,0,0,5],
+//             [0,0,0,0,8,0,0,7,9]];
+
+// sudoku(puzzle);
+// /* Should return
+// [[5,3,4,6,7,8,9,1,2],
+// [6,7,2,1,9,5,3,4,8],
+// [1,9,8,3,4,2,5,6,7],
+// [8,5,9,7,6,1,4,2,3],
+// [4,2,6,8,5,3,7,9,1],
+// [7,1,3,9,2,4,8,5,6],
+// [9,6,1,5,3,7,2,8,4],
+// [2,8,7,4,1,9,6,3,5],
+// [3,4,5,2,8,6,1,7,9]]
+
+function sudoku(puzzle) {
+    solve(puzzle)
+
+    return puzzle
+
+    function solve(puzzle){
+        for(let row=0 ; row<9 ; row++){
+            for(let col=0 ; col<9 ; col++){
+                //if empty cell
+                if(puzzle[row][col] === 0){
+                    //try a valid number
+                    for(let num=1 ; num<=9 ; num++){
+                        if(isNumberValid(row, col, num)){
+                            puzzle[row][col] = num
+                            //recursive call, if every recursive call are valid, it means the puzzle is completed
+                            if(solve(puzzle)){
+                                return true
+                            }else{
+                                //backtrack
+                                puzzle[row][col] = 0
+                            }
+                        }
+                    }
+                    //if no valid number were found, the puzzle has a mistake, return false
+                    return false
+                }
+            }
+        }
+        //if every cell are found, return true
+        return true
+    }
+
+    function isNumberValid(row, col, num){
+        for(let i=0 ; i<9 ; i++){
+            if(puzzle[row][i] === num) return false
+            
+            if(puzzle[i][col] === num) return false
+            
+            const currentMatrixRow = Math.floor(row/3)        
+            const currentMatrixCol = Math.floor(col/3)
+    
+            const currentRow =  3 * currentMatrixRow + Math.floor(i/3)        
+            const currentCol = 3 * currentMatrixCol + i%3 
+        
+            
+            if(puzzle[currentRow][currentCol] === num ) return false
+            
+        }
+        return true
+    }
+}
+
+// var puzzle = [
+//     [5,3,0,0,7,0,0,0,0],
+//     [6,0,0,1,9,5,0,0,0],
+//     [0,9,8,0,0,0,0,6,0],
+//     [8,0,0,0,6,0,0,0,3],
+//     [4,0,0,8,0,3,0,0,1],
+//     [7,0,0,0,2,0,0,0,6],
+//     [0,6,0,0,0,0,2,8,0],
+//     [0,0,0,4,1,9,0,0,5],
+//     [0,0,0,0,8,0,0,7,9]];
+
+// console.log(sudoku(puzzle))

@@ -599,3 +599,156 @@ function IamHereSecondTry(path){
 //Kata completed :)
 
 //================================================
+// https://www.codewars.com/kata/5a05969cba2a14e541000129
+// You are at position [0, 0] in maze NxN and you can only move in one of the four cardinal directions (i.e. North, East, South, West)... Oh, no! There's monster here! He stands exactly at the exit... But you still have to reach the exit position [N-1, N-1]. Can you outwit him?
+
+// It's really hard to solve in general, so in this task the maze have only one position with wall.
+
+// Empty positions are marked .. Wall is marked W. All border positions are guaranteed to be empty in all test cases. And yes, wall is close enough to escape without meeting a monster.
+
+// Every time you are ready to make a move, call the function endTurn(way) where way parameter equal one of 'N', 'E', 'S' or 'W'. endTurn() returns monster's move.
+
+// first puzzle :
+// `...
+// .W.
+// ...`
+
+//second puzzle :
+// `......
+// ....W.
+// ......
+// ......
+// ......
+// ......`
+
+//third puzzle :
+// `......
+// ......
+// ......
+// ...W..
+// ......
+// ......`
+
+//The answer to the first puzzle is 'SNEESS' to which the monster answered with 'WWNNEE'
+//For the second puzzle, by going 3 times East, we end up in the position of the first puzzle to which we can add 'SSS' to reach the exit, making the answer 'EEESNEESSSSS' to which the monster answered with 'NNNWWNNEE'
+//For the third puzzle, we can just outrun him by going 'SESEEESSES'
+
+function pathFinder(maze, endTurn){
+    //Best I can do : 
+    //Step 1 - go to top left of the wall
+    //Step 2 - wait for monster to arrive at bottom right of the wall
+    //Step 3 - do the movement 'SNEESS' to outwit the monster
+    //Step 4 - go to the exit
+    maze = maze.split('\n').map(line => line.split(''))
+    const size = maze.length
+    let wallPos = []
+    for(let row=0 ; row<size ; row++){
+        for(let col=0 ; col<size ; col++){
+            if(maze[row][col] === 'W') wallPos = [row, col]
+        }
+    }
+    let monsterPath = '';
+    let monsterPos = [size-1, size-1]
+    let playerPos = [0, 0]
+
+    //go to top left of wall
+    while(playerPos[0]!==wallPos[0]-1 || playerPos[1]!==wallPos[1]-1){
+        if(playerPos[0] < wallPos[0]-1){
+            move('S', playerPos)
+            let monsterMove = endTurn('S')
+            monsterPath += monsterMove
+            move(monsterMove, monsterPos)
+        }
+        if(playerPos[1] < wallPos[1]-1){
+            move('E', playerPos)
+            let monsterMove = endTurn('E')
+            monsterPath += monsterMove
+            move(monsterMove, monsterPos)
+        }
+    }
+
+    //wait for monster to arrive in bottom right of wall
+    let isLeft = true
+    while(monsterPos[0]!==wallPos[0]+1 || monsterPos[1]!==wallPos[1]+1){
+        if(isLeft){
+            isLeft = false
+            move('E', playerPos)
+            let monsterMove = endTurn('E')
+            monsterPath += monsterMove
+            move(monsterMove, monsterPos)
+        }else{
+            isLeft = true
+            move('W', playerPos)
+            let monsterMove = endTurn('W')
+            monsterPath += monsterMove
+            move(monsterMove, monsterPos)
+        }
+    }
+
+    //make the movement SNEESS to outwit the monster
+    for (let way of 'SNEESS'){
+        move(way, playerPos)
+        let monsterMove = endTurn(way)
+        monsterPath += monsterMove
+        move(monsterMove, monsterPos)
+    }
+
+    //go to bottom right of the maze (exit)
+    while(playerPos[0]!==size-1 || playerPos[1]!==size-1){
+        if(playerPos[0] < size - 1){
+            move('S', playerPos)
+            let monsterMove = endTurn('S')
+            monsterPath += monsterMove
+            move(monsterMove, monsterPos)
+        }
+        if(playerPos[1] < size - 1){
+            move('E', playerPos)
+            let monsterMove = endTurn('E')
+            monsterPath += monsterMove
+            move(monsterMove, monsterPos)
+        }
+    }
+
+    //update agent pos
+    function move(dir, agentPos){
+        switch (dir) {
+            case 'N':
+                agentPos[0] --
+                break;
+
+            case 'E':
+                agentPos[1] ++
+                break;
+
+            case 'S':
+                agentPos[0] ++
+                break;
+
+            case 'W':
+                agentPos[1] --
+                break;
+        
+            default:
+                break;
+        }
+    }
+
+
+    console.log("monster's path:", monsterPath);
+}
+
+
+function c(){
+    let mom = 30
+    let child = 10
+
+    for(let i=0 ; i<100 ; i++){
+        if(2*(child+i) === (mom+i)){
+            return i
+        }
+    }
+
+    return false
+}
+
+console.log(c());

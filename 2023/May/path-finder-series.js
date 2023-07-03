@@ -613,7 +613,7 @@ function IamHereSecondTry(path){
 // .W.
 // ...`
 
-//second puzzle :
+// second puzzle :
 // `......
 // ....W.
 // ......
@@ -621,7 +621,7 @@ function IamHereSecondTry(path){
 // ......
 // ......`
 
-//third puzzle :
+// third puzzle :
 // `......
 // ......
 // ......
@@ -629,7 +629,7 @@ function IamHereSecondTry(path){
 // ......
 // ......`
 
-//The answer to the first puzzle is 'SNEESS' to which the monster answered with 'WWNNEE'
+// The answer to the first puzzle is 'SNEESS' to which the monster answered with 'WWNNEE'
 //For the second puzzle, by going 3 times East, we end up in the position of the first puzzle to which we can add 'SSS' to reach the exit, making the answer 'EEESNEESSSSS' to which the monster answered with 'NNNWWNNEE'
 //For the third puzzle, we can just outrun him by going 'SESEEESSES'
 
@@ -737,18 +737,5 @@ function pathFinder(maze, endTurn){
     console.log("monster's path:", monsterPath);
 }
 
+//No worky :c
 
-function c(){
-    let mom = 30
-    let child = 10
-
-    for(let i=0 ; i<100 ; i++){
-        if(2*(child+i) === (mom+i)){
-            return i
-        }
-    }
-
-    return false
-}
-
-console.log(c());

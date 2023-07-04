@@ -739,3 +739,23 @@ function pathFinder(maze, endTurn){
 
 //No worky :c
 
+//From the answer :
+function pathFinder(maze, endTurn){
+    let monsterPath = '';
+    console.log(maze);
+    let N = maze.search(/\n/); // determine N
+    let W = maze.search(/W/);  // find the Wall
+    let wX = W%(N+1);
+    let wY = Math.floor(W/(N+1));
+    console.log('N:', N, ' wX:', wX, ' wY:', wY);
+                                          // make a plan:
+    let playerPath = 'S'.repeat(N-2)+     // way down South to attract (or distract) Monster = at this point, the player is one cell above the bottom right corner and the monster is one cell right of it
+                     'N'.repeat(N-1-wY)+  // back up North until one row north of the Wall - for the first N, monster goes West, only then follows the player by going North 
+                     'E'.repeat(N-1)+     // all the way East. Monster now behind Player
+                     'S'.repeat(N-wY);    // all the way South to Exit and escape
+    for (let way of playerPath) monsterPath += endTurn(way); // and... run!!
+    console.log("player's path :", playerPath);
+    console.log("monster's path:", monsterPath); // I love it when a plan comes together :-)
+}
+
+//Not much to conclude as the first time player go North, the monster could go North and block the player when he'll try to go East, instead the monster goes one step West again, putting him at the bottom left corner...

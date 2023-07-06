@@ -106,3 +106,71 @@ class User {
 // console.log("rank:", user3.rank, "progress:", user3.progress); // rank: 8 progress: 0
 
 //=========================================
+// https://www.codewars.com/kata/5659c6d896bc135c4c00021e
+// Write a function that takes a positive integer and returns the next smaller positive integer containing the same digits.
+
+// For example:
+
+// nextSmaller(21) == 12
+// nextSmaller(531) == 513
+// nextSmaller(2071) == 2017
+// Return -1 (for Haskell: return Nothing, for Rust: return None), when there is no smaller number that contains the same digits. Also return -1 when the next smaller number with the same digits would require the leading digit to be zero.
+
+// nextSmaller(9) == -1
+// nextSmaller(111) == -1
+// nextSmaller(135) == -1
+// nextSmaller(1027) == -1 // 0721 is out since we don't write numbers with leading zeros
+// some tests will include very large numbers.
+// test data only employs positive integers.
+// The function you write for this challenge is the inverse of this kata: "Next bigger number with the same digits."
+// https://www.codewars.com/kata/55983863da40caa2c900004e/train/javascript
+
+function nextSmaller(n) {
+    //It appears, if a number has increasing numbers, there would be no solution (examples : 1234, 159, etc), returns -1
+    //otherwise, starting from the end, find the first instance where a number on the left is greater than the number on the right. Call that number d
+    //Swap d with the biggest number smaller than d on his right
+    //sort all digits from where d was in a decreasing order
+    //We will loop from the end, if no changes were made, result should be -1
+
+    // Example with 1262347 :
+    // from the end, d is 6
+    // We now find the number to swap d with, it is 4
+    // Swap, now we have 1242367
+    // Now from 4, sort decreasingly the numbers, final answer is 1247632
+
+    let numberString = ''+n
+    let res = ''
+    let isDone = false
+    for(let i=numberString.length-1 ; (i>=0 && !isDone) ; i--){
+        if(+numberString[i-1] > +numberString[i]){ //if change must be made
+            isDone = true //exit the loop
+            let d = numberString[i-1]
+            let right = numberString.slice(i)
+            let rightMax = Math.max(...right.split('').map(e => +e).filter(e => e<+d)) //find the value of the biggest number smaller than d on d's right
+            //be careful, we don't want to write numbers with leading zeroes, hence this condition, the number we want to replace should not be 0 if it is going to be at the front of the number
+            if(rightMax===0 && i-1===0){
+                res = numberString[i] + res
+                isDone = false
+                continue
+            }
+            numberString = numberString.slice(0, i-1) + rightMax + numberString.slice(i)//replace d with the biggest but smaller than d number on its right
+            right = right.replace(rightMax, d) //replace the value of the the biggest but smaller than d number on d's right with d
+            right = right.split('').sort((a,b)=>b-a).join('') //sort the right part decreasingly
+            res = numberString.slice(0, i) + right // build res
+        }else{ //if no change
+            res = numberString[i] + res
+        }
+    }
+    return res === numberString ? -1 : +res
+}
+
+// console.log(nextSmaller(21)) // 12
+// console.log(nextSmaller(531)) // 513
+// console.log(nextSmaller(2071)) // 2017
+// console.log(nextSmaller(130)) // 103
+// console.log(nextSmaller(302)) // 230
+// console.log(nextSmaller(907)) // 790
+// console.log(nextSmaller(303)) // -1
+// console.log(nextSmaller(304)) // -1
+// console.log(nextSmaller(1027)) // -1
+// console.log(nextSmaller(1234)) // -1

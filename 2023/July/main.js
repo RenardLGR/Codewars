@@ -174,3 +174,52 @@ function nextSmaller(n) {
 // console.log(nextSmaller(304)) // -1
 // console.log(nextSmaller(1027)) // -1
 // console.log(nextSmaller(1234)) // -1
+
+//===================================================
+// https://www.codewars.com/kata/526233aefd4764272800036f
+// Write a function that accepts two square matrices (N x N two dimensional arrays), and return the sum of the two. Both matrices being passed into the function will be of size N x N (square), containing only integers.
+
+// How to sum two matrices:
+
+// Take each cell [n][m] from the first matrix, and add it with the same [n][m] cell from the second matrix. This will be cell [n][m] of the solution matrix.
+
+// Visualization:
+
+// |1 2 3|     |2 2 1|     |1+2 2+2 3+1|     |3 4 4|
+// |3 2 1|  +  |3 2 3|  =  |3+3 2+2 1+3|  =  |6 4 4|
+// |1 1 1|     |1 1 3|     |1+1 1+1 1+3|     |2 2 4|
+// Example
+// matrixAddition(
+//   [ [1, 2, 3],
+//     [3, 2, 1],
+//     [1, 1, 1] ],
+//      +
+//   [ [2, 2, 1],
+//     [3, 2, 3],
+//     [1, 1, 3] ] )
+
+// returns:
+//   [ [3, 4, 4],
+//     [6, 4, 4],
+//     [2, 2, 4] ]
+
+function matrixAddition(a, b){
+    let res = Array.from({length: a.length}, (line) => Array(a.length).fill(0))
+    
+    for(let row=0 ; row<a.length ; row++){
+        for(let col=0 ; col<a.length ; col++){
+            res[row][col] = a[row][col] + b[row][col]
+        }
+    }
+    return res
+}
+
+function matrixAdditionBis(a, b){
+    return a.map((line, rowIdx) => {
+        return line.map((el, colIdx) => {
+            return el + b[rowIdx][colIdx]
+        })
+    })
+}
+
+//====================================================

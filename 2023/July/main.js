@@ -223,3 +223,54 @@ function matrixAdditionBis(a, b){
 }
 
 //====================================================
+// https://www.codewars.com/kata/54bb6f887e5a80180900046b
+// Longest Palindrome
+// Find the length of the longest substring in the given string s that is the same in reverse.
+
+// As an example, if the input was “I like racecars that go fast”, the substring (racecar) length would be 7.
+
+// If the length of the input string is 0, the return value must be 0.
+
+// Example:
+// "a" -> 1 
+// "aab" -> 2  
+// "abcde" -> 1
+// "zzbaabcd" -> 4
+// "" -> 0
+
+function longestPalindrome(s){
+    let res = 0
+    for(let start=0 ; start<s.length ; start++){
+        for(let end=start ; end<s.length ; end++){
+            let subs = s.slice(start, end+1)
+            if(isPalindrome(subs)){
+                res = Math.max(res, subs.length)
+            }
+        }
+    }
+
+    return res
+
+
+    function isPalindrome(s){
+        // s === s.split("").reverse().join("")
+        let lastIdx = s.length - 1
+        for(let i=0 ; i<s.length/2 ; i++){
+            if(s[i] !== s[lastIdx - i]) return false
+        }
+        return true
+    }
+
+    // console.log(isPalindrome("zabaz"));
+    // console.log(isPalindrome("zaaz"));
+    // console.log(isPalindrome("z"));
+    // console.log(isPalindrome("za"));
+}
+
+
+// console.log(longestPalindrome("a")); // 1
+// console.log(longestPalindrome("aab")); // 2
+// console.log(longestPalindrome("abcde")); // 1
+// console.log(longestPalindrome("zzbaabcd")); // 4
+// console.log(longestPalindrome("")); // 0
+

@@ -274,3 +274,83 @@ function longestPalindrome(s){
 // console.log(longestPalindrome("zzbaabcd")); // 4
 // console.log(longestPalindrome("")); // 0
 
+//===============================================
+// https://www.codewars.com/kata/5d23d89906f92a00267bb83d
+// Some new cashiers started to work at your restaurant.
+
+// They are good at taking orders, but they don't know how to capitalize words, or use a space bar!
+
+// All the orders they create look something like this:
+
+// "milkshakepizzachickenfriescokeburgerpizzasandwichmilkshakepizza"
+
+// The kitchen staff are threatening to quit, because of how difficult it is to read the orders.
+
+// Their preference is to get the orders as a nice clean string with spaces and capitals like so:
+
+// "Burger Fries Chicken Pizza Pizza Pizza Sandwich Milkshake Milkshake Coke"
+
+// The kitchen staff expect the items to be in the same order as they appear in the menu.
+
+// The menu items are fairly simple, there is no overlap in the names of the items:
+
+// 1. Burger
+// 2. Fries
+// 3. Chicken
+// 4. Pizza
+// 5. Sandwich
+// 6. Onionrings
+// 7. Milkshake
+// 8. Coke
+
+function getOrder(input){
+    console.log(input.length);
+    let comp = 0
+    const menu = {
+        Burger : 1,
+        Fries : 2,
+        Chicken : 3,
+        Pizza : 4,
+        Sandwich : 5,
+        Onionrings : 6,
+        Milkshake : 7,
+        Coke : 8,
+    }
+
+    let ticket = {
+        Burger : 0,
+        Fries : 0,
+        Chicken : 0,
+        Pizza : 0,
+        Sandwich : 0,
+        Onionrings : 0,
+        Milkshake : 0,
+        Coke : 0,
+    }
+
+    for(let start=0 ; start<input.length ; start++){
+        for(let end=start+3 ; end<input.length ; end++){ //the smallest item is "Coke", we can skip some test
+            comp++
+            let subs = input.slice(start, end+1)
+            subs = subs[0].toUpperCase() + subs.slice(1)
+            if(menu[subs]){
+                ticket[subs]++
+                start = end
+            }
+        }
+    }
+
+    let res = ''
+    for(let item in ticket){
+        for(let i=0 ; i<ticket[item] ; i++){
+            res += item + ' '
+        }
+    }
+
+    console.log("comp", comp);
+    return res.slice(0, res.length-1) //remove last space
+}
+
+console.log(getOrder("milkshakepizzachickenfriescokeburgerpizzasandwichmilkshakepizza")); // Burger Fries Chicken Pizza Pizza Pizza Sandwich Milkshake Milkshake Coke
+//test are 7000 characters long...
+

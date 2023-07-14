@@ -304,8 +304,6 @@ function longestPalindrome(s){
 // 8. Coke
 
 function getOrder(input){
-    console.log(input.length);
-    let comp = 0
     const menu = {
         Burger : 1,
         Fries : 2,
@@ -330,12 +328,12 @@ function getOrder(input){
 
     for(let start=0 ; start<input.length ; start++){
         for(let end=start+3 ; end<input.length ; end++){ //the smallest item is "Coke", we can skip some test
-            comp++
             let subs = input.slice(start, end+1)
             subs = subs[0].toUpperCase() + subs.slice(1)
             if(menu[subs]){
                 ticket[subs]++
                 start = end
+                break
             }
         }
     }
@@ -347,7 +345,6 @@ function getOrder(input){
         }
     }
 
-    console.log("comp", comp);
     return res.slice(0, res.length-1) //remove last space
 }
 

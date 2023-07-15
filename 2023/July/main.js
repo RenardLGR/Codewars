@@ -348,6 +348,6 @@ function getOrder(input){
     return res.slice(0, res.length-1) //remove last space
 }
 
-console.log(getOrder("milkshakepizzachickenfriescokeburgerpizzasandwichmilkshakepizza")); // Burger Fries Chicken Pizza Pizza Pizza Sandwich Milkshake Milkshake Coke
-//test are 7000 characters long...
+// console.log(getOrder("milkshakepizzachickenfriescokeburgerpizzasandwichmilkshakepizza")); // Burger Fries Chicken Pizza Pizza Pizza Sandwich Milkshake Milkshake Coke
+// test are 7000 characters long...
 

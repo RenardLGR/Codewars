@@ -355,3 +355,156 @@ function paintfuckInterpreter(code, iterations, width, height){
 // 00011000
 
 //=============================================
+// Esolang Interpreters #4 - Boolfuck Interpreter
+
+// The Language
+// Boolfuck is an esoteric programming language (Esolang) based on the famous Brainfuck (also an Esolang) which was invented in 2004 or 2005 according to the official website.
+// http://samuelhughes.com/boof/index.html
+// It is very similar to Brainfuck except for a few key differences:
+
+// Boolfuck works with bits as opposed to bytes
+// The tape for Brainfuck contains exactly 30,000 cells with the pointer starting from the very left; Boolfuck contains an infinitely long tape with the pointer starting at the "middle" (since the tape can be extended indefinitely either direction)
+// Each cell in Boolfuck can only contain the values 0 or 1 (i.e. bits not bytes) as opposed to Brainfuck which has cells containing values ranging from 0 to 255 inclusive.
+// The output command in Boolfuck is ; NOT .
+// The - command does not exist in Boolfuck since either + or - would flip a bit anyway
+// Anyway, here is a list of commands and their descriptions:
+
+// + - Flips the value of the bit under the pointer
+// , - Reads a bit from the input stream, storing it under the pointer. The end-user types information using characters, though. Bytes are read in little-endian order—the first bit read from the character a, for instance, is 1, followed by 0, 0, 0, 0, 1, 1, and finally 0. If the end-of-file has been reached, outputs a zero to the bit under the pointer.
+// ; - Outputs the bit under the pointer to the output stream. The bits get output in little-endian order, the same order in which they would be input. If the total number of bits output is not a multiple of eight at the end of the program, the last character of output gets padded with zeros on the more significant end.
+// < - Moves the pointer left by 1 bit
+// > - Moves the pointer right by 1 bit
+// [ - If the value under the pointer is 0 then skip to the corresponding ]
+// ] - Jumps back to the matching [ character, if the value under the pointer is 1
+// If you haven't written an interpreter for Brainfuck yet I recommend you to complete this Kata first.
+// https://www.codewars.com/kata/my-smallest-code-interpreter-aka-brainf-star-star-k
+
+// The Task
+// Write a Boolfuck interpreter which accepts up to two arguments. The first (required) argument is the Boolfuck code in the form of a string. The second (optional) argument is the input passed in by the end-user (i.e. as actual characters not bits) which should default to "" if not provided. Your interpreter should return the output as actual characters (not bits!) as a string.
+
+// function boolfuck (code, input = "")
+// Preloaded for you is a function brainfuckToBoolfuck()/brainfuck_to_boolfuck()/BrainfuckToBoolfuck() which accepts 1 required argument (the Brainfuck code) and returns its Boolfuck equivalent should you find it useful.
+
+// Please note that your interpreter should simply ignore any non-command characters. This will be tested in the test cases.
+
+// If in doubt, feel free to refer to the official website (link at top).
+
+// Good luck :D
+
+function boolfuck(code, input = "") {
+    let i = 0 //where we at on the code
+    let data = [] //the "tape" of bits
+    const inputs = input.split('')
+    let bitInput = "" //input string as bits (each char will be 8 bits), it will be used if we encounter a ',' instruction
+    let bitInputs = [] //same but in an array form
+
+    //creates the above array
+    if (input !== "") {
+        inputs.forEach((letter) => {
+            // a, for instance, is 1, followed by 0, 0, 0, 0, 1, 1, and finally 0
+            bitInput += (letter.charCodeAt(0).toString(2).split('').reverse().join('') + "0000000").slice(0, 8)
+        })
+        bitInputs = bitInput.split('')
+    }
+
+    // console.log(bitInput);
+
+    let pointer = 0
+    let result = ""
+
+    //return the value of the bit at said pointer, if it doens't exist, set it to 0
+    const initializeData = (data, pointer) => {
+        if (data[pointer] === undefined) {
+            data[pointer] = 0
+        }
+        return data
+    }
+
+    do {
+        const instruction = code[i]
+
+        switch (instruction) {
+            case ">":
+                pointer++
+                break;
+            case "<":
+                pointer--
+                break;
+            case "+": //+ Flips the value of the bit under the pointer, if it doens't exist create it, set it to 0 and flip it to 1
+                data = initializeData(data, pointer)
+                data[pointer] = data[pointer] === 0 ? 1 : 0
+                break;
+            case ";": //; Outputs the bit under the pointer to the output stream.
+                data = initializeData(data, pointer)
+                result += data[pointer]
+                break;
+            case ",": //, Reads a bit from the input stream, storing it under the pointer. 
+                if (bitInputs.length > 0) {
+                    const dataToAdd = bitInputs.shift()
+                    data = initializeData(data, pointer)
+                    data[pointer] = parseInt(dataToAdd)
+                }
+                break;
+            case "[":
+                data = initializeData(data, pointer)
+                if (data[pointer] === 0) {
+                    let nBrackets = 0
+                    i++
+                    while (!(code[i] === "]" && nBrackets === 0)) {
+                        if (code[i] === "[") {
+                            nBrackets++
+                        } else if (nBrackets > 0 && code[i] === "]") {
+                            nBrackets--
+                        }
+                        i++
+                    }
+                }
+                break;
+            case "]":
+                data = initializeData(data, pointer)
+                if (data[pointer] !== 0) {
+                    let nBrackets = 0
+                    i--
+                    while (!(code[i] === "[" && nBrackets === 0)) {
+                        if (code[i] === "]") {
+                            nBrackets++
+                        } else if (nBrackets > 0 && code[i] === "[") {
+                            nBrackets--
+                        }
+                        i--
+                    }
+                }
+                break;
+        }
+
+        i++
+    } while (code[i] !== undefined) //stops when reaches end of code
+
+    let decodedResult = ""
+    // The purpose of this regular expression is to split the result string into chunks of 8 characters (bits in our case), which will then be used to decode the binary data into actual characters.
+    const resultChunks = result.match(/.{1,8}/g)
+    //Each 8 bits in then converted back to an alphanumerical character
+    resultChunks.forEach((resultChunk) => {
+        //reverse it beacause parseInt(binary, 2) reads from right to left
+        decodedResult += String.fromCharCode(parseInt(resultChunk.split("").reverse().join(""), 2));
+    })
+
+    return decodedResult
+}
+
+
+console.log(boolfuck(`;;;+;+;;+;+;
++;+;+;+;;+;;+;
+;;+;;+;+;;+;
+;;+;;+;+;;+;
++;;;;+;+;;+;
+;;+;;+;+;+;;
+;;;;;+;+;;
++;;;+;+;;;+;
++;;;;+;+;;+;
+;+;+;;+;;;+;
+;;+;;+;+;;+;
+;;+;+;;+;;+;
++;+;;;;+;+;;
+;+;+;+;`)); //Hello, world!
+

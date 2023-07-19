@@ -471,7 +471,7 @@ function fibAns(n) {
 
 // RangeError: Maximum call stack size exceeded, for n ~ 10^6
 
-// Using matrix exponentiation :
+// Using matrix exponentiation : complexity in time : O(n) and in space O(2)
 function fibMatrixExponentiation(n){
     // According to Wikipedia https://fr.wikipedia.org/wiki/Suite_de_Fibonacci#Expression_matricielle
     // |1 1| ^n       |F(n+1)  F(n)   |
@@ -495,5 +495,37 @@ function fibMatrixExponentiation(n){
     // console.log(multiplyMatrices([[7,5],[6,3]] , [[2,1],[5,1]])); // [ [ 39, 12 ], [ 27, 9 ] ]
 }
 
-console.log(fibMatrixExponentiation(30)); // 832040
-console.log(fibMatrixExponentiation(40)); // 102334155
+// console.log(fibMatrixExponentiation(30)); // 832040
+// console.log(fibMatrixExponentiation(40)); // 102334155
+
+// Now using fast exponentiation (successive squaring) instead of iterated exponentiation :
+// a^2 = a * a
+// a^4 = a^2 * a^2
+// a^8 = a^4 * a^4
+// ...
+
+
+function fibMatrixExponentiationFast(n){
+    let base = [[1,1] , [1,0]]
+
+    let res = matrixExp(base, n)
+
+    return res[0][1]
+
+    function matrixExp(mat, pow){
+        if(pow === 1) return mat
+
+        if(pow%2 === 0) return matrixExp(multiplyMatrices(mat, mat), pow/2)
+        if(pow%2 === 1) return multiplyMatrices(mat , matrixExp(multiplyMatrices(mat, mat), (pow-1)/2) )
+    }
+
+    function multiplyMatrices(matA, matB){
+        const [[a,b], [c,d]] = matA
+        const [[e,f], [g,h]] = matB
+
+        return [ [a*e+b*g , a*f+b*h] , [c*e+d*g , c*f+d*h]]
+    }
+}
+
+console.log(fibMatrixExponentiationFast(30)); // 832040
+console.log(fibMatrixExponentiationFast(40)); // 102334155

@@ -349,5 +349,124 @@ function getOrder(input){
 }
 
 // console.log(getOrder("milkshakepizzachickenfriescokeburgerpizzasandwichmilkshakepizza")); // Burger Fries Chicken Pizza Pizza Pizza Sandwich Milkshake Milkshake Coke
-// test are 7000 characters long...
+// test are 7000 characters long... but this code works well
 
+//======================================================
+// https://www.codewars.com/kata/53d40c1e2f13e331fc000c26/train/javascript
+// The year is 1214. One night, Pope Innocent III awakens to find the the archangel Gabriel floating before him. Gabriel thunders to the pope:
+
+// Gather all of the learned men in Pisa, especially Leonardo Fibonacci. In order for the crusades in the holy lands to be successful, these men must calculate the millionth number in Fibonacci's recurrence. Fail to do this, and your armies will never reclaim the holy land. It is His will.
+
+// The angel then vanishes in an explosion of white light.
+
+// Pope Innocent III sits in his bed in awe. How much is a million? he thinks to himself. He never was very good at math.
+
+// He tries writing the number down, but because everyone in Europe is still using Roman numerals at this moment in history, he cannot represent this number. If he only knew about the invention of zero, it might make this sort of thing easier.
+
+// He decides to go back to bed. He consoles himself, The Lord would never challenge me thus; this must have been some deceit by the devil. A pretty horrendous nightmare, to be sure.
+
+// Pope Innocent III's armies would go on to conquer Constantinople (now Istanbul), but they would never reclaim the holy land as he desired.
+
+// In this kata you will have to calculate fib(n) where:
+
+// fib(0) := 0
+// fib(1) := 1
+// fin(n + 2) := fib(n + 1) + fib(n)
+// Write an algorithm that can handle n up to 2000000.
+
+// Your algorithm must output the exact integer answer, to full precision. Also, it must correctly handle negative numbers as input.
+
+// HINT I: Can you rearrange the equation fib(n + 2) = fib(n + 1) + fib(n) to find fib(n) if you already know fib(n + 1) and fib(n + 2)? Use this to reason what value fib has to have for negative values.
+
+// HINT II: See https://web.archive.org/web/20220614001843/https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-11.html#%_sec_1.2.4
+
+
+//Complete naive : (complexity off the roof exponential O(2^n) I believe)
+function fib(n){
+    if(n===0) return 0
+    if(n===1) return 1
+
+    return fib(n-1) + fib(n-2)
+}
+
+// console.log(fib(6)); // 8
+// console.log(fib(13)); // 233
+// console.log(fib(30)); // 832040
+// console.log(fib(40)); // 102334155
+
+//Memoized complexity in time : O(n) and in space O(n)
+function fibWithMemo(n){
+    let memo = {}
+
+    return fib(n)
+
+    function fib(n){
+        if(n===0) return 0
+        if(n===1) return 1
+
+        if(memo[n] !== undefined){
+            return memo[n]
+        }else{
+            let res = fib(n-1) + fib(n-2)
+            memo[n] = res
+            return memo[n]
+        }
+    }
+}
+
+// console.log(fibWithMemo(6)); // 8
+// console.log(fibWithMemo(13)); // 233
+// console.log(fibWithMemo(30)); // 832040
+// console.log(fibWithMemo(40)); // 102334155
+
+//Iterative : from bottom up complexity in time : O(n) and in space O(1)
+function fibIter(n){
+    return solve(1, 0, n) // (start a, start b, steps) such as start a > start b
+
+    function solve(a, b, count){
+        if(count === 0) return b
+
+        return solve(a+b, a, count-1)
+    }
+}
+
+// console.log(fibIter(6)); // 8
+// console.log(fibIter(13)); // 233
+// console.log(fibIter(30)); // 832040
+// console.log(fibIter(40)); // 102334155
+
+//Using Binet's formula : Complexity O(1). It is important to note that Binet's formula relies on floating-point arithmetic, and for very large Fibonacci numbers, it might not provide completely accurate results due to potential precision errors. 
+function fibBinet(n) {  
+    const phi = (1 + Math.sqrt(5)) / 2
+    const psi = (1 - Math.sqrt(5)) / 2
+  
+    const nthFibonacci = (Math.pow(phi, n) - Math.pow(psi, n)) / Math.sqrt(5)
+    return Math.round(nthFibonacci)
+}
+
+// console.log(fibBinet(40)); // 102334155
+
+
+// Now for the answer : It needs to handle BigInts and negative input
+function fibAns(n) {
+    const isNegative = n < 0n
+    n = isNegative ? -n : n
+
+    n = BigInt(n)
+
+    // odd inputs have positive outputs, i.e. fib(-13) === 233n
+    return isNegative && n % 2n === 0n ? -fibIter(1n, 0n, n) : fibIter(1n, 0n, n)
+
+    function fibIter(a, b, count) {
+        if (count === 0n) {
+            return b
+        } else {
+            return fibIter(a + b, a, count - 1n)
+        }
+    }
+}
+
+// console.log(fibAns(-13n)); // 233n
+// console.log(fibAns(40n)); // 102334155n
+
+// RangeError: Maximum call stack size exceeded, for n ~ 10^6

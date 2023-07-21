@@ -470,3 +470,30 @@ function fibAns(n) {
 // console.log(fibAns(40n)); // 102334155n
 
 // RangeError: Maximum call stack size exceeded, for n ~ 10^6
+
+// Using matrix exponentiation :
+function fibMatrixExponentiation(n){
+    // According to Wikipedia https://fr.wikipedia.org/wiki/Suite_de_Fibonacci#Expression_matricielle
+    // |1 1| ^n       |F(n+1)  F(n)   |
+    // |1 0|      =   |F(n)    F(n-1) |
+
+    let base = [[1,1] , [1,0]]
+    let res = [[1,1] , [1,0]]
+
+    for(let i=1 ; i<n ; i++){
+        res = multiplyMatrices(res, base)
+    }
+
+    return res[0][1]
+
+    function multiplyMatrices(matA, matB){
+        const [[a,b], [c,d]] = matA
+        const [[e,f], [g,h]] = matB
+
+        return [ [a*e+b*g , a*f+b*h] , [c*e+d*g , c*f+d*h]]
+    }
+    // console.log(multiplyMatrices([[7,5],[6,3]] , [[2,1],[5,1]])); // [ [ 39, 12 ], [ 27, 9 ] ]
+}
+
+console.log(fibMatrixExponentiation(30)); // 832040
+console.log(fibMatrixExponentiation(40)); // 102334155

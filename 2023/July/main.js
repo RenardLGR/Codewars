@@ -527,5 +527,56 @@ function fibMatrixExponentiationFast(n){
     }
 }
 
-console.log(fibMatrixExponentiationFast(30)); // 832040
-console.log(fibMatrixExponentiationFast(40)); // 102334155
+// console.log(fibMatrixExponentiationFast(30)); // 832040
+// console.log(fibMatrixExponentiationFast(40)); // 102334155
+
+// Now accepting BigInts and negative inputs :
+function fibMatrixExponentiationFastV2(n){
+    if(n == 0) return 0n
+    // According to Wikipedia https://fr.wikipedia.org/wiki/Suite_de_Fibonacci#Expression_matricielle
+    // |1 1| ^n       |F(n+1)  F(n)   |
+    // |1 0|      =   |F(n)    F(n-1) |
+
+    // Using fast exponentiation (successive squaring) instead of iterated exponentiation :
+    // a^2 = a * a
+    // a^4 = a^2 * a^2
+    // a^8 = a^4 * a^4
+    // ...
+
+    const isNegative = n < 0n
+    n = isNegative ? -n : n
+
+    n = BigInt(n)
+
+    let base = [[1n,1n] , [1n,0n]]
+
+    let res = matrixExp(base, n)
+
+    // odd inputs have positive outputs, i.e. fib(-13) === 233n
+    return isNegative && n % 2n === 0n ? -res[0][1] : res[0][1]
+
+    function matrixExp(mat, pow){
+        if(pow === 1n) return mat
+
+        if(pow%2n === 0n) return matrixExp(multiplyMatrices(mat, mat), pow/2n)
+        if(pow%2n === 1n) return multiplyMatrices(mat , matrixExp(multiplyMatrices(mat, mat), (pow-1n)/2n) )
+    }
+
+    function multiplyMatrices(matA, matB){
+        const [[a,b], [c,d]] = matA
+        const [[e,f], [g,h]] = matB
+
+        return [ [a*e+b*g , a*f+b*h] , [c*e+d*g , c*f+d*h]]
+    }
+}
+
+console.log(fibMatrixExponentiationFastV2(0)); // 0n
+console.log(fibMatrixExponentiationFastV2(1)); // 1n
+console.log(fibMatrixExponentiationFastV2(-13n)); // 233n
+console.log(fibMatrixExponentiationFastV2(40n)); // 102334155n
+
+//Kata done
+
+// Using fast doubling identities
+// f(2n) = f(n)[2f(n+1) - f(N)] //even numbers
+// f(2n+1) = f(n+1)^2 + f(n)^2 //odd numbers

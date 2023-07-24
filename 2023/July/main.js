@@ -493,10 +493,79 @@ function fibMatrixExponentiation(n){
         return [ [a*e+b*g , a*f+b*h] , [c*e+d*g , c*f+d*h]]
     }
     // console.log(multiplyMatrices([[7,5],[6,3]] , [[2,1],[5,1]])); // [ [ 39, 12 ], [ 27, 9 ] ]
+    // console.log(multiplyMatrices([[2,1],[5,1]] , [[7,5],[6,3]])); // [ [ 20, 13 ], [ 41, 28 ] ]
+    //matrices multiplication are not commutative FYI
 }
 
 // console.log(fibMatrixExponentiation(30)); // 832040
 // console.log(fibMatrixExponentiation(40)); // 102334155
+
+// Proof of the above Wikipedia statement :
+
+// Let F0 = 0 and F1 = 1 and F2 = F0 + F1
+// We have :
+// |F2|        |1 1|   |F1|
+// |F1|    =   |1 0| . |F0|
+
+// Similarly, we have :
+// |F3|        |1 1|   |F2|        |1 1|^2   |F1|
+// |F2|    =   |1 0| . |F1|    =   |1 0|  .  |F0|
+
+// By recurrence, => we have in general :
+// |Fn+1|      |1 1|^n   |F1|
+// |Fn  |  =   |1 0|  .  |F0|
+
+// Let X = |1 1|^n    =   |X00 X01|
+//         |1 0|          |X10 X11|
+
+// => We have Fn = X10*F1 + X11*F0 = X10
+
+// Using a similar approach and starting with :
+// We have Fn+1 = Fn + Fn-1
+// We have F1 = F0 + F-1
+// So we have F-1 = 1
+// |F1|        |1 1|   |F0 |
+// |F0|    =   |1 0| . |F-1|
+
+// By recurrence, => we have in general :
+// |Fn  |      |1 1|^n   |F0 |
+// |Fn-1|  =   |1 0|  .  |F-1|
+
+// => We have Fn = X00*F0 + X01*F-1 = X01
+
+// => We also have
+// |Fn+1   Fn  |      |1 1|^n   |F1   F0 |
+// |Fn     Fn-1|  =   |1 0|  .  |F0   F-1|
+// And :
+// |F1   F0 |
+// |F0   F-1|  =  I2
+
+// https://math.stackexchange.com/questions/784710/how-to-prove-fibonacci-sequence-with-matrices
+
+function fibMatrixExponentiationBis(n){
+    let base = [[1,1] , [1,0]]
+    let res = [[1,1] , [1,0]]
+
+    for(let i=1 ; i<n ; i++){
+        res = multiplyMatrices(res, base)
+    }
+
+    return res[1][0]
+    //return res[0][1] // leads the same result as seen above
+
+    function multiplyMatrices(matA, matB){
+        const [[a,b], [c,d]] = matA
+        const [[e,f], [g,h]] = matB
+
+        return [ [a*e+b*g , a*f+b*h] , [c*e+d*g , c*f+d*h]]
+    }
+    // console.log(multiplyMatrices([[7,5],[6,3]] , [[2,1],[5,1]])); // [ [ 39, 12 ], [ 27, 9 ] ]
+    // console.log(multiplyMatrices([[2,1],[5,1]] , [[7,5],[6,3]])); // [ [ 20, 13 ], [ 41, 28 ] ]
+    //matrices multiplication are not commutative FYI
+}
+
+// console.log(fibMatrixExponentiationBis(30)); // 832040
+// console.log(fibMatrixExponentiationBis(40)); // 102334155
 
 // Now using fast exponentiation (successive squaring) instead of iterated exponentiation :
 // a^2 = a * a
@@ -611,5 +680,21 @@ function numberOfPairs(gloves){
 }
 
 // console.log(numberOfPairs(["red", "green", "red", "blue", "blue"])) // 2
+
+function numberOfPairsBis(gloves){
+    let res = 0
+    let freq = gloves.reduce((acc, cur) => {
+        acc[cur] = (acc[cur] || 0) + 1
+        if(acc[cur] === 2){
+            acc[cur] = 0
+            res++
+        }
+        return acc
+    }, {})
+
+    return res
+}
+
+// console.log(numberOfPairsBis(["red", "green", "red", "blue", "blue"])) // 2
 
 //=================================================

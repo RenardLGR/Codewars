@@ -319,3 +319,38 @@ function fibFastDoublingIdentities(n){
 
 // console.log(fibFastDoublingIdentities(30)); // 832040
 // console.log(fibFastDoublingIdentities(40)); // 102334155
+
+//===============================================
+// https://www.codewars.com/kata/522551eee9abb932420004a0/train/javascript
+// I love Fibonacci numbers in general, but I must admit I love some more than others.
+
+// I would like for you to write me a function that, when given a number n (n >= 1 ), returns the nth number in the Fibonacci Sequence.
+
+// For example:
+
+//    nthFibo(4) == 2
+// Because 2 is the 4th number in the Fibonacci Sequence.
+
+// For reference, the first two numbers in the Fibonacci sequence are 0 and 1, and each subsequent number is the sum of the previous two.
+
+function nthFibo(n) {
+    return fib(n+1)
+    
+    function fib(n){
+        //Using fast doubling identities
+        if(n === 0 || n === 1) return n
+        if(n === 2) return 1
+        //if n === 2, we have k=1, and the algo recursively calls itself with n=k+1=2
+    
+        //n is even
+        if(n%2 === 0){
+            let k = n/2
+            return fib(k) * (2*fib(k+1) - fib(k))
+        }else{ //n is odd
+            let k = Math.floor(n/2)
+            return fib(k+1) ** 2 + fib(k) ** 2
+        }
+    }
+}
+
+// We probably should have started with that :)

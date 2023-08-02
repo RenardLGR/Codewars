@@ -334,8 +334,8 @@ function fibFastDoublingIdentities(n){
 // For reference, the first two numbers in the Fibonacci sequence are 0 and 1, and each subsequent number is the sum of the previous two.
 
 function nthFibo(n) {
-    return fib(n+1)
-    
+    return fib(n-1)
+
     function fib(n){
         //Using fast doubling identities
         if(n === 0 || n === 1) return n

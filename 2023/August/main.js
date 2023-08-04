@@ -50,8 +50,74 @@ function encodeRailFenceCipher(string, numberRails) {
     return lines.join('')
 }
 
-console.log(encodeRailFenceCipher("WEAREDISCOVEREDFLEEATONCE", 3)) // WECRLTEERDSOEEFEAOCAIVDEN
+// console.log(encodeRailFenceCipher("WEAREDISCOVEREDFLEEATONCE", 3)) // WECRLTEERDSOEEFEAOCAIVDEN
   
 function decodeRailFenceCipher(string, numberRails) {
+    //run a similar loop than for the previous function to get the length of each rails, we can then easily chunk the input string
+    let railLengths = Array(numberRails).fill(0)
+    let lastRail = numberRails-1 //if railIndex === lastRail, dir is switched
+    let railIndex = 0
+    let dir = true // going down is true, going up is false
 
+    for(let i=0 ; i<string.length ; i++){
+        railLengths[railIndex]++
+        if(dir){ //if going down
+            if(railIndex === lastRail){
+                dir = !dir
+                railIndex--
+            }else{
+                railIndex++
+            }
+        }else{ //if going up
+            if(railIndex === 0){
+                dir = !dir
+                railIndex++
+            }else{
+                railIndex--
+            }
+        }
+    }
+
+    //now just chunk the input string to get each rails
+    let lines = Array(numberRails).fill('')
+    let start = 0
+    railLengths.forEach((length, railIdx) => {
+        for(let i=0 ; i<length ; i++){
+            lines[railIdx] += string[start+i]
+        }
+        start += length
+    })
+
+    lines = lines.map(line => line.split(''))
+
+    //now put the pieces together
+    let result = ''
+    railIndex = 0
+    dir = true // going down is true, going up is false
+    for(let i=0 ; i<string.length ; i++){
+        result += lines[railIndex].shift()
+        if(dir){ //if going down
+            if(railIndex === lastRail){
+                dir = !dir
+                railIndex--
+            }else{
+                railIndex++
+            }
+        }else{ //if going up
+            if(railIndex === 0){
+                dir = !dir
+                railIndex++
+            }else{
+                railIndex--
+            }
+        }
+    }
+
+    return result
 }
+
+// console.log(decodeRailFenceCipher("WECRLTEERDSOEEFEAOCAIVDEN", 3)); // WEAREDISCOVEREDFLEEATONCE
+// console.log(decodeRailFenceCipher("Hoo!el,Wrdl l", 3)); // Hello, World!
+
+
+//==================================================

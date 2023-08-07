@@ -25,23 +25,23 @@ const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 function encodeRailFenceCipher(string, numberRails) {
     let lines = Array(numberRails).fill('') //line 0 is top line, line numberRails-1 is bottom line
-    let lastRail = numberRails-1 //if railIndex === lastRail, dir is switched
+    let lastRail = numberRails - 1 //if railIndex === lastRail, dir is switched
     let railIndex = 0
     let dir = true // going down is true, going up is false
-    for(let i=0 ; i<string.length ; i++){
+    for (let i = 0; i < string.length; i++) {
         lines[railIndex] += string[i]
-        if(dir){ //if going down
-            if(railIndex === lastRail){
+        if (dir) { //if going down
+            if (railIndex === lastRail) {
                 dir = !dir
                 railIndex--
-            }else{
+            } else {
                 railIndex++
             }
-        }else{ //if going up
-            if(railIndex === 0){
+        } else { //if going up
+            if (railIndex === 0) {
                 dir = !dir
                 railIndex++
-            }else{
+            } else {
                 railIndex--
             }
         }
@@ -51,28 +51,28 @@ function encodeRailFenceCipher(string, numberRails) {
 }
 
 // console.log(encodeRailFenceCipher("WEAREDISCOVEREDFLEEATONCE", 3)) // WECRLTEERDSOEEFEAOCAIVDEN
-  
+
 function decodeRailFenceCipher(string, numberRails) {
     //run a similar loop than for the previous function to get the length of each rails, we can then easily chunk the input string
     let railLengths = Array(numberRails).fill(0)
-    let lastRail = numberRails-1 //if railIndex === lastRail, dir is switched
+    let lastRail = numberRails - 1 //if railIndex === lastRail, dir is switched
     let railIndex = 0
     let dir = true // going down is true, going up is false
 
-    for(let i=0 ; i<string.length ; i++){
+    for (let i = 0; i < string.length; i++) {
         railLengths[railIndex]++
-        if(dir){ //if going down
-            if(railIndex === lastRail){
+        if (dir) { //if going down
+            if (railIndex === lastRail) {
                 dir = !dir
                 railIndex--
-            }else{
+            } else {
                 railIndex++
             }
-        }else{ //if going up
-            if(railIndex === 0){
+        } else { //if going up
+            if (railIndex === 0) {
                 dir = !dir
                 railIndex++
-            }else{
+            } else {
                 railIndex--
             }
         }
@@ -82,8 +82,8 @@ function decodeRailFenceCipher(string, numberRails) {
     let lines = Array(numberRails).fill('')
     let start = 0
     railLengths.forEach((length, railIdx) => {
-        for(let i=0 ; i<length ; i++){
-            lines[railIdx] += string[start+i]
+        for (let i = 0; i < length; i++) {
+            lines[railIdx] += string[start + i]
         }
         start += length
     })
@@ -94,20 +94,20 @@ function decodeRailFenceCipher(string, numberRails) {
     let result = ''
     railIndex = 0
     dir = true // going down is true, going up is false
-    for(let i=0 ; i<string.length ; i++){
+    for (let i = 0; i < string.length; i++) {
         result += lines[railIndex].shift()
-        if(dir){ //if going down
-            if(railIndex === lastRail){
+        if (dir) { //if going down
+            if (railIndex === lastRail) {
                 dir = !dir
                 railIndex--
-            }else{
+            } else {
                 railIndex++
             }
-        }else{ //if going up
-            if(railIndex === 0){
+        } else { //if going up
+            if (railIndex === 0) {
                 dir = !dir
                 railIndex++
-            }else{
+            } else {
                 railIndex--
             }
         }
@@ -121,3 +121,237 @@ function decodeRailFenceCipher(string, numberRails) {
 
 
 //==================================================
+// Given a 2D array and a number of generations, compute n timesteps of Conway's Game of Life.
+// http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
+
+// The rules of the game are:
+
+// Any live cell with fewer than two live neighbours dies, as if caused by underpopulation.
+// Any live cell with more than three live neighbours dies, as if by overcrowding.
+// Any live cell with two or three live neighbours lives on to the next generation.
+// Any dead cell with exactly three live neighbours becomes a live cell.
+// Each cell's neighborhood is the 8 cells immediately around it (i.e. Moore Neighborhood). The universe is infinite in both the x and y dimensions and all cells are initially dead - except for those specified in the arguments. The return value should be a 2d array cropped around all of the living cells. (If there are no living cells, then return [[]].)
+
+// For illustration purposes, 0 and 1 will be represented as ░░ and ▓▓ blocks respectively (PHP: plain black and white squares). You can take advantage of the htmlize function to get a text representation of the universe, e.g.:
+
+// console.log(htmlize(cells));
+
+//What makes it hard is the grid size is changing
+
+class GameOfLife {
+    constructor(cells) {
+        this.grid = cells
+    }
+
+    //For the next gen, we start by increasing the current grid
+    //Then create an empty grid nextGrid that will be the receptacle of the next gen
+    //Run through each cells with the given rules
+    //Replace the current grid with the nextGrid
+    //Clean up sides
+    nextGen(){
+        this.increaseGridSize()
+        const numRows = this.grid.length
+        const numCols = this.grid[0].length
+        const nextGrid = Array.from({length:numRows}, (row) => Array(numCols).fill(0))
+
+        for(let row=0 ; row<numRows ; row++){
+            for(let col=0 ; col<numCols ; col++){
+                //if live
+                if(this.grid[row][col] === 1){
+                    if(this.getMooreLiveCellsCount(row, col) === 2 || this.getMooreLiveCellsCount(row, col) === 3){
+                        nextGrid[row][col] = 1
+                    }else{
+                        nextGrid[row][col] = 0
+                    }
+                }
+                //if dead
+                else{
+                    if(this.getMooreLiveCellsCount(row, col) === 3){
+                        nextGrid[row][col] = 1
+                    }else{
+                        nextGrid[row][col] = 0
+                    }
+                }
+            }
+        }
+
+        this.grid = nextGrid
+        this.cleanSides()
+    }
+
+
+    getMooreLiveCellsCount(rowIdx, colIdx) {
+        const numRows = this.grid.length
+        const numCols = this.grid[0].length
+        let count = 0
+
+        // Define the offsets for the Moore neighborhood cells
+        const neighborsOffsets = [
+            [-1, -1], [-1, 0], [-1, 1],
+            [0, -1], [0, 1],
+            [1, -1], [1, 0], [1, 1]
+        ]
+
+        // Iterate through the Moore neighborhood cells
+        for (const [rowOffset, colOffset] of neighborsOffsets) {
+            const neighborRowIdx = rowIdx + rowOffset
+            const neighborColIdx = colIdx + colOffset
+
+            // Check if the neighbor cell is within the grid boundaries
+            if (neighborRowIdx >= 0 && neighborRowIdx < numRows &&
+                neighborColIdx >= 0 && neighborColIdx < numCols) {
+
+                // Check if the neighbor cell is alive
+                if (this.grid[neighborRowIdx][neighborColIdx] === 1) {
+                    count++
+                }
+            }
+        }
+
+        return count
+    }
+
+    //From now I will use dead/empty interchangeably
+    increaseGridSize(){
+        this.addEmptyLeftCol()
+        this.addEmptyRightCol()
+        this.addEmptyTopRow()
+        this.addEmptyBottomRow()
+    }
+
+    addEmptyLeftCol(){
+        this.grid.forEach(row => {
+            row.unshift(0)
+        })
+    }
+    addEmptyRightCol(){
+        this.grid.forEach(row => {
+            row.push(0)
+        })
+    }
+    addEmptyTopRow(){
+        const numCols = this.grid[0].length
+        this.grid.unshift(Array(numCols).fill(0))
+    }
+    addEmptyBottomRow(){
+        const numCols = this.grid[0].length
+        this.grid.push(Array(numCols).fill(0))
+    }
+
+    cleanSides(){
+        this.removeEmptyLeftCols()
+        this.removeEmptyRightCols()
+        this.removeEmptyTopRows()
+        this.removeEmptyBottomRows()
+    }
+
+    removeEmptyLeftCols(){
+        let numCols = this.grid[0].length
+        let isLeftEmpty
+        let isRunAgain
+        do{
+            isLeftEmpty = true
+            for(let i=0 ; i<this.grid.length ; i++){
+                if(this.grid[i][numCols-1] === 1){
+                    isLeftEmpty = false
+                }
+            }
+
+            isRunAgain = false
+            if(isLeftEmpty){
+                isRunAgain = true
+                this.grid.forEach(row => {
+                    row.pop()
+                })
+            }
+            numCols = this.grid[0].length
+        }while(isRunAgain && numCols>0)
+    }
+
+    removeEmptyRightCols(){
+        let numCols = this.grid[0].length
+        let isRightEmpty
+        let isRunAgain
+        do{
+            isRightEmpty = true
+            for(let i=0 ; i<this.grid.length ; i++){
+                if(this.grid[i][0] === 1){
+                    isRightEmpty = false
+                }
+            }
+
+            isRunAgain = false
+            if(isRightEmpty){
+                isRunAgain = true
+                this.grid.forEach(row => {
+                    row.shift()
+                })
+            }
+            numCols = this.grid[0].length
+        }while(isRunAgain && numCols>0)
+    }
+
+    removeEmptyTopRows(){
+        let numRows = this.grid.length
+        let isTopEmpty
+        let isRunAgain
+
+        do{
+            isTopEmpty = !this.grid[0].includes(1)
+
+            isRunAgain = false
+            if(isTopEmpty){
+                isRunAgain = true
+                this.grid.shift()
+            }
+            numRows = this.grid.length
+        }while(isRunAgain && numRows>0)
+    }
+
+    removeEmptyBottomRows(){
+        let numRows = this.grid.length
+        let isBottomEmpty
+        let isRunAgain
+
+        do{
+            isBottomEmpty = !this.grid[numRows-1].includes(1)
+
+            isRunAgain = false
+            if(isBottomEmpty){
+                isRunAgain = true
+                this.grid.pop()
+            }
+            numRows = this.grid.length
+        }while(isRunAgain && numRows>0)
+    }
+}
+
+let glider1 = [
+    [1,0,0],
+    [0,1,1],
+    [1,1,0]
+]
+let glider2 = [
+    [0,1,0],
+    [0,0,1],
+    [1,1,1]
+]
+
+let gameOfLife = new GameOfLife(glider1)
+// console.log(gameOfLife.grid);
+// gameOfLife.nextGen()
+// console.log(gameOfLife.grid);
+
+
+function getGeneration(cells, generations){
+    // Solution should not modify input array
+    let cpy = JSON.parse(JSON.stringify(cells))
+    let game = new GameOfLife(cpy)
+    for(let i=0 ; i<generations ; i++){
+        game.nextGen()
+    }
+
+    return game.grid
+}
+
+//Works

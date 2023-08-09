@@ -1465,33 +1465,59 @@ function solveExpressionBis(exp){
 // QUESTION = 24572
 // BOOKKEEPER = 10743
 
-
+//Note :
 //From : https://www.youtube.com/watch?v=nYFd7VHKyWQ
 //We know if every letters are unique, there are n! permutations. But if there are duplicates, we need to divide by the number of appearances of any duplicates.
 //Example : AABC has 4! / 2! = 12 unique permutations
 //Example : AABBBC has 6! / 2!x3! = 60 unique permutations
 
+//Reasoning :
+//Let's say we want the number of the target word "EBAABB"
+//Preceding this word, we have all the words starting with A : This is equal to all the unique permutations of "EBABB". We add this to our result.
+//Following that, we have all the words starting with B : This is equal to all the unique permutations of "EAABB". We add this to our result.
+//There are no word starting with C as it is not a letter available.
+//In fact, the first step is to try all the words starting with a first letter preceding the first letter of our target word
+//Once that is done, we repeat the process as if the target word would be "BAABB"
+//And so on until we reach the end of the world
+
 function listPosition(word) {
     let res = 1
-    let sorted = word.split('').sort().join('')
+    solve(0, word.split(''))
 
+    return res
 
     function solve(idxWord, remaining){
-        let freq = remaining.split('').reduce((acc, cur) => {
-            acc[cur] = (acc[cur] || 0) + 1
-            return acc
-        }, {})
-        let sorted = word.split('').sort().join('')
+        //Get the letters available, sort them alphabetically
+        let unique = Array.from(new Set(remaining)).sort()
         
-        for(let i=0 ; i<remaining.length ; i++){
-            if(remaining[i] !== word[idxWord]){
-                res += numberUniquePermutations(remaining)
+        for(let i=0 ; i<unique.length ; i++){
+            //If the letter we've reached is the the first letter of our target word, dig into the recursion calls
+            if(word[idxWord] === unique[i]){
+                let letterToIgnore = word[idxWord]
+                for(let j=0 ; j<remaining.length ; j++){
+                    if(remaining[j] === letterToIgnore){
+                        let newRemaining = remaining.slice(0, j).concat(remaining.slice(j+1))
+                        solve(idxWord+1, newRemaining)
+                        break
+                    }
+                }
+                return
             }
+            //For any other letters, add all the unique permutations of the words starting with this alphabetically preceding letter
+            let permutationOf = ''
+            for(let j=0 ; j<remaining.length ; j++){
+                if(remaining[j] === unique[i]){
+                    permutationOf = remaining.slice(0, j).concat(remaining.slice(j+1)).join('')
+                    break
+                }
+            }
+            res += numberUniquePermutations(permutationOf)
         }
     }
 
 
     function numberUniquePermutations(word){
+        if(word.length === 0) return 0
         let freq = word.split('').reduce((acc, cur) => {
             acc[cur] = (acc[cur] || 0) + 1
             return acc
@@ -1506,9 +1532,16 @@ function listPosition(word) {
     }
 
     // console.log(numberUniquePermutations("AABBBC")) // 60
+    // console.log(numberUniquePermutations("")) // 0
 
     function factorial(n){
         return (n > 1) ? n * factorial(n-1) : 1;
     }
 }
-  
+
+// console.log(listPosition("ABAB")) // 2
+// console.log(listPosition("AAAB")) // 1
+// console.log(listPosition("BAAA")) // 4
+// console.log(listPosition("EBAABB")) // 55
+// console.log(listPosition("QUESTION")) // 24572
+// console.log(listPosition("BOOKKEEPER")) // 10753

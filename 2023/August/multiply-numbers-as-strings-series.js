@@ -71,6 +71,38 @@ function multiply(a,b){
 // console.log(multiply('123', '12')); // "1476"
 // console.log(multiply("58608473622772837728372827", "7586374672263726736374")) // "444625839871840560024489175424316205566214109298"
 
+// LC version :
+// https://leetcode.com/problems/multiply-strings/submissions/
+
+// We can consider 123 x 12 to be (100+20+3) x (10+2)
+// In other words, we multiply each digits of one with each digits of the other, we rearrange to keep track of the zeroes and don't forget the carry
+// Let's have an array containing our result and work with its indices
+
+function multiplyBis(a, b){
+    if(a==='0' || b==='0') return '0'
+
+    let res = Array(a.length + b.length).fill(0)
+
+    for(let idxA=a.length-1 ; idxA>=0 ; idxA--){
+        for(let idxB=b.length-1 ; idxB>=0 ; idxB--){
+            let resIdx = idxA + idxB + 1
+            let sum = res[resIdx] + Number(a[idxA]) * Number(b[idxB])
+            let carry = Math.floor(sum/10)
+            let remainder = sum % 10
+
+            res[resIdx] = remainder
+            res[resIdx-1] += carry
+            if(res[resIdx-1] > 10){
+                res[resIdx-1] -= 10
+                res[resIdx-2]++
+            }
+        }
+    }
+    while (res[0] === 0) res.shift()
+    return res.join('')
+}
+
+// console.log(multiplyBis('123', '12')); // "1476"
 //===============================================
 // https://www.codewars.com/kata/5923fbc72eafa9bcff00011a/train/javascript
 // This is the Part II of Multiplying numbers as strings.

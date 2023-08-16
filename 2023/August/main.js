@@ -355,3 +355,73 @@ function getGeneration(cells, generations){
 }
 
 //Works
+
+//=============================================
+// https://www.codewars.com/kata/55beec7dd347078289000021
+// Linked Lists - Length & Count
+
+// Implement Length() to count the number of nodes in a linked list.
+
+// length(null) => 0
+// length(1 -> 2 -> 3 -> null) => 3
+// Implement Count() to count the occurrences of an integer in a linked list.
+
+// count(null, 1) => 0
+// count(1 -> 2 -> 3 -> null, 1) => 1
+// count(1 -> 1 -> 1 -> 2 -> 2 -> 2 -> 2 -> 3 -> 3 -> null, 2) => 4
+// I've decided to bundle these two functions within the same Kata since they are both very similar.
+
+// The push()/Push() and buildOneTwoThree()/BuildOneTwoThree() functions do not need to be redefined.
+
+// Related Kata in order of expected completion (increasing difficulty):
+// Linked Lists - Push & BuildOneTwoThree
+// Linked Lists - Length & Count
+// Linked Lists - Get Nth Node
+// Linked Lists - Insert Nth Node
+// Linked Lists - Sorted Insert
+// Linked Lists - Insert Sort
+// Linked Lists - Append
+// Linked Lists - Remove Duplicates
+// Linked Lists - Move Node
+// Linked Lists - Move Node In-place
+// Linked Lists - Alternating Split
+// Linked Lists - Front Back Split
+// Linked Lists - Shuffle Merge
+// Linked Lists - Sorted Merge
+// Linked Lists - Merge Sort
+// Linked Lists - Sorted Intersect
+// Linked Lists - Iterative Reverse
+// Linked Lists - Recursive Reverse
+
+// Inspired by Stanford Professor Nick Parlante's excellent Linked List teachings.
+
+// function Node(data) {
+//     this.data = data;
+//     this.next = null;
+// }
+  
+function length(head) {
+    let len = 0
+    while(head){
+        len++
+        head = head.next
+    }
+    return len
+}
+
+function count(head, target) {
+    let ct = 0
+    while(head){
+        if(head.data === target) ct++
+        head = head.next
+    }
+    return ct
+}
+
+function lengthBis(head) {
+    return head ? 1 + lengthBis(head.next) : 0
+}
+
+function countBis(head, target) {
+    return head ? ( head.data===target ? 1 + countBis(head.next, target) : countBis(head.next, target) ) : 0
+}

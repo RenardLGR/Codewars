@@ -425,3 +425,48 @@ function lengthBis(head) {
 function countBis(head, target) {
     return head ? ( head.data===target ? 1 + countBis(head.next, target) : countBis(head.next, target) ) : 0
 }
+
+//=================================
+// https://www.codewars.com/kata/598106cb34e205e074000031
+// Story
+// The Pied Piper has been enlisted to play his magical tune and coax all the rats out of town.
+
+// But some of the rats are deaf and are going the wrong way!
+
+// Kata Task
+// How many deaf rats are there?
+// https://en.wikipedia.org/wiki/Pied_Piper_of_Hamelin
+
+// Legend
+// P = The Pied Piper
+// O~ = Rat going left
+// ~O = Rat going right
+// Example
+// ex1 ~O~O~O~O P has 0 deaf rats
+
+// ex2 P O~ O~ ~O O~ has 1 deaf rat
+
+// ex3 ~O~O~O~OP~O~OO~ has 2 deaf rats
+
+// Series
+// The deaf rats of Hamelin (2D)
+// https://www.codewars.com/kata/the-deaf-rats-of-hamelin-2d
+
+var countDeafRats = function(town) {
+    let isPSeen = false
+    let res = 0
+    for(let i=0 ; i<town.length ; i++){
+        if(town[i] === 'O' || town[i] === '~'){
+            if( (town[i] === 'O' && !isPSeen) || (town[i] === '~' && isPSeen) ){
+                res++
+            }
+            i++
+        }
+
+        if(town[i] === 'P') isPSeen = true
+    }
+
+    return res
+}
+
+// console.log(countDeafRats("~O~O~O~OP~O~OO~")) // 2

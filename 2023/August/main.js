@@ -470,3 +470,117 @@ var countDeafRats = function(town) {
 }
 
 // console.log(countDeafRats("~O~O~O~OP~O~OO~")) // 2
+
+//============================================
+// Story
+// Those pesky rats have returned and this time they have taken over the Town Square.
+
+// The Pied Piper has been enlisted again to play his magical tune and coax all the rats towards him.
+
+// But some of the rats are deaf and are going the wrong way!
+
+// Kata Task
+// How many deaf rats are there?
+
+// Input Notes
+// The Town Square is a rectangle of square paving stones (the Square has 1-15 pavers per side)
+// The Pied Piper is always present
+// Output Notes
+// Deaf rats are those that are moving to paving stone further away from the Piper than where they are now
+// Use Euclidean distance for your calculations
+// https://en.wikipedia.org/wiki/Euclidean_distance
+// Legend
+// P = The Pied Piper
+// ← ↑ → ↓ ↖ ↗ ↘ ↙ = Rats going in different directions
+// space = Everything else
+
+// Examples
+// ex1 - has 1 deaf rat
+// ↗ P          
+//   ↘   ↖
+//   ↑          
+// ↗      
+
+// ex2 - has 7 deaf rats
+//     ↗          
+// P ↓   ↖ ↑
+//     ←   ↓
+//   ↖ ↙   ↙
+// ↓ ↓ ↓
+
+
+function countDeafRatsP2(townSquare) {
+    let res = 0
+    let pCoords = []
+    let grid = townSquare.map(r => r.split(''))
+    for (let r = 0; r < grid.length; r++) {
+        for (let c = 0; c < grid[0].length; c++) {
+            if (grid[r][c] === 'P') {
+                pCoords = [r, c]
+            }
+        }
+    }
+
+    for (let r = 0; r < grid.length; r++) {
+        for (let c = 0; c < grid[0].length; c++) {
+            if ("←↑→↓↖↗↘↙".includes(grid[r][c])) {
+                let prevDist = Math.abs((r - pCoords[0]) ** 2 + (c - pCoords[1]) ** 2)
+                let newDist
+                switch (grid[r][c]) {
+                    case "←":
+                        newDist = Math.abs((r - pCoords[0]) ** 2 + (c - 1 - pCoords[1]) ** 2)
+                        if (newDist > prevDist) res++
+                        break;
+
+                    case "↑":
+                        newDist = Math.abs((r - 1 - pCoords[0]) ** 2 + (c - pCoords[1]) ** 2)
+                        if (newDist > prevDist) res++
+                        break;
+
+                    case "→":
+                        newDist = Math.abs((r - pCoords[0]) ** 2 + (c + 1 - pCoords[1]) ** 2)
+                        if (newDist > prevDist) res++
+                        break;
+
+                    case "↓":
+                        newDist = Math.abs((r + 1 - pCoords[0]) ** 2 + (c - pCoords[1]) ** 2)
+                        if (newDist > prevDist) res++
+                        break;
+
+                    case "↖":
+                        newDist = Math.abs((r - 1 - pCoords[0]) ** 2 + (c - 1 - pCoords[1]) ** 2)
+                        if (newDist > prevDist) res++
+                        break;
+
+                    case "↗":
+                        newDist = Math.abs((r - 1 - pCoords[0]) ** 2 + (c + 1 - pCoords[1]) ** 2)
+                        if (newDist > prevDist) res++
+                        break;
+
+                    case "↘":
+                        newDist = Math.abs((r + 1 - pCoords[0]) ** 2 + (c + 1 - pCoords[1]) ** 2)
+                        if (newDist > prevDist) res++
+                        break;
+
+                    case "↙":
+                        newDist = Math.abs((r + 1 - pCoords[0]) ** 2 + (c - 1 - pCoords[1]) ** 2)
+                        if (newDist > prevDist) res++
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
+    return res
+}
+
+// console.log(countDeafRatsP2([
+//     "        ↗",
+//     "P ↓   ↖ ↑",
+//     "    ←   ↓",
+//     "  ↖ ↙   ↙",
+//     "↓ ↓ ↓    "
+// ])) // 7

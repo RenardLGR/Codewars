@@ -584,3 +584,50 @@ function countDeafRatsP2(townSquare) {
 //     "  ↖ ↙   ↙",
 //     "↓ ↓ ↓    "
 // ])) // 7
+
+function countDeafRatsP2Bis(townSquare) {
+    let res = 0
+    let pCoords = []
+    let grid = townSquare.map(r => r.split(''))
+    for (let r = 0; r < grid.length; r++) {
+        for (let c = 0; c < grid[0].length; c++) {
+            if (grid[r][c] === 'P') {
+                pCoords = [r, c]
+            }
+        }
+    }
+
+    let offsets = {
+        "←": [0,-1],
+        "↑": [-1,0],
+        "→": [0,1],
+        "↓": [1,0],
+        "↖": [-1,-1],
+        "↗": [-1,1],
+        "↘": [1,1],
+        "↙": [1,-1]
+    }
+
+    for (let r = 0; r < grid.length; r++) {
+        for (let c = 0; c < grid[0].length; c++) {
+            if ("←↑→↓↖↗↘↙".includes(grid[r][c])) {
+                let prevDist = Math.abs((r - pCoords[0]) ** 2 + (c - pCoords[1]) ** 2)
+                let arrow = grid[r][c]
+                let newDist = Math.abs((r + offsets[arrow][0] - pCoords[0]) ** 2 + (c + offsets[arrow][1] - pCoords[1]) ** 2)
+                if (newDist > prevDist) res++
+            }
+        }
+    }
+
+    return res
+}
+
+// console.log(countDeafRatsP2Bis([
+//     "        ↗",
+//     "P ↓   ↖ ↑",
+//     "    ←   ↓",
+//     "  ↖ ↙   ↙",
+//     "↓ ↓ ↓    "
+// ])) // 7
+
+//=======================================

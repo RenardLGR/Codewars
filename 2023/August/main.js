@@ -662,3 +662,111 @@ var beeramid = function(bonus, price) {
 
 // console.log(beeramid(1500, 2)) // 12
 // console.log(beeramid(5000, 3)) // 16
+
+
+//=============================
+// https://www.codewars.com/kata/52f831fa9d332c6591000511
+// For a given chemical formula represented by a string, count the number of atoms of each element contained in the molecule and return an object (associative array in PHP, Dictionary<string, int> in C#, Map<String,Integer> in Java).
+
+// For example:
+
+// var water = 'H2O';
+// parseMolecule(water); // return {H: 2, O: 1}
+
+// var magnesiumHydroxide = 'Mg(OH)2';
+// parseMolecule(magnesiumHydroxide); // return {Mg: 1, O: 2, H: 2}
+
+// var fremySalt = 'K4[ON(SO3)2]2';
+// parseMolecule(fremySalt); // return {K: 4, O: 14, N: 2, S: 4}
+// As you can see, some formulas have brackets in them. The index outside the brackets tells you that you have to multiply count of each atom inside the bracket on this index. For example, in Fe(NO3)2 you have one iron atom, two nitrogen atoms and six oxygen atoms.
+
+// Note that brackets may be round, square or curly and can also be nested. Index after the braces is optional.
+
+function parseMolecule(formula) {
+    const alphaU = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    const alphaL = 'abcdefghijklmnopqrstuvwxyz'
+    const nums = '0123456789'
+    let openings = {
+        '(' : ')',
+        '[' : ']',
+        '{' : '}'
+    }
+    formula = formula.split('')
+    let res = solve(0, null)
+    console.log(formula);
+    return res
+    
+    function solve(start, opening){
+        let res = {}
+        let closing = openings[opening]
+
+        let atomName
+        let num
+        let freq = {}
+        for(let i=start ; i<formula.length ; i++){
+            //seen chars of the string will be replaced by a '_' so they don't interfere later on
+            if(formula[i] === '_'){
+                continue
+            }else if(formula[i] in openings){
+                freq = solve(i+1, formula[i])
+                formula[i] = '_'
+            }else if(nums.includes(formula[i])){
+                num = formula[i]
+                formula[i] = '_'
+                let j = i+1
+                while(nums.includes(formula[j])){
+                    num += formula[j]
+                    formula[j] = '_'
+                    j++
+                }
+                i = j-1
+                if(atomName){
+                    //classic case, a number following an element
+                    res = addFreq(res, {atomName : Number(num)})
+                    atomName = ''
+                }else{
+                    //case a number followed a closing bracket
+                    res = addFreq(res, multFreq(freq, Number(num)))
+                }
+                num = ''
+            }else if(alphaU.includes(formula[i])){
+                if(atomName){
+                    res = addFreq(res, {atomName : 1})
+                    atomName = ''
+                }
+                atomName = formula[i]
+                formula[i] = '_'
+                let j = i+1
+                while(alphaL.includes(formula[j])){
+                    atomName += formula[j]
+                    formula[j] = '_'
+                    j++
+                }
+                i = j-1
+            }else if(formula[i] === closing){
+                formula[i] = '_'
+                return res
+            }
+        }
+
+        return res
+    }
+
+    function multFreq(freq, factor){
+        for(let element in freq){
+            freq[element] *= factor
+        }
+
+        return freq
+    }
+
+    function addFreq(res, freq){
+        for(let element in freq){
+            res[element] = (res[element] || 0) + freq[element]
+        }
+
+        return res
+    }
+}
+
+parseMolecule('Mg(OH)2')

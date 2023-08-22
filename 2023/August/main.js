@@ -693,24 +693,42 @@ function parseMolecule(formula) {
     }
     formula = formula.split('')
     let res = solve(0, null)
-    console.log(formula);
     return res
     
+    //basically we store elements and frequencies
+    //When we encounter a num, if we have an element in storage we multiply by the num, if we have a frequency in storage we multiply the frequency, we add to the res as needed
+    //When we encounter an element, if it is following an other element it means there was only one of it, if it follow a closing, it means there was only one of it, if it follows a number, as seen above
+    //When we encounter an opening, we recursively call solve, the result of this call will be saved in freq which can or not be multiplied if followed by a number as seen above
     function solve(start, opening){
         let res = {}
         let closing = openings[opening]
 
-        let atomName
-        let num
-        let freq = {}
+        let atomName = '' //temp current values
+        let num = '' //temp current values
+        let freq = null //temp will store a solve() call when opening is encountered
         for(let i=start ; i<formula.length ; i++){
             //seen chars of the string will be replaced by a '_' so they don't interfere later on
             if(formula[i] === '_'){
                 continue
-            }else if(formula[i] in openings){
+            }
+            //char is an opening
+            else if(formula[i] in openings){
+                if(atomName){
+                    let obj = {}
+                    obj[atomName] = 1
+                    res = addFreq(res, obj)
+                    // res = addFreq(res, {[atomName] : 1})
+                    atomName = ''
+                }
+                if(freq){
+                    res = addFreq(res, multFreq(freq, Number(num ? num : 1)))
+                    freq = null
+                }
                 freq = solve(i+1, formula[i])
                 formula[i] = '_'
-            }else if(nums.includes(formula[i])){
+            }
+            //char is a num
+            else if(nums.includes(formula[i])){
                 num = formula[i]
                 formula[i] = '_'
                 let j = i+1
@@ -720,19 +738,35 @@ function parseMolecule(formula) {
                     j++
                 }
                 i = j-1
+                //a num can only follow a closing or an element
                 if(atomName){
                     //classic case, a number following an element
-                    res = addFreq(res, {atomName : Number(num)})
+                    let obj = {}
+                    obj[atomName] = Number(num ? num : 1)
+                    res = addFreq(res, obj)
+                    // res = addFreq(res, {[atomName] : Number(num ? num : 1)})
                     atomName = ''
-                }else{
-                    //case a number followed a closing bracket
-                    res = addFreq(res, multFreq(freq, Number(num)))
+                }
+                if(freq){
+                    //case a number following a closing bracket
+                    res = addFreq(res, multFreq(freq, Number(num ? num : 1)))
+                    freq = null
                 }
                 num = ''
-            }else if(alphaU.includes(formula[i])){
+            }
+            //char is an upper case letter
+            else if(alphaU.includes(formula[i])){
+                //case a letter is directly following an element, there is only 1 element
                 if(atomName){
-                    res = addFreq(res, {atomName : 1})
+                    let obj = {}
+                    obj[atomName] = 1
+                    res = addFreq(res, obj)
+                    // res = addFreq(res, {[atomName] : 1})
                     atomName = ''
+                }
+                if(freq){
+                    res = addFreq(res, multFreq(freq, Number(num ? num : 1)))
+                    freq = null
                 }
                 atomName = formula[i]
                 formula[i] = '_'
@@ -743,12 +777,35 @@ function parseMolecule(formula) {
                     j++
                 }
                 i = j-1
-            }else if(formula[i] === closing){
+            }
+            //char is the closing
+            else if(formula[i] === closing){
+                if(atomName){
+                    let obj = {}
+                    obj[atomName] = 1
+                    res = addFreq(res, obj)
+                    // res = addFreq(res, {[atomName] : 1})
+                    atomName = ''
+                }
+                if(freq){
+                    res = addFreq(res, multFreq(freq, Number(num ? num : 1)))
+                    freq = null
+                }
                 formula[i] = '_'
                 return res
             }
         }
-
+        if(atomName){
+            let obj = {}
+            obj[atomName] = 1
+            res = addFreq(res, obj)
+            // res = addFreq(res, {[atomName] : 1})
+            atomName = ''
+        }
+        if(freq){
+            res = addFreq(res, multFreq(freq, Number(num ? num : 1)))
+            freq = null
+        }
         return res
     }
 
@@ -769,4 +826,10 @@ function parseMolecule(formula) {
     }
 }
 
-parseMolecule('Mg(OH)2')
+// console.log(parseMolecule('H2O')) // { H: 2, O: 1 }
+// console.log(parseMolecule('[Rand]500')) // { Rand: 500}
+// console.log(parseMolecule('(Rand500)[Other600]')) // { Rand: 500, Other: 600}
+// console.log(parseMolecule('[(Rand)]500')) // { Rand: 500}
+// console.log(parseMolecule('Mg(OH)2')) // { Mg: 1, O: 2, H: 2 }
+// console.log(parseMolecule('K4[ON(SO3)2]2')) // { K: 4, O: 14, N: 2, S: 4 }
+// console.log(parseMolecule('(C5H5)Fe(CO)2CH3')) // { C: 8, H: 8, Fe: 1, O: 2 }

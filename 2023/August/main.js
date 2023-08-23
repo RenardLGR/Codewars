@@ -833,3 +833,120 @@ function parseMolecule(formula) {
 // console.log(parseMolecule('Mg(OH)2')) // { Mg: 1, O: 2, H: 2 }
 // console.log(parseMolecule('K4[ON(SO3)2]2')) // { K: 4, O: 14, N: 2, S: 4 }
 // console.log(parseMolecule('(C5H5)Fe(CO)2CH3')) // { C: 8, H: 8, Fe: 1, O: 2 }
+
+//cleaner version :
+function parseMoleculeBis(formula) {
+    const alphaU = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    const alphaL = 'abcdefghijklmnopqrstuvwxyz'
+    const nums = '0123456789'
+    let openings = {
+        '(' : ')',
+        '[' : ']',
+        '{' : '}'
+    }
+    formula = formula.split('')
+    let res = solve(0, null)
+    return res
+    
+    //basically we store elements (in case of elements alone) and frequencies (in case of brackets)
+    //When we encounter a num, if we have an element in storage we multiply by the num, if we have a frequency in storage we multiply the frequency, we add to the res as needed
+    //When we encounter an element, if it is following an other element it means there was only one of it, if it follow a closing, it means there was only one of it, if it follows a number, as seen above
+    //When we encounter an opening, we recursively call solve, the result of this call will be saved in freq which can or not be multiplied if followed by a number as seen above
+    function solve(start, opening){
+        let res = {}
+        let closing = openings[opening]
+
+        let atomName = '' //temp current values
+        let freq = null //temp will store a solve() call when opening is encountered
+        for(let i=start ; i<formula.length ; i++){
+            //seen chars of the string will be replaced by a '_' so they don't interfere later on
+            if(formula[i] === '_'){
+                continue
+            }
+            //char is an opening
+            else if(formula[i] in openings){
+                [res, atomName, freq] = cleanup(res, atomName, freq)
+                freq = solve(i+1, formula[i])
+                formula[i] = '_'
+            }
+            //char is a num
+            else if(nums.includes(formula[i])){
+                let num = formula[i]
+                formula[i] = '_'
+                let j = i+1
+                while(nums.includes(formula[j])){
+                    num += formula[j]
+                    formula[j] = '_'
+                    j++
+                }
+                i = j-1;
+                //a num can only follow a closing or an element
+                [res, atomName, freq] = cleanup(res, atomName, freq, Number(num))
+            }
+            //char is an upper case letter
+            else if(alphaU.includes(formula[i])){
+                [res, atomName, freq] = cleanup(res, atomName, freq)
+                atomName = formula[i]
+                formula[i] = '_'
+                let j = i+1
+                while(alphaL.includes(formula[j])){
+                    atomName += formula[j]
+                    formula[j] = '_'
+                    j++
+                }
+                i = j-1
+            }
+            //char is the closing
+            else if(formula[i] === closing){
+                [res, atomName, freq] = cleanup(res, atomName, freq)
+                formula[i] = '_'
+                return res
+            }
+        }
+        [res, atomName, freq] = cleanup(res, atomName, freq)
+        return res
+    }
+
+    function multFreq(freq, factor){
+        for(let element in freq){
+            freq[element] *= factor
+        }
+
+        return freq
+    }
+
+    function addFreq(res, freq){
+        for(let element in freq){
+            res[element] = (res[element] || 0) + freq[element]
+        }
+
+        return res
+    }
+
+    //if we have a freq in storage, add it, if we have an atomName in storage, add 1 of that, return the new res and set the other two to nothing
+    function cleanup(res, atomName, freq, num = 1){
+        // if a letter is directly following an element, there is only 1 element
+        if(atomName){
+            let obj = {}
+            obj[atomName] = num
+            res = addFreq(res, obj)
+            // res = addFreq(res, {[atomName] : num})
+            atomName = ''
+        }
+        if(freq){
+            res = addFreq(res, multFreq(freq, num))
+            freq = null
+        }
+        return [res, atomName, freq]
+    }
+}
+
+console.log(parseMoleculeBis('H2O')) // { H: 2, O: 1 }
+console.log(parseMoleculeBis('[Rand]500')) // { Rand: 500}
+console.log(parseMoleculeBis('(Rand500)[Other600]')) // { Rand: 500, Other: 600}
+console.log(parseMoleculeBis('[(Rand)]500')) // { Rand: 500}
+console.log(parseMoleculeBis('Mg(OH)2')) // { Mg: 1, O: 2, H: 2 }
+console.log(parseMoleculeBis('K4[ON(SO3)2]2')) // { K: 4, O: 14, N: 2, S: 4 }
+console.log(parseMoleculeBis('(C5H5)Fe(CO)2CH3')) // { C: 8, H: 8, Fe: 1, O: 2 }
+
+//try with OOP

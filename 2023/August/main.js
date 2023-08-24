@@ -941,12 +941,32 @@ function parseMoleculeBis(formula) {
     }
 }
 
-console.log(parseMoleculeBis('H2O')) // { H: 2, O: 1 }
-console.log(parseMoleculeBis('[Rand]500')) // { Rand: 500}
-console.log(parseMoleculeBis('(Rand500)[Other600]')) // { Rand: 500, Other: 600}
-console.log(parseMoleculeBis('[(Rand)]500')) // { Rand: 500}
-console.log(parseMoleculeBis('Mg(OH)2')) // { Mg: 1, O: 2, H: 2 }
-console.log(parseMoleculeBis('K4[ON(SO3)2]2')) // { K: 4, O: 14, N: 2, S: 4 }
-console.log(parseMoleculeBis('(C5H5)Fe(CO)2CH3')) // { C: 8, H: 8, Fe: 1, O: 2 }
+// console.log(parseMoleculeBis('H2O')) // { H: 2, O: 1 }
+// console.log(parseMoleculeBis('[Rand]500')) // { Rand: 500}
+// console.log(parseMoleculeBis('(Rand500)[Other600]')) // { Rand: 500, Other: 600}
+// console.log(parseMoleculeBis('[(Rand)]500')) // { Rand: 500}
+// console.log(parseMoleculeBis('Mg(OH)2')) // { Mg: 1, O: 2, H: 2 }
+// console.log(parseMoleculeBis('K4[ON(SO3)2]2')) // { K: 4, O: 14, N: 2, S: 4 }
+// console.log(parseMoleculeBis('(C5H5)Fe(CO)2CH3')) // { C: 8, H: 8, Fe: 1, O: 2 }
 
-//try with OOP
+//================================================
+// https://www.codewars.com/kata/5282b48bb70058e4c4000fa7
+// When working with color values it can sometimes be useful to extract the individual red, green, and blue (RGB) component values for a color. Implement a function that meets these requirements:
+
+// Accepts a case-insensitive hexadecimal color string as its parameter (ex. "#FF9933" or "#ff9933")
+// Returns a Map<String, int> with the structure {r: 255, g: 153, b: 51} where r, g, and b range from 0 through 255
+// Note: your implementation does not need to support the shorthand form of hexadecimal notation (ie "#FFF")
+
+// Example
+// "#FF9933" --> {r: 255, g: 153, b: 51}
+
+function hexStringToRGB(hexString) {
+    hexString = hexString.slice(1)
+    return {
+        r: parseInt(hexString.slice(0, 2), 16),
+        g: parseInt(hexString.slice(2, 4), 16),
+        b: parseInt(hexString.slice(4), 16)
+    }
+}
+
+console.log(hexStringToRGB("#FF9933")); // {r: 255, g: 153, b: 51}

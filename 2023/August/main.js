@@ -970,3 +970,25 @@ function hexStringToRGB(hexString) {
 }
 
 console.log(hexStringToRGB("#FF9933")); // {r: 255, g: 153, b: 51}
+
+function hexStringToRGBBis(hexString) {
+    hexString = hexString.slice(1)
+    return {
+        r: hexaToDec(hexString.slice(0, 2)),
+        g: hexaToDec(hexString.slice(2, 4)),
+        b: hexaToDec(hexString.slice(4))
+    }
+
+    function hexaToDec(hex){
+        hex = hex.toUpperCase()
+        const nums = "0123456789ABCDEF"
+        let res = 0
+        for(let i=hex.length-1 ; i>=0 ; i--){
+            res += Math.pow(16, hex.length-1-i) * nums.indexOf(hex[i])
+        }
+        return res
+    }
+    // console.log(hexaToDec("5df8")); // 24056
+}
+
+console.log(hexStringToRGBBis("#FF9933")); // {r: 255, g: 153, b: 51}

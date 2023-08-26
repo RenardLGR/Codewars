@@ -969,7 +969,7 @@ function hexStringToRGB(hexString) {
     }
 }
 
-console.log(hexStringToRGB("#FF9933")); // {r: 255, g: 153, b: 51}
+// console.log(hexStringToRGB("#FF9933")); // {r: 255, g: 153, b: 51}
 
 function hexStringToRGBBis(hexString) {
     hexString = hexString.slice(1)
@@ -991,4 +991,30 @@ function hexStringToRGBBis(hexString) {
     // console.log(hexaToDec("5df8")); // 24056
 }
 
-console.log(hexStringToRGBBis("#FF9933")); // {r: 255, g: 153, b: 51}
+// console.log(hexStringToRGBBis("#FF9933")); // {r: 255, g: 153, b: 51}
+
+//=======================================
+// https://www.codewars.com/kata/51edd51599a189fe7f000015/train/javascript
+// Complete the function that
+
+// accepts two integer arrays of equal length
+// compares the value each member in one array to the corresponding member in the other
+// squares the absolute value difference between those two values
+// and returns the average of those squared absolute value difference between each member pair.
+// Examples
+// [1, 2, 3], [4, 5, 6]              -->   9   because (9 + 9 + 9) / 3
+// [10, 20, 10, 2], [10, 25, 5, -2]  -->  16.5 because (0 + 25 + 25 + 16) / 4
+// [-1, 0], [0, -1]                  -->   1   because (1 + 1) / 2
+
+function meanSquare(arr1, arr2){
+    let length = arr1.length
+    let sum = 0
+    for(let i=0 ; i<length ; i++){
+        sum += Math.pow(Math.abs(arr1[i] - arr2[i]) , 2)
+    }
+
+    return sum / length
+}
+
+console.log(meanSquare([1, 2, 3], [4, 5, 6])); // 9
+console.log(meanSquare([10, 20, 10, 2], [10, 25, 5, -2])); // 16.5

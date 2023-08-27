@@ -1016,5 +1016,104 @@ function meanSquare(arr1, arr2){
     return sum / length
 }
 
-console.log(meanSquare([1, 2, 3], [4, 5, 6])); // 9
-console.log(meanSquare([10, 20, 10, 2], [10, 25, 5, -2])); // 16.5
+// console.log(meanSquare([1, 2, 3], [4, 5, 6])); // 9
+// console.log(meanSquare([10, 20, 10, 2], [10, 25, 5, -2])); // 16.5
+
+function meanSquareBis(arr1, arr2){
+    return arr1.reduce((acc, cur, idx) => acc + Math.pow(Math.abs(cur - arr2[idx]) , 2), 0) / arr1.length
+}
+
+// console.log(meanSquareBis([1, 2, 3], [4, 5, 6])); // 9
+// console.log(meanSquareBis([10, 20, 10, 2], [10, 25, 5, -2])); // 16.5
+
+//========================================
+// https://www.codewars.com/kata/55eeddff3f64c954c2000059
+// You are given a list/array which contains only integers (positive and negative). Your job is to sum only the numbers that are the same and consecutive. The result should be one list.
+
+// Extra credit if you solve it in one line. You can assume there is never an empty list/array and there will always be an integer.
+
+// Same meaning: 1 == 1
+
+// 1 != -1
+
+// #Examples:
+
+// [1,4,4,4,0,4,3,3,1] # should return [1,12,0,4,6,1]
+
+// """So as you can see sum of consecutives 1 is 1 
+// sum of 3 consecutives 4 is 12 
+// sum of 0... and sum of 2 
+// consecutives 3 is 6 ..."""
+
+// [1,1,7,7,3] # should return [2,14,3]
+// [-5,-5,7,7,12,0] # should return [-10,14,12,0]
+
+function sumConsecutives(a) {
+    if(a.length <= 1 ) return a
+
+    let res = []
+    let prev = null
+    let tempSum = null
+    for(let i=0 ; i<a.length ; i++){
+        //case i === 0
+        if(prev===null && tempSum===null){
+            prev = a[i]
+            tempSum = a[i]
+        }else if(a[i] === prev){
+            tempSum += a[i]
+        }else{
+            res.push(tempSum)
+            prev = a[i]
+            tempSum = a[i]
+        }
+    }
+    res.push(tempSum)
+    return res
+}
+
+// console.log(sumConsecutives([])); // []
+// console.log(sumConsecutives([1])); // [1]
+// console.log(sumConsecutives([1,4,4,4,0,4,3,3,1])) // [1,12,0,4,6,1]
+// console.log(sumConsecutives([1,4,4,4,0,4,3,3,1,1])) // [1,12,0,4,6,2]
+// console.log(sumConsecutives([-5,-5,7,7,12,0])) // [-10,14,12,0]
+
+function sumConsecutivesBis(a){
+    //if cur is identical than the element before, add cur to the last element of the acc
+    //else push cur to the acc
+    return a.reduce((acc, cur, idx, arr) => {
+        cur === arr[idx-1] ? acc[acc.length-1]+=cur : acc[acc.length]=cur 
+        return acc
+    },[])
+}
+
+// console.log(sumConsecutivesBis([])); // []
+// console.log(sumConsecutivesBis([1])); // [1]
+// console.log(sumConsecutivesBis([1,4,4,4,0,4,3,3,1])) // [1,12,0,4,6,1]
+// console.log(sumConsecutivesBis([1,4,4,4,0,4,3,3,1,1])) // [1,12,0,4,6,2]
+// console.log(sumConsecutivesBis([-5,-5,7,7,12,0])) // [-10,14,12,0]
+
+function sumConsecutivesTer(a){
+    //if cur is identical than the element before, add cur to the last element of the acc
+    //else push cur to the acc
+    return a.reduce((acc, cur, idx, arr) => cur === arr[idx-1] ? acc.slice(0, acc.length-1).concat(acc[acc.length-1] + cur) : [...acc, cur] , [])
+}
+
+// console.log(sumConsecutivesTer([])); // []
+// console.log(sumConsecutivesTer([1])); // [1]
+// console.log(sumConsecutivesTer([1,4,4,4,0,4,3,3,1])) // [1,12,0,4,6,1]
+// console.log(sumConsecutivesTer([1,4,4,4,0,4,3,3,1,1])) // [1,12,0,4,6,2]
+// console.log(sumConsecutivesTer([-5,-5,7,7,12,0])) // [-10,14,12,0]
+
+function sumConsecutivesQuater(a){
+    //if cur is identical than the element before, pop acc, add cur and the popped value, and patch it back
+    //else just push cur to the acc
+    return a.reduce((acc, cur, idx) => acc.concat( cur === a[idx-1] ? acc.pop() + cur : cur) , [])
+}
+
+// console.log(sumConsecutivesQuater([])); // []
+// console.log(sumConsecutivesQuater([1])); // [1]
+// console.log(sumConsecutivesQuater([1,4,4,4,0,4,3,3,1])) // [1,12,0,4,6,1]
+// console.log(sumConsecutivesQuater([1,4,4,4,0,4,3,3,1,1])) // [1,12,0,4,6,2]
+// console.log(sumConsecutivesQuater([-5,-5,7,7,12,0])) // [-10,14,12,0]
+
+//=========================================

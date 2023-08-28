@@ -1117,3 +1117,58 @@ function sumConsecutivesQuater(a){
 // console.log(sumConsecutivesQuater([-5,-5,7,7,12,0])) // [-10,14,12,0]
 
 //=========================================
+// https://www.codewars.com/kata/597770e98b4b340e5b000071
+// You have to extract a portion of the file name as follows:
+
+// Assume it will start with date represented as long number
+// Followed by an underscore
+// You'll have then a filename with an extension
+// it will always have an extra extension at the end
+// Inputs:
+// 1231231223123131_FILE_NAME.EXTENSION.OTHEREXTENSION
+
+// 1_This_is_an_otherExample.mpg.OTHEREXTENSIONadasdassdassds34
+
+// 1231231223123131_myFile.tar.gz2
+// Outputs
+// FILE_NAME.EXTENSION
+
+// This_is_an_otherExample.mpg
+
+// myFile.tar
+// Acceptable characters for random tests:
+
+// abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-0123456789
+
+// The recommended way to solve it is using RegEx and specifically groups.
+
+class FileNameExtractor {
+    static extractFileName (dirtyFileName) {
+        const regex = /([0-9]+)_([a-zA-Z0-9_-]+).([a-zA-Z0-9-]+).([a-zA-Z0-9-]+)/
+        const matches = dirtyFileName.match(regex)
+        console.log(matches)
+        return matches[2] + '.' + matches[3]
+    }
+}
+
+// console.log(FileNameExtractor.extractFileName("1_FILE_NAME.EXTENSION.OTHEREXTENSIONadasdassdassds34"))  // "FILE_NAME.EXTENSION"
+// console.log(FileNameExtractor.extractFileName("1231231223123131_FILE_NAME.EXTENSION.OTHEREXTENSION"))  // "FILE_NAME.EXTENSION"
+// console.log(FileNameExtractor.extractFileName("1_FILE_NAM-E.EXTENSION.OTHEREXTENSIONadasdassdassds34"))  // 'FILE_NAM-E.EXTENSION'
+// console.log(FileNameExtractor.extractFileName("65077_0ys9z0erm3j.au1.65077a"))  // '0ys9z0erm3j.au1
+
+class FileNameExtractorBis {
+    static extractFileName (dirtyFileName) {
+        const start = dirtyFileName.indexOf('_')
+        const end = dirtyFileName.lastIndexOf('.')
+        //get rid of every numbers at the start and the "_" character
+        //get rid of the second extension and the character "."
+        return dirtyFileName.slice(start+1, end)
+    }
+}
+
+// console.log(FileNameExtractorBis.extractFileName("1_FILE_NAME.EXTENSION.OTHEREXTENSIONadasdassdassds34"))  // "FILE_NAME.EXTENSION"
+// console.log(FileNameExtractorBis.extractFileName("1231231223123131_FILE_NAME.EXTENSION.OTHEREXTENSION"))  // "FILE_NAME.EXTENSION"
+// console.log(FileNameExtractorBis.extractFileName("1_FILE_NAM-E.EXTENSION.OTHEREXTENSIONadasdassdassds34"))  // 'FILE_NAM-E.EXTENSION'
+// console.log(FileNameExtractorBis.extractFileName("65077_0ys9z0erm3j.au1.65077a"))  // '0ys9z0erm3j.au1
+
+//===============================================

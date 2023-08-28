@@ -1146,7 +1146,7 @@ class FileNameExtractor {
     static extractFileName (dirtyFileName) {
         const regex = /([0-9]+)_([a-zA-Z0-9_-]+).([a-zA-Z0-9-]+).([a-zA-Z0-9-]+)/
         const matches = dirtyFileName.match(regex)
-        console.log(matches)
+        //console.log(matches)
         return matches[2] + '.' + matches[3]
     }
 }
@@ -1172,3 +1172,93 @@ class FileNameExtractorBis {
 // console.log(FileNameExtractorBis.extractFileName("65077_0ys9z0erm3j.au1.65077a"))  // '0ys9z0erm3j.au1
 
 //===============================================
+// https://www.codewars.com/kata/52bef5e3588c56132c0003bc
+// You are given a binary tree:
+
+// class Node { 
+//   constructor(value, left = null, right = null) {
+//     this.value = value;
+//     this.left  = left;
+//     this.right = right;
+//   }
+// }
+// Your task is to return the list with elements from tree sorted by levels, which means the root element goes first, then root children (from left to right) are second and third, and so on.
+
+// Return empty array if root is null.
+
+// Example 1 - following tree:
+
+//                  2
+//             8        9
+//           1  3     4   5
+// Should return following list:
+
+// [2,8,9,1,3,4,5]
+// Example 2 - following tree:
+
+//                  1
+//             8        4
+//               3        5
+//                          7
+// Should return following list:
+
+// [1,8,4,3,5,7]
+
+function treeByLevels (rootNode) {
+    //Store each level in an Array, loop through this array adding the values from left to right, as we do, store each children in a new Array, repeat.
+    if(!rootNode) return []
+	let res = []
+    solve([rootNode])
+    return res
+
+    function solve(nodesArr){
+        if(nodesArr.length === 0) return
+
+        let newNodesArr = []
+        for(let node of nodesArr){
+            res.push(node.value)
+            if(node.left) newNodesArr.push(node.left)
+            if(node.right) newNodesArr.push(node.right)
+        }
+
+        return solve(newNodesArr)
+    }
+}
+
+class Node {
+    constructor(value, left = null, right = null) {
+        this.value = value;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+const treeOne =
+    new Node(2,
+        new Node(8,
+            new Node(1),
+            new Node(3)
+        ),
+        new Node(9,
+            new Node(4),
+            new Node(5)
+        )
+    )
+
+const treeTwo =
+    new Node(1,
+        new Node(8,
+            null,
+            new Node(3)
+        ),
+        new Node(4,
+            null,
+            new Node(5,
+                null,
+                new Node(7)
+            )
+        )
+    )
+
+console.log(treeByLevels(treeOne)) // [2,8,9,1,3,4,5]
+console.log(treeByLevels(treeTwo)) // [1,8,4,3,5,7]

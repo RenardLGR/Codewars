@@ -1260,5 +1260,38 @@ const treeTwo =
         )
     )
 
-console.log(treeByLevels(treeOne)) // [2,8,9,1,3,4,5]
-console.log(treeByLevels(treeTwo)) // [1,8,4,3,5,7]
+// console.log(treeByLevels(treeOne)) // [2,8,9,1,3,4,5]
+// console.log(treeByLevels(treeTwo)) // [1,8,4,3,5,7]
+
+function treeByLevelsBis (rootNode) {
+    //Store each level in an Array, loop through this array adding the values from left to right, as we do, store each children in a new Array, repeat.
+    if(!rootNode) return []
+	let res = []
+
+    let currNodes = [rootNode]
+    while(currNodes.length > 0){
+        let newCurrNodes = []
+        for(let node of currNodes){
+            res.push(node.value)
+            if(node.left) newCurrNodes.push(node.left)
+            if(node.right) newCurrNodes.push(node.right)
+        }
+        currNodes = newCurrNodes
+    }
+
+    return res
+}
+
+function treeByLevelsTer(rootNode){
+    //Store each element in a queue, add current element's children into the queue as we process it
+    let queue = rootNode ? [rootNode] : []
+    let res = []
+    while(queue.length > 0){
+        let node = queue.shift()
+        if(node === null) continue
+        res.push(node.value)
+        queue.push(node.left)
+        queue.push(node.right)
+    }
+    return res
+}

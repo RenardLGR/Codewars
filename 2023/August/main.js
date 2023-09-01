@@ -1370,14 +1370,76 @@ function solveExpression(exp){
     }
 }
 
-console.log(solveExpression('1+1=?')) //2
-console.log(solveExpression('123*45?=5?088')) //6
-console.log(solveExpression('-5?*-1=5?')) //0
-console.log(solveExpression('19--45=5?',))//-1
-console.log(solveExpression('??*??=302?')) //5
-console.log(solveExpression('?*11=??')) //2
-console.log(solveExpression('??*1=??')) //2
-console.log(solveExpression('??+??=??')) //-1
-console.log(solveExpression('123?45+?=123?45')) //0
-console.log(solveExpression('-?56373--9216=-?47157')) //8
-console.log(solveExpression('-56*?=?')) //0
+// console.log(solveExpression('1+1=?')) //2
+// console.log(solveExpression('123*45?=5?088')) //6
+// console.log(solveExpression('-5?*-1=5?')) //0
+// console.log(solveExpression('19--45=5?',))//-1
+// console.log(solveExpression('??*??=302?')) //5
+// console.log(solveExpression('?*11=??')) //2
+// console.log(solveExpression('??*1=??')) //2
+// console.log(solveExpression('??+??=??')) //-1
+// console.log(solveExpression('123?45+?=123?45')) //0
+// console.log(solveExpression('-?56373--9216=-?47157')) //8
+// console.log(solveExpression('-56*?=?')) //0
+
+function solveExpressionBis(exp){
+    const unseen = '0123456789'.split("").filter(d => !exp.includes(d))
+    //'-' is the only operator that can be in front of a number so we need to check '+*' first to confirm their presence
+    const operator = '+*-'.split("").filter(o => exp.includes(o))[0]
+    //we skip the first char as it can be a '-'
+    const operatorIdx = exp.slice(1).indexOf(operator) + 1
+    const operand1 = exp.slice(0, operatorIdx)
+    const operand2 = exp.slice(operatorIdx+1, exp.indexOf('='))
+    const result = exp.slice(exp.indexOf('=')+1)
+
+    // console.log(operand1, operator, operand2, result, unseen)
+    for(let uns of unseen){
+        //No number will begin with a 0 unless the number itself is 0
+        if(uns==='0' && (isZeroSkip(operand1, operand2, result)) ) continue
+
+        let newOperand1 = operand1.replaceAll('?', uns)
+        let newOperand2 = operand2.replaceAll('?', uns)
+        let newResult = result.replaceAll('?', uns)
+        let left
+        switch (operator) {
+            case '+':
+                left = parseInt(newOperand1) + parseInt(newOperand2)
+                break;
+
+            case '-':
+                left = parseInt(newOperand1) - parseInt(newOperand2)
+                break;
+
+            case '*':
+                left = parseInt(newOperand1) * parseInt(newOperand2)
+                break;
+        
+            default:
+                break;
+        }
+
+        if(left === parseInt(newResult)) return parseInt(uns)
+    }
+
+    return -1
+
+
+    function isZeroSkip(op1, op2, op3){
+        return ( ( (op1.startsWith('?') || op1.startsWith('-?')) && op1.length>1 ) ||
+        ( (op2.startsWith('?') || op2.startsWith('-?')) && op2.length>1 ) ||
+        ( (op3.startsWith('?') || op3.startsWith('-?')) && op3.length>1 )
+        )
+    }
+}
+
+// console.log(solveExpressionBis('1+1=?')) //2
+// console.log(solveExpressionBis('123*45?=5?088')) //6
+// console.log(solveExpressionBis('-5?*-1=5?')) //0
+// console.log(solveExpressionBis('19--45=5?',))//-1
+// console.log(solveExpressionBis('??*??=302?')) //5
+// console.log(solveExpressionBis('?*11=??')) //2
+// console.log(solveExpressionBis('??*1=??')) //2
+// console.log(solveExpressionBis('??+??=??')) //-1
+// console.log(solveExpressionBis('123?45+?=123?45')) //0
+// console.log(solveExpressionBis('-?56373--9216=-?47157')) //8
+// console.log(solveExpressionBis('-56*?=?')) //0

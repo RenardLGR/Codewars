@@ -153,3 +153,77 @@ function bingo(tickets, win){
 // console.log(bingo([['ABC', 65], ['HGR', 74], ['BYHT', 74]], 2)) // 'Loser!'
 
 //===================================================
+// https://www.codewars.com/kata/529b418d533b76924600085d
+// Complete the function/method so that it takes a PascalCase string and returns the string in snake_case notation. Lowercase characters can be numbers. If the method gets a number as input, it should return a string.
+
+// Examples
+// "TestController"  -->  "test_controller"
+// "MoviesAndBooks"  -->  "movies_and_books"
+// "App7Test"        -->  "app7_test"
+// 1                 -->  "1"
+
+function toUnderscore(string) {
+    string = '' + string
+    const alphaU = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    let res = string[0].toLowerCase()
+    for(let i=1 ; i<string.length ; i++){
+        if(alphaU.includes(string[i])){
+            res += "_" + string[i].toLowerCase()
+        }else{
+            res += string[i]
+        }
+    }
+
+    return res
+}
+
+// console.log(toUnderscore("TestController")) // "test_controller"
+// console.log(toUnderscore("MoviesAndBooks")) // "movies_and_books"
+// console.log(toUnderscore("App7Test")) // "app7_test"
+// console.log(toUnderscore(1)) // "1"
+
+//====================================================
+// https://www.codewars.com/kata/5274e122fc75c0943d000148
+// Finish the solution so that it takes an input n (integer) and returns a string that is the decimal representation of the number grouped by commas after every 3 digits.
+
+// Assume: 0 <= n < 2147483647
+
+// Examples
+//        1  ->           "1"
+//       10  ->          "10"
+//      100  ->         "100"
+//     1000  ->       "1,000"
+//    10000  ->      "10,000"
+//   100000  ->     "100,000"
+//  1000000  ->   "1,000,000"
+// 35235235  ->  "35,235,235"
+
+function groupByCommas(n){
+    let s = '' + n
+    let res = ""
+    let three = 1
+    for(let i=s.length-1 ; i>=0 ; i--){
+        if(three === 3){
+            res = "," + s[i] + res
+            three = 1
+        }else{
+            res = s[i] + res
+            three++
+        }
+    
+    }
+    return res[0] === "," ? res.slice(1) : res
+}
+
+// console.log(groupByCommas(1000000)) // "1,000,000"
+// console.log(groupByCommas(100000)) // "100,000"
+
+function groupByCommasBis(n) {
+    //No argument would lead to spaces instead
+    return n.toLocaleString("en-US")
+}
+
+// console.log(groupByCommasBis(1000000)) // "1,000,000"
+// console.log(groupByCommasBis(100000)) // "100,000"
+
+//=================================================================

@@ -1476,6 +1476,20 @@ function listPosition(word) {
     let sorted = word.split('').sort().join('')
 
 
+    function solve(idxWord, remaining){
+        let freq = remaining.split('').reduce((acc, cur) => {
+            acc[cur] = (acc[cur] || 0) + 1
+            return acc
+        }, {})
+        let sorted = word.split('').sort().join('')
+        
+        for(let i=0 ; i<remaining.length ; i++){
+            if(remaining[i] !== word[idxWord]){
+                res += numberUniquePermutations(remaining)
+            }
+        }
+    }
+
 
     function numberUniquePermutations(word){
         let freq = word.split('').reduce((acc, cur) => {

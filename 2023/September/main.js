@@ -361,3 +361,42 @@ function findChildrenBis(dancingBrigade) {
 }
 
 //===================================================
+// https://www.codewars.com/kata/52ea928a1ef5cfec800003ee
+// Take the following IPv4 address: 128.32.10.1. This address has 4 octets where each octet is a single byte (or 8 bits).
+
+// 1st octet 128 has the binary representation: 10000000
+// 2nd octet 32 has the binary representation: 00100000
+// 3rd octet 10 has the binary representation: 00001010
+// 4th octet 1 has the binary representation: 00000001
+// So 128.32.10.1 == 10000000.00100000.00001010.00000001
+
+// Because the above IP address has 32 bits, we can represent it as the 32 bit number: 2149583361.
+
+// Write a function ip_to_int32(ip) ( JS: ipToInt32(ip) ) that takes an IPv4 address and returns a 32 bit number.
+
+// Example
+// "128.32.10.1" => 2149583361
+
+function ipToInt32(ip){
+    return parseInt( (ip.split('.').map(oct =>{
+        let bin = '0'.repeat(8) + Number(oct).toString(2)
+        return bin.slice(bin.length - 8)
+    }).join('')) , 2)
+}
+//bin.slice(-8) works similarly
+// console.log(ipToInt32("128.32.10.1")) // 2149583361
+// console.log(ipToInt32("64.233.187.99")) // 1089059683
+
+function ipToInt32Bis(ip){
+    let arr = ip.split('.').map(e => Number(e))
+
+    arr[0] *= Math.pow(2, 24)
+    arr[1] *= Math.pow(2, 16)
+    arr[2] *= Math.pow(2, 8)
+    arr[3];
+
+    return arr[0] + arr[1] + arr[2] + arr[3];
+}
+
+// console.log(ipToInt32Bis("128.32.10.1")) // 2149583361
+// console.log(ipToInt32Bis("64.233.187.99")) // 1089059683

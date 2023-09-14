@@ -400,3 +400,18 @@ function ipToInt32Bis(ip){
 
 // console.log(ipToInt32Bis("128.32.10.1")) // 2149583361
 // console.log(ipToInt32Bis("64.233.187.99")) // 1089059683
+
+//And following Horner's method :
+//https://en.wikipedia.org/wiki/Horner%27s_method
+
+function ipToInt32Ter(ip){
+    let x = Math.pow(2, 8)
+    return ip.split('.').reduce((acc, cur) => {
+        return +cur + x*acc
+    }, 0)
+}
+
+// console.log(ipToInt32Ter("128.32.10.1")) // 2149583361
+// console.log(ipToInt32Ter("64.233.187.99")) // 1089059683
+
+//==========================================================

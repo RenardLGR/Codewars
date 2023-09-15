@@ -403,6 +403,7 @@ function ipToInt32Bis(ip){
 
 //And following Horner's method :
 //https://en.wikipedia.org/wiki/Horner%27s_method
+//FR : "https://fr.wikipedia.org/wiki/M%C3%A9thode_de_Ruffini-Horner#Valeur_d'un_polyn%C3%B4me_en_un_point"
 
 function ipToInt32Ter(ip){
     let x = Math.pow(2, 8)

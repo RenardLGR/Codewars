@@ -1587,3 +1587,22 @@ function findSenior(list) {
 
     return res
 }
+
+function findSeniorBis(list){
+    let maxAge = Math.max(...list.map(dev => dev.age))
+    return list.filter(dev => dev.age === maxAge)
+}
+
+
+function findSeniorTer(list){
+    return list.reduce((acc, cur) => {
+        let maxAge = acc[0]?.age || 0
+        if(cur.age > maxAge){
+            return [cur]
+        }
+        if(cur.age === maxAge){
+            return [...acc, cur]
+        }
+        return acc
+    }, [])
+}

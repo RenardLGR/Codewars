@@ -701,4 +701,30 @@ function numPrimorial(n){
     }
 }
 
-console.log(numPrimorial(6)) // 30030
+// console.log(numPrimorial(6)) // 30030
+
+function numPrimorialBis(n){
+    let res = 1
+    let isDone = 0
+    let i = 2
+    while(isDone<n){
+        if(isPrime(i)){
+            res *= i
+            isDone++
+        }
+        i++
+    }
+
+    return res
+    
+    function isPrime(n){
+        if (n <= 1) return false;
+    
+        for (let i=2 ; i<=Math.sqrt(n) ; i++)
+            if (n % i == 0) return false;
+    
+        return true;
+    }
+}
+
+// console.log(numPrimorialBis(6)) // 30030

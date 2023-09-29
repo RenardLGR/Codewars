@@ -416,3 +416,133 @@ function ipToInt32Ter(ip){
 // console.log(ipToInt32Ter("64.233.187.99")) // 1089059683
 
 //==========================================================
+// https://www.codewars.com/kata/557f6437bf8dcdd135000010
+// In mathematics, the factorial of integer n is written as n!. It is equal to the product of n and every integer preceding it. For example: 5! = 1 x 2 x 3 x 4 x 5 = 120
+
+// Your mission is simple: write a function that takes an integer n and returns the value of n!.
+
+// You are guaranteed an integer argument. For any values outside the non-negative range, return null, nil or None (return an empty string "" in C and C++). For non-negative numbers a full length number is expected for example, return 25! =  "15511210043330985984000000"  as a string.
+
+// For more on factorials, see http://en.wikipedia.org/wiki/Factorial
+
+// NOTES:
+// The use of BigInteger or BigNumber functions has been disabled, this requires a complex solution
+
+// I have removed the use of require in the javascript language.
+
+function factorial(n){
+    // The description suggests multiplying numbers as Strings and having a custom function to do so
+    if (n <= 1) {
+        return '1' // Return '1' for n = 0 or 1
+    }
+    let res = '1'
+    for(let i=2 ; i<=n ; i++){
+        res = multiply2Strings(res, ''+i)
+    }
+
+    return res
+
+    function multiply2Strings(a, b){
+        // From https://leetcode.com/problems/multiply-strings/
+        if(a==='0' || b==='0') return '0'
+    
+        let res = Array(a.length + b.length).fill(0)
+    
+        for(let idxA=a.length-1 ; idxA>=0 ; idxA--){
+            for(let idxB=b.length-1 ; idxB>=0 ; idxB--){
+                let resIdx = idxA + idxB + 1
+                let sum = res[resIdx] + Number(a[idxA]) * Number(b[idxB])
+                let carry = Math.floor(sum/10)
+                let remainder = sum % 10
+    
+                res[resIdx] = remainder
+                res[resIdx-1] += carry
+                if(res[resIdx-1] > 10){
+                    res[resIdx-1] -= 10
+                    res[resIdx-2]++
+                }
+            }
+        }
+        if (res[0] === 0) res.shift()
+        return res.join('')
+    }
+}
+
+// console.log(factorial(1)) // '1'
+// console.log(factorial(5)) // '120'
+// console.log(factorial(9)) // '362880'
+// console.log(factorial(15)) // '1307674368000'
+
+// We can do better, as a reminder :
+// We can consider 123 x 12 to be (100+20+3) x (10+2)
+// In other words, we multiply each digits of one with each digits of the other, we rearrange to keep track of the zeroes and don't forget the carry
+// Let's have an array containing our result and work with its indices
+
+function factorialBis(n){
+    // The description suggests multiplying numbers as Strings and having a custom function to do so
+    if (n <= 1) {
+        return '1' // Return '1' for n = 0 or 1
+    }
+
+    let res = '1'
+    for(let i=2 ; i<=n ; i++){
+        res = multiply2Strings(res, ''+i)
+    }
+
+    return res
+
+    function multiply2Strings(a, b){
+        //As b won't be too big, we can have this simpler version of multiply2Strings
+        //For example for 123x16, we will do (3 + 20 + 100) x 16 starting from the unit side to make indices easier
+        //We will build starting from the left [8, 6, 9, 1] and reverse it to get the result : 123*16=1968
+        //We can use unshift() instead of push() in both instances and remove the reverse for even better speed
+        let res = []
+        let carry = 0
+        //Loop starts at the unit side
+        for(let i=a.length-1 ; i>=0 ; i--){
+            let product = Number(a[i]) * Number(b) + carry
+            carry = Math.floor(product / 10)
+            let value = product % 10
+            res.push(value)
+        }
+        if(carry > 0){
+            res.push(carry)
+        }
+        return res.reverse().join('')
+    }
+}
+
+// console.log(factorialBis(1)) // '1'
+// console.log(factorialBis(5)) // '120'
+// console.log(factorialBis(9)) // '362880'
+// console.log(factorialBis(15)) // '1307674368000'
+
+//From the precedent idea, now replace res as it goes
+function factorialTer(n){
+    if (n <= 1) {
+        return '1' // Return '1' for n = 0 or 1
+    }
+
+    let res = [1]
+
+    for(let f=2 ; f<=n ; f++){
+        let carry = 0
+        // Loop through res backward, first multiply unit by f keep the carry, then tens, then hundreds, etc
+        for(let r=res.length-1 ; r>=0 ; r--){
+            let product = res[r] * f + carry
+            carry = Math.floor(product / 10)
+            let value = product % 10
+            res[r] = value
+        }
+        if(carry > 0){
+            res = (''+carry).split('').map(e =>+e).concat(res)
+        }
+    }
+
+    return res.join('')
+}
+
+// console.log(factorialTer(1)) // '1'
+// console.log(factorialTer(5)) // '120'
+// console.log(factorialTer(9)) // '362880'
+// console.log(factorialTer(15)) // '1307674368000'

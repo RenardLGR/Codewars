@@ -54,3 +54,36 @@ function whatCentury(year){
 // console.log(whatCentury("1023")) // "11th"
 // console.log(whatCentury("2000")) // "20th"
 
+function whatCenturyBis(year){
+    let century = Math.ceil(year/100)
+    return century + (century<=20 ? "th" : (["th", "st", "nd", "rd"][century%10] || "th") )
+}
+
+// console.log(whatCenturyBis("1999")) // "20th"
+// console.log(whatCenturyBis("2011")) // "21st"
+// console.log(whatCenturyBis("2154")) // "22nd"
+// console.log(whatCenturyBis("2259")) // "23rd"
+// console.log(whatCenturyBis("1234")) // "13th"
+// console.log(whatCenturyBis("1023")) // "11th"
+// console.log(whatCenturyBis("2000")) // "20th"
+
+function whatCenturyTer(year){
+    let century = Math.ceil(year/100)
+    if(century>=10 && century<=20) return century + "th"
+    switch(century%10){
+        case 1: return century + "st"
+        case 2: return century + "nd"
+        case 3: return century + "rd"
+        default: return century + "th"
+    }
+}
+
+// console.log(whatCenturyTer("1999")) // "20th"
+// console.log(whatCenturyTer("2011")) // "21st"
+// console.log(whatCenturyTer("2154")) // "22nd"
+// console.log(whatCenturyTer("2259")) // "23rd"
+// console.log(whatCenturyTer("1234")) // "13th"
+// console.log(whatCenturyTer("1023")) // "11th"
+// console.log(whatCenturyTer("2000")) // "20th"
+
+//==================================================

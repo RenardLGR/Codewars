@@ -291,7 +291,222 @@ function deepCount(a){
     }, 0)
 }
 
-console.log(deepCount([])) // 0
-console.log(deepCount([1, 2, 3])) // 3
-console.log(deepCount(["x", "y", ["z"]])) // 4
-console.log(deepCount([1, 2, [3, 4, [5]]])) // 7
+// console.log(deepCount([])) // 0
+// console.log(deepCount([1, 2, 3])) // 3
+// console.log(deepCount(["x", "y", ["z"]])) // 4
+// console.log(deepCount([1, 2, [3, 4, [5]]])) // 7
+
+//======================================
+// https://www.codewars.com/kata/5671d975d81d6c1c87000022
+// In a grid of 4 by 4 squares you want to place a skyscraper in each square with only some clues:
+
+// The height of the skyscrapers is between 1 and 4
+// No two skyscrapers in a row or column may have the same number of floors
+// A clue is the number of skyscrapers that you can see in a row or column from the outside
+// Higher skyscrapers block the view of lower skyscrapers located behind them
+
+// Can you write a program that can solve this puzzle?
+
+// Example:
+
+// To understand how the puzzle works, this is an example of a row with 2 clues. Seen from the left side there are 4 buildings visible while seen from the right side only 1:
+
+//  4	    	    	    	    	 1
+
+// There is only one way in which the skyscrapers can be placed. From left-to-right all four buildings must be visible and no building may hide behind another building:
+
+//  4	 1	 2	 3	 4	 1
+
+// Example of a 4 by 4 puzzle with the solution:
+
+//   	    	    	 1	 2	  
+  	  	  	  	  	  
+//   	  	  	  	  	 2
+//  1	  	  	  	  	  
+  	  	  	  	  	  
+//   	  	  	 3	  	  
+
+//   	  	  	 1	 2	  
+//   	 2	 1	 4	 3	  
+//   	 3	 4	 1	 2	 2
+//  1	 4	 2	 3	 1	  
+//   	 1	 3	 2	 4	  
+//   	  	  	 3	  	  
+
+// Task:
+
+// Finish:
+// function solvePuzzle(clues)
+// Pass the clues in an array of 16 items. This array contains the clues around the clock, index:
+//   	 0	 1	   2	   3	  
+//  15	  	  	  	  	 4
+//  14	  	  	  	  	 5
+//  13	  	  	  	  	 6
+//  12	  	  	  	  	 7
+//   	11	10	 9	 8	  
+// If no clue is available, add value `0`
+// Each puzzle has only one possible solution
+// `SolvePuzzle()` returns matrix `int[][]`. The first indexer is for the row, the second indexer for the column. (Python: returns 4-tuple of 4-tuples, Ruby: 4-Array of 4-Arrays)
+// If you finished this kata you can use your solution as a base for the more challenging kata: 6 By 6 Skyscrapers
+// https://www.codewars.com/kata/6-by-6-skyscrapers
+
+// Brute force approach : Create every grid possible, keep the one that fit the clues
+function solvePuzzle(clues) {
+    let tests = 0
+    return everyGrids()
+
+    function everyGrids(){
+        const perms = everyPermutationsOf1234()
+        let res = null
+        test([])
+        console.log(tests);
+        return res
+        //Test every grid
+        function test(inP){
+            if(inP.length === 4){
+                console.log("Testing for", inP, tests++);
+                if(isGridCorrect(inP)) res = inP
+                return
+            }
+            for(let i=0 ; i<perms.length ; i++){
+                test([...inP, perms[i]])
+                if(res !== null) return
+            }
+        }
+    }
+
+
+    function isGridCorrect(grid){
+        //Check cols, from top to bottom
+        for(let i=0 ; i<4 ; i++){
+            let clue = clues.slice(0, 4)[i]
+            let col = []
+            for(let j=0 ; j<4 ; j++){
+                col.push(grid[i][j])
+            }
+            let max = col[0]
+            col.forEach((height) => {
+                if(height >= max){
+                    max = height
+                    clue--
+                }
+            })
+            if(clue !== 0) return false
+        }
+
+        //Check rows from right to left
+        for(let i=0 ; i<4 ; i++){
+            let clue = clues.slice(4, 8)[i]
+            let row = grid[i].slice().reverse()
+            let max = row[0]
+            row.forEach(height => {
+                if(height >= max){
+                    max = height
+                    clue--
+                }
+            })
+            if(clue !== 0) return false
+        }
+
+        //Check cols, from bottom to top
+        for(let i=0 ; i<4 ; i++){
+            let clue = clues.slice(8, 12)[i]
+            let col = []
+            for(let j=3 ; j<=0 ; j--){
+                col.push(grid[j][3-i])
+            }
+            let max = col[0]
+            col.forEach((height) => {
+                if(height >= max){
+                    max = height
+                    clue--
+                }
+            })
+            if(clue !== 0) return false
+        }
+
+        //Check rows from left to right
+        for(let i=0 ; i<4 ; i++){
+            let clue = clues.slice(12, 16)[i]
+            let row = grid[3-i]
+            let max = row[0]
+            row.forEach(height => {
+                if(height >= max){
+                    max = height
+                    clue--
+                }
+            })
+            if(clue !== 0) return false
+        }
+
+        return true
+    }
+
+    function everyPermutationsOf1234(){
+        let res = []
+        solve([], [1, 2, 3, 4])
+        return res
+        function solve(inP, remaining){
+            if(remaining.length === 0){
+                res.push(inP.slice())
+            }
+            for(let i=0 ; i<remaining.length ; i++){
+                let newRemaining = remaining.slice(0, i).concat(remaining.slice(i+1))
+                solve([...inP, remaining[i]], newRemaining)
+            }
+        }
+    }
+    //console.log(everyPermutationsOf1234().length, everyPermutationsOf1234())
+
+}
+
+// console.log(solvePuzzle([2, 2, 1, 3, 2, 2, 3, 1, 1, 2, 2, 3, 3, 2, 1, 3])) // [[1, 3, 4, 2], [4, 2, 1, 3], [3, 4, 2, 1], [2, 1, 3, 4]]
+
+//===========================================
+// https://www.codewars.com/kata/59377c53e66267c8f6000027
+// Introduction
+// There is a war and nobody knows - the alphabet war!
+// There are two groups of hostile letters. The tension between left side letters and right side letters was too high and the war began.
+
+// Task
+// Write a function that accepts fight string consists of only small letters and return who wins the fight. When the left side wins return Left side wins!, when the right side wins return Right side wins!, in other case return Let's fight again!.
+
+// The left side letters and their power:
+
+//  w - 4
+//  p - 3
+//  b - 2
+//  s - 1
+// The right side letters and their power:
+
+//  m - 4
+//  q - 3
+//  d - 2
+//  z - 1
+// The other letters don't have power and are only victims.
+
+// Example
+// alphabetWar("z");        //=> Right side wins!
+// alphabetWar("zdqmwpbs"); //=> Let's fight again!
+// alphabetWar("zzzzs");    //=> Right side wins!
+// alphabetWar("wwwwwwz");  //=> Left side wins!
+// Alphabet war Collection
+// Alphavet war https://www.codewars.com/kata/59377c53e66267c8f6000027
+// Alphabet war - airstrike - letters massacre https://www.codewars.com/kata/5938f5b606c3033f4700015a
+// Alphabet wars - reinforces massacre https://www.codewars.com/kata/alphabet-wars-reinforces-massacre
+// Alphabet wars - nuclear strike https://www.codewars.com/kata/59437bd7d8c9438fb5000004
+// Alphabet war - Wo lo loooooo priests join the war https://www.codewars.com/kata/59473c0a952ac9b463000064
+
+function alphabetWar(fight) {
+    const left = { w: 4, p: 3, b: 2, s: 1 }
+    const right = { m: 4, q: 3, d: 2, z: 1 }
+    let scores = fight.split('').reduce((acc, cur) => {
+        return [acc[0]+(left[cur] || 0), acc[1]+(right[cur] || 0)]
+    }, [0,0]) // [left, right]
+    return scores[0] > scores[1] ? "Left side wins!" : (scores[0] < scores[1]) ? "Right side wins!" : "Let's fight again!"
+}
+
+console.log(alphabetWar("z")) // "Right side wins!"
+console.log(alphabetWar("zdqmwpbs")) // "Let's fight again!"
+console.log(alphabetWar("zzzzs")) // "Right side wins!"
+console.log(alphabetWar("wwwwww")) // "Left side wins!"

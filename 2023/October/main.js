@@ -506,7 +506,22 @@ function alphabetWar(fight) {
     return scores[0] > scores[1] ? "Left side wins!" : (scores[0] < scores[1]) ? "Right side wins!" : "Let's fight again!"
 }
 
-console.log(alphabetWar("z")) // "Right side wins!"
-console.log(alphabetWar("zdqmwpbs")) // "Let's fight again!"
-console.log(alphabetWar("zzzzs")) // "Right side wins!"
-console.log(alphabetWar("wwwwww")) // "Left side wins!"
+// console.log(alphabetWar("z")) // "Right side wins!"
+// console.log(alphabetWar("zdqmwpbs")) // "Let's fight again!"
+// console.log(alphabetWar("zzzzs")) // "Right side wins!"
+// console.log(alphabetWar("wwwwww")) // "Left side wins!"
+
+function alphabetWarBis(fight) {
+    let scores = { w: 4, p: 3, b: 2, s: 1, m: -4, q: -3, d: -2, z: -1 }
+    let res = fight.split('').reduce((acc, cur) => {
+        return acc + (scores[cur] || 0)
+    }, 0)
+    return res !== 0 ? (res > 0 ? "Left" : "Right") + " side wins!" : "Let's fight again!"
+}
+
+// console.log(alphabetWarBis("z")) // "Right side wins!"
+// console.log(alphabetWarBis("zdqmwpbs")) // "Let's fight again!"
+// console.log(alphabetWarBis("zzzzs")) // "Right side wins!"
+// console.log(alphabetWarBis("wwwwww")) // "Left side wins!"
+
+//=========================================

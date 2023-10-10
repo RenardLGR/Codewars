@@ -350,39 +350,59 @@ function deepCount(a){
 // If you finished this kata you can use your solution as a base for the more challenging kata: 6 By 6 Skyscrapers
 // https://www.codewars.com/kata/6-by-6-skyscrapers
 
-// Brute force approach : Create every grid possible, keep the one that fit the clues
-function solvePuzzle(clues) {
-    let tests = 0
-    return everyGrids()
+// Dynamic programming approach
+function solvePuzzle(clues){
+    const N = 4
+    let grid = Array.from({length: N}, (_) => Array(N).fill(0))
+    let res = null
+    generateGrid(0, 0)
+    return res
 
-    function everyGrids(){
-        const perms = everyPermutationsOf1234()
-        let res = null
-        test([])
-        console.log(tests);
-        return res
-        //Test every grid
-        function test(inP){
-            if(inP.length === 4){
-                console.log("Testing for", inP, tests++);
-                if(isGridCorrect(inP)) res = inP
-                return
-            }
-            for(let i=0 ; i<perms.length ; i++){
-                test([...inP, perms[i]])
-                if(res !== null) return
+    // Recursive call to get all grids
+    function generateGrid(row, col) {
+        if (row === N) {
+            // All rows have been filled, add this grid to the result
+            let cpy = grid.map(row => [...row])
+            // console.log(cpy)
+            if(isGridCorrect(cpy)) res = cpy
+            return
+        }
+    
+        // Try each number
+        for (let n=1 ; n<=N ; n++) {
+            if(canIPutNumberHere(grid, row, col, n)){
+                grid[row][col] = n
+                if (col === N-1) {
+                    // Move to the next row when the current row is filled
+                    generateGrid(row + 1, 0)
+                } else {
+                    // Move to the next column in the same row
+                    generateGrid(row, col + 1)
+                }
+                grid[row][col] = 0
             }
         }
     }
 
+    // Check if the number is neither in the row nor the col
+    function canIPutNumberHere(grid, row, col, num){
+        let colElem = []
+        for(let i=0 ; i<N ; i++){
+            colElem.push(grid[i][col])
+        }
+        let rowElem = grid[row].slice()
+        return (!(colElem.includes(num) || rowElem.includes(num)))
+    }
 
+    // Check if the grid respects the clues
     function isGridCorrect(grid){
         //Check cols, from top to bottom
-        for(let i=0 ; i<4 ; i++){
-            let clue = clues.slice(0, 4)[i]
+        for(let i=0 ; i<N ; i++){
+            let clue = clues.slice(0, N)[i]
+            if(clue === 0) continue
             let col = []
-            for(let j=0 ; j<4 ; j++){
-                col.push(grid[i][j])
+            for(let j=0 ; j<N ; j++){
+                col.push(grid[j][i])
             }
             let max = col[0]
             col.forEach((height) => {
@@ -395,8 +415,9 @@ function solvePuzzle(clues) {
         }
 
         //Check rows from right to left
-        for(let i=0 ; i<4 ; i++){
-            let clue = clues.slice(4, 8)[i]
+        for(let i=0 ; i<N ; i++){
+            let clue = clues.slice(N, 2*N)[i]
+            if(clue === 0) continue
             let row = grid[i].slice().reverse()
             let max = row[0]
             row.forEach(height => {
@@ -409,11 +430,12 @@ function solvePuzzle(clues) {
         }
 
         //Check cols, from bottom to top
-        for(let i=0 ; i<4 ; i++){
-            let clue = clues.slice(8, 12)[i]
+        for(let i=0 ; i<N ; i++){
+            let clue = clues.slice(2*N, 3*N)[i]
+            if(clue === 0) continue
             let col = []
-            for(let j=3 ; j<=0 ; j--){
-                col.push(grid[j][3-i])
+            for(let j=N-1 ; j>=0 ; j--){
+                col.push(grid[j][N-1-i])
             }
             let max = col[0]
             col.forEach((height) => {
@@ -426,9 +448,10 @@ function solvePuzzle(clues) {
         }
 
         //Check rows from left to right
-        for(let i=0 ; i<4 ; i++){
-            let clue = clues.slice(12, 16)[i]
-            let row = grid[3-i]
+        for(let i=0 ; i<N ; i++){
+            let clue = clues.slice(3*N, 4*N)[i]
+            if(clue === 0) continue
+            let row = grid[N-1-i]
             let max = row[0]
             row.forEach(height => {
                 if(height >= max){
@@ -441,26 +464,10 @@ function solvePuzzle(clues) {
 
         return true
     }
-
-    function everyPermutationsOf1234(){
-        let res = []
-        solve([], [1, 2, 3, 4])
-        return res
-        function solve(inP, remaining){
-            if(remaining.length === 0){
-                res.push(inP.slice())
-            }
-            for(let i=0 ; i<remaining.length ; i++){
-                let newRemaining = remaining.slice(0, i).concat(remaining.slice(i+1))
-                solve([...inP, remaining[i]], newRemaining)
-            }
-        }
-    }
-    //console.log(everyPermutationsOf1234().length, everyPermutationsOf1234())
-
 }
 
 // console.log(solvePuzzle([2, 2, 1, 3, 2, 2, 3, 1, 1, 2, 2, 3, 3, 2, 1, 3])) // [[1, 3, 4, 2], [4, 2, 1, 3], [3, 4, 2, 1], [2, 1, 3, 4]]
+// console.log(solvePuzzle([0, 0, 1, 2, 0, 2, 0, 0, 0, 3, 0, 0, 0, 1, 0, 0])) // [[2, 1, 4, 3], [3, 4, 1, 2], [4, 2, 3, 1], [1, 3, 2, 4]]
 
 //===========================================
 // https://www.codewars.com/kata/59377c53e66267c8f6000027

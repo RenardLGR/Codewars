@@ -469,6 +469,126 @@ function solvePuzzle(clues){
 // console.log(solvePuzzle([2, 2, 1, 3, 2, 2, 3, 1, 1, 2, 2, 3, 3, 2, 1, 3])) // [[1, 3, 4, 2], [4, 2, 1, 3], [3, 4, 2, 1], [2, 1, 3, 4]]
 // console.log(solvePuzzle([0, 0, 1, 2, 0, 2, 0, 0, 0, 3, 0, 0, 0, 1, 0, 0])) // [[2, 1, 4, 3], [3, 4, 1, 2], [4, 2, 3, 1], [1, 3, 2, 4]]
 
+// https://www.codewars.com/kata/6-by-6-skyscrapers goes the same way
+
+function solvePuzzle6x6(clues){
+    const N = 6
+    let grid = Array.from({length: N}, (_) => Array(N).fill(0))
+    let res = null
+    generateGrid(0, 0)
+    return res
+
+    // Recursive call to get all grids
+    function generateGrid(row, col) {
+        if (row === N) {
+            // All rows have been filled, add this grid to the result
+            let cpy = grid.map(row => [...row])
+            // console.log(cpy)
+            if(isGridCorrect(cpy)) res = cpy
+            return
+        }
+    
+        // Try each number
+        for (let n=1 ; n<=N ; n++) {
+            if(canIPutNumberHere(grid, row, col, n)){
+                grid[row][col] = n
+                if (col === N-1) {
+                    // Move to the next row when the current row is filled
+                    generateGrid(row + 1, 0)
+                } else {
+                    // Move to the next column in the same row
+                    generateGrid(row, col + 1)
+                }
+                grid[row][col] = 0
+            }
+        }
+    }
+
+    // Check if the number is neither in the row nor the col
+    function canIPutNumberHere(grid, row, col, num){
+        let colElem = []
+        for(let i=0 ; i<N ; i++){
+            colElem.push(grid[i][col])
+        }
+        let rowElem = grid[row].slice()
+        return (!(colElem.includes(num) || rowElem.includes(num)))
+    }
+
+    // Check if the grid respects the clues
+    function isGridCorrect(grid){
+        //Check cols, from top to bottom
+        for(let i=0 ; i<N ; i++){
+            let clue = clues.slice(0, N)[i]
+            if(clue === 0) continue
+            let col = []
+            for(let j=0 ; j<N ; j++){
+                col.push(grid[j][i])
+            }
+            let max = col[0]
+            col.forEach((height) => {
+                if(height >= max){
+                    max = height
+                    clue--
+                }
+            })
+            if(clue !== 0) return false
+        }
+
+        //Check rows from right to left
+        for(let i=0 ; i<N ; i++){
+            let clue = clues.slice(N, 2*N)[i]
+            if(clue === 0) continue
+            let row = grid[i].slice().reverse()
+            let max = row[0]
+            row.forEach(height => {
+                if(height >= max){
+                    max = height
+                    clue--
+                }
+            })
+            if(clue !== 0) return false
+        }
+
+        //Check cols, from bottom to top
+        for(let i=0 ; i<N ; i++){
+            let clue = clues.slice(2*N, 3*N)[i]
+            if(clue === 0) continue
+            let col = []
+            for(let j=N-1 ; j>=0 ; j--){
+                col.push(grid[j][N-1-i])
+            }
+            let max = col[0]
+            col.forEach((height) => {
+                if(height >= max){
+                    max = height
+                    clue--
+                }
+            })
+            if(clue !== 0) return false
+        }
+
+        //Check rows from left to right
+        for(let i=0 ; i<N ; i++){
+            let clue = clues.slice(3*N, 4*N)[i]
+            if(clue === 0) continue
+            let row = grid[N-1-i]
+            let max = row[0]
+            row.forEach(height => {
+                if(height >= max){
+                    max = height
+                    clue--
+                }
+            })
+            if(clue !== 0) return false
+        }
+
+        return true
+    }
+}
+
+// console.log(solvePuzzle6x6([ 3, 2, 2, 3, 2, 1, 1, 2, 3, 3, 2, 2, 5, 1, 2, 2, 4, 3, 3, 2, 1, 2, 2, 4])) // [[ 2, 1, 4, 3, 5, 6], [ 1, 6, 3, 2, 4, 5], [ 4, 3, 6, 5, 1, 2], [ 6, 5, 2, 1, 3, 4], [ 5, 4, 1, 6, 2, 3], [ 3, 2, 5, 4, 6, 1]] // It took 4820.761 seconds...
+
+
 //===========================================
 // https://www.codewars.com/kata/59377c53e66267c8f6000027
 // Introduction
@@ -532,3 +652,57 @@ function alphabetWarBis(fight) {
 // console.log(alphabetWarBis("wwwwww")) // "Left side wins!"
 
 //=========================================
+// https://www.codewars.com/kata/5938f5b606c3033f4700015a
+// There is a war...between alphabets!
+// There are two groups of hostile letters. The tension between left side letters and right side letters was too high and the war began. The letters called airstrike to help them in war - dashes and dots are spread throughout the battlefield. Who will win?
+
+// Task
+// Write a function that accepts a fight string which consists of only small letters and * which represents a bomb drop place. Return who wins the fight after bombs are exploded. When the left side wins return Left side wins!, and when the right side wins return Right side wins!. In other cases, return Let's fight again!.
+
+// The left side letters and their power:
+
+//  w - 4
+//  p - 3 
+//  b - 2
+//  s - 1
+// The right side letters and their power:
+
+//  m - 4
+//  q - 3 
+//  d - 2
+//  z - 1
+// The other letters don't have power and are only victims.
+// The * bombs kill the adjacent letters ( i.e. aa*aa => a___a, **aa** => ______ );
+
+// Example
+// alphabetWar("s*zz");           //=> Right side wins!
+// alphabetWar("*zd*qm*wp*bs*"); //=> Let's fight again!
+// alphabetWar("zzzz*s*");       //=> Right side wins!
+// alphabetWar("www*www****z");  //=> Left side wins!
+
+// Alphabet war Collection
+// Alphavet war https://www.codewars.com/kata/59377c53e66267c8f6000027
+// Alphabet war - airstrike - letters massacre https://www.codewars.com/kata/5938f5b606c3033f4700015a
+// Alphabet wars - reinforces massacre https://www.codewars.com/kata/alphabet-wars-reinforces-massacre
+// Alphabet wars - nuclear strike https://www.codewars.com/kata/59437bd7d8c9438fb5000004
+// Alphabet war - Wo lo loooooo priests join the war https://www.codewars.com/kata/59473c0a952ac9b463000064
+
+function alphabetWarAirstrike(fight){
+    let scores = { w: 4, p: 3, b: 2, s: 1, m: -4, q: -3, d: -2, z: -1 }
+    let res = fight.split('').reduce((acc, cur, idx, arr) => {
+        if(arr[idx-1] === "*" || arr[idx+1] === "*" ){
+            return acc
+        }else{
+            return acc + (scores[cur] || 0)
+        }
+    }, 0)
+    return res !== 0 ? (res > 0 ? "Left" : "Right") + " side wins!" : "Let's fight again!"
+}
+
+// console.log(alphabetWarBis("s*zz"))           //=> Right side wins!
+// console.log(alphabetWarBis("*zd*qm*wp*bs*")) //=> Let's fight again!
+// console.log(alphabetWarBis("zzzz*s*"))       //=> Right side wins!
+// console.log(alphabetWarBis("www*www****z"))  //=> Left side wins!
+
+//==========================================
+// https://www.codewars.com/kata/alphabet-wars-reinforces-massacre

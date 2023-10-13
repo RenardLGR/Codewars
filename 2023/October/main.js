@@ -793,3 +793,63 @@ function alphabetWarReinforces(reinforces, airstrikes){
 // console.log(alphabetWarReinforces(["g964xxxxxxxx","myjinxin2015","steffenvogel","smile67xxxxx","giacomosorbi","freywarxxxxx","bkaesxxxxxxx","vadimbxxxxxx","zozofouchtra","colbydauphxx"] , ["* *** ** ***"," ** * * * **"," * *** * ***"," **  * * ** ","* ** *   ***","***   ","**","*","*" ])) // codewarsxxxx
 
 //=================================
+// https://www.codewars.com/kata/59437bd7d8c9438fb5000004/train/javascript
+// Introduction
+// There is a war and nobody knows - the alphabet war!
+// The letters hide in their nuclear shelters. The nuclear strikes hit the battlefield and killed a lot of them.
+
+// Task
+// Write a function that accepts battlefield string and returns letters that survived the nuclear strike.
+
+// The battlefield string consists of only small letters, #,[ and ].
+// The nuclear shelter is represented by square brackets []. The letters inside the square brackets represent letters inside the shelter.
+// The # means a place where nuclear strike hit the battlefield. If there is at least one # on the battlefield, all letters outside of shelter die. When there is no any # on the battlefield, all letters survive (but do not expect such scenario too often ;-P ).
+// The shelters have some durability. When 2 or more # hit close to the shelter, the shelter is destroyed and all letters inside evaporate. The 'close to the shelter' means on the ground between the shelter and the next shelter (or beginning/end of battlefield). The below samples make it clear for you.
+// Example
+// abde[fgh]ijk     => "abdefghijk"  (all letters survive because there is no # )
+// ab#de[fgh]ijk    => "fgh" (all letters outside die because there is a # )
+// ab#de[fgh]ij#k   => ""  (all letters dies, there are 2 # close to the shellter )
+// ##abde[fgh]ijk   => ""  (all letters dies, there are 2 # close to the shellter )
+// ##abde[fgh]ijk[mn]op => "mn" (letters from the second shelter survive, there is no # close)
+// #ab#de[fgh]ijk[mn]op => "mn" (letters from the second shelter survive, there is no # close)
+// #abde[fgh]i#jk[mn]op => "mn" (letters from the second shelter survive, there is only 1 # close)
+// [a]#[b]#[c]  => "ac"
+// [a]#b#[c][d] => "d"
+// [a][b][c]    => "abc"
+// ##a[a]b[c]#  => "c"
+
+// Alphabet war Collection
+// Alphavet war https://www.codewars.com/kata/59377c53e66267c8f6000027
+// Alphabet war - airstrike - letters massacre https://www.codewars.com/kata/5938f5b606c3033f4700015a
+// Alphabet wars - reinforces massacre https://www.codewars.com/kata/alphabet-wars-reinforces-massacre
+// Alphabet wars - nuclear strike https://www.codewars.com/kata/59437bd7d8c9438fb5000004
+// Alphabet war - Wo lo loooooo priests join the war https://www.codewars.com/kata/59473c0a952ac9b463000064
+
+//Found on the Internet
+function alphabetWarNuclear(b) {
+    if (!b.includes('#')) {
+        return b.replace(/[\[\]]/g, '');
+    }
+    const p = /([a-z#]*)\[([a-z]+)\](?=([a-z#]*))/g;
+    const matches = Array.from(b.matchAll(p));
+    return matches
+        .map(e => ((e[1] + e[3]).split('#').length - 1 < 2) ? e[2] : '')
+        .join('');
+}
+// console.log(alphabetWarNuclear('abde[fgh]ijk')) // 'abdefghijk'
+// console.log(alphabetWarNuclear('ab#de[fgh]ijk')) // 'fgh'
+// console.log(alphabetWarNuclear('ab#de[fgh]ij#k')) // ''
+// console.log(alphabetWarNuclear('##abde[fgh]ijk')) // ''
+// console.log(alphabetWarNuclear('##abde[fgh]')) // ''
+// console.log(alphabetWarNuclear('##abcde[fgh]')) // ''
+// console.log(alphabetWarNuclear('abcde[fgh]')) // 'abcdefgh');  
+// console.log(alphabetWarNuclear('##abde[fgh]ijk[mn]op')) // 'mn'
+// console.log(alphabetWarNuclear('#abde[fgh]i#jk[mn]op')) // 'mn'
+// console.log(alphabetWarNuclear('[ab]adfd[dd]##[abe]dedf[ijk]d#d[h]#')) // 'abijk'
+// console.log(alphabetWarNuclear('[a]#[b]#[c]')) // 'ac'
+// console.log(alphabetWarNuclear('[a]#b#[c][d]')) //'d'
+// console.log(alphabetWarNuclear('[a][b][c]')) // 'abc'
+// console.log(alphabetWarNuclear('##a[a]b[c]#')) //'c'
+// console.log(alphabetWarNuclear("##abde[fgh]ijk[mn]op[qrst]uv####")) // mn
+
+//===================================

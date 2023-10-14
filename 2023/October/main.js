@@ -904,19 +904,18 @@ function alphabetWarNuclear(b) {
 function alphabetWarWololo(fight){
     const left = { w: 4, p: 3, b: 2, s: 1, t: 0 }
     const right = { m: 4, q: 3, d: 2, z: 1, j: 0 }
-    const p = {t: 0, j: 0}
+    const opp = {t: "j", j: "t"}
     const scores = { w: 4, p: 3, b: 2, s: 1, m: -4, q: -3, d: -2, z: -1 };
     let switched = { w: "m", p: "q", b: "d", s: "z",  m: "w", q: "p", d: "b", z: "s", j: "j", t: "t"}
 
-    let arr = ["a", ...fight.split(""), "a"] //add two non used letters to prevent side effects
+    let arr = fight.split("")
     for(let i=0 ; i<arr.length ; i++){
         if(arr[i] === "j" || arr[i] === "t"){
-            //Switch if letter is in the opposite team and not sandwiched between two priests
-            if(left[arr[i-1]] !== left[arr[i]] && right[arr[i-1]] !== right[arr[i]]) arr[i-1] = (switched[arr[i-1]] || arr[i-1])
-            if(left[arr[i+1]] !== left[arr[i]] && right[arr[i+1]] !== right[arr[i]]) arr[i+1] = (switched[arr[i+1]] || arr[i+1])
+            //Switch if letter is in the opposite team and not sandwiched between two opposite priests
+            if(left[arr[i-1]] !== left[arr[i]] && right[arr[i-1]] !== right[arr[i]] && arr[i] !== opp[arr[i-2]]) arr[i-1] = (switched[arr[i-1]] || arr[i-1])
+            if(left[arr[i+1]] !== left[arr[i]] && right[arr[i+1]] !== right[arr[i]] && arr[i] !== opp[arr[i+2]]) arr[i+1] = (switched[arr[i+1]] || arr[i+1])
         }
     }
-    console.log(arr);
     let res = arr.reduce((acc, cur) => {
         return acc + (scores[cur] || 0)
     }, 0)
@@ -934,9 +933,7 @@ function alphabetWarWololo(fight){
 // console.log(alphabetWarWololo("wololooooo"))// "Left side wins!"
 // console.log(alphabetWarWololo("zdqmwpbs"))  //"Let's fight again!"
 // console.log(alphabetWarWololo("ztztztzs")) // "Left side wins!"
-console.log(alphabetWarWololo("ijtwjmf")) // "Let's fight again!"
-
-//Doesn't work yet
+// console.log(alphabetWarWololo("ijtwjmf")) // "Let's fight again!"
 
 //======================================
 // https://www.codewars.com/kata/51fd6bc82bc150b28e0000ce/train/javascript
@@ -947,3 +944,5 @@ console.log(alphabetWarWololo("ijtwjmf")) // "Let's fight again!"
 function noOdds(values){
     return values.filter(v => v%2 === 0)
 }
+
+//=======================================

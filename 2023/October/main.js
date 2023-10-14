@@ -853,3 +853,97 @@ function alphabetWarNuclear(b) {
 // console.log(alphabetWarNuclear("##abde[fgh]ijk[mn]op[qrst]uv####")) // mn
 
 //===================================
+// https://www.codewars.com/kata/59473c0a952ac9b463000064
+// There is a war and nobody knows - the alphabet war!
+// There are two groups of hostile letters. The tension between left side letters and right side letters was too high and the war began. The letters have discovered a new unit - a priest with Wo lo looooooo power.
+
+
+// Task
+// Write a function that accepts fight string consists of only small letters and return who wins the fight. When the left side wins return Left side wins!, when the right side wins return Right side wins!, in other case return Let's fight again!.
+
+// The left side letters and their power:
+
+//  w - 4
+//  p - 3 
+//  b - 2
+//  s - 1
+//  t - 0 (but it's priest with Wo lo loooooooo power)
+// The right side letters and their power:
+
+//  m - 4
+//  q - 3 
+//  d - 2
+//  z - 1
+//  j - 0 (but it's priest with Wo lo loooooooo power)
+// The other letters don't have power and are only victims.
+// The priest units t and j change the adjacent letters from hostile letters to friendly letters with the same power.
+
+// mtq => wtp
+// wjs => mjz
+// A letter with adjacent letters j and t is not converted i.e.:
+
+// tmj => tmj
+// jzt => jzt
+// The priests (j and t) do not convert the other priests ( jt => jt ).
+
+// Example
+// alphabetWar("z")         //=>  "z"  => "Right side wins!"
+// alphabetWar("tz")        //=>  "ts" => "Left side wins!" 
+// alphabetWar("jz")        //=>  "jz" => "Right side wins!" 
+// alphabetWar("zt")        //=>  "st" => "Left side wins!" 
+// alphabetWar("azt")       //=> "ast" => "Left side wins!"
+// alphabetWar("tzj")       //=> "tzj" => "Right side wins!" 
+
+// Alphabet war Collection
+// Alphavet war https://www.codewars.com/kata/59377c53e66267c8f6000027
+// Alphabet war - airstrike - letters massacre https://www.codewars.com/kata/5938f5b606c3033f4700015a
+// Alphabet wars - reinforces massacre https://www.codewars.com/kata/alphabet-wars-reinforces-massacre
+// Alphabet wars - nuclear strike https://www.codewars.com/kata/59437bd7d8c9438fb5000004
+// Alphabet war - Wo lo loooooo priests join the war https://www.codewars.com/kata/59473c0a952ac9b463000064
+
+function alphabetWarWololo(fight){
+    const left = { w: 4, p: 3, b: 2, s: 1, t: 0 }
+    const right = { m: 4, q: 3, d: 2, z: 1, j: 0 }
+    const p = {t: 0, j: 0}
+    const scores = { w: 4, p: 3, b: 2, s: 1, m: -4, q: -3, d: -2, z: -1 };
+    let switched = { w: "m", p: "q", b: "d", s: "z",  m: "w", q: "p", d: "b", z: "s", j: "j", t: "t"}
+
+    let arr = ["a", ...fight.split(""), "a"] //add two non used letters to prevent side effects
+    for(let i=0 ; i<arr.length ; i++){
+        if(arr[i] === "j" || arr[i] === "t"){
+            //Switch if letter is in the opposite team and not sandwiched between two priests
+            if(left[arr[i-1]] !== left[arr[i]] && right[arr[i-1]] !== right[arr[i]]) arr[i-1] = (switched[arr[i-1]] || arr[i-1])
+            if(left[arr[i+1]] !== left[arr[i]] && right[arr[i+1]] !== right[arr[i]]) arr[i+1] = (switched[arr[i+1]] || arr[i+1])
+        }
+    }
+    console.log(arr);
+    let res = arr.reduce((acc, cur) => {
+        return acc + (scores[cur] || 0)
+    }, 0)
+    return res !== 0 ? (res > 0 ? "Left" : "Right") + " side wins!" : "Let's fight again!"
+}
+
+// console.log(alphabetWarWololo("z"))  //"Right side wins!"
+// console.log(alphabetWarWololo("tz")) // "Left side wins!"
+// console.log(alphabetWarWololo("jz"))  //"Right side wins!"
+// console.log(alphabetWarWololo("zt")) // "Left side wins!"
+// console.log(alphabetWarWololo("sj"))  //"Right side wins!" 
+// console.log(alphabetWarWololo("azt")) // "Left side wins!"
+// console.log(alphabetWarWololo("tzj"))  //"Right side wins!"
+// console.log(alphabetWarWololo("jbdt"))  //"Let's fight again!"
+// console.log(alphabetWarWololo("wololooooo"))// "Left side wins!"
+// console.log(alphabetWarWololo("zdqmwpbs"))  //"Let's fight again!"
+// console.log(alphabetWarWololo("ztztztzs")) // "Left side wins!"
+console.log(alphabetWarWololo("ijtwjmf")) // "Let's fight again!"
+
+//Doesn't work yet
+
+//======================================
+// https://www.codewars.com/kata/51fd6bc82bc150b28e0000ce/train/javascript
+// Write a small function that returns the values of an array that are not odd.
+
+// All values in the array will be integers. Return the good values in the order they are given.
+
+function noOdds(values){
+    return values.filter(v => v%2 === 0)
+}

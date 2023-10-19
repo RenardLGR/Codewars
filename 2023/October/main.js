@@ -1075,3 +1075,55 @@ function sumCubesTer(n){
 // console.log(sumCubesTer(3)) // 36
 
 //==============================================
+// https://www.codewars.com/kata/534d0a229345375d520006a0
+// Complete the function power_of_two/powerOfTwo (or equivalent, depending on your language) that determines if a given non-negative integer is a power of two. From the corresponding Wikipedia entry:
+
+// a power of two is a number of the form 2^n where n is an integer, i.e. the result of exponentiation with number two as the base and integer n as the exponent.
+
+// You may assume the input is always valid.
+
+// Examples
+// isPowerOfTwo(1024) // -> true
+// isPowerOfTwo(4096) // -> true
+// isPowerOfTwo(333)  // -> false
+// Beware of certain edge cases - for example, 1 is a power of 2 since 2^0 = 1 and 0 is not a power of 2.
+
+function isPowerOfTwo(n){
+    //1 is a power of 2
+    if(n === 1) return true
+
+    let temp = n
+    while(temp > 2){
+        temp /= 2
+    }
+    return temp === 2
+}
+
+function isPowerOfTwoBis(n){
+    return Number.isInteger(Math.log2(n))
+}
+
+//========================================
+// https://www.codewars.com/kata/555bfd6f9f9f52680f0000c5/train/javascript
+// Given a number, write a function to output its reverse digits. (e.g. given 123 the answer is 321)
+
+// Numbers should preserve their sign; i.e. a negative number should still be negative when reversed.
+
+// Examples
+//  123 ->  321
+// -456 -> -654
+// 1000 ->    1
+
+function reverseNumber(n) {
+    const isNegative = (''+n)[0] === "-"
+
+    return isNegative ? Number('-' + (''+n).slice(1).split('').reverse().join('')) : Number((''+n).split('').reverse().join(''))
+}
+
+// console.log(reverseNumber(-456)) // -654
+
+function reverseNumberBis(n){
+    return Math.sign(n) * Math.abs(n).toString().split('').reverse().join('')
+}
+
+// console.log(reverseNumberBis(-456)) // -654

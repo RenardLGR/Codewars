@@ -1127,3 +1127,60 @@ function reverseNumberBis(n){
 }
 
 // console.log(reverseNumberBis(-456)) // -654
+
+//======================================
+// https://www.codewars.com/kata/526c7363236867513f0005ca
+// In this kata you should simply determine, whether a given year is a leap year or not. In case you don't know the rules, here they are:
+
+// years divisible by 4 are leap years
+// but years divisible by 100 are not leap years
+// but years divisible by 400 are leap years
+// Additional Notes:
+
+// Only valid years (positive integers) will be tested, so you don't have to validate them
+// Examples can be found in the test fixture.
+
+function isLeapYear(year){
+    if(year%400 === 0) return true
+    if(year%100 === 0) return false
+    if(year%4 === 0) return true
+    return false
+}
+
+function isLeapYearBis(year){
+    return year%400===0 || (year%100!==0 && year%4===0)
+}
+
+//======================================
+// https://www.codewars.com/kata/580878d5d27b84b64c000b51
+// Your task is to return the sum of Triangular Numbers up-to-and-including the nth Triangular Number.
+
+// Triangular Number: "any of the series of numbers (1, 3, 6, 10, 15, etc.) obtained by continued summation of the natural numbers 1, 2, 3, 4, 5, etc."
+
+// [01]
+// 02 [03]
+// 04 05 [06]
+// 07 08 09 [10]
+// 11 12 13 14 [15]
+// 16 17 18 19 20 [21]
+// e.g. If 4 is given: 1 + 3 + 6 + 10 = 20.
+
+// Triangular Numbers cannot be negative so return 0 if a negative number is given.
+
+function sumTriangularNumbers(n){
+    if(n <= 0) return 0
+
+    let res = 0
+    for(let i=1 ; i<=n ; i++){
+        res += sumToN(i)
+    }
+    return res
+
+    function sumToN(n){
+        return n * (n+1) / 2
+    }
+}
+
+function sumTriangularNumbersBis(n){
+    return n < 0 ? 0 : n * (n + 1) * (n + 2) / 6
+}

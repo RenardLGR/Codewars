@@ -1184,3 +1184,45 @@ function sumTriangularNumbers(n){
 function sumTriangularNumbersBis(n){
     return n < 0 ? 0 : n * (n + 1) * (n + 2) / 6
 }
+
+//==================================
+// https://www.codewars.com/kata/59a96d71dbe3b06c0200009c
+// I will give you an integer. Give me back a shape that is as long and wide as the integer. The integer will be a whole number between 1 and 50.
+
+// Example
+// n = 3, so I expect a 3x3 square back just like below as a string:
+
+// +++
+// +++
+// +++
+
+function generateShape(integer){
+    return Array.from({length: integer}, () => "+".repeat(integer)).join("\n")
+}
+
+// console.log(generateShape(3))
+
+function generateShapeBis(integer){
+    return ("+".repeat(integer) + "\n").repeat(integer).trim()
+}
+
+//====================================
+// https://www.codewars.com/kata/52aeb2f3ad0e952f560005d3
+// Happy Holidays fellow Code Warriors!
+// Santa's senior gift organizer Elf developed a way to represent up to 26 gifts by assigning a unique alphabetical character to each gift. After each gift was assigned a character, the gift organizer Elf then joined the characters to form the gift ordering code.
+
+// Santa asked his organizer to order the characters in alphabetical order, but the Elf fell asleep from consuming too much hot chocolate and candy canes! Can you help him out?
+
+// Sort the Gift Code
+// Write a function called sortGiftCode/sort_gift_code/SortGiftCode that accepts a string containing up to 26 unique alphabetical characters, and returns a string containing the same characters in alphabetical order.
+
+// Examples (Input -- => Output):
+// "abcdef"                      -- => "abcdef"
+// "pqksuvy"                     -- => "kpqsuvy"
+// "zyxwvutsrqponmlkjihgfedcba"  -- => "abcdefghijklmnopqrstuvwxyz"
+
+function sortGiftCode(code){
+    return code.split("").sort().join("")
+}
+
+//==========================================

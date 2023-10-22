@@ -1226,3 +1226,36 @@ function sortGiftCode(code){
 }
 
 //==========================================
+// https://www.codewars.com/kata/5783d8f3202c0e486c001d23
+// Oh no!
+// Some really funny web dev gave you a sequence of numbers from his API response as an sequence of strings!
+
+// You need to cast the whole array to the correct type.
+
+// Create the function that takes as a parameter a sequence of numbers represented as strings and outputs a sequence of numbers.
+
+// ie:["1", "2", "3"] to [1, 2, 3]
+
+// Note that you can receive floats as well.
+
+function toNumberArray(stringarray){
+    return stringarray.map(e => +e)
+}
+
+//============================================
+// https://www.codewars.com/kata/57eaec5608fed543d6000021
+// Given a mixed array of number and string representations of integers, add up the non-string integers and subtract the total of the string integers.
+
+// Return as a number.
+
+function divCon(x){
+    return x.reduce((acc, cur) => {
+        return acc + (typeof cur === "string" ? -Number(cur) : cur)
+    }, 0)
+}
+
+function divCon(x){
+    return x.reduce((acc, cur) => acc + (cur === +cur ? cur : -cur), 0)
+}
+
+//===========================================

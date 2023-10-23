@@ -1259,3 +1259,91 @@ function divCon(x){
 }
 
 //===========================================
+// https://www.codewars.com/kata/5827acd5f524dd029d0005a4
+// You will be given an array of objects (associative arrays in PHP) representing data about developers who have signed up to attend the next coding meetup that you are organising.
+
+// Your task is to return:
+
+// true if at least one Ruby developer has signed up; or
+// false if there will be no Ruby developers.
+// For example, given the following input array:
+
+// var list1 = [
+//   { firstName: 'Emma', lastName: 'Z.', country: 'Netherlands', continent: 'Europe', age: 29, language: 'Ruby' },
+//   { firstName: 'Piotr', lastName: 'B.', country: 'Poland', continent: 'Europe', age: 128, language: 'Javascript' },
+//   { firstName: 'Jayden', lastName: 'P.', country: 'Jamaica', continent: 'Americas', age: 42, language: 'JavaScript' }
+// ];
+// your function should return true.
+
+// Notes:
+
+// The input array will always be valid and formatted as in the example above.
+
+
+// This kata is part of the Coding Meetup series which includes a number of short and easy to follow katas which have been designed to allow mastering the use of higher-order functions. In JavaScript this includes methods like: forEach, filter, map, reduce, some, every, find, findIndex. Other approaches to solving the katas are of course possible.
+
+// Here is the full list of the katas in the Coding Meetup series:
+
+function isRubyComing(list) {
+    return list.some(el => el.language === 'Ruby')
+}
+
+//===========================================
+// https://www.codewars.com/kata/586beb5ba44cfc44ed0006c3
+// Complete the function that takes a sequence of numbers as single parameter. Your function must return the sum of the even values of this sequence.
+
+// Only numbers without decimals like 4 or 4.0 can be even.
+
+// The input is a sequence of numbers: integers and/or floats.
+
+// Examples
+// [4, 3, 1, 2, 5, 10, 6, 7, 9, 8]  -->  30   # because 4 + 2 + 10 + 6 + 8 = 30
+// []                               -->  0
+
+function sumEvenNumbers(input) {
+    return input.reduce((acc, cur) => acc + (cur%2===0 ? cur : 0), 0)
+}
+
+//=============================================
+// https://www.codewars.com/kata/56e9e4f516bcaa8d4f001763
+// Description:
+// We want to generate a function that computes the series starting from 0 and ending until the given number.
+
+// Example:
+// Input:
+// > 6
+// Output:
+// 0+1+2+3+4+5+6 = 21
+
+// Input:
+// > -15
+// Output:
+// -15<0
+
+// Input:
+// > 0
+// Output:
+// 0=0
+
+var SequenceSum = (function() {
+    //class declaration, actually any naming would work here, as long as we are consistent below
+    function SequenceSum() {}
+  
+    //method declaration
+    SequenceSum.showSequence = function(count) {
+        if(count<0) return count + "<0"
+        if(count === 0) return "0=0"
+
+        let res = "0"
+        for(let i=1 ; i<=count ; i++){
+            res += "+" + i
+        }
+        return res + " = " + (count*(count+1)/2)
+    };
+  
+    //returns a class with a method (not an instance)
+    return SequenceSum;
+  
+})() //calls (or instantiates) said class, stores it under the value SequenceSum
+
+// console.log(SequenceSum.showSequence(6)) // "0+1+2+3+4+5+6 = 21"

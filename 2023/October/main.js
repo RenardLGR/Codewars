@@ -1397,3 +1397,76 @@ var palindromeChainLength = function(n) {
 
 // console.log(palindromeChainLength(87)) // 4
 
+function palindromeChainLengthBis(n){
+    let steps = 0
+    while(''+n !== (temp = (''+n).split('').reverse().join(''))){
+        n += Number(temp)
+        steps++
+    }
+    return steps
+}
+
+// console.log(palindromeChainLengthBis(87)) // 4
+
+function palindromeChainLengthTer(n){
+    let nString = ''+n
+    let reverseString = (''+n).split('').reverse().join('')
+
+    return nString === reverseString ? 0 : 1 + palindromeChainLengthTer(Number(reverseString) + n)
+}
+
+// console.log(palindromeChainLengthTer(87)) // 4
+
+//===================================================
+// https://www.codewars.com/kata/52b5247074ea613a09000164
+// You are the greatest chef on earth. No one boils eggs like you! Your restaurant is always full of guests, who love your boiled eggs. But when there is a greater order of boiled eggs, you need some time, because you have only one pot for your job. How much time do you need?
+
+// Your Task
+// Implement a function, which takes a non-negative integer, representing the number of eggs to boil. It must return the time in minutes (integer), which it takes to have all the eggs boiled.
+
+// Rules
+// you can put at most 8 eggs into the pot at once
+// it takes 5 minutes to boil an egg
+// we assume, that the water is boiling all the time (no time to heat up)
+// for simplicity we also don't consider the time it takes to put eggs into the pot or get them out of it
+// Example (Input --> Output)
+// 0 --> 0
+// 5 --> 5
+// 10 --> 10
+
+function cookingTime(eggs) {
+    return Math.ceil(eggs/8) * 5
+}
+
+//================================================
+// https://www.codewars.com/kata/5ba38ba180824a86850000f7
+// Remove the duplicates from a list of integers, keeping the last ( rightmost ) occurrence of each element.
+
+// Example:
+// For input: [3, 4, 4, 3, 6, 3]
+
+// remove the 3 at index 0
+// remove the 4 at index 1
+// remove the 3 at index 3
+// Expected output: [4, 6, 3]
+
+// More examples can be found in the test cases.
+
+// Good luck!
+
+function removeFirstDuplicates(arr){
+    return arr.reduceRight((acc, cur) => {
+        if(!acc.includes(cur)) acc.unshift(cur)
+        return acc
+    }, [])
+}
+
+// console.log(removeFirstDuplicates([3, 4, 4, 3, 6, 3])) // [4, 6, 3]
+
+function removeFirstDuplicatesBis(arr){
+    return arr.filter((el, idx) => idx === arr.lastIndexOf(el))
+}
+
+// console.log(removeFirstDuplicatesBis([3, 4, 4, 3, 6, 3])) // [4, 6, 3]
+
+//======================================================

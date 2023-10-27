@@ -1515,3 +1515,63 @@ function overTheRoad(address, n){
     return address%2 === 0 ? n*2 - 1 - (Math.floor(address/2) - 1) * 2 : (Math.floor((n*2 - address)/2) + 1 ) * 2
 }
 
+function overTheRoadBis(address, n){
+    // The sum of each opposing houses is always equal to 2*n + 1
+    // Given one side, the opposite side is equal 2*n + 1 - address
+    return 2*n + 1 - address
+}
+
+//====================================
+// https://www.codewars.com/kata/580dda86c40fa6c45f00028a
+// Find the sum of the odd numbers within an array, after cubing the initial integers. The function should return undefined if any of the values aren't numbers.
+
+function cubeOdd(arr) {
+    let res = 0
+    for(let i=0 ; i<arr.length ; i++){
+        if(arr[i] !== parseInt(arr[i])) return undefined
+        if(Math.abs(arr[i]%2) === 1) res += Math.pow(arr[i], 3)
+    }
+
+    return res
+}
+
+// console.log(cubeOdd(["a",12,9,"z",42])) // undefined
+// console.log(cubeOdd([-3,-2,2,3])) // 0
+// console.log(cubeOdd([1, 2, 3, 4])) // 28
+
+//====================================
+// https://www.codewars.com/kata/580755730b5a77650500010c
+// Given a string s. You have to return another string such that even-indexed and odd-indexed characters of s are grouped and groups are space-separated (see sample below)
+
+// Note: 
+// 0 is considered to be an even index. 
+// All input strings are valid with no spaces
+// input: 'CodeWars'
+// output 'CdWr oeas'
+
+// S[0] = 'C'
+// S[1] = 'o'
+// S[2] = 'd'
+// S[3] = 'e'
+// S[4] = 'W'
+// S[5] = 'a'
+// S[6] = 'r'
+// S[7] = 's'
+// Even indices 0, 2, 4, 6, so we have 'CdWr' as the first group
+// odd ones are 1, 3, 5, 7, so the second group is 'oeas'
+// And the final string to return is 'Cdwr oeas'
+
+function sortMyString(S) {
+    return S.split('').reduce((acc, cur, idx) => {
+        idx%2 === 0 ? acc[0] += cur : acc[1] += cur
+        return acc
+    }, ['', '']).join(' ')
+}
+
+// console.log(sortMyString('CodeWars')) // 'CdWr oeas'
+
+function sortMyStringBis(S){
+    return S.split('').reduce((acc, cur, idx) => idx%2 === 0 ? [acc[0] + cur, acc[1]] : [acc[0], acc[1] + cur] , ['', '']).join(' ')
+}
+
+// console.log(sortMyStringBis('CodeWars')) // 'CdWr oeas'

@@ -1619,3 +1619,86 @@ function getFirstPython(list) {
 //   ])) // "There will be no Python developers if no Python developer has signed up."
 
 //======================================
+// https://www.codewars.com/kata/5a512f6a80eba857280000fc/train/javascript
+// Introduction and warm-up (highly recommended): Playing With Lists/Arrays Series
+
+// Task
+// Given an array/list of integers, find the Nth smallest element in the array.
+
+// Notes
+// Array/list size is at least 3.
+// Array/list's numbers could be a mixture of positives , negatives and zeros.
+// Repetition in array/list's numbers could occur, so don't remove duplications.
+// Input >> Output Examples
+// arr=[3,1,2]            n=2    ==> return 2 
+// arr=[15,20,7,10,4,3]   n=3    ==> return 7 
+// arr=[2,169,13,-5,0,-1] n=4    ==> return 2 
+// arr=[2,1,3,3,1,2],     n=3    ==> return 2 
+
+function nthSmallest(arr, pos){
+    return arr.sort((a,b) => a-b)[pos-1]
+}
+
+//========================================
+// https://www.codewars.com/kata/5a58d889880385c2f40000aa
+// Definition
+// A number is called Automorphic number if and only if its square ends in the same digits as the number itself.
+
+// Task
+// Given a number determine if it Automorphic or not .
+
+// Warm-up (Highly recommended)
+// Playing With Numbers Series
+// Notes
+// The number passed to the function is positive
+// Input >> Output Examples
+// autoMorphic (25) -->> return "Automorphic" 
+// Explanation:
+// 25 squared is 625 , Ends with the same number's digits which are 25 .
+
+// autoMorphic (13) -->> return "Not!!"
+// Explanation:
+// 13 squared is 169 , Not ending with the same number's digits which are 69 .
+
+function automorphic(n){
+    let s = "" + n
+    let squared = n*n
+    return s === (""+squared).slice(-s.length) ? "Automorphic" : "Not!!"
+}
+
+// console.log(automorphic(25)) // "Automorphic"
+// console.log(automorphic(13)) // "Not!!"
+
+function automorphicBis(n){
+    return (""+n*n).endsWith(""+n) ? "Automorphic" : "Not!!"
+}
+
+// console.log(automorphicBis(25)) // "Automorphic"
+// console.log(automorphicBis(13)) // "Not!!"
+
+//================================================
+// https://www.codewars.com/kata/58acfe4ae0201e1708000075
+// Task
+// King Arthur and his knights are having a New Years party. Last year Lancelot was jealous of Arthur, because Arthur had a date and Lancelot did not, and they started a duel.
+
+// To prevent this from happening again, Arthur wants to make sure that there are at least as many women as men at this year's party. He gave you a list of integers of all the party goers.
+
+// Arthur needs you to return true if he needs to invite more women or false if he is all set.
+
+// Input/Output
+// [input] integer array L ($a in PHP)
+// An array (guaranteed non-associative in PHP) representing the genders of the attendees, where -1 represents women and 1 represents men.
+
+// 2 <= L.length <= 50
+
+// [output] a boolean value
+
+// true if Arthur need to invite more women, false otherwise.
+
+function inviteMoreWomen(L) {
+    //Arthur being a man and not a guest, the inequation must be strict
+    return L.reduce((acc, cur) => acc+cur, 0) > 0
+}
+
+// console.log(inviteMoreWomen([1, -1, 1])) // true
+// console.log(inviteMoreWomen([1, -1])) // false

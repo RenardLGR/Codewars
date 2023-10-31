@@ -1702,3 +1702,81 @@ function inviteMoreWomen(L) {
 
 // console.log(inviteMoreWomen([1, -1, 1])) // true
 // console.log(inviteMoreWomen([1, -1])) // false
+
+
+//================================================
+// https://www.codewars.com/kata/5d50e3914861a500121e1958
+// Your task is to add up letters to one letter.
+
+// The function will be given a variable amount of arguments, each one being a letter to add.
+
+// Notes:
+// Letters will always be lowercase.
+// Letters can overflow (see second to last example of the description)
+// If no letters are given, the function should return 'z'
+
+// Examples:
+// addLetters('a', 'b', 'c') = 'f'
+// addLetters('a', 'b') = 'c'
+// addLetters('z') = 'z'
+// addLetters('z', 'a') = 'a'
+// addLetters('y', 'c', 'b') = 'd' // notice the letters overflowing
+// addLetters() = 'z'
+// Confused? Roll your mouse/tap over here
+
+function addLetters(...letters) {
+    const alphaL = 'zabcdefghijklmnopqrstuvwxyz'
+    return alphaL[letters.reduce((acc, cur) => acc + alphaL.indexOf(cur), 0) % 26]
+}
+
+// console.log(addLetters('y', 'c', 'b')) // "d"
+
+//=====================================================
+// https://www.codewars.com/kata/5a87449ab1710171300000fd
+// Definition
+// A Tidy number is a number whose digits are in non-decreasing order.
+
+// Task
+// Given a number, Find if it is Tidy or not .
+
+// Warm-up (Highly recommended)
+// Playing With Numbers Series
+// Notes
+// Number passed is always Positive .
+
+// Return the result as a Boolean
+
+// Input >> Output Examples
+// tidyNumber (12) ==> return (true)
+// Explanation:
+// The number's digits { 1 , 2 } are in non-Decreasing Order (i.e) 1 <= 2 .
+
+// tidyNumber (32) ==> return (false)
+// Explanation:
+// The Number's Digits { 3, 2} are not in non-Decreasing Order (i.e) 3 > 2 .
+
+// tidyNumber (1024) ==> return (false)
+// Explanation:
+// The Number's Digits {1 , 0, 2, 4} are not in non-Decreasing Order as 0 <= 1 .
+
+// tidyNumber (13579) ==> return (true)
+// Explanation:
+// The number's digits {1 , 3, 5, 7, 9} are in non-Decreasing Order .
+
+// tidyNumber (2335) ==> return (true)
+// Explanation:
+// The number's digits {2 , 3, 3, 5} are in non-Decreasing Order , Note 3 <= 3
+
+function tidyNumber(n){
+    return (""+n).split("").every((el, idx, arr) => idx === 0 ? true : Number(el) >= Number(arr[idx-1]) )
+}
+
+// console.log(tidyNumber(2335)) // true
+// console.log(tidyNumber(1024)) // false
+
+function tidyNumberBis(n){
+    return (""+n).split("").sort().join("") === (""+n)
+}
+
+// console.log(tidyNumberBis(2335)) // true
+// console.log(tidyNumberBis(1024)) // false

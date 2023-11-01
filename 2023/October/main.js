@@ -1780,3 +1780,71 @@ function tidyNumberBis(n){
 
 // console.log(tidyNumberBis(2335)) // true
 // console.log(tidyNumberBis(1024)) // false
+
+//=========================================
+// https://www.codewars.com/kata/5a4e3782880385ba68000018
+// A balanced number is a number where the sum of digits to the left of the middle digit(s) and the sum of digits to the right of the middle digit(s) are equal.
+
+// If the number has an odd number of digits, then there is only one middle digit. (For example, 92645 has one middle digit, 6.) Otherwise, there are two middle digits. (For example, the middle digits of 1301 are 3 and 0.)
+
+// The middle digit(s) should not be considered when determining whether a number is balanced or not, e.g. 413023 is a balanced number because the left sum and right sum are both 5.
+
+// The task
+// Given a number, find if it is balanced, and return the string "Balanced" or "Not Balanced" accordingly. The passed number will always be positive.
+
+// Examples
+
+// 7 ==> return "Balanced"
+// Explanation:
+// middle digit(s): 7
+// sum of all digits to the left of the middle digit(s) -> 0
+// sum of all digits to the right of the middle digit(s) -> 0
+// 0 and 0 are equal, so it's balanced.
+
+// 295591 ==> return "Not Balanced"
+// Explanation:
+// middle digit(s): 55
+// sum of all digits to the left of the middle digit(s) -> 11
+// sum of all digits to the right of the middle digit(s) -> 10
+// 11 and 10 are not equal, so it's not balanced.
+
+// 959 ==> return "Balanced"
+// Explanation:
+// middle digit(s): 5
+// sum of all digits to the left of the middle digit(s) -> 9
+// sum of all digits to the right of the middle digit(s) -> 9
+// 9 and 9 are equal, so it's balanced.
+
+// 27102983 ==> return "Not Balanced"
+// Explanation:
+// middle digit(s): 02
+// sum of all digits to the left of the middle digit(s) -> 10
+// sum of all digits to the right of the middle digit(s) -> 20
+// 10 and 20 are not equal, so it's not balanced.
+
+function balancedNum(number){
+    let s = ""+number
+    if(s.length <= 2) return "Balanced"
+    let leftSum = s.slice(0, Math.floor((s.length-1)/2)).split("").reduce((acc, cur) => acc + +cur, 0)
+    let rightSum = s.slice(-Math.floor((s.length-1)/2)).split("").reduce((acc, cur) => acc + +cur, 0)
+    console.log(leftSum, rightSum);
+    return leftSum === rightSum ? "Balanced" : "Not Balanced"
+}
+
+// console.log(balancedNum(27102983)) // "Not Balanced"
+
+//===========================================
+// https://www.codewars.com/kata/5b16490986b6d336c900007d
+// Task
+// You are given a dictionary/hash/object containing some languages and your test results in the given languages. Return the list of languages where your test score is at least 60, in descending order of the scores.
+
+// Note: the scores will always be unique (so no duplicate values)
+
+// Examples
+// {"Java": 10, "Ruby": 80, "Python": 65}    -->  ["Ruby", "Python"]
+// {"Hindi": 60, "Dutch" : 93, "Greek": 71}  -->  ["Dutch", "Greek", "Hindi"]
+// {"C++": 50, "ASM": 10, "Haskell": 20}     -->  []
+
+function myLanguages(results) {
+    return Object.keys(results).filter(lang => results[lang] >= 60).sort((a,b) => results[b] - results[a])
+}

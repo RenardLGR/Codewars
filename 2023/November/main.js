@@ -104,4 +104,115 @@ function maxTriSum(numbers){
     return numbers.filter((el, idx, arr) => arr.indexOf(el) === idx).sort((a,b) => b-a).slice(0, 3).reduce((acc, cur) => acc+cur, 0)
 }
 
-console.log(maxTriSum([-7,12,-7,29,-5,0,-7,0,0,29])) // 41
+// console.log(maxTriSum([-7,12,-7,29,-5,0,-7,0,0,29])) // 41
+
+function maxTriSumBis(numbers){
+    //remove dupes, sort it decreasingly, take the first three elements, sum it
+    return ([...new Set(numbers)]).sort((a,b) => a-b).slice(-3).reduce((acc, cur) => acc+cur, 0)
+}
+
+// console.log(maxTriSumBis([-7,12,-7,29,-5,0,-7,0,0,29])) // 41
+
+//===============================
+// https://www.codewars.com/kata/5a4d303f880385399b000001
+// Definition
+// Strong number is the number that the sum of the factorial of its digits is equal to number itself.
+
+// For example, 145 is strong, since 1! + 4! + 5! = 1 + 24 + 120 = 145.
+
+// Task
+// Given a number, Find if it is Strong or not and return either "STRONG!!!!" or "Not Strong !!".
+
+// Notes
+// Number passed is always Positive.
+// Return the result as String
+// Input >> Output Examples
+// strong_num(1) ==> return "STRONG!!!!"
+// Since, the sum of its digits' factorial (1) is equal to number itself, then its a Strong.
+
+// strong_num(123) ==> return "Not Strong !!"
+// Since the sum of its digits' factorial of 1! + 2! + 3! = 9 is not equal to number itself, then it's Not Strong.
+
+// strong_num(2)  ==>  return "STRONG!!!!"
+// Since the sum of its digits' factorial of 2! = 2 is equal to number itself, then its a Strong.
+
+// strong_num(150) ==> return "Not Strong !!"
+// Since the sum of its digits' factorial of 1! + 5! + 0! = 122 is not equal to number itself, Then it's Not Strong.
+
+function strong(n) {
+    return +(""+n).split("").reduce((acc, cur) => acc + factorial(+cur), 0) === n ? "STRONG!!!!" : "Not Strong !!"
+
+
+    function factorial(n){
+        if(n <= 1) return 1
+        return n * factorial(n-1)
+    }
+}
+
+// console.log(strong(145)) // "STRONG!!!!"
+// console.log(strong(150)) // "Not Strong !!"
+
+//======================================
+// https://www.codewars.com/kata/58941fec8afa3618c9000184
+// Task
+// Each day a plant is growing by upSpeed meters. Each night that plant's height decreases by downSpeed meters due to the lack of sun heat. Initially, plant is 0 meters tall. We plant the seed at the beginning of a day. We want to know when the height of the plant will reach a certain level.
+
+// Example
+// For upSpeed = 100, downSpeed = 10 and desiredHeight = 910, the output should be 10.
+
+// After day 1 --> 100
+// After night 1 --> 90
+// After day 2 --> 190
+// After night 2 --> 180
+// After day 3 --> 280
+// After night 3 --> 270
+// After day 4 --> 370
+// After night 4 --> 360
+// After day 5 --> 460
+// After night 5 --> 450
+// After day 6 --> 550
+// After night 6 --> 540
+// After day 7 --> 640
+// After night 7 --> 630
+// After day 8 --> 730
+// After night 8 --> 720
+// After day 9 --> 820
+// After night 9 --> 810
+// After day 10 --> 910 
+// For upSpeed = 10, downSpeed = 9 and desiredHeight = 4, the output should be 1.
+
+// Because the plant reach to the desired height at day 1(10 meters).
+
+// After day 1 --> 10
+// Input/Output
+// [input] integer upSpeed
+
+// A positive integer representing the daily growth.
+
+// Constraints: 5 ≤ upSpeed ≤ 100.
+
+// [input] integer downSpeed
+
+// A positive integer representing the nightly decline.
+
+// Constraints: 2 ≤ downSpeed < upSpeed.
+
+// [input] integer desiredHeight
+
+// A positive integer representing the threshold.
+
+// Constraints: 4 ≤ desiredHeight ≤ 1000.
+
+// [output] an integer
+
+// The number of days that it will take for the plant to reach/pass desiredHeight (including the last day in the total count).
+
+function growingPlant(upSpeed, downSpeed, desiredHeight) {
+    if(upSpeed >= desiredHeight) return 1
+    
+    return Math.ceil((desiredHeight - downSpeed) / (upSpeed - downSpeed))
+}
+
+// console.log(growingPlant(100, 10, 910)) // 10
+
+//=====================================================

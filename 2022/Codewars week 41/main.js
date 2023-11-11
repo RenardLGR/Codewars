@@ -171,6 +171,29 @@ function splitStrings(str){
 
 // console.log(splitStrings("abcdefg"));
 
+function splitStringsBis(str){
+    let res = []
+    if(str.length%2 !== 0) str += "_"
+    for(let i=0 ; i<str.length ; i++){
+        res.push(str[i] + str[++i])
+    }
+    return res
+}
+
+// console.log(splitStringsBis("abcdef")) // ["ab", "cd", "ef"]
+// console.log(splitStringsBis("abcdefg")) // ["ab", "cd", "ef", "g_"]
+
+function splitStringsTer(str){
+    let res = []
+    for(let i=0 ; i<str.length ; i++){
+        res.push(str[i] + (str[++i] || "_"))
+    }
+    return res
+}
+
+// console.log(splitStringsTer("abcdef")) // ["ab", "cd", "ef"]
+// console.log(splitStringsTer("abcdefg")) // ["ab", "cd", "ef", "g_"]
+
 //===========================================================
 // https://www.codewars.com/kata/54e6533c92449cc251001667/train/javascript
 // Implement the function unique_in_order which takes as argument a sequence and returns a list of items without any elements with the same value next to each other and preserving the original order of elements.

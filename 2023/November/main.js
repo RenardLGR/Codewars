@@ -313,3 +313,95 @@ function menFromBoys(arr){
 function alternateCase(s) {
     return s.split("").map(c => c===c.toUpperCase() ? c.toLowerCase() : c.toUpperCase()).join("")
 }
+
+//==========================================
+// https://www.codewars.com/kata/57ecf6efc7fe13eb070000e1
+// Your colleagues have been looking over you shoulder. When you should have been doing your boring real job, you've been using the work computers to smash in endless hours of codewars.
+
+// In a team meeting, a terrible, awful person declares to the group that you aren't working. You're in trouble. You quickly have to gauge the feeling in the room to decide whether or not you should gather your things and leave.
+
+// Given an object (meet) containing team member names as keys, and their happiness rating out of 10 as the value, you need to assess the overall happiness rating of the group. If <= 5, return 'Get Out Now!'. Else return 'Nice Work Champ!'.
+
+// Happiness rating will be total score / number of people in the room.
+
+// Note that your boss is in the room (boss), their score is worth double it's face value (but they are still just one person!).
+
+// More in this series:
+// The Office I - Outed
+// https://www.codewars.com/kata/the-office-i-outed
+// The Office II - Boredom Score
+// https://www.codewars.com/kata/the-office-ii-boredom-score
+// The Office III - Broken Photocopier
+// https://www.codewars.com/kata/the-office-iii-broken-photocopier
+// The Office IV - Find a Meeting Room
+// https://www.codewars.com/kata/the-office-iv-find-a-meeting-room
+// The Office V - Find a Chair
+// https://www.codewars.com/kata/the-office-v-find-a-chair
+
+function outed(meet, boss){
+    return (Object.keys(meet).reduce((acc, cur) => boss === cur ? acc+meet[cur]*2 : acc+meet[cur], 0) / (Object.keys(meet).length) <= 5) ? 'Get Out Now!' : 'Nice Work Champ!'
+}
+
+// console.log(outed({'tim':0, 'jim':2, 'randy':0, 'sandy':7, 'andy':0, 'katie':5, 'laura':1, 'saajid':2, 'alex':3, 'john':2, 'mr':0}, 'laura')) // 'Get Out Now!'
+// console.log(outed({"tim":2,"jim":0,"randy":9,"sandy":4,"andy":2,"katie":8,"laura":7,"saajid":7,"alex":4,"john":9,"mr":4}, "tim")) // 'Nice Work Champ!'
+
+//===========================================
+// https://www.codewars.com/kata/the-office-ii-boredom-score
+// Every now and then people in the office moves teams or departments. Depending what people are doing with their time they can become more or less boring. Time to assess the current team.
+
+// You will be provided with an object(staff) containing the staff names as keys, and the department they work in as values.
+
+// Each department has a different boredom assessment score, as follows:
+
+// accounts = 1
+// finance = 2
+// canteen = 10
+// regulation = 3
+// trading = 6
+// change = 6
+// IS = 8
+// retail = 5
+// cleaning = 4
+// pissing about = 25
+
+// Depending on the cumulative score of the team, return the appropriate sentiment:
+
+// <=80: 'kill me now'
+// < 100 & > 80: 'i can handle this'
+// 100 or over: 'party time!!'
+
+function boredom(staff){
+    const boreScore = {accounts: 1,
+        finance: 2,
+        canteen: 10,
+        regulation: 3,
+        trading: 6,
+        change: 6,
+        IS: 8,
+        retail: 5,
+        cleaning: 4,
+        "pissing about": 25
+    }
+
+    const totalScore = Object.values(staff).reduce((acc, cur) => acc+boreScore[cur], 0)
+    if(totalScore <= 80) return 'kill me now'
+    if(totalScore < 100) return 'i can handle this'
+    return 'party time!!'
+}
+
+// console.log(
+//   boredom({
+//     tim: "change",
+//     jim: "accounts",
+//     randy: "canteen",
+//     sandy: "change",
+//     andy: "change",
+//     katie: "IS",
+//     laura: "change",
+//     saajid: "IS",
+//     alex: "trading",
+//     john: "accounts",
+//     mr: "finance",
+//   })
+// ) //'kill me now'
+

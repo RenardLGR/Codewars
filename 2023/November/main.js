@@ -114,33 +114,40 @@ function triangleHard(row) {
     //From : https://www.codewars.com/kata/reviews/5a3323a4b090489ca500094b/groups/64bbe41534dacf00012c1e8b
     // If the triangle side is of size 3ⁿ + 1, n ∈ N (i.e. 2 (3⁰+1), 4 (3¹+1), 10 (3²+1), 28 (3³+1), 82 (3⁴+1), 244 (3⁵+1), ...)
     // We can consider only rightmost and leftmost colors and use the basic rule to determine the bottom color (the colors in between have no influence at all).
-    // We will find the highest n so 3ⁿ + 1 size slice of row, simplify it and repeat until we are left with the result
+    // We will find the highest n so 3ⁿ + 1 size fits inside the length of our row, lets call hSS
+    // Then with a for loop we will match each first elements with the element hSS away in the row, making the iteration through row much faster
+    // Repeat the process with the newly formed row
 
     // ∀ x>0 , Math.log10(x) = log10(x) = the unique y such that 10**y = x
     // To change the base of a logarithm from base a to base c, use the change of base formula: loga(b)=[logc(b)]/[logc(a)]. So log3(X) = log10(X)/log10(3)
 
-    const rgb = ["R", "G", "B"]
-
     if(row.length <= 1) return row
-    if(row.length === 2) return row[0] === row[row.length-1] ? row[0] : rgb.find(el => el!==row[0] && el!==row[row.length-1])
 
     const highestSideSize = 1 + (3 ** Math.floor(Math.log10(row.length-1)/Math.log10(3)) )
-    const start = row.slice(0, highestSideSize)
-    const remaining = row.slice(highestSideSize)
-    const simplified = start[0] === start[start.length-1] ? start[0] : rgb.find(el => el!==start[0] && el!==start[start.length-1])
+    let tempRow = ""
+    for(let i=0 ; i<=row.length-highestSideSize ; i++){
+        tempRow += bottomColor(row[i], row[i+highestSideSize-1])
+    }
 
-    console.log(highestSideSize, start, remaining, simplified);
+    return triangleHard(tempRow)
 
-    return triangleHard(start[0] + start[start.length-1] + remaining)
+    function bottomColor(c1, c2){
+        const rgb = ["R", "G", "B"]
+        return c1 === c2 ? c1 : rgb.find(e => e!==c1 && e!==c2)
+    }
 }
 
-// console.log(triangleHard("BRB")) // "G"
-// console.log(triangleHard("RBRGBRB")) // "G"
-// console.log(triangleHard("RRGBRGBB")) // "G"
-// console.log(triangleHard("RBRGBRBGGRRRBGBBBGG")) // "G"
-console.log(triangleBis("GRBBGGGRRRBGRBRBRRRGRRGBBGRGGGGRBRRGBGBRGBRRRRGBGBRRRBRRBGGGBRBBGGGBRGBGGRBGGBRBRBGBBRRGBRBBBGRBGRBRBBRRBRBGBRGRGBRRGBBRBBBGBBGBRGGGBGRRRGBBBGRRGRBRGGRRGRBGBBGRGGRBGBBBRGRGRRRBRBRRGGGBGBGRBBRRRBGGGGGGGBRBRRRBRRGGGBGGBRRGGRBBBRBRBRBBGRGRRGBGGGGGGRBGRGGBBRGRBRBRBGBRGGBBBGRRRBRGBBBBBRGBRGGBGBGGBRRGGBRGRRRRBBRRBBGRRGGRRRGGBGGBRBGRGRRBBRRGGGRBBBGGGRGRRRGBBRGRBRBGBBRRBBRGRRRRBGRGBGBBGBRBGGGRRRGRRRBRRGRRBGBRGBBRRRGGRRGGGBGRGGBRBRGGRRBBGBRBRBGBBBGRRRGRGGRGRBGBRGBGRGRBRRGBBRRBGRGRGGBRBBBRGGRRRBRRGRGB")) // "B"
-console.log(triangleHard("GRBBGGGRRRBGRBRBRRRGRRGBBGRGGGGRBRRGBGBRGBRRRRGBGBRRRBRRBGGGBRBBGGGBRGBGGRBGGBRBRBGBBRRGBRBBBGRBGRBRBBRRBRBGBRGRGBRRGBBRBBBGBBGBRGGGBGRRRGBBBGRRGRBRGGRRGRBGBBGRGGRBGBBBRGRGRRRBRBRRGGGBGBGRBBRRRBGGGGGGGBRBRRRBRRGGGBGGBRRGGRBBBRBRBRBBGRGRRGBGGGGGGRBGRGGBBRGRBRBRBGBRGGBBBGRRRBRGBBBBBRGBRGGBGBGGBRRGGBRGRRRRBBRRBBGRRGGRRRGGBGGBRBGRGRRBBRRGGGRBBBGGGRGRRRGBBRGRBRBGBBRRBBRGRRRRBGRGBGBBGBRBGGGRRRGRRRBRRGRRBGBRGBBRRRGGRRGGGBGRGGBRBRGGRRBBGBRBRBGBBBGRRRGRGGRGRBGBRGBGRGRBRRGBBRRBGRGRGGBRBBBRGGRRRBRRGRGB")) // "B"
+console.log(triangleHard("BRB")) // "G"
+console.log(triangleHard("RBRGBRB")) // "G"
+console.log(triangleHard("RRGBRGBB")) // "G"
+console.log(triangleHard("RBRGBRBGGRRRBGBBBGG")) // "G"
+console.log(triangleBis("GRBBGGGRRRBGRBRBRRRGRRGBBGRGGGGRBRRGBGBRGBRRRRGBGBRRRBRRBGGGBRBBGGGBRGBGGRBGGBRBRBGBBRRGBRBBBGRBGRBRBBRRBRBGBRGRGBRRGBBRBBBGBBGBRGGGBGRRRGBBBGRRGRBRGGRRGRBGBBGRGGRBGBBBRGRGRRRBRBRRGGGBGBGRBBRRRBGGGGGGGBRBRRRBRRGGGBGGBRRGGRBBBRBRBRBBGRGRRGBGGGGGGRBGRGGBBRGRBRBRBGBRGGBBBGRRRBRGBBBBBRGBRGGBGBGGBRRGGBRGRRRRBBRRBBGRRGGRRRGGBGGBRBGRGRRBBRRGGGRBBBGGGRGRRRGBBRGRBRBGBBRRBBRGRRRRBGRGBGBBGBRBGGGRRRGRRRBRRGRRBGBRGBBRRRGGRRGGGBGRGGBRBRGGRRBBGBRBRBGBBBGRRRGRGGRGRBGBRGBGRGRBRRGBBRRBGRGRGGBRBBBRGGRRRBRRGRGB")) // "R"
+console.log(triangleHard("GRBBGGGRRRBGRBRBRRRGRRGBBGRGGGGRBRRGBGBRGBRRRRGBGBRRRBRRBGGGBRBBGGGBRGBGGRBGGBRBRBGBBRRGBRBBBGRBGRBRBBRRBRBGBRGRGBRRGBBRBBBGBBGBRGGGBGRRRGBBBGRRGRBRGGRRGRBGBBGRGGRBGBBBRGRGRRRBRBRRGGGBGBGRBBRRRBGGGGGGGBRBRRRBRRGGGBGGBRRGGRBBBRBRBRBBGRGRRGBGGGGGGRBGRGGBBRGRBRBRBGBRGGBBBGRRRBRGBBBBBRGBRGGBGBGGBRRGGBRGRRRRBBRRBBGRRGGRRRGGBGGBRBGRGRRBBRRGGGRBBBGGGRGRRRGBBRGRBRBGBBRRBBRGRRRRBGRGBGBBGBRBGGGRRRGRRRBRRGRRBGBRGBBRRRGGRRGGGBGRGGBRBRGGRRBBGBRBRBGBBBGRRRGRGGRGRBGBRGBGRGRBRRGBBRRBGRGRGGBRBBBRGGRRRBRRGRGB")) // "R"
 
+// Same than above but using a while instead of a recursion
+function triangleHardBis(row){
+
+}
 //=========================================
 // Task
 // Given an array/list [] of n integers , find maximum triplet sum in the array Without duplications .

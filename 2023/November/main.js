@@ -742,6 +742,115 @@ class Dinglemouse{
     
     getFullName(){
         return (this.firstName && this.lastName) ? this.firstName+" "+this.lastName : this.firstName+this.lastName
+        //return `${this._firstName} ${this._lastName}`.trim()
     }
     
+}
+
+//========================================
+// https://www.codewars.com/kata/536a155256eb459b8700077e/train/javascript
+// Do you know how to make a spiral? Let's test it!
+// Classic definition: A spiral is a curve which emanates from a central point, getting progressively farther away as it revolves around the point.
+
+// Your objective is to complete a function createSpiral(N) that receives an integer N and returns an NxN two-dimensional array with numbers 1 through NxN represented as a clockwise spiral.
+
+// Return an empty array if N < 1 or N is not int / number
+
+// Examples:
+// N = 3 Output: [[1,2,3],[8,9,4],[7,6,5]]
+// 1    2    3    
+// 8    9    4    
+// 7    6    5    
+
+// N = 4 Output: [[1,2,3,4],[12,13,14,5],[11,16,15,6],[10,9,8,7]]
+// 1   2   3   4
+// 12  13  14  5
+// 11  16  15  6
+// 10  9   8   7
+
+// N = 5 Output: [[1,2,3,4,5],[16,17,18,19,6],[15,24,25,20,7],[14,23,22,21,8],[13,12,11,10,9]]
+// 1   2   3   4   5    
+// 16  17  18  19  6    
+// 15  24  25  20  7    
+// 14  23  22  21  8    
+// 13  12  11  10  9
+
+// From : https://leetcode.com/problems/spiral-matrix-ii/
+
+function createSpiral(n) {
+    if(n < 1 || !Number.isInteger(n)) return []
+    if(n === 1) return [[1]]
+
+    const directions = {
+        'right' : 'down',
+        'down' : 'left',
+        'left' : 'up',
+        'up' : 'right'
+    }
+
+    let spiral = Array.from({ length: n }, () => Array(n))
+    spiral[0][0] = 1
+    let dir = 'right'
+    let ct = 2
+    let coord = [0, 0] // [row, col]
+
+    while(ct <= n*n){
+        //Fill a row (or a col), check if the following cell is available, i.e. in bounds and not already assigned, if so assign it, else change direction
+        if(dir === 'right'){
+            if(isAvailable([coord[0] , coord[1]+1])) {
+                coord = [coord[0] , coord[1]+1]
+                spiral[coord[0]][coord[1]] = ct
+                ct ++
+            }
+            else dir = directions[dir]
+        }
+        else if(dir === 'down'){
+            if(isAvailable([coord[0]+1 , coord[1]])) {
+                coord = [coord[0]+1 , coord[1]]
+                spiral[coord[0]][coord[1]] = ct
+                ct ++
+            }
+            else dir = directions[dir]
+        }
+        else if(dir === 'left'){
+            if(isAvailable([coord[0] , coord[1]-1])) {
+                coord = [coord[0] , coord[1]-1]
+                spiral[coord[0]][coord[1]] = ct
+                ct ++
+            }
+            else dir = directions[dir]
+        }
+        else if(dir === 'up'){
+            if(isAvailable([coord[0]-1 , coord[1]])) {
+                coord = [coord[0]-1 , coord[1]]
+                spiral[coord[0]][coord[1]] = ct
+                ct ++
+            }
+            else dir = directions[dir]
+        }
+    }
+
+    return spiral
+
+    function isAvailable(coord){
+        return coord[0]>=0 && coord[0]<n && coord[1]>=0 && coord[1]<n && !spiral[coord[0]][coord[1]]
+    }
+}
+
+function createSpiralBis(n) {
+    if(n < 1 || !Number.isInteger(n)) return []
+    if(n === 1) return [[1]]
+
+    let spiral = Array.from( {length: n}, () => Array(n))
+    spiral[0][0] = 1
+    let coord = [0, 0] // [row, col]
+
+    for(let ct = 2 ; ct<= n*n ;){
+        while(coord[1]+1<n && !spiral[coord[0]][coord[1]+1]) spiral[coord[0]][++coord[1]] = ct++
+        while(coord[0]+1<n && !spiral[coord[0]+1][coord[1]]) spiral[++coord[0]][coord[1]] = ct++
+        while(coord[1]-1>=0 && !spiral[coord[0]][coord[1]-1]) spiral[coord[0]][--coord[1]] = ct++
+        while(coord[0]-1>=0 && !spiral[coord[0]-1][coord[1]]) spiral[--coord[0]][coord[1]] = ct++
+    }
+
+    return spiral
 }

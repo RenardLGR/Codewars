@@ -185,3 +185,51 @@ function add(num1, num2) {
 
 // console.log(add(248, 208)) // 4416
 // console.log(add(122, 81)) // 1103
+
+//======================================
+// https://www.codewars.com/kata/5d7bb3eda58b36000fcc0bbb/train/javascript
+// Fibonacci sequence is defined as follows: F(n+1) = F(n) + F(n-1), where F(0) = 0, F(1) = 1.
+
+// There are many generalizations, including Tribonacci numbers, Padovan numbers, Lucas numbers, etc. Many of there have their respective katas in codewars, including:
+
+// Fibonacci: https://www.codewars.com/kata/fibonacci-number
+// Tribonacci: https://www.codewars.com/kata/tribonacci-sequence
+// Padovan: https://www.codewars.com/kata/padovan-numbers
+// Lucas: https://www.codewars.com/kata/lucas-numbers
+// And some of the performance versions:
+
+// Millionth Fibonacci kata: https://www.codewars.com/kata/the-millionth-fibonacci-kata
+// Big Big Big Padovan Number: https://www.codewars.com/kata/big-big-big-padovan-number
+// This kata is aimed at evaluating both generalization ability and complexity of the algorithm.
+
+// The task:
+// You are given two lists of integers A and B of same size, and a positive integer n.
+
+// List A represents first values of the sequence, namely F(0) == A(0), F(1) == A(1), ..., F(len(A)-1) = A(len(A)-1)
+// List B represents coefficients of recurrent equation F(n) = B(0)*F(n-1) + B(1)*F(n-2) + ... + B(len(B)-1)*F(n-len(B))
+// n is the index of number in the sequence, which you need to return.
+// Hint: solution must have O(log n) complexity to pass the tests.
+
+// Range of numbers:
+// There are 100 random tests. 2 <= len(A) == len(B) <= 5, 0 <= n <= 100000. Initial values are in range [-5; 5], and the coefficients are in range [-2; 2]
+
+// O(n) solution :
+function generalizedFibonacchi(a, b, n){
+    a = a.map(e => BigInt(e))
+    b = b.map(e => BigInt(e))
+
+    if(n < a.length) return a[n]
+
+    //General case
+    b.reverse()
+    for(let i=0 ; i<n-a.length+1 ; i++){
+        a.push(a.reduce((acc, cur, idx) => acc + b[idx]*cur, 0n))
+        a.shift()
+    }
+
+    return a
+}
+
+// console.log(generalizedFibonacchi([0, 0, 0, 1], [1, 1, 1, 1], 15)) // 1490n
+// console.log(generalizedFibonacchi([ -4, 4 ], [ 1, -1 ], 66293)) // -8n
+

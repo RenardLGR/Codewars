@@ -217,19 +217,99 @@ function add(num1, num2) {
 function generalizedFibonacchi(a, b, n){
     a = a.map(e => BigInt(e))
     b = b.map(e => BigInt(e))
+    b.reverse()
 
-    if(n < a.length) return a[n]
+    if(n < a.length) return a[n] * b[n]
 
     //General case
-    b.reverse()
     for(let i=0 ; i<n-a.length+1 ; i++){
         a.push(a.reduce((acc, cur, idx) => acc + b[idx]*cur, 0n))
         a.shift()
     }
 
-    return a
+    return a[a.length-1]
 }
 
 // console.log(generalizedFibonacchi([0, 0, 0, 1], [1, 1, 1, 1], 15)) // 1490n
 // console.log(generalizedFibonacchi([ -4, 4 ], [ 1, -1 ], 66293)) // -8n
 
+
+// Let's take the example a = [1, 2, 3, 4] ; b = [-1, 2, -3, 4] and n = 10
+// Using matrices, we have :
+// |Fn-3|    |0  1 0  0|   |Fn-4|
+// |Fn-2| =  |0  0 1  0| * |Fn-3|
+// |Fn-1|    |0  0 0  1|   |Fn-2|
+// |Fn  |    |4 -3 2 -1|   |Fn-1|
+// With the last lane being b.reverse()
+
+// We have
+// |Fn-3|    |0  1 0  0|^7   |F0|
+// |Fn-2| =  |0  0 1  0|   * |F1|
+// |Fn-1|    |0  0 0  1|     |F2|
+// |Fn  |    |4 -3 2 -1|     |F3|
+// base being the middle matrix, 7 being n-a.length+1 and [F0, F1, F2, F3] = a
+
+// We can the easily find Fn
+
+function generalizedFibonacchiBis(a, b, n){
+    a = a.map(e => [BigInt(e)])
+    b = b.map(e => BigInt(e))
+    b.reverse()
+
+    if(n < a.length) return a[n] * b[n]
+
+    //General case
+    let base = []
+    for(let i=0 ; i<a.length-1 ; i++){
+        let row = Array(a.length).fill(0n)
+        row[i+1] = 1n
+        base.push(row)
+    }
+    base.push(b)
+
+    let pow = n - a.length + 1
+    let res = multiplyMatrices( expMatrices(base, pow) , a)
+    return res[res.length - 1][0]
+
+    function multiplyMatrices(matrixA, matrixB) {
+        const numRowsA = matrixA.length;
+        const numColsA = matrixA[0].length;
+        const numRowsB = matrixB.length;
+        const numColsB = matrixB[0].length;
+    
+        // Check if matrices can be multiplied
+        if (numColsA !== numRowsB) {
+            console.error("Invalid matrix dimensions for multiplication");
+            return null;
+        }
+    
+        // Initialize the result matrix with zeros
+        const result = Array.from({ length: numRowsA }, () => Array(numColsB).fill(0n));
+    
+        // Perform matrix multiplication
+        for (let i = 0; i < numRowsA; i++) {
+            for (let j = 0; j < numColsB; j++) {
+                for (let k = 0; k < numColsA; k++) {
+                    result[i][j] += matrixA[i][k] * matrixB[k][j];
+                }
+            }
+        }
+    
+        return result;
+    }
+
+    // Fast exponentiation
+    function expMatrices(mat, pow){
+        if(pow === 1) return mat
+
+        // mat^n = (mat*mat)^(n/2) if n is even
+        if(pow%2 === 0) return expMatrices(multiplyMatrices(mat, mat), pow/2)
+        // mat^n = (mat*mat)^((n-1)/2)*mat if n is odd
+        if(pow%2 === 1) return multiplyMatrices(mat, expMatrices(multiplyMatrices(mat, mat), (pow-1)/2))
+    }
+}
+
+console.log(generalizedFibonacchiBis([0, 1], [1, 1], 3)) // 2n
+console.log(generalizedFibonacchiBis([0, 0, 0, 1], [1, 1, 1, 1], 15)) // 1490n
+console.log(generalizedFibonacchiBis([ -4, 4 ], [ 1, -1 ], 66293)) // -8n
+console.log(generalizedFibonacchiBis([1, 2, 3, 4], [-1, 2, -3, 4], 10)) // -478n

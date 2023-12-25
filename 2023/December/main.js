@@ -309,7 +309,79 @@ function generalizedFibonacchiBis(a, b, n){
     }
 }
 
-console.log(generalizedFibonacchiBis([0, 1], [1, 1], 3)) // 2n
-console.log(generalizedFibonacchiBis([0, 0, 0, 1], [1, 1, 1, 1], 15)) // 1490n
-console.log(generalizedFibonacchiBis([ -4, 4 ], [ 1, -1 ], 66293)) // -8n
-console.log(generalizedFibonacchiBis([1, 2, 3, 4], [-1, 2, -3, 4], 10)) // -478n
+// console.log(generalizedFibonacchiBis([0, 1], [1, 1], 3)) // 2n
+// console.log(generalizedFibonacchiBis([0, 0, 0, 1], [1, 1, 1, 1], 15)) // 1490n
+// console.log(generalizedFibonacchiBis([ -4, 4 ], [ 1, -1 ], 66293)) // -8n
+// console.log(generalizedFibonacchiBis([1, 2, 3, 4], [-1, 2, -3, 4], 10)) // -478n
+
+//===================================
+// https://www.codewars.com/kata/big-big-big-padovan-number
+// Description:
+// The Padovan sequence is the sequence of integers P(n) defined by the initial values
+
+// P(0)=P(1)=P(2)=1
+
+// and the recurrence relation
+
+// P(n)=P(n-2)+P(n-3)
+
+// The first few values of P(n) are
+
+// 1, 1, 1, 2, 2, 3, 4, 5, 7, 9, 12, 16, 21, 28, 37, 49, 65, 86, 114, 151, 200, 265, ...
+
+// Task
+// Examples
+// Hint: use matrices
+
+// Using matrices, we have :
+// |Pn-2|  =  |0  1  0|   |Pn-3|  =  |0  1  0|^(n-2)  |P0|
+// |Pn-1|     |0  0  1|   |Pn-2|     |0  0  1|        |P1|
+// |Pn  |     |1  1  0|   |Pn-1|     |1  1  0|        |P2|
+
+function padovan(n) {
+    if(n < 3) return 1n
+
+    let base = [[0n, 1n, 0n], [0n, 0n, 1n], [1n, 1n, 0n]]
+
+    return multiplyMatrices(expMatrices(base, n-2), [[1n], [1n], [1n]])[2][0]
+
+    function multiplyMatrices(matrixA, matrixB) {
+        const numRowsA = matrixA.length;
+        const numColsA = matrixA[0].length;
+        const numRowsB = matrixB.length;
+        const numColsB = matrixB[0].length;
+    
+        // Check if matrices can be multiplied
+        if (numColsA !== numRowsB) {
+            console.error("Invalid matrix dimensions for multiplication");
+            return null;
+        }
+    
+        // Initialize the result matrix with zeros
+        const result = Array.from({ length: numRowsA }, () => Array(numColsB).fill(0n));
+    
+        // Perform matrix multiplication
+        for (let i = 0; i < numRowsA; i++) {
+            for (let j = 0; j < numColsB; j++) {
+                for (let k = 0; k < numColsA; k++) {
+                    result[i][j] += matrixA[i][k] * matrixB[k][j];
+                }
+            }
+        }
+    
+        return result;
+    }
+
+    // Fast exponentiation
+    function expMatrices(mat, pow){
+        if(pow === 1) return mat
+
+        // mat^n = (mat*mat)^(n/2) if n is even
+        if(pow%2 === 0) return expMatrices(multiplyMatrices(mat, mat), pow/2)
+        // mat^n = (mat*mat)^((n-1)/2)*mat if n is odd
+        if(pow%2 === 1) return multiplyMatrices(mat, expMatrices(multiplyMatrices(mat, mat), (pow-1)/2))
+    }
+}
+
+// console.log(padovan(100)) // 1177482265857n
+

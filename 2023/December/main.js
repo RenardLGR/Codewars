@@ -385,3 +385,32 @@ function padovan(n) {
 
 // console.log(padovan(100)) // 1177482265857n
 
+// O(n) versions :
+function padovanBis(n){
+    let arr = [1n, 1n, 1n]
+    for(let i=0 ; i<n-2 ; i++){
+        arr.push(arr[0]+arr[1])
+        arr.shift()
+    }
+
+    return arr[2]
+}
+
+// console.log(padovanBis(100)) // 1177482265857n
+
+function padovanTer(n){
+    let one = 1n
+    let two = 1n
+    let three = 1n
+
+    for(let i=0 ; i<n-2 ; i++){
+        let temp = one+two
+        one = two
+        two = three
+        three = temp
+    }
+
+    return three
+}
+
+// console.log(padovanTer(100)) // 1177482265857n

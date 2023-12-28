@@ -350,7 +350,7 @@ function deepCount(a){
 // If you finished this kata you can use your solution as a base for the more challenging kata: 6 By 6 Skyscrapers
 // https://www.codewars.com/kata/6-by-6-skyscrapers
 
-// Dynamic programming approach
+// Test every grid approach
 function solvePuzzle(clues){
     const N = 4
     let grid = Array.from({length: N}, (_) => Array(N).fill(0))
@@ -468,6 +468,123 @@ function solvePuzzle(clues){
 
 // console.log(solvePuzzle([2, 2, 1, 3, 2, 2, 3, 1, 1, 2, 2, 3, 3, 2, 1, 3])) // [[1, 3, 4, 2], [4, 2, 1, 3], [3, 4, 2, 1], [2, 1, 3, 4]]
 // console.log(solvePuzzle([0, 0, 1, 2, 0, 2, 0, 0, 0, 3, 0, 0, 0, 1, 0, 0])) // [[2, 1, 4, 3], [3, 4, 1, 2], [4, 2, 3, 1], [1, 3, 2, 4]]
+
+// Slightly different recursive method
+function solvePuzzleBis(clues){
+    const N = clues.length/4
+    let grid = Array.from({length:N}, (_) => Array(N).fill(0))
+    solve(grid)
+    return grid
+
+    function solve(grid){
+        for(let row=0 ; row<N ; row++){
+            for(let col=0 ; col<N ; col++){
+                if(grid[row][col] === 0){
+                    for(let num = 1 ; num<=N ; num++){
+                        if(isNumValid(row, col, num, grid)){
+                            grid[row][col] = num
+                            if(solve(grid)){
+                                //call recursively again, if it returns true, the board is completed, end every recursion
+                                return true
+                            }else{
+                                //backtrack
+                                grid[row][col] = 0
+                            }
+                        }
+                    }
+                    //if no nums were possible, the grid is wrong, backtrack
+                    return false
+                }
+            }
+        }
+        //the grid is complete
+        return isGridCorrect(grid)
+    }
+
+    //To be valid, the number must be unique in his row, unique in his col and respect the clues
+    function isNumValid(row, col, num, grid){
+        for(let i=0 ; i<N ; i++){
+            // Check row and col uniqueness
+            if(grid[row][i] === num) return false
+            if(grid[i][col] === num) return false
+        }
+        return true
+    }
+
+    // Check if the grid respects the clues
+    function isGridCorrect(grid){
+        //Check cols, from top to bottom
+        for(let i=0 ; i<N ; i++){
+            let clue = clues.slice(0, N)[i]
+            if(clue === 0) continue
+            let col = []
+            for(let j=0 ; j<N ; j++){
+                col.push(grid[j][i])
+            }
+            let max = col[0]
+            col.forEach((height) => {
+                if(height >= max){
+                    max = height
+                    clue--
+                }
+            })
+            if(clue !== 0) return false
+        }
+
+        //Check rows from right to left
+        for(let i=0 ; i<N ; i++){
+            let clue = clues.slice(N, 2*N)[i]
+            if(clue === 0) continue
+            let row = grid[i].slice().reverse()
+            let max = row[0]
+            row.forEach(height => {
+                if(height >= max){
+                    max = height
+                    clue--
+                }
+            })
+            if(clue !== 0) return false
+        }
+
+        //Check cols, from bottom to top
+        for(let i=0 ; i<N ; i++){
+            let clue = clues.slice(2*N, 3*N)[i]
+            if(clue === 0) continue
+            let col = []
+            for(let j=N-1 ; j>=0 ; j--){
+                col.push(grid[j][N-1-i])
+            }
+            let max = col[0]
+            col.forEach((height) => {
+                if(height >= max){
+                    max = height
+                    clue--
+                }
+            })
+            if(clue !== 0) return false
+        }
+
+        //Check rows from left to right
+        for(let i=0 ; i<N ; i++){
+            let clue = clues.slice(3*N, 4*N)[i]
+            if(clue === 0) continue
+            let row = grid[N-1-i]
+            let max = row[0]
+            row.forEach(height => {
+                if(height >= max){
+                    max = height
+                    clue--
+                }
+            })
+            if(clue !== 0) return false
+        }
+
+        return true
+    }
+}
+
+// console.log(solvePuzzleBis([2, 2, 1, 3, 2, 2, 3, 1, 1, 2, 2, 3, 3, 2, 1, 3])) // [[1, 3, 4, 2], [4, 2, 1, 3], [3, 4, 2, 1], [2, 1, 3, 4]]
+// console.log(solvePuzzleBis([0, 0, 1, 2, 0, 2, 0, 0, 0, 3, 0, 0, 0, 1, 0, 0])) // [[2, 1, 4, 3], [3, 4, 1, 2], [4, 2, 3, 1], [1, 3, 2, 4]]
 
 // https://www.codewars.com/kata/6-by-6-skyscrapers goes the same way
 
@@ -587,6 +704,7 @@ function solvePuzzle6x6(clues){
 }
 
 // console.log(solvePuzzle6x6([ 3, 2, 2, 3, 2, 1, 1, 2, 3, 3, 2, 2, 5, 1, 2, 2, 4, 3, 3, 2, 1, 2, 2, 4])) // [[ 2, 1, 4, 3, 5, 6], [ 1, 6, 3, 2, 4, 5], [ 4, 3, 6, 5, 1, 2], [ 6, 5, 2, 1, 3, 4], [ 5, 4, 1, 6, 2, 3], [ 3, 2, 5, 4, 6, 1]] // It took 4820.761 seconds...
+// console.log(solvePuzzleBis([ 3, 2, 2, 3, 2, 1, 1, 2, 3, 3, 2, 2, 5, 1, 2, 2, 4, 3, 3, 2, 1, 2, 2, 4])) // [[ 2, 1, 4, 3, 5, 6], [ 1, 6, 3, 2, 4, 5], [ 4, 3, 6, 5, 1, 2], [ 6, 5, 2, 1, 3, 4], [ 5, 4, 1, 6, 2, 3], [ 3, 2, 5, 4, 6, 1]] // It took 404.584 seconds...
 
 
 //===========================================

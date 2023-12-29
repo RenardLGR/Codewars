@@ -327,6 +327,7 @@ function solvePuzzlezzz(clues){
 function solvePuzzle6x6(clues){
     const N = clues.length/4
     let grid = Array.from({length:N}, (_) => Array(N).fill(0))
+    fillKnownElement()
     solve(grid)
     return grid
 
@@ -353,6 +354,61 @@ function solvePuzzle6x6(clues){
         }
         //the grid is complete
         return isGridCorrect(grid)
+    }
+
+    // A clue of N gives a [1, ..., N] row or col
+    // A clue of 1 gives a row or col starting with N
+    function fillKnownElement(){
+        clues.forEach((e, idx) => {
+            if(e === 1){
+                //top to bottom
+                if(idx < N){
+                    grid[0][idx] = 6
+                }
+                //right to left
+                if(idx >= N && idx < 2*N){
+                    grid[idx%N][N-1] = 6
+                }
+                //bottom to top
+                if(idx >= 2*N && idx < 3*N){
+                    grid[N-1][N-(idx%N)-1] = 6
+                }
+                //left to right
+                if(idx >= 3*N && idx < 4*N){
+                    grid[N-(idx%N)-1][0] = 6
+                }
+            }
+            if(e === 6){
+                //top to bottom
+                if(idx < N){
+                    let col = idx
+                    for(let row=0 ; row<N ; row++){
+                        grid[row][col] = row+1
+                    }
+                }
+                //right to left
+                if(idx >= N && idx < 2*N){
+                    let row = idx%N
+                    for(let col=0 ; col<N ; col++){
+                        grid[row][col] = N-col
+                    }
+                }
+                //bottom to top
+                if(idx >= 2*N && idx < 3*N){
+                    let col = N-(idx%N)-1
+                    for(let row=0 ; row<N ; row++){
+                        grid[row][col] = N-row
+                    }
+                }
+                //left to right
+                if(idx >= 3*N && idx < 4*N){
+                    let row = N-(idx%N)-1
+                    for(let col=0 ; col<N ; col++){
+                        grid[row][col] = col+1
+                    }
+                }
+            }
+        })
     }
 
     //To be valid, the number must be unique in his row, unique in his col and respect the clues
@@ -458,6 +514,6 @@ function solvePuzzle6x6(clues){
     }
 }
 
-// console.log(solvePuzzlezzz([ 3, 2, 2, 3, 2, 1, 1, 2, 3, 3, 2, 2, 5, 1, 2, 2, 4, 3, 3, 2, 1, 2, 2, 4])) // [[ 2, 1, 4, 3, 5, 6], [ 1, 6, 3, 2, 4, 5], [ 4, 3, 6, 5, 1, 2], [ 6, 5, 2, 1, 3, 4], [ 5, 4, 1, 6, 2, 3], [ 3, 2, 5, 4, 6, 1]] // It took 404.584 seconds...
-console.log(solvePuzzle6x6([ 3, 2, 2, 3, 2, 1, 1, 2, 3, 3, 2, 2, 5, 1, 2, 2, 4, 3, 3, 2, 1, 2, 2, 4])) // [[ 2, 1, 4, 3, 5, 6], [ 1, 6, 3, 2, 4, 5], [ 4, 3, 6, 5, 1, 2], [ 6, 5, 2, 1, 3, 4], [ 5, 4, 1, 6, 2, 3], [ 3, 2, 5, 4, 6, 1]] // It took 2.957 seconds...
-// console.log(solvePuzzle6x6([ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0])) // [[ 5, 2, 6, 1, 4, 3 ], [ 6, 4, 3, 2, 5, 1 ], [ 3, 1, 5, 4, 6, 2 ], [ 2, 6, 1, 5, 3, 4 ], [ 4, 3, 2, 6, 1, 5 ], [ 1, 5, 4, 3, 2, 6 ]] // It took 285.056 seconds...
+// console.log(solvePuzzle6x6([ 3, 2, 2, 3, 2, 1, 1, 2, 3, 3, 2, 2, 5, 1, 2, 2, 4, 3, 3, 2, 1, 2, 2, 4])) // [[ 2, 1, 4, 3, 5, 6], [ 1, 6, 3, 2, 4, 5], [ 4, 3, 6, 5, 1, 2], [ 6, 5, 2, 1, 3, 4], [ 5, 4, 1, 6, 2, 3], [ 3, 2, 5, 4, 6, 1]] // It took 0.309 seconds...
+// console.log(solvePuzzle6x6([ 3, 2, 2, 3, 2, 1, 1, 2, 3, 3, 2, 2, 5, 1, 2, 2, 4, 3, 3, 2, 1, 2, 2, 4])) // [[ 2, 1, 4, 3, 5, 6], [ 1, 6, 3, 2, 4, 5], [ 4, 3, 6, 5, 1, 2], [ 6, 5, 2, 1, 3, 4], [ 5, 4, 1, 6, 2, 3], [ 3, 2, 5, 4, 6, 1]] // It took 2.957 seconds...
+// console.log(solvePuzzle6x6([ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0])) // [[ 5, 2, 6, 1, 4, 3 ], [ 6, 4, 3, 2, 5, 1 ], [ 3, 1, 5, 4, 6, 2 ], [ 2, 6, 1, 5, 3, 4 ], [ 4, 3, 2, 6, 1, 5 ], [ 1, 5, 4, 3, 2, 6 ]] // It took 107.865 seconds...

@@ -250,12 +250,6 @@ function puzzle6x6Permutations(clues){
 
 }
 
-
-//Generate every permutations given a clue
-function permutator(clue){
-    let arr = Array.from({length: N}, (_, i) => i + 1)
-}
-
 const N = 6;
 const SIDES = 4;
 const MASK = (1 << N) - 1;
@@ -458,41 +452,288 @@ function solvePuzzleGPT(clues) {
 // console.log(solvePuzzleGPT([ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0]))
 
 
+// Consider a bit mask as a set of true or false flags.
+// In the following function, we will keep track of possible height of skyscrapers represented by the mask.
+// Examples : 111111 means every heights are possible (this would be how our program starts).
+// 010011 means skyscrapers of height 5, 2 or 1 are possible.
+// 010000 means only there is a unique possibility of a skyscraper of height 5.
+// Note that masks are coded as integers but operations are on bits
+// As we set skyscrapers, we will modify (remove) this height from the row and col we were working on.
+
 
 function fff(clues){
     const N = clues.length/4
     const MASK = (1 << N) - 1 // = 63 = 2**6 - 1
     let grid = Array.from({length:N}, (_) => Array(N).fill(MASK))
-    solve(grid)
-    return grid
+    console.log(solve(grid))
+    console.log(grid);
+    return grid.map(arr => arr.map(mask => getHeightFromMask(mask) ))
 
     function solve(grid){
+        // Check if the grid respects the clues so far
+        if(!isValidSoFar()) return false
+
         for(let row=0 ; row<N ; row++){
             for(let col=0 ; col<N ; col++){
-                if(grid[row][col] === 0){
-                    for(let num = 1 ; num<=N ; num++){
-                        if(isNumValid(row, col, num, grid)){
-                            grid[row][col] = num
+                if(isMultiplePossibleSkyscraper(grid[row][col])){
+                    for(let pow = 0 ; pow<N ; pow++){
+                        let skyscraperMask = Math.pow(2, pow)
+                        if(isUniqueInRowCol(row, col, skyscraperMask)){
+                            let cpy = cpyGrid(grid)
+                            setSkyscraper(row, col, skyscraperMask)
                             if(solve(grid)){
                                 //call recursively again, if it returns true, the board is completed, end every recursion
                                 return true
                             }else{
                                 //backtrack
-                                grid[row][col] = 0
+                                grid = cpyGrid(cpy)
                             }
                         }
                     }
-                    //if no nums were possible, the grid is wrong, backtrack
+                    //if no masks were possible, the grid is wrong, backtrack
                     return false
                 }
             }
         }
         //the grid is complete
-        return isGridCorrect(grid)
+        console.log("correct?" , isGridCorrect());
+        return isGridCorrect()
     }
 
+    // A skyscraper is set if there is only one 1 in his mask, multiple 1s means skyscrapers of different heights are possible
+    // This function returns true if multiple skyscrapers are possible
+    function isMultiplePossibleSkyscraper(mask){
+            // Count the number of set bits in the binary representation
+            let count = 0
+            while (mask) {
+                // In each iteration, mask & 1 is used to check the value of the least significant bit (LSB) of the current mask.
+                // If the LSB is 1, mask & 1 evaluates to 1, and count is incremented by 1.
+                // If the LSB is 0, mask & 1 evaluates to 0, and count remains unchanged.
+                count += mask & 1
+                // After checking the LSB, the entire mask is right-shifted by 1 position.
+                mask >>= 1
+            }
+
+            // If there is exactly one set bit, return false
+            return count !== 1
+    }
+
+    // This function returns true if the mask given is a single skyscraper (only one 1 and 0s)
+    function isSingleSkyscraper(mask){
+        return !isMultiplePossibleSkyscraper(mask)
+    }
+
+    //Check if the attempted skyscraper mask is not already present in the row or the col
+    function isUniqueInRowCol(row, col, skyscraperMask){
+        for(let i=0 ; i<N ; i++){
+            if(grid[row][i] === skyscraperMask) return false
+            if(grid[i][col] === skyscraperMask) return false
+        }
+        return true
+    }
+
+    // This function checks if clues are being respected so far
+    function isValidSoFar(){
+        const cluesCpy = clues.slice()
+        let cluesClean = [cluesCpy.splice(0,N), cluesCpy.splice(0,N), cluesCpy.splice(0,N), cluesCpy.splice(0,N)]
+        for(let i=0 ; i<N ; i++){
+            let topToBottomClue = cluesClean[0][i]
+            let rightToLeftClue = cluesClean[1][i]
+    
+            let topToBottomMax = 0
+            let rightToLeftMax = 0
+    
+            let topToBottomVisible = 0
+            let rightToLeftVisible = 0
+    
+            for(let j=0 ; j<N ; j++){
+                if(grid[j][i] > topToBottomMax && isSingleSkyscraper(grid[j][i])){
+                    topToBottomMax = grid[j][i]
+                    topToBottomVisible++
+                }
+                if(grid[i][N-j-1] > rightToLeftMax && isSingleSkyscraper(grid[i][N-j-1])){
+                    rightToLeftMax = grid[i][N-j-1]
+                    rightToLeftVisible++
+                }
+            }
+            if(topToBottomClue>0 && topToBottomVisible>topToBottomClue) return false
+            if(rightToLeftClue>0 && rightToLeftVisible>rightToLeftClue) return false
+        }
+        return true
+    }
+
+    // This function, given a supposedly complete board checks if EVERY clues are respected
+    function isGridCorrect(){
+        const cluesCpy = clues.slice()
+        let cluesClean = [cluesCpy.splice(0,N), cluesCpy.splice(0,N), cluesCpy.splice(0,N), cluesCpy.splice(0,N)]
+        for(let i=0 ; i<N ; i++){
+            let topToBottomClue = cluesClean[0][i]
+            let rightToLeftClue = cluesClean[1][i]
+            let bottomToTopClue = cluesClean[2][i]
+            let leftToRightClue = cluesClean[3][i]
+    
+            let topToBottomMax = 0
+            let rightToLeftMax = 0
+            let bottomToTopMax = 0
+            let leftToRightMax = 0
+    
+            let topToBottomVisible = 0
+            let rightToLeftVisible = 0
+            let bottomToTopVisible = 0
+            let leftToRightVisible = 0
+    
+            for(let j=0 ; j<N ; j++){
+                if(grid[j][i] > topToBottomMax && isSingleSkyscraper(grid[j][i])){
+                    topToBottomMax = grid[j][i]
+                    topToBottomVisible++
+                }
+                if(grid[i][N-j-1] > rightToLeftMax && isSingleSkyscraper(grid[i][N-j-1])){
+                    rightToLeftMax = grid[i][N-j-1]
+                    rightToLeftVisible++
+                }
+                if(grid[N-j-1][N-i-1] > bottomToTopMax && isSingleSkyscraper(grid[N-j-1][N-i-1])){
+                    bottomToTopMax = grid[N-j-1][N-i-1]
+                    bottomToTopVisible++
+                }
+                if(grid[N-i-1][j] > leftToRightMax && isSingleSkyscraper(grid[N-i-1][j])){
+                    leftToRightMax = grid[N-i-1][j]
+                    leftToRightVisible++
+                }
+            }
+            if(topToBottomClue>0 && topToBottomVisible!==topToBottomClue) return false
+            if(rightToLeftClue>0 && rightToLeftVisible!==rightToLeftClue) return false
+            if(bottomToTopClue>0 && bottomToTopVisible!==bottomToTopClue) return false
+            if(leftToRightClue>0 && leftToRightVisible!==leftToRightClue) return false
+        }
+        return true
+    }
+
+    // This function sets the skyscraper at row, col. Then it operates changes on the whole row and col, removing a possibility in the mask
+    function setSkyscraper(row, col, skyscraperMask){
+        grid[row][col] = skyscraperMask
+        for(let i=0 ; i<N ; i++){
+            //modify row
+            if(i!==col) grid[row][i] = removeSkyscraper(grid[row][i], skyscraperMask)
+            //modify col
+            if(i !== row) grid[i][col] = removeSkyscraper(grid[i][col], skyscraperMask)
+        }
+    }
+
+    //After setting a skyscraper, we want to remove this possibility from the row and col
+    function removeSkyscraper(originalMask, skyscraperMask){
+    // The bitwise negation (~) is used to create a mask with all bits flipped (0s become 1s, and 1s become 0s) for the skyscraper mask.
+    // The bitwise AND (&) operation is then performed between the original mask and the negated skyscraper mask. This operation turns off the bit corresponding to the skyscraper in the original mask.
+        const resultMask = originalMask & ~skyscraperMask
+        return resultMask
+    }
 
     function cpyGrid(grid){
         return grid.map(line => line.slice())
     }
+
+    // Given a mask, get the height of a skyscraper
+    function getHeightFromMask(mask) {
+        let height = 0;
+    
+        // Find the position of the set bit
+        while (mask) {
+            height++;
+            mask >>= 1;
+        }
+    
+        return height;
+    }
 }
+
+// console.log(fff([ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0]))
+
+// let clues = [ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0]
+// let grid = [
+//     [ 1, 2, 4, 8, 16, 32 ],
+//     [ 2, 1, 8, 4, 32, 16 ],
+//     [ 4, 8, 16, 2, 32, 32 ],
+//     [ 8, 4, 2, 16, 32, 32 ],
+//     [ 16, 32, 32, 32, 4, 8 ],
+//     [ 32, 16, 32, 32, 8, 33 ]
+//   ]
+
+      // A skyscraper is set if there is only one 1 in his mask, multiple 1s means skyscrapers of different heights are possible
+    // This function returns true if multiple skyscrapers are possible
+    function isMultiplePossibleSkyscraper(mask){
+        // Count the number of set bits in the binary representation
+        let count = 0
+        while (mask) {
+            // In each iteration, mask & 1 is used to check the value of the least significant bit (LSB) of the current mask.
+            // If the LSB is 1, mask & 1 evaluates to 1, and count is incremented by 1.
+            // If the LSB is 0, mask & 1 evaluates to 0, and count remains unchanged.
+            count += mask & 1
+            // After checking the LSB, the entire mask is right-shifted by 1 position.
+            mask >>= 1
+        }
+
+        // If there is exactly one set bit, return false
+        return count !== 1
+}
+
+// This function returns true if the mask given is a single skyscraper (only one 1 and 0s)
+function isSingleSkyscraper(mask){
+    return !isMultiplePossibleSkyscraper(mask)
+}
+  function isGridCorrect(grid){
+    const cluesCpy = clues.slice()
+    let cluesClean = [cluesCpy.splice(0,N), cluesCpy.splice(0,N), cluesCpy.splice(0,N), cluesCpy.splice(0,N)]
+    for(let i=0 ; i<N ; i++){
+        let topToBottomClue = cluesClean[0][i]
+        let rightToLeftClue = cluesClean[1][i]
+        let bottomToTopClue = cluesClean[2][i]
+        let leftToRightClue = cluesClean[3][i]
+
+        let topToBottomMax = 0
+        let rightToLeftMax = 0
+        let bottomToTopMax = 0
+        let leftToRightMax = 0
+
+        let topToBottomVisible = 0
+        let rightToLeftVisible = 0
+        let bottomToTopVisible = 0
+        let leftToRightVisible = 0
+
+        for(let j=0 ; j<N ; j++){
+            if(grid[j][i] > topToBottomMax && isSingleSkyscraper(grid[j][i])){
+                topToBottomMax = grid[j][i]
+                topToBottomVisible++
+            }
+            if(grid[i][N-j-1] > rightToLeftMax && isSingleSkyscraper(grid[i][N-j-1])){
+                rightToLeftMax = grid[i][N-j-1]
+                rightToLeftVisible++
+            }
+            if(grid[N-j-1][N-i-1] > bottomToTopMax && isSingleSkyscraper(grid[N-j-1][N-i-1])){
+                bottomToTopMax = grid[N-j-1][N-i-1]
+                bottomToTopVisible++
+            }
+            if(grid[N-i-1][j] > leftToRightMax && isSingleSkyscraper(grid[N-i-1][j])){
+                leftToRightMax = grid[N-i-1][j]
+                leftToRightVisible++
+            }
+        }
+        if(topToBottomClue>0 && topToBottomVisible!==topToBottomClue) return false
+        if(rightToLeftClue>0 && rightToLeftVisible!==rightToLeftClue) return false
+        if(bottomToTopClue>0 && bottomToTopVisible!==bottomToTopClue) return false
+        if(leftToRightClue>0 && leftToRightVisible!==leftToRightClue) return false
+    }
+    return true
+}
+
+let clues = [ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0]
+let resultMask = [
+    [ 16, 2, 32, 1, 8, 4 ],
+    [ 32, 8, 4, 2, 16, 1 ],
+    [ 4, 1, 16, 8, 32, 2 ],
+    [ 2, 32, 1, 16, 4, 8 ],
+    [ 8, 4, 2, 32, 1, 16 ],
+    [ 1, 16, 8, 4, 2, 32 ]
+  ]
+let res = [[ 5, 2, 6, 1, 4, 3 ], [ 6, 4, 3, 2, 5, 1 ], [ 3, 1, 5, 4, 6, 2 ], [ 2, 6, 1, 5, 3, 4 ], [ 4, 3, 2, 6, 1, 5 ], [ 1, 5, 4, 3, 2, 6 ]]
+// console.log(res.map(arr => arr.map(e => Math.pow(2, (e-1)))));
+
+console.log(isGridCorrect(resultMask));

@@ -1,519 +1,152 @@
-function solvePuzzle(clues){
-    const N = 4
-    let grid = Array.from({length: N}, (_) => Array(N).fill(0))
-    let res = null
-    generateGrid(0, 0)
-    return res
+class SkyscraperPuzzle {
+    constuctor(clues){
+        this.clues = clues
+        this.N = clues.length / 4
+        this.MASK = (1 << N) - 1 // = 63 = 2**6 - 1
+        this.grid = Array.from({length:N}, (_) => Array(N).fill(MASK))
+    }
 
-    // Recursive call to get all grids
-    function generateGrid(row, col) {
-        if (row === N) {
-            // All rows have been filled, add this grid to the result
-            let cpy = grid.map(row => [...row])
-            // console.log(cpy)
-            if(isGridCorrect(cpy)) res = cpy
-            return
+    // A skyscraper is set if there is only one 1 in his mask, multiple 1s means skyscrapers of different heights are possible
+    // This function returns true if multiple skyscrapers are possible
+    isMultiplePossibleSkyscraper(mask){
+        // Count the number of set bits in the binary representation
+        let count = 0
+        while (mask) {
+            // In each iteration, mask & 1 is used to check the value of the least significant bit (LSB) of the current mask.
+            // If the LSB is 1, mask & 1 evaluates to 1, and count is incremented by 1.
+            // If the LSB is 0, mask & 1 evaluates to 0, and count remains unchanged.
+            count += mask & 1
+            // After checking the LSB, the entire mask is right-shifted by 1 position.
+            mask >>= 1
+        }
+
+        // If there is exactly one set bit, return false
+        return count !== 1
+    }
+
+    // This function returns true if the mask given is a single skyscraper (only one 1 and 0s)
+    isSingleSkyscraper(mask){
+        return !isMultiplePossibleSkyscraper(mask)
+    }
+
+    //Check if the attempted skyscraper mask is not already present in the row or the col
+    isUniqueInRowCol(row, col, skyscraperMask){
+        for(let i=0 ; i<this.N ; i++){
+            if(this.grid[row][i] === skyscraperMask) return false
+            if(this.grid[i][col] === skyscraperMask) return false
+        }
+        return true
+    }
+
+    // This function checks if clues are being respected by the grid so far
+    isValidSoFar(){
+        const cluesCpy = this.clues.slice()
+        let cluesClean = [cluesCpy.splice(0,this.N), cluesCpy.splice(0,this.N), cluesCpy.splice(0,this.N), cluesCpy.splice(0,this.N)]
+        for(let i=0 ; i<this.N ; i++){
+            let topToBottomClue = cluesClean[0][i]
+            let rightToLeftClue = cluesClean[1][i]
+    
+            let topToBottomMax = 0
+            let rightToLeftMax = 0
+    
+            let topToBottomVisible = 0
+            let rightToLeftVisible = 0
+    
+            for(let j=0 ; j<this.N ; j++){
+                if(this.grid[j][i] > topToBottomMax && isSingleSkyscraper(this.grid[j][i])){
+                    topToBottomMax = this.grid[j][i]
+                    topToBottomVisible++
+                }
+                if(this.grid[i][this.N-j-1] > rightToLeftMax && isSingleSkyscraper(this.grid[i][this.N-j-1])){
+                    rightToLeftMax = this.grid[i][this.N-j-1]
+                    rightToLeftVisible++
+                }
+            }
+            if(topToBottomClue>0 && topToBottomVisible>topToBottomClue) return false
+            if(rightToLeftClue>0 && rightToLeftVisible>rightToLeftClue) return false
+        }
+        return true
+    }
+
+    // This function, given a supposedly complete board checks if EVERY clues are respected
+    isGridCorrect(){
+        const cluesCpy = this.clues.slice()
+        let cluesClean = [cluesCpy.splice(0,this.N), cluesCpy.splice(0,this.N), cluesCpy.splice(0,this.N), cluesCpy.splice(0,this.N)]
+        for(let i=0 ; i<this.N ; i++){
+            let topToBottomClue = cluesClean[0][i]
+            let rightToLeftClue = cluesClean[1][i]
+            let bottomToTopClue = cluesClean[2][i]
+            let leftToRightClue = cluesClean[3][i]
+
+            let topToBottomMax = 0
+            let rightToLeftMax = 0
+            let bottomToTopMax = 0
+            let leftToRightMax = 0
+
+            let topToBottomVisible = 0
+            let rightToLeftVisible = 0
+            let bottomToTopVisible = 0
+            let leftToRightVisible = 0
+
+            for(let j=0 ; j<this.N ; j++){
+                if(this.grid[j][i] > topToBottomMax && isSingleSkyscraper(this.grid[j][i])){
+                    topToBottomMax = this.grid[j][i]
+                    topToBottomVisible++
+                }
+                if(this.grid[i][this.N-j-1] > rightToLeftMax && isSingleSkyscraper(grid[i][this.N-j-1])){
+                    rightToLeftMax = this.grid[i][this.N-j-1]
+                    rightToLeftVisible++
+                }
+                if(this.grid[this.N-j-1][this.N-i-1] > bottomToTopMax && isSingleSkyscraper(this.grid[this.N-j-1][this.N-i-1])){
+                    bottomToTopMax = this.grid[this.N-j-1][this.N-i-1]
+                    bottomToTopVisible++
+                }
+                if(this.grid[this.N-i-1][j] > leftToRightMax && isSingleSkyscraper(this.grid[this.N-i-1][j])){
+                    leftToRightMax = this.grid[this.N-i-1][j]
+                    leftToRightVisible++
+                }
+            }
+            if(topToBottomClue>0 && topToBottomVisible!==topToBottomClue) return false
+            if(rightToLeftClue>0 && rightToLeftVisible!==rightToLeftClue) return false
+            if(bottomToTopClue>0 && bottomToTopVisible!==bottomToTopClue) return false
+            if(leftToRightClue>0 && leftToRightVisible!==leftToRightClue) return false
+        }
+        return true
+    }
+
+    // This function sets the skyscraper at row, col. Then it operates changes on the whole row and col, removing a possibility in the mask
+    setSkyscraper(row, col, skyscraperMask){
+        this.grid[row][col] = skyscraperMask
+        for(let i=0 ; i<this.N ; i++){
+            //modify row
+            if(i!==col) this.grid[row][i] = removeSkyscraper(this.grid[row][i], skyscraperMask)
+            //modify col
+            if(i !== row) this.grid[i][col] = removeSkyscraper(this.grid[i][col], skyscraperMask)
+        }
+    }
+
+    //After setting a skyscraper, we want to remove this possibility from the row and col
+    removeSkyscraper(originalMask, skyscraperMask){
+        // The bitwise negation (~) is used to create a mask with all bits flipped (0s become 1s, and 1s become 0s) for the skyscraper mask.
+        // The bitwise AND (&) operation is then performed between the original mask and the negated skyscraper mask. This operation turns off the bit corresponding to the skyscraper in the original mask.
+        const resultMask = originalMask & ~skyscraperMask
+        return resultMask
+    }
+
+    cpyGrid(grid){
+        return grid.map(line => line.slice())
+    }
+
+    // Given a mask, get the height of a skyscraper
+    getHeightFromMask(mask) {
+        let height = 0;
+    
+        // Find the position of the set bit
+        while (mask) {
+            height++;
+            mask >>= 1;
         }
     
-        // Try each number
-        for (let n=1 ; n<=N ; n++) {
-            if(canIPutNumberHere(grid, row, col, n)){
-                grid[row][col] = n
-                if (col === N-1) {
-                    // Move to the next row when the current row is filled
-                    generateGrid(row + 1, 0)
-                } else {
-                    // Move to the next column in the same row
-                    generateGrid(row, col + 1)
-                }
-                grid[row][col] = 0
-            }
-        }
-    }
-
-    // Check if the number is neither in the row nor the col
-    function canIPutNumberHere(grid, row, col, num){
-        let colElem = []
-        for(let i=0 ; i<N ; i++){
-            colElem.push(grid[i][col])
-        }
-        let rowElem = grid[row].slice()
-        return (!(colElem.includes(num) || rowElem.includes(num)))
-    }
-
-    // Check if the grid respects the clues
-    function isGridCorrect(grid){
-        //Check cols, from top to bottom
-        for(let i=0 ; i<N ; i++){
-            let clue = clues.slice(0, N)[i]
-            if(clue === 0) continue
-            let col = []
-            for(let j=0 ; j<N ; j++){
-                col.push(grid[j][i])
-            }
-            let max = col[0]
-            col.forEach((height) => {
-                if(height >= max){
-                    max = height
-                    clue--
-                }
-            })
-            if(clue !== 0) return false
-        }
-
-        //Check rows from right to left
-        for(let i=0 ; i<N ; i++){
-            let clue = clues.slice(N, 2*N)[i]
-            if(clue === 0) continue
-            let row = grid[i].slice().reverse()
-            let max = row[0]
-            row.forEach(height => {
-                if(height >= max){
-                    max = height
-                    clue--
-                }
-            })
-            if(clue !== 0) return false
-        }
-
-        //Check cols, from bottom to top
-        for(let i=0 ; i<N ; i++){
-            let clue = clues.slice(2*N, 3*N)[i]
-            if(clue === 0) continue
-            let col = []
-            for(let j=N-1 ; j>=0 ; j--){
-                col.push(grid[j][N-1-i])
-            }
-            let max = col[0]
-            col.forEach((height) => {
-                if(height >= max){
-                    max = height
-                    clue--
-                }
-            })
-            if(clue !== 0) return false
-        }
-
-        //Check rows from left to right
-        for(let i=0 ; i<N ; i++){
-            let clue = clues.slice(3*N, 4*N)[i]
-            if(clue === 0) continue
-            let row = grid[N-1-i]
-            let max = row[0]
-            row.forEach(height => {
-                if(height >= max){
-                    max = height
-                    clue--
-                }
-            })
-            if(clue !== 0) return false
-        }
-
-        return true
+        return height;
     }
 }
-
-// console.log(solvePuzzle([2, 2, 1, 3, 2, 2, 3, 1, 1, 2, 2, 3, 3, 2, 1, 3])) // [[1, 3, 4, 2], [4, 2, 1, 3], [3, 4, 2, 1], [2, 1, 3, 4]]
-// console.log(solvePuzzle([0, 0, 1, 2, 0, 2, 0, 0, 0, 3, 0, 0, 0, 1, 0, 0])) // [[2, 1, 4, 3], [3, 4, 1, 2], [4, 2, 3, 1], [1, 3, 2, 4]]
-
-function solvePuzzleBis(clues){
-    let called = 0
-    const N = clues.length/4
-    let grid = Array.from({length:N}, (_) => Array(N).fill(0))
-    solve(grid)
-    return grid
-
-    function solve(grid){
-        console.log(grid);
-        called++
-        for(let row=0 ; row<N ; row++){
-            for(let col=0 ; col<N ; col++){
-                if(grid[row][col] === 0){
-                    for(let num = 1 ; num<=N ; num++){
-                        if(isNumValid(row, col, num, grid)){
-                            grid[row][col] = num
-                            if(solve(grid)){
-                                //call recursively again, if it returns true, the board is completed, end every recursion
-                                return true
-                            }else{
-                                //backtrack
-                                grid[row][col] = 0
-                            }
-                        }
-                    }
-                    //if no nums were possible, the grid is wrong, backtrack
-                    return false
-                }
-            }
-        }
-        //the grid is complete
-        return true
-    }
-
-    //To be valid, the number must be unique in his row, unique in his col and respect the clues
-    function isNumValid(row, col, num, grid){
-        let topToBottomSkyscrapers = 0 // this keeps track of the number of visible skyscrapers (in a given direction) if the current skyscraper is put
-        let highestTopToBottomSkyscraper = 0
-
-        let rightToLeftSkyscrapers = 0
-        let highestRightToLeftSkyscraper = 0
-        
-        let bottomToTopSkyscrapers = 0
-        let highestBottomToTopSkyscraper = 0
-
-        let leftToRightSkyscrapers = 0
-        let highestLeftToRightSkyscraper = 0
-        for(let i=0 ; i<N ; i++){
-            // Check row and col uniqueness
-            if(grid[row][i] === num) return false
-            if(grid[i][col] === num) return false
-
-            grid[row][col] = num //simulate as if we were putting the skyscraper here
-            // Updates visible skyscrapers
-            if(grid[i][col] > highestTopToBottomSkyscraper){
-                topToBottomSkyscrapers++
-                highestTopToBottomSkyscraper = grid[i][col]
-            }
-            if(grid[row][N-1-i] > highestRightToLeftSkyscraper){
-                rightToLeftSkyscrapers++
-                highestRightToLeftSkyscraper = grid[row][N-1-i]
-            }
-            if(grid[N-1-i][col] > highestBottomToTopSkyscraper){
-                bottomToTopSkyscrapers++
-                highestBottomToTopSkyscraper = grid[N-1-i][col]
-            }
-            if(grid[row][i] > highestLeftToRightSkyscraper){
-                leftToRightSkyscrapers++
-                highestLeftToRightSkyscraper = grid[row][i]
-            }
-            grid[row][col] = 0
-        }
-        //The right part of the equality test is the corresponding clue
-        if(topToBottomSkyscrapers > clues.slice(0, N)[col]) return false
-        if(rightToLeftSkyscrapers > clues.slice(N, 2*N)[row]) return false
-        if(bottomToTopSkyscrapers > clues.slice(2*N, 3*N)[N-col-1]) return false
-        if(leftToRightSkyscrapers > clues.slice(3*N)[N-row-1]) return false
-
-        return true
-    }
-
-}
-
-// console.log(solvePuzzleBis([2, 2, 1, 3, 2, 2, 3, 1, 1, 2, 2, 3, 3, 2, 1, 3])) // [[1, 3, 4, 2], [4, 2, 1, 3], [3, 4, 2, 1], [2, 1, 3, 4]]
-// console.log(solvePuzzleBis([0, 0, 1, 2, 0, 2, 0, 0, 0, 3, 0, 0, 0, 1, 0, 0])) // [[2, 1, 4, 3], [3, 4, 1, 2], [4, 2, 3, 1], [1, 3, 2, 4]]
-// console.log(solvePuzzleBis([2,1,1,2,2,1,1,2]))
-
-function solvePuzzlezzz(clues){
-    let called = 0
-    const N = clues.length/4
-    let grid = Array.from({length:N}, (_) => Array(N).fill(0))
-    solve(grid)
-    return grid
-
-    function solve(grid){
-        called++
-        for(let row=0 ; row<N ; row++){
-            for(let col=0 ; col<N ; col++){
-                if(grid[row][col] === 0){
-                    for(let num = 1 ; num<=N ; num++){
-                        if(isNumValid(row, col, num, grid)){
-                            grid[row][col] = num
-                            if(solve(grid)){
-                                //call recursively again, if it returns true, the board is completed, end every recursion
-                                return true
-                            }else{
-                                //backtrack
-                                grid[row][col] = 0
-                            }
-                        }
-                    }
-                    //if no nums were possible, the grid is wrong, backtrack
-                    return false
-                }
-            }
-        }
-        //the grid is complete
-        return isGridCorrect(grid)
-    }
-
-    //To be valid, the number must be unique in his row, unique in his col and respect the clues
-    function isNumValid(row, col, num, grid){
-        for(let i=0 ; i<N ; i++){
-            // Check row and col uniqueness
-            if(grid[row][i] === num) return false
-            if(grid[i][col] === num) return false
-        }
-        return true
-    }
-
-        // Check if the grid respects the clues
-        function isGridCorrect(grid){
-            //Check cols, from top to bottom
-            for(let i=0 ; i<N ; i++){
-                let clue = clues.slice(0, N)[i]
-                if(clue === 0) continue
-                let col = []
-                for(let j=0 ; j<N ; j++){
-                    col.push(grid[j][i])
-                }
-                let max = col[0]
-                col.forEach((height) => {
-                    if(height >= max){
-                        max = height
-                        clue--
-                    }
-                })
-                if(clue !== 0) return false
-            }
-    
-            //Check rows from right to left
-            for(let i=0 ; i<N ; i++){
-                let clue = clues.slice(N, 2*N)[i]
-                if(clue === 0) continue
-                let row = grid[i].slice().reverse()
-                let max = row[0]
-                row.forEach(height => {
-                    if(height >= max){
-                        max = height
-                        clue--
-                    }
-                })
-                if(clue !== 0) return false
-            }
-    
-            //Check cols, from bottom to top
-            for(let i=0 ; i<N ; i++){
-                let clue = clues.slice(2*N, 3*N)[i]
-                if(clue === 0) continue
-                let col = []
-                for(let j=N-1 ; j>=0 ; j--){
-                    col.push(grid[j][N-1-i])
-                }
-                let max = col[0]
-                col.forEach((height) => {
-                    if(height >= max){
-                        max = height
-                        clue--
-                    }
-                })
-                if(clue !== 0) return false
-            }
-    
-            //Check rows from left to right
-            for(let i=0 ; i<N ; i++){
-                let clue = clues.slice(3*N, 4*N)[i]
-                if(clue === 0) continue
-                let row = grid[N-1-i]
-                let max = row[0]
-                row.forEach(height => {
-                    if(height >= max){
-                        max = height
-                        clue--
-                    }
-                })
-                if(clue !== 0) return false
-            }
-    
-            return true
-        }
-
-}
-
-
-// console.log(solvePuzzlezzz([2, 2, 1, 3, 2, 2, 3, 1, 1, 2, 2, 3, 3, 2, 1, 3])) // [[1, 3, 4, 2], [4, 2, 1, 3], [3, 4, 2, 1], [2, 1, 3, 4]]
-// console.log(solvePuzzlezzz([0, 0, 1, 2, 0, 2, 0, 0, 0, 3, 0, 0, 0, 1, 0, 0])) // [[2, 1, 4, 3], [3, 4, 1, 2], [4, 2, 3, 1], [1, 3, 2, 4]]
-
-//===============================================
-function solvePuzzle6x6(clues){
-    const N = clues.length/4
-    let grid = Array.from({length:N}, (_) => Array(N).fill(0))
-    fillKnownElement()
-    solve(grid)
-    return grid
-
-    function solve(grid){
-        for(let row=0 ; row<N ; row++){
-            for(let col=0 ; col<N ; col++){
-                if(grid[row][col] === 0){
-                    for(let num = 1 ; num<=N ; num++){
-                        if(isNumValid(row, col, num, grid)){
-                            grid[row][col] = num
-                            if(solve(grid)){
-                                //call recursively again, if it returns true, the board is completed, end every recursion
-                                return true
-                            }else{
-                                //backtrack
-                                grid[row][col] = 0
-                            }
-                        }
-                    }
-                    //if no nums were possible, the grid is wrong, backtrack
-                    return false
-                }
-            }
-        }
-        //the grid is complete
-        return isGridCorrect(grid)
-    }
-
-    // A clue of N gives a [1, ..., N] row or col
-    // A clue of 1 gives a row or col starting with N
-    function fillKnownElement(){
-        clues.forEach((e, idx) => {
-            if(e === 1){
-                //top to bottom
-                if(idx < N){
-                    grid[0][idx] = 6
-                }
-                //right to left
-                if(idx >= N && idx < 2*N){
-                    grid[idx%N][N-1] = 6
-                }
-                //bottom to top
-                if(idx >= 2*N && idx < 3*N){
-                    grid[N-1][N-(idx%N)-1] = 6
-                }
-                //left to right
-                if(idx >= 3*N && idx < 4*N){
-                    grid[N-(idx%N)-1][0] = 6
-                }
-            }
-            if(e === 6){
-                //top to bottom
-                if(idx < N){
-                    let col = idx
-                    for(let row=0 ; row<N ; row++){
-                        grid[row][col] = row+1
-                    }
-                }
-                //right to left
-                if(idx >= N && idx < 2*N){
-                    let row = idx%N
-                    for(let col=0 ; col<N ; col++){
-                        grid[row][col] = N-col
-                    }
-                }
-                //bottom to top
-                if(idx >= 2*N && idx < 3*N){
-                    let col = N-(idx%N)-1
-                    for(let row=0 ; row<N ; row++){
-                        grid[row][col] = N-row
-                    }
-                }
-                //left to right
-                if(idx >= 3*N && idx < 4*N){
-                    let row = N-(idx%N)-1
-                    for(let col=0 ; col<N ; col++){
-                        grid[row][col] = col+1
-                    }
-                }
-            }
-        })
-    }
-
-    //To be valid, the number must be unique in his row, unique in his col and respect the clues
-    function isNumValid(row, col, num, grid){
-        let topToBottomSkyscrapers = 0 // this keeps track of the number of visible skyscrapers (in a given direction) if the current skyscraper is put
-        let highestTopToBottomSkyscraper = 0
-
-        let leftToRightSkyscrapers = 0
-        let highestLeftToRightSkyscraper = 0
-        for(let i=0 ; i<N ; i++){
-            // Check row and col uniqueness
-            if(grid[row][i] === num) return false
-            if(grid[i][col] === num) return false
-
-            grid[row][col] = num //simulate as if we were putting the skyscraper here
-            // Updates visible skyscrapers
-            if(grid[i][col] > highestTopToBottomSkyscraper){
-                topToBottomSkyscrapers++
-                highestTopToBottomSkyscraper = grid[i][col]
-            }
-            if(grid[row][i] > highestLeftToRightSkyscraper){
-                leftToRightSkyscrapers++
-                highestLeftToRightSkyscraper = grid[row][i]
-            }
-            grid[row][col] = 0
-        }
-        //The right part of the equality test is the corresponding clue, clue === 0 should be ignored
-        if(topToBottomSkyscrapers > clues.slice(0, N)[col] && clues.slice(0, N)[col] > 0) return false
-        if(leftToRightSkyscrapers > clues.slice(3*N)[N-row-1] && clues.slice(3*N)[N-row-1] > 0) return false
-
-        return true
-    }
-
-    // Check if the grid respects the clues
-    function isGridCorrect(grid){
-        //Check cols, from top to bottom
-        for(let i=0 ; i<N ; i++){
-            let clue = clues.slice(0, N)[i]
-            if(clue === 0) continue
-            let col = []
-            for(let j=0 ; j<N ; j++){
-                col.push(grid[j][i])
-            }
-            let max = col[0]
-            col.forEach((height) => {
-                if(height >= max){
-                    max = height
-                    clue--
-                }
-            })
-            if(clue !== 0) return false
-        }
-
-        //Check rows from right to left
-        for(let i=0 ; i<N ; i++){
-            let clue = clues.slice(N, 2*N)[i]
-            if(clue === 0) continue
-            let row = grid[i].slice().reverse()
-            let max = row[0]
-            row.forEach(height => {
-                if(height >= max){
-                    max = height
-                    clue--
-                }
-            })
-            if(clue !== 0) return false
-        }
-
-        //Check cols, from bottom to top
-        for(let i=0 ; i<N ; i++){
-            let clue = clues.slice(2*N, 3*N)[i]
-            if(clue === 0) continue
-            let col = []
-            for(let j=N-1 ; j>=0 ; j--){
-                col.push(grid[j][N-1-i])
-            }
-            let max = col[0]
-            col.forEach((height) => {
-                if(height >= max){
-                    max = height
-                    clue--
-                }
-            })
-            if(clue !== 0) return false
-        }
-
-        //Check rows from left to right
-        for(let i=0 ; i<N ; i++){
-            let clue = clues.slice(3*N, 4*N)[i]
-            if(clue === 0) continue
-            let row = grid[N-1-i]
-            let max = row[0]
-            row.forEach(height => {
-                if(height >= max){
-                    max = height
-                    clue--
-                }
-            })
-            if(clue !== 0) return false
-        }
-
-        return true
-    }
-}
-
-// console.log(solvePuzzle6x6([ 3, 2, 2, 3, 2, 1, 1, 2, 3, 3, 2, 2, 5, 1, 2, 2, 4, 3, 3, 2, 1, 2, 2, 4])) // [[ 2, 1, 4, 3, 5, 6], [ 1, 6, 3, 2, 4, 5], [ 4, 3, 6, 5, 1, 2], [ 6, 5, 2, 1, 3, 4], [ 5, 4, 1, 6, 2, 3], [ 3, 2, 5, 4, 6, 1]] // It took 0.309 seconds...
-// console.log(solvePuzzle6x6([ 3, 2, 2, 3, 2, 1, 1, 2, 3, 3, 2, 2, 5, 1, 2, 2, 4, 3, 3, 2, 1, 2, 2, 4])) // [[ 2, 1, 4, 3, 5, 6], [ 1, 6, 3, 2, 4, 5], [ 4, 3, 6, 5, 1, 2], [ 6, 5, 2, 1, 3, 4], [ 5, 4, 1, 6, 2, 3], [ 3, 2, 5, 4, 6, 1]] // It took 2.957 seconds...
-// console.log(solvePuzzle6x6([ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0])) // [[ 5, 2, 6, 1, 4, 3 ], [ 6, 4, 3, 2, 5, 1 ], [ 3, 1, 5, 4, 6, 2 ], [ 2, 6, 1, 5, 3, 4 ], [ 4, 3, 2, 6, 1, 5 ], [ 1, 5, 4, 3, 2, 6 ]] // It took 107.865 seconds...

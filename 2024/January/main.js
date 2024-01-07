@@ -138,5 +138,5 @@ function vowel2index(str) {
 // solution(5) // should return "Value is 00005"
 
 function padded(value){
-    return ("0000" + value).slice(-5)
+    return "Value is " + ("0000" + value).slice(-5)
 }

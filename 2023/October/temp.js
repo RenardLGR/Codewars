@@ -1,9 +1,41 @@
 class SkyscraperPuzzle {
-    constuctor(clues){
+    constructor(clues){
         this.clues = clues
         this.N = clues.length / 4
-        this.MASK = (1 << N) - 1 // = 63 = 2**6 - 1
-        this.grid = Array.from({length:N}, (_) => Array(N).fill(MASK))
+        this.MASK = (1 << this.N) - 1 // = 63 = 2**6 - 1
+        this.grid = Array.from({length:this.N}, (_) => Array(this.N).fill(this.MASK))
+    }
+
+
+    solve(){
+        // Check if the grid respects the clues so far
+        if(!this.isValidSoFar()) return false
+
+        for(let row=0 ; row<this.N ; row++){
+            for(let col=0 ; col<this.N ; col++){
+                if(this.isMultiplePossibleSkyscraper(this.grid[row][col])){
+                    for(let pow = 0 ; pow<this.N ; pow++){
+                        let skyscraperMask = Math.pow(2, pow)
+                        if(this.isUniqueInRowCol(row, col, skyscraperMask)){
+                            let cpy = this.cpyGrid(this.grid)
+                            this.setSkyscraper(row, col, skyscraperMask)
+                            if(this.solve()){
+                                //call recursively again, if it returns true, the board is completed, end every recursion
+                                return true
+                            }else{
+                                //backtrack
+                                this.grid = this.cpyGrid(cpy)
+                            }
+                        }
+                    }
+                    //if no masks were possible, the grid is wrong, backtrack
+                    return false
+                }
+            }
+        }
+        //the grid is complete
+        //console.log("correct?" , this.isGridCorrect());
+        return this.isGridCorrect()
     }
 
     // A skyscraper is set if there is only one 1 in his mask, multiple 1s means skyscrapers of different heights are possible
@@ -26,7 +58,7 @@ class SkyscraperPuzzle {
 
     // This function returns true if the mask given is a single skyscraper (only one 1 and 0s)
     isSingleSkyscraper(mask){
-        return !isMultiplePossibleSkyscraper(mask)
+        return !this.isMultiplePossibleSkyscraper(mask)
     }
 
     //Check if the attempted skyscraper mask is not already present in the row or the col
@@ -53,11 +85,11 @@ class SkyscraperPuzzle {
             let rightToLeftVisible = 0
     
             for(let j=0 ; j<this.N ; j++){
-                if(this.grid[j][i] > topToBottomMax && isSingleSkyscraper(this.grid[j][i])){
+                if(this.grid[j][i] > topToBottomMax && this.isSingleSkyscraper(this.grid[j][i])){
                     topToBottomMax = this.grid[j][i]
                     topToBottomVisible++
                 }
-                if(this.grid[i][this.N-j-1] > rightToLeftMax && isSingleSkyscraper(this.grid[i][this.N-j-1])){
+                if(this.grid[i][this.N-j-1] > rightToLeftMax && this.isSingleSkyscraper(this.grid[i][this.N-j-1])){
                     rightToLeftMax = this.grid[i][this.N-j-1]
                     rightToLeftVisible++
                 }
@@ -69,7 +101,8 @@ class SkyscraperPuzzle {
     }
 
     // This function, given a supposedly complete board checks if EVERY clues are respected
-    isGridCorrect(){
+    isGridCorrect(grid){
+        this.grid = grid
         const cluesCpy = this.clues.slice()
         let cluesClean = [cluesCpy.splice(0,this.N), cluesCpy.splice(0,this.N), cluesCpy.splice(0,this.N), cluesCpy.splice(0,this.N)]
         for(let i=0 ; i<this.N ; i++){
@@ -89,19 +122,19 @@ class SkyscraperPuzzle {
             let leftToRightVisible = 0
 
             for(let j=0 ; j<this.N ; j++){
-                if(this.grid[j][i] > topToBottomMax && isSingleSkyscraper(this.grid[j][i])){
+                if(this.grid[j][i] > topToBottomMax && this.isSingleSkyscraper(this.grid[j][i])){
                     topToBottomMax = this.grid[j][i]
                     topToBottomVisible++
                 }
-                if(this.grid[i][this.N-j-1] > rightToLeftMax && isSingleSkyscraper(grid[i][this.N-j-1])){
+                if(this.grid[i][this.N-j-1] > rightToLeftMax && this.isSingleSkyscraper(this.grid[i][this.N-j-1])){
                     rightToLeftMax = this.grid[i][this.N-j-1]
                     rightToLeftVisible++
                 }
-                if(this.grid[this.N-j-1][this.N-i-1] > bottomToTopMax && isSingleSkyscraper(this.grid[this.N-j-1][this.N-i-1])){
+                if(this.grid[this.N-j-1][this.N-i-1] > bottomToTopMax && this.isSingleSkyscraper(this.grid[this.N-j-1][this.N-i-1])){
                     bottomToTopMax = this.grid[this.N-j-1][this.N-i-1]
                     bottomToTopVisible++
                 }
-                if(this.grid[this.N-i-1][j] > leftToRightMax && isSingleSkyscraper(this.grid[this.N-i-1][j])){
+                if(this.grid[this.N-i-1][j] > leftToRightMax && this.isSingleSkyscraper(this.grid[this.N-i-1][j])){
                     leftToRightMax = this.grid[this.N-i-1][j]
                     leftToRightVisible++
                 }
@@ -119,9 +152,9 @@ class SkyscraperPuzzle {
         this.grid[row][col] = skyscraperMask
         for(let i=0 ; i<this.N ; i++){
             //modify row
-            if(i!==col) this.grid[row][i] = removeSkyscraper(this.grid[row][i], skyscraperMask)
+            if(i!==col) this.grid[row][i] = this.removeSkyscraper(this.grid[row][i], skyscraperMask)
             //modify col
-            if(i !== row) this.grid[i][col] = removeSkyscraper(this.grid[i][col], skyscraperMask)
+            if(i !== row) this.grid[i][col] = this.removeSkyscraper(this.grid[i][col], skyscraperMask)
         }
     }
 
@@ -150,3 +183,27 @@ class SkyscraperPuzzle {
         return height;
     }
 }
+
+function heightToMask(height) {
+    // Assuming height is an integer from 1 to 6
+    if (height < 1 || height > 6) {
+        throw new Error("Invalid height. Height should be between 1 and 6.");
+    }
+
+    const mask = 1 << (height - 1);
+    return mask;
+}
+
+let puzzle1 =  new SkyscraperPuzzle([ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0])
+// puzzle1.grid = 
+
+let puzzle2 = new SkyscraperPuzzle([0, 0, 1, 2, 0, 2, 0, 0, 0, 3, 0, 0, 0, 1, 0, 0]) // [[2, 1, 4, 3], [3, 4, 1, 2], [4, 2, 3, 1], [1, 3, 2, 4]]
+let grid = [[2, 1, 4, 3], [3, 4, 1, 2], [4, 2, 3, 1], [1, 3, 2, 4]]
+let bin = grid.map(arr => arr.map(h => heightToMask(h)))
+// console.log(bin);
+// console.log(puzzle2.isGridCorrect(bin))
+for(let i=1 ; i<64 ; i++){
+    console.log( i , puzzle2.isMultiplePossibleSkyscraper(i))
+}
+
+// console.log(puzzle1.solve());

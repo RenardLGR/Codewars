@@ -465,28 +465,30 @@ function fff(clues){
     const N = clues.length/4
     const MASK = (1 << N) - 1 // = 63 = 2**6 - 1
     let grid = Array.from({length:N}, (_) => Array(N).fill(MASK))
-    console.log(solve(grid))
-    console.log(grid);
+    console.log("1", solve(grid))
+    console.log("2", grid);
     return grid.map(arr => arr.map(mask => getHeightFromMask(mask) ))
 
     function solve(grid){
         // Check if the grid respects the clues so far
-        if(!isValidSoFar()) return false
+        //if(!isValidSoFar(grid)) return false
+        // console.log(grid);
 
         for(let row=0 ; row<N ; row++){
             for(let col=0 ; col<N ; col++){
                 if(isMultiplePossibleSkyscraper(grid[row][col])){
                     for(let pow = 0 ; pow<N ; pow++){
-                        let skyscraperMask = Math.pow(2, pow)
-                        if(isUniqueInRowCol(row, col, skyscraperMask)){
-                            let cpy = cpyGrid(grid)
+                        // let skyscraperMask = Math.pow(2, pow)
+                        let skyscraperMask = 1 << pow
+                        if(isUniqueInRowCol(grid, row, col, skyscraperMask)){
+                            let prevMask = grid[row][col]
                             setSkyscraper(row, col, skyscraperMask)
                             if(solve(grid)){
                                 //call recursively again, if it returns true, the board is completed, end every recursion
                                 return true
                             }else{
                                 //backtrack
-                                grid = cpyGrid(cpy)
+                                unsetSkyscraper(row, col, prevMask, skyscraperMask)
                             }
                         }
                     }
@@ -496,8 +498,12 @@ function fff(clues){
             }
         }
         //the grid is complete
-        console.log("correct?" , isGridCorrect());
-        return isGridCorrect()
+        if(JSON.stringify(grid) === "[[2,1,8,4],[4,8,1,2],[8,2,4,1],[1,4,2,8]]"){
+            console.log("HEREEEEEEEEEEEEEEEEEE")
+        }
+        console.log(JSON.stringify(grid));
+        // console.log("correct?" , isGridCorrect(grid));
+        return isGridCorrect(grid)
     }
 
     // A skyscraper is set if there is only one 1 in his mask, multiple 1s means skyscrapers of different heights are possible
@@ -524,7 +530,7 @@ function fff(clues){
     }
 
     //Check if the attempted skyscraper mask is not already present in the row or the col
-    function isUniqueInRowCol(row, col, skyscraperMask){
+    function isUniqueInRowCol(grid, row, col, skyscraperMask){
         for(let i=0 ; i<N ; i++){
             if(grid[row][i] === skyscraperMask) return false
             if(grid[i][col] === skyscraperMask) return false
@@ -533,7 +539,7 @@ function fff(clues){
     }
 
     // This function checks if clues are being respected so far
-    function isValidSoFar(){
+    function isValidSoFar(grid){
         const cluesCpy = clues.slice()
         let cluesClean = [cluesCpy.splice(0,N), cluesCpy.splice(0,N), cluesCpy.splice(0,N), cluesCpy.splice(0,N)]
         for(let i=0 ; i<N ; i++){
@@ -563,7 +569,7 @@ function fff(clues){
     }
 
     // This function, given a supposedly complete board checks if EVERY clues are respected
-    function isGridCorrect(){
+    function isGridCorrect(grid){
         const cluesCpy = clues.slice()
         let cluesClean = [cluesCpy.splice(0,N), cluesCpy.splice(0,N), cluesCpy.splice(0,N), cluesCpy.splice(0,N)]
         for(let i=0 ; i<N ; i++){
@@ -619,11 +625,28 @@ function fff(clues){
         }
     }
 
+    // This function unsets the skyscraper at row, col. Then it operates changes on the whole row and col, adding a possibility in the mask
+    function unsetSkyscraper(row, col, prevMask, testedMask){
+        grid[row][col] = prevMask
+        for(let i=0 ; i<N ; i++){
+            //modify row
+            if(i!==col) grid[row][i] = addSkyscraper(grid[row][i], testedMask)
+            //modify col
+            if(i !== row) grid[i][col] = addSkyscraper(grid[i][col], testedMask)
+        }
+    }
+
     //After setting a skyscraper, we want to remove this possibility from the row and col
     function removeSkyscraper(originalMask, skyscraperMask){
     // The bitwise negation (~) is used to create a mask with all bits flipped (0s become 1s, and 1s become 0s) for the skyscraper mask.
     // The bitwise AND (&) operation is then performed between the original mask and the negated skyscraper mask. This operation turns off the bit corresponding to the skyscraper in the original mask.
         const resultMask = originalMask & ~skyscraperMask
+        return resultMask
+    }
+
+    //After setting a skyscraper, we want to remove this possibility from the row and col
+    function addSkyscraper(originalMask, skyscraperMask){
+        const resultMask = originalMask | skyscraperMask
         return resultMask
     }
 
@@ -645,7 +668,8 @@ function fff(clues){
     }
 }
 
-// console.log(fff([ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0]))
+// console.log(fff([ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0])) // [[ 5, 2, 6, 1, 4, 3 ], [ 6, 4, 3, 2, 5, 1 ], [ 3, 1, 5, 4, 6, 2 ], [ 2, 6, 1, 5, 3, 4 ], [ 4, 3, 2, 6, 1, 5 ], [ 1, 5, 4, 3, 2, 6 ]]
+console.log(fff([0, 0, 1, 2, 0, 2, 0, 0, 0, 3, 0, 0, 0, 1, 0, 0])) // [[2, 1, 4, 3], [3, 4, 1, 2], [4, 2, 3, 1], [1, 3, 2, 4]]
 
 // let clues = [ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0]
 // let grid = [
@@ -736,4 +760,4 @@ let resultMask = [
 let res = [[ 5, 2, 6, 1, 4, 3 ], [ 6, 4, 3, 2, 5, 1 ], [ 3, 1, 5, 4, 6, 2 ], [ 2, 6, 1, 5, 3, 4 ], [ 4, 3, 2, 6, 1, 5 ], [ 1, 5, 4, 3, 2, 6 ]]
 // console.log(res.map(arr => arr.map(e => Math.pow(2, (e-1)))));
 
-console.log(isGridCorrect(resultMask));
+// console.log(isGridCorrect(resultMask));

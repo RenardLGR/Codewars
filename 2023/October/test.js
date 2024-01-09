@@ -465,14 +465,16 @@ function fff(clues){
     const N = clues.length/4
     const MASK = (1 << N) - 1 // = 63 = 2**6 - 1
     let grid = Array.from({length:N}, (_) => Array(N).fill(MASK))
-    console.log("1", solve(grid))
-    console.log("2", grid);
+    // grid = [[2, 1, 4, 3], [3, 4, 1, 2], [4, 2, 3, 1], [15,15,15,15]]
+    // console.log("1", solve(grid))
+    // console.log("2", grid);
+    solve()
     return grid.map(arr => arr.map(mask => getHeightFromMask(mask) ))
 
-    function solve(grid){
+    function solve(){
         // Check if the grid respects the clues so far
         //if(!isValidSoFar(grid)) return false
-        // console.log(grid);
+        console.log(grid);
 
         for(let row=0 ; row<N ; row++){
             for(let col=0 ; col<N ; col++){
@@ -480,15 +482,17 @@ function fff(clues){
                     for(let pow = 0 ; pow<N ; pow++){
                         // let skyscraperMask = Math.pow(2, pow)
                         let skyscraperMask = 1 << pow
-                        if(isUniqueInRowCol(grid, row, col, skyscraperMask)){
+                        if(isUnpresentInRowCol(grid, row, col, skyscraperMask)){
                             let prevMask = grid[row][col]
+                            let cpy = cpyGrid(grid)
                             setSkyscraper(row, col, skyscraperMask)
-                            if(solve(grid)){
+                            if(solve()){
                                 //call recursively again, if it returns true, the board is completed, end every recursion
                                 return true
                             }else{
                                 //backtrack
-                                unsetSkyscraper(row, col, prevMask, skyscraperMask)
+                                // unsetSkyscraper(row, col, prevMask, skyscraperMask)
+                                grid = cpy
                             }
                         }
                     }
@@ -498,10 +502,10 @@ function fff(clues){
             }
         }
         //the grid is complete
-        if(JSON.stringify(grid) === "[[2,1,8,4],[4,8,1,2],[8,2,4,1],[1,4,2,8]]"){
-            console.log("HEREEEEEEEEEEEEEEEEEE")
-        }
-        console.log(JSON.stringify(grid));
+        // if(JSON.stringify(grid) === "[[2,1,8,4],[4,8,1,2],[8,2,4,1],[1,4,2,8]]"){
+        //     console.log("HEREEEEEEEEEEEEEEEEEE")
+        // }
+        // console.log(JSON.stringify(grid));
         // console.log("correct?" , isGridCorrect(grid));
         return isGridCorrect(grid)
     }
@@ -530,7 +534,7 @@ function fff(clues){
     }
 
     //Check if the attempted skyscraper mask is not already present in the row or the col
-    function isUniqueInRowCol(grid, row, col, skyscraperMask){
+    function isUnpresentInRowCol(grid, row, col, skyscraperMask){
         for(let i=0 ; i<N ; i++){
             if(grid[row][i] === skyscraperMask) return false
             if(grid[i][col] === skyscraperMask) return false
@@ -644,7 +648,7 @@ function fff(clues){
         return resultMask
     }
 
-    //After setting a skyscraper, we want to remove this possibility from the row and col
+    //After unsetting a skyscraper, we want to add this possibility inside the row and col
     function addSkyscraper(originalMask, skyscraperMask){
         const resultMask = originalMask | skyscraperMask
         return resultMask

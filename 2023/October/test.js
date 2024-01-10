@@ -492,6 +492,7 @@ function fff(clues){
                             }else{
                                 //backtrack
                                 // unsetSkyscraper(row, col, prevMask, skyscraperMask)
+                                console.log("cpy : ", cpy)
                                 grid = cpy
                             }
                         }

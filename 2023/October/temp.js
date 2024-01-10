@@ -9,7 +9,8 @@ class SkyscraperPuzzle {
 
     solve(){
         // Check if the grid respects the clues so far
-        if(!this.isValidSoFar()) return false
+        // if(!this.isValidSoFar()) return false
+        // console.log(this.grid)
 
         for(let row=0 ; row<this.N ; row++){
             for(let col=0 ; col<this.N ; col++){
@@ -18,6 +19,7 @@ class SkyscraperPuzzle {
                         // let skyscraperMask = Math.pow(2, pow)
                         let skyscraperMask = 1 << pow
                         if(this.isUnpresentInRowCol(row, col, skyscraperMask)){
+                            let cpy = this.cpyGrid(this.grid)
                             let prevMask = this.grid[row][col]
                             this.setSkyscraper(row, col, skyscraperMask)
                             if(this.solve()){
@@ -25,7 +27,9 @@ class SkyscraperPuzzle {
                                 return true
                             }else{
                                 //backtrack
-                                this.unsetSkyscraper(row, col, prevMask, skyscraperMask)
+                                // this.unsetSkyscraper(row, col, prevMask, skyscraperMask)
+                                // console.log("cpy", cpy);
+                                this.grid = cpy
                             }
                         }
                     }
@@ -35,8 +39,8 @@ class SkyscraperPuzzle {
             }
         }
         //the grid is complete
-        //console.log("correct?" , this.isGridCorrect());
-        return this.isGridCorrect()
+        // console.log("correct?" , this.isGridCorrect(this.grid));
+        return this.isGridCorrect(this.grid)
     }
 
     // A skyscraper is set if there is only one 1 in his mask, multiple 1s means skyscrapers of different heights are possible
@@ -103,7 +107,28 @@ class SkyscraperPuzzle {
 
     // This function, given a supposedly complete board checks if EVERY clues are respected
     isGridCorrect(grid){
+        // Checking uniqueness of elements in rows and cols : no element in a row or in a col share the same mask
+        for (let i=0 ; i<this.N ; i++) {
+            const rowSet = new Set()
+            const colSet = new Set()
+    
+            for(let j=0 ; j<this.N ; j++){
+                const rowMask = this.grid[i][j]
+                const colMask = this.grid[j][i]
+    
+                if(rowSet.has(rowMask) || colSet.has(colMask)){
+                    return false // Duplicate mask in the same row or column
+                }
+
+                rowSet.add(rowMask)
+                colSet.add(colMask)
+            }
+        }
+
+        // console.log("grid :" ,grid);
         this.grid = grid
+
+        // Checking clues :
         const cluesCpy = this.clues.slice()
         let cluesClean = [cluesCpy.splice(0,this.N), cluesCpy.splice(0,this.N), cluesCpy.splice(0,this.N), cluesCpy.splice(0,this.N)]
         for(let i=0 ; i<this.N ; i++){
@@ -212,17 +237,37 @@ function heightToMask(height) {
     return mask;
 }
 
-let puzzle1 =  new SkyscraperPuzzle([ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0])
-// puzzle1.grid = 
+let puzzle1 =  new SkyscraperPuzzle([ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0]) // [[ 5, 2, 6, 1, 4, 3 ], [ 6, 4, 3, 2, 5, 1 ], [ 3, 1, 5, 4, 6, 2 ], [ 2, 6, 1, 5, 3, 4 ], [ 4, 3, 2, 6, 1, 5 ], [ 1, 5, 4, 3, 2, 6 ]]
+let expectedBinRes = [
+    [ 16, 2, 32, 1, 8, 4 ],
+    [ 32, 8, 4, 2, 16, 1 ],
+    [ 4, 1, 16, 8, 32, 2 ],
+    [ 2, 32, 1, 16, 4, 8 ],
+    [ 8, 4, 2, 32, 1, 16 ],
+    [ 1, 16, 8, 4, 2, 32 ]
+  ]
+puzzle1.grid = [
+    [ 16, 63, 63, 63, 63, 63 ],
+    [ 63, 63, 63, 63, 63, 63 ],
+    [ 63, 63, 63, 63, 63, 63 ],
+    [ 63, 63, 63, 63, 63, 63 ],
+    [ 63, 63, 63, 63, 63, 63 ],
+    [ 63, 63, 63, 63, 63, 63 ]
+  ]
+// console.log(puzzle1.grid);
+console.log(puzzle1.solve())
+console.log(puzzle1.grid)
 
 let puzzle2 = new SkyscraperPuzzle([0, 0, 1, 2, 0, 2, 0, 0, 0, 3, 0, 0, 0, 1, 0, 0]) // [[2, 1, 4, 3], [3, 4, 1, 2], [4, 2, 3, 1], [1, 3, 2, 4]]
-let grid = [[2, 1, 4, 3], [3, 4, 1, 2], [4, 2, 3, 1], [1, 3, 2, 4]]
-let bin = grid.map(arr => arr.map(h => heightToMask(h)))
-let bin2 = [[2,2,2,2], [2,2,2,2], [2,2,2,2], [15,15,15,15]]
+// let grid = [[2, 1, 4, 3], [3, 4, 1, 2], [4, 2, 3, 1], [1, 3, 2, 4]] // [ [ 2, 1, 8, 4 ], [ 4, 8, 1, 2 ], [ 8, 2, 4, 1 ], [ 1, 4, 2, 8 ] ]
+// let bin = [[ 5, 2, 6, 1, 4, 3 ], [ 6, 4, 3, 2, 5, 1 ], [ 3, 1, 5, 4, 6, 2 ], [ 2, 6, 1, 5, 3, 4 ], [ 4, 3, 2, 6, 1, 5 ], [ 1, 5, 4, 3, 2, 6 ]].map(arr => arr.map(h => heightToMask(h)))
+// console.log(bin)
+let bin3 = [ [ 15, 15, 15, 15 ], [ 15, 15, 15, 15 ], [ 15, 15, 15, 15 ], [ 15, 15, 15, 15 ] ]
+let binTest = [[2,2,2,2], [2,2,2,2], [2,2,2,2], [15,15,15,15]]
 // console.log(bin);
 // console.log(puzzle2.isGridCorrect(bin)) // true
-puzzle2.grid = bin2
-console.log(puzzle2.grid)
+puzzle2.grid = bin3
+// console.log(puzzle2.grid)
 // puzzle2.setSkyscraper(3, 3, 2)
 // console.log(puzzle2.grid)
 // puzzle2.unsetSkyscraper(3, 3, 4, 4)
@@ -231,8 +276,10 @@ console.log(puzzle2.grid)
 // for(let i=1 ; i<=63 ; i++){
 //     console.log(i, puzzle2.isMultiplePossibleSkyscraper(i));
 // }
+// console.log(puzzle2.isGridCorrect(puzzle2.grid));
+// console.log(puzzle2.isUnpresentInRowCol(2, 3, 4))
 
-console.log(puzzle2.isUnpresentInRowCol(2, 3, 4))
+// puzzle2.solve()
 
 //======================================
 //Slightly faster solution

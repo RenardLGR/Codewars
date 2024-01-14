@@ -37,6 +37,11 @@ class SkyscraperPuzzle {
                     return false
                 }
             }
+            console.log("is row ok?", !this.isRowOk(row));
+            if(!this.isRowOk(row)){
+                console.log("entered");
+                return false
+            }
         }
         //the grid is complete
         // console.log("correct?" , this.isGridCorrect(this.grid));
@@ -76,6 +81,7 @@ class SkyscraperPuzzle {
     }
 
     // This function checks if clues are being respected by the grid so far
+    // For every completed row, check if it respect the clue from left to right and from right to left
     isValidSoFar(){
         const cluesCpy = this.clues.slice()
         let cluesClean = [cluesCpy.splice(0,this.N), cluesCpy.splice(0,this.N), cluesCpy.splice(0,this.N), cluesCpy.splice(0,this.N)]
@@ -102,6 +108,36 @@ class SkyscraperPuzzle {
             if(topToBottomClue>0 && topToBottomVisible>topToBottomClue) return false
             if(rightToLeftClue>0 && rightToLeftVisible>rightToLeftClue) return false
         }
+        return true
+    }
+
+    // Check if the row respects the clue
+    isRowOk(row){
+        console.log(row, this.grid);
+        const clueLeftToRight = this.clues[4*this.N - row - 1]
+        const clueRightToLeft = this.clues[this.N + row]
+
+        let leftToRightMax = 0
+        let rightToLeftMax = 0
+
+        let leftToRightVisible = 0
+        let rightToLeftVisible = 0
+
+        for(let i=0 ; i<this.N ; i++){
+            if(this.grid[row][i] > leftToRightMax){
+                leftToRightMax = this.grid[row][i]
+                leftToRightVisible++
+            }
+
+            if(this.grid[row][this.N-i-1] > rightToLeftMax){
+                rightToLeftMax = this.grid[row][this.N-i-1]
+                rightToLeftVisible++
+            }
+        }
+
+        if(leftToRightVisible !== clueLeftToRight) return false
+        if(rightToLeftVisible !== clueRightToLeft) return false
+
         return true
     }
 
@@ -255,8 +291,8 @@ puzzle1.grid = [
     [ 63, 63, 63, 63, 63, 63 ]
   ]
 // console.log(puzzle1.grid);
-console.log(puzzle1.solve())
-console.log(puzzle1.grid)
+console.log("line 294", puzzle1.solve())
+console.log("line 295", puzzle1.grid)
 
 let puzzle2 = new SkyscraperPuzzle([0, 0, 1, 2, 0, 2, 0, 0, 0, 3, 0, 0, 0, 1, 0, 0]) // [[2, 1, 4, 3], [3, 4, 1, 2], [4, 2, 3, 1], [1, 3, 2, 4]]
 // let grid = [[2, 1, 4, 3], [3, 4, 1, 2], [4, 2, 3, 1], [1, 3, 2, 4]] // [ [ 2, 1, 8, 4 ], [ 4, 8, 1, 2 ], [ 8, 2, 4, 1 ], [ 1, 4, 2, 8 ] ]

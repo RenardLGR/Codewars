@@ -261,3 +261,73 @@ function isSameLanguageBis(list){
 }
 
 //=========================
+// https://www.codewars.com/kata/57ebaa8f7b45ef590c00000c
+// Given an array of numbers (in string format), you must return a string. The numbers correspond to the letters of the alphabet in reverse order: a=26, z=1 etc. You should also account for '!', '?' and ' ' that are represented by '27', '28' and '29' respectively.
+
+// All inputs will be valid.
+
+function switcher(x){
+    let map = 'abcdefghijklmnopqrstuvwxyz_'.split('').reverse().join('') + '!? '
+
+    return x.reduce((acc, cur) => acc + map[+cur], '')
+}
+
+// console.log(switcher(['24', '12', '23', '22', '4', '26', '9', '8'])) // codewars
+
+//==============================
+// https://www.codewars.com/kata/5572f7c346eb58ae9c000047
+// Task:
+// You have to write a function pattern which returns the following Pattern(See Pattern & Examples) upto n number of rows.
+
+// Note:Returning the pattern is not the same as Printing the pattern.
+// Rules/Note:
+// If n < 1 then it should return "" i.e. empty string.
+// There are no whitespaces in the pattern.
+// Pattern:
+
+// 1
+// 22
+// 333
+// ....
+// .....
+// nnnnnn
+// Examples:
+// pattern(5):
+
+// 1
+// 22
+// 333
+// 4444
+// 55555
+// pattern(11):
+
+// 1
+// 22
+// 333
+// 4444
+// 55555
+// 666666
+// 7777777
+// 88888888
+// 999999999
+// 10101010101010101010
+// 1111111111111111111111
+// Hint: Use \n in string to jump to next line
+
+function pattern(n){
+    let res = ''
+    for(let i=1 ; i<=n ; i++){
+        res += (''+i).repeat(i) + '\n'
+    }
+
+    return res.slice(0, res.length-1)
+}
+
+function pattern(n){
+    let res = []
+    for(let i=1 ; i<=n ; i++){
+        res.push((''+i).repeat(i))
+    }
+
+    return res.join('\n')
+}

@@ -331,3 +331,82 @@ function pattern(n){
 
     return res.join('\n')
 }
+
+//================================
+// https://www.codewars.com/kata/5a54e796b3bfa8932c0000ed
+// Definition
+// Jumping number is the number that All adjacent digits in it differ by 1.
+
+// Task
+// Given a number, Find if it is Jumping or not .
+
+// Warm-up (Highly recommended)
+// Playing With Numbers Series
+// Notes
+// Number passed is always Positive .
+
+// Return the result as String .
+
+// The difference between ‘9’ and ‘0’ is not considered as 1 .
+
+// All single digit numbers are considered as Jumping numbers.
+
+// Input >> Output Examples
+// jumpingNumber(9) ==> return "Jumping!!"
+// Explanation:
+// It's single-digit number
+// jumpingNumber(79) ==> return "Not!!"
+// Explanation:
+// Adjacent digits don't differ by 1
+// jumpingNumber(23) ==> return "Jumping!!"
+// Explanation:
+// Adjacent digits differ by 1
+// jumpingNumber(556847) ==> return "Not!!"
+// Explanation:
+// Adjacent digits don't differ by 1
+// jumpingNumber(4343456) ==> return "Jumping!!"
+// Explanation:
+// Adjacent digits differ by 1
+// jumpingNumber(89098) ==> return "Not!!"
+// Explanation:
+// Adjacent digits don't differ by 1
+// jumpingNumber(32) ==> return "Jumping!!"
+// Explanation:
+// Adjacent digits differ by 1
+
+function jumpingNumber(n){
+    let s = "" + n
+    for(let i=1 ; i<s.length ; i++){
+        if(Math.abs(s[i]-s[i-1]) > 1) return "Not!!"
+    }
+
+    return "Jumping!!"
+}
+
+//==============================
+// https://www.codewars.com/kata/609eee71109f860006c377d1
+// You are given a string of letters and an array of numbers.
+// The numbers indicate positions of letters that must be removed, in order, starting from the beginning of the array.
+// After each removal the size of the string decreases (there is no empty space).
+// Return the only letter left.
+
+// Example:
+
+// let str = "zbk", arr = [0, 1]
+//     str = "bk", arr = [1]
+//     str = "b", arr = []
+//     return 'b'
+// Notes
+// The given string will never be empty.
+// The length of the array is always one less than the length of the string.
+// All numbers are valid.
+// There can be duplicate letters and numbers.
+// If you like this kata, check out the next one: Last Survivors Ep.2
+// https://www.codewars.com/kata/60a1aac7d5a5fc0046c89651
+
+function lastSurvivor(letters, coords) {
+    let arr = letters.split("")
+    coords.forEach(e => arr.splice(e, 1))
+
+    return arr.join("")
+}

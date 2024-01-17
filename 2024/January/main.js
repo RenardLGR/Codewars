@@ -440,8 +440,9 @@ function lastSurvivors2(str){
     let isDone = false
     while(!isDone){
         isDone = true
+        console.log(arr);
         let temp = []
-        for(let i=0 ; i<arr.length-1 ; i++){
+        for(let i=0 ; i<arr.length ; i++){
             if(arr[i] === arr[i+1]){
                 isDone = false
                 temp.push(alphaL[(alphaL.indexOf(arr[i])+1) % 26])
@@ -457,4 +458,58 @@ function lastSurvivors2(str){
     return arr.join("")
 }
 
-console.log(lastSurvivors2("zzzab")) // "cz"
+// console.log(lastSurvivors2("zzzab")) // "cz"
+
+function lastSurvivors2Bis(str){
+    let arr = str.split("").sort()
+    let isDone = false
+    while(!isDone){
+        isDone= true
+        let temp = []
+        for(let i=0 ; i<arr.length ; i++){
+            if(arr[i] == arr[i+1]){
+                isDone = false
+                temp.push(nextLetter(arr[i]))
+                i++
+            }else{
+                temp.push(arr[i])
+            }
+        }
+        arr = temp.sort()
+    }
+
+    return arr.join("")
+
+    function nextLetter(letter){
+        if(letter === "z") return "a"
+
+        return String.fromCharCode(letter.charCodeAt(0) + 1)
+    }
+}
+
+// console.log(lastSurvivors2Bis("zzzab")) // "cz"
+
+function lastSurvivors2Ter(str){
+    let arr = str.split("")
+
+    for(let i=0 ; i<arr.length ; i++){
+        for(let j=i+1 ; j<arr.length ; j++){
+            if(arr[i] === arr[j]){
+                arr[i] = nextLetter(arr[j])
+                arr.splice(j, 1)
+                i = -1 //restart
+                break
+            }
+        }
+    }
+
+    return arr.join("")
+
+    function nextLetter(letter){
+        if(letter === "z") return "a"
+
+        return String.fromCharCode(letter.charCodeAt(0) + 1)
+    }
+}
+
+console.log(lastSurvivors2Ter("zzzab")) // "cz"

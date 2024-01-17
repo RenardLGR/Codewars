@@ -410,3 +410,51 @@ function lastSurvivor(letters, coords) {
 
     return arr.join("")
 }
+
+//===================================
+// https://www.codewars.com/kata/60a1aac7d5a5fc0046c89651
+// Substitute two equal letters by the next letter of the alphabet (two letters convert to one):
+
+// "aa" => "b", "bb" => "c", .. "zz" => "a".
+// The equal letters do not have to be adjacent.
+// Repeat this operation until there are no possible substitutions left.
+// Return a string.
+
+// Example:
+
+// let str = "zzzab"
+//     str = "azab"
+//     str = "bzb"
+//     str = "cz"
+// return "cz"
+// Notes
+// The order of letters in the result is not important.
+// The letters "zz" transform into "a".
+// There will only be lowercase letters.
+// If you like this kata, check out another one: Last Survivor Ep.3
+// https://www.codewars.com/kata/60a2d7f50eee95000d34f414
+
+function lastSurvivors2(str){
+    const alphaL = 'abcdefghijklmnopqrstuvwxyz'
+    let arr = str.split("").sort()
+    let isDone = false
+    while(!isDone){
+        isDone = true
+        let temp = []
+        for(let i=0 ; i<arr.length-1 ; i++){
+            if(arr[i] === arr[i+1]){
+                isDone = false
+                temp.push(alphaL[(alphaL.indexOf(arr[i])+1) % 26])
+                temp = temp.concat(arr.slice(i+2))
+                break
+            }else{
+                temp.push(arr[i])
+            }
+        }
+        arr = temp.sort()
+    }
+
+    return arr.join("")
+}
+
+console.log(lastSurvivors2("zzzab")) // "cz"

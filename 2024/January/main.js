@@ -512,4 +512,55 @@ function lastSurvivors2Ter(str){
     }
 }
 
-console.log(lastSurvivors2Ter("zzzab")) // "cz"
+//console.log(lastSurvivors2Ter("zzzab")) // "cz"
+
+//===========================
+// https://www.codewars.com/kata/60a2d7f50eee95000d34f414
+// Given a list of strings (of letters and spaces), and a list of numbers:
+
+// Considering the list of strings as a 2D character array, the idea is to remove from each column, starting from bottom, as many letters as indicated in the list of numbers. Then return the remaining letters in any order as a string.
+
+// If there aren't enough letters, just remove those you can.
+// The strings in the list will all be of the same length.
+// The list of numbers will be of the same length as the strings in the list of strings.
+// Strings will contain only lowercase letters and spaces.
+// There can be duplicated letters and numbers.
+// Example:
+// strings
+
+// ["abc", 
+//  " z ", 
+//  " a "]
+// numbers
+
+//  [0,4,1]
+// the output would be "a".
+
+// If you like this kata, check out another one: Survivors Ep.4
+// https://www.codewars.com/kata/60a516d70759d1000d532029
+
+function lastSurvivors3(strs, nums) {
+    //remove n[i] letters starting from strs[strs.length -1] at index i
+    //with the example given, 0 removes 0 letter from the col "a"
+    //4 removes in this order : "a", "z" then "b"
+    //1 removes "c"
+
+    let arr = strs.map(str => str.split("").map(l => l === " " ? "" : l))
+    console.log(arr);
+    nums.forEach((e, letterIdx) => {
+        let rowIdx = arr.length - 1
+        while(rowIdx >= 0 && e > 0){
+            if(arr[rowIdx][letterIdx] !== ""){
+                arr[rowIdx][letterIdx] = ""
+                e--
+            }
+            rowIdx--
+        }
+    })
+
+    return arr.reduce((acc, cur) => acc + cur.join(""), "")
+}
+
+// console.log(lastSurvivors3(["abc", "   ", " a "], [0, 4, 1])) // "a"
+
+//================================

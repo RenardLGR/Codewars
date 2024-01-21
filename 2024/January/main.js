@@ -635,3 +635,62 @@ function survivors4(listOfMomentum, listOfPowerups) {
 
 // console.log(survivors4([3, 2, 1, 0] , [[1, 0, 0], [0, 2, 0, 0], [0, 9], [8, 8]])) // [0]
 
+function survivors4Bis(listOfMomentum, listOfPowerups){
+    return listOfMomentum.map((e, idx) => idx).filter(idx => canTravelThrough(listOfMomentum[idx] , listOfPowerups[idx]))
+
+    function canTravelThrough(momentum, powerups){
+        if(momentum < 1) return false
+
+        for(let i=0 ; i<powerups.length ; i++){
+            momentum--
+            momentum += powerups[i]
+            if(momentum < 1) return false
+        }
+        return true
+    }
+}
+
+// console.log(survivors4Bis([3, 2, 1, 0] , [[1, 0, 0], [0, 2, 0, 0], [0, 9], [8, 8]])) // [0]
+
+function survivors4Ter(listOfMomentum, listOfPowerups){
+    return listOfMomentum.map((e, idx) => idx).filter(idx => canTravelThrough(listOfMomentum[idx] , listOfPowerups[idx]))
+
+    function canTravelThrough(momentum, powerups){
+        if(momentum < 1) return false
+
+        for(let i=0 ; i<powerups.length ; i++){
+            momentum--
+            momentum += powerups[i]
+            if(momentum < 1) return false
+        }
+        return true
+    }
+}
+
+// console.log(survivors4Ter([3, 2, 1, 0] , [[1, 0, 0], [0, 2, 0, 0], [0, 9], [8, 8]])) // [0]
+
+function survivors4Ter(listOfMomentum, listOfPowerups){
+    return listOfMomentum.map((e, idx) => idx).filter(idx => canTravelThrough(listOfMomentum[idx] , listOfPowerups[idx]))
+
+    function canTravelThrough(momentum, powerups){
+        if(momentum < 1) return false
+        return powerups.every(p => {
+            momentum--
+            momentum += p
+            return momentum >= 1
+        })
+    }
+}
+
+// console.log(survivors4Ter([3, 2, 1, 0] , [[1, 0, 0], [0, 2, 0, 0], [0, 9], [8, 8]])) // [0]
+
+function survivors4Quater(listOfMomentum, listOfPowerups){
+    return listOfMomentum.map((e, idx) => idx).filter(idx => canTravelThrough(listOfMomentum[idx] , listOfPowerups[idx]))
+
+    function canTravelThrough(momentum, powerups){
+        if(momentum < 1) return false
+        return powerups.every(p => (momentum = momentum -1 +p) >= 1)
+    }
+}
+
+// console.log(survivors4Quater([3, 2, 1, 0] , [[1, 0, 0], [0, 2, 0, 0], [0, 9], [8, 8]])) // [0]

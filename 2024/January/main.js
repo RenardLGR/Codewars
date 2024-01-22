@@ -694,3 +694,188 @@ function survivors4Quater(listOfMomentum, listOfPowerups){
 }
 
 // console.log(survivors4Quater([3, 2, 1, 0] , [[1, 0, 0], [0, 2, 0, 0], [0, 9], [8, 8]])) // [0]
+
+//==========================
+// https://www.codewars.com/kata/60a58520c42fb60055546ce5
+// Overview
+// Given an array of strings (to be interpreted as a 2D array of letters and spaces), find the groups of adjacent letters, remove all letters in the board that can be reached from any letter of another group and return the remaining letters in the array, in any order (see details below).
+
+// Details
+// All letters that form a group should have at least one vertical or horizontal link to any adjacent letter.
+// The number of characters in a group defines the range for each letter in that group.
+// A letter of one group can remove any letter from another group that is in range using Chebyshev distance (meaning: moving vertically, horizontally or diagonally at each step). All letters are removed simultaneously for all groups.
+// The output is a string containing all remaining characters at the end, in any order.
+// Notes
+// The strings in the list can be of different lengths.
+// Strings will only contain spaces and lowercase letters (possibly duplicated).
+// Examples
+// Input: ["axz", "tb", "ch", "  gt"]:
+
+// "axz"
+// "tb"
+// "ch"
+// "··gt"
+// The output would be "axz": axztbch and gt are two groups of adjacent letters, with respective sizes of 7 and 2.
+
+// Input ["z", "w", "", "     x  ", "agd", "", "", "", "klkp"]:
+
+// "z"
+// "w"
+// ""
+// "·····x··"
+// "agd"
+// ""
+// ""
+// ""
+// "klkp"
+// The output would be "zklkp" (in any order): zw, x, agd and klkp are four groups of adjacent letters. Note that:
+
+// Letters are removed even if they are reached through empty (parts of) strings
+// From the first group, only w is deleted since z is too far from any letter of the agd group of size 3
+// x is in range of d, hence is deleted too.
+// If you like this kata, check out another one: Kingdoms Ep1: Jousting
+// https://www.codewars.com/kata/6138ee916cb50f00227648d9
+
+function survivors5(arr) {
+    // From discussion :
+    // After reread several times of descriptions and discusses, finally figure out what this kata for.
+    // Get all the rules in one time is hard to understand.
+    // (Maybe because english is not my native language)
+
+    // My conclusion:
+
+    // The adjacent characters would be allies, they won't attack each other.
+    // For example1:
+    // "axz "
+    // "tb  "  <= Group 1
+    // "ch  "
+    // --------------------
+    // "  gt"  <= Group 2
+    // gt won't be member of Group1 because gt is not connect to ch.
+
+    // Each characters can attack all direction in 2D(dimension), and attack distance would be spread out by direction.
+    // ↖  ↑  ↗
+    // ←  ●  →
+    // ↙  ↓  ↘
+    // 2 2 2 2 2
+    // 2 1 1 1 2
+    // 2 1 ● 1 2
+    // 2 1 1 1 2
+    // 2 2 2 2 2
+    // Each characters attack range would be the member amount of group.
+    // Group1 = "axztbch"  => 7
+    // Group2 = "gt"       => 2
+    // Result would be the survivors after attacks.
+    // For example1:
+    // "axz "      "axz "
+    // "tb  "  =>  "..  "  => "axz"
+    // "ch  "      "..  "
+    // "  gt"      "  .."
+    // Group1 tbc would be attack by Group2 g with distance 2.
+    // Group1 h would be attack by Group2 g with distance 1, and Group2 t with distance 2.
+    // Group2 gt would be attack by Group1 all characters.
+
+    // Step 1 : we need all different groups and their respective sizes
+    // Step 2 : clean up considering the range of element of another group
+
+    const nRows = arr.length
+    const nCols = Math.max(...arr.map(str => str.length))
+
+    let grid = Array.from({length : nRows}, (_) => Array(nCols).fill(" "))
+    arr.forEach((str, row) => str.split("").forEach((e, col) => grid[row][col] = e))
+    let sizes = {} // 1 : 10, 2 : 5, etc. for groups 1, 2, etc
+    let groupsGrid  = Array.from({length : nRows}, (_) => Array(nCols).fill(undefined)) //cpy of grid but with their groups instead of letters
+
+    // Attributing groups to letters
+    let currentGroup = 0
+    for(let row=0 ; row<nRows ; row++){
+        for(let col=0 ; col<nCols ; col++){
+            if(grid[row][col] !== " " && groupsGrid[row][col] === undefined){
+                const group = ++currentGroup
+                groupsGrid[row][col] = group
+                sizes[group] = 1
+                attributeGroupToAllNeighborLetters(row, col, group)
+            }
+        }
+    }
+
+    // console.log(groupsGrid); // Ok
+    // console.log(sizes); // Ok
+
+    // Remove elements within the Chebyshev distance of another group
+    for(let row=0 ; row<nRows ; row++){
+        for(let col=0 ; col<nCols ; col++){
+            if(groupsGrid[row][col] !== undefined){
+                const group = groupsGrid[row][col]
+                const range = sizes[group]
+                const chebyshevNeighbors = getChebyshevNeighborhood(row, col, range)
+                chebyshevNeighbors.forEach(([row, col]) => {
+                    if(groupsGrid[row][col] !== group){
+                        grid[row][col] = " "
+                    }
+                })
+            }
+        }
+    }
+
+    // console.log(grid); // Ok
+    
+    return grid.reduce((acc, cur) => acc + cur.filter(e => e!==" ").join(""), "")
+
+    function attributeGroupToAllNeighborLetters(row, col, group){
+        let neighborhood = getVonNeumannNeighborhood(row, col)
+        neighborhood.forEach(([row, col]) => {
+            if(grid[row][col] !== " " && groupsGrid[row][col] === undefined){
+                groupsGrid[row][col] = group
+                sizes[group]++
+                attributeGroupToAllNeighborLetters(row, col, group)
+            }
+        })
+    }
+
+    function getVonNeumannNeighborhood(row, col) {
+        const neighborhood = [];
+    
+        // Define relative coordinates for all 4 neighbors
+        const neighborsRelativeCoords = [[-1, 0], [0, -1], [0, 1], [1, 0]];
+    
+    
+        // Iterate through all neighbors
+        for (const [dr, dc] of neighborsRelativeCoords) {
+            const newRow = row + dr;
+            const newCol = col + dc;
+    
+            // Check if the neighbor is within the bounds of the grid
+            if (newRow >= 0 && newRow < nRows && newCol >= 0 && newCol < nCols) {
+                neighborhood.push([newRow, newCol]);
+            }
+        }
+    
+        return neighborhood;
+    }
+
+    function getChebyshevNeighborhood(row, col, distance) {
+        const neighborhood = [];
+    
+        // Iterate through all cells within the specified Chebyshev distance
+        for (let i = row - distance; i <= row + distance; i++) {
+            for (let j = col - distance; j <= col + distance; j++) {
+                // Calculate Chebyshev distance
+                const chebyshevDist = Math.max(Math.abs(row - i), Math.abs(col - j));
+    
+                // Check if the cell is within the Chebyshev distance and within the bounds of the grid
+                if (chebyshevDist <= distance && i >= 0 && i < nRows && j >= 0 && j < nCols) {
+                    neighborhood.push([i, j]);
+                }
+            }
+        }
+    
+        return neighborhood;
+    }
+}
+
+// console.log(survivors5(["axz", "tb", "ch", "  gt"])) // "axz"
+// console.log(survivors5(["z", "w", "", "     x  ", "agd", "", "", "", "klkp"])) // "zklkp"
+// console.log(survivors5(["a b", "cde", "f g"])) // "abcdefg"
+
+//============================

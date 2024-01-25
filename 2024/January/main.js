@@ -1013,3 +1013,79 @@ function translate(speech, vocabulary) {
 }
 
 // console.log(translate("*ow ****v* **** ****u oq**y *t***. s*opq. qro***, q*x", ["ooqqu","ptqqq","qqqovq","qpqq","qpx","oqqqy","qropoo","sqopq","qow"])) // "qow qqqovq qpqq ooqqu oqqqy ptqqq. sqopq. qropoo, qpx"
+
+//==============================
+// https://www.codewars.com/kata/615b636c3f8bcf0038ae8e8b
+// Easier version: Kingdoms Ep2: The curse (simplified)
+// https://www.codewars.com/kata/6159dda246a119001a7de465
+
+// You are travelling and you see some strong villagers trying to battle unsuccessfully with one skinny man. When you approach them, the peasants tell you that man is the cursed priest from the village. Now he lives among the tombs, cries out and nobody can understand him because he can not pronounce any entire word. You decided to try to help him.
+
+// Given the string speech and the array vocabulary. You should return a string where each word in the priest's speech is replaced with the appropriate word from vocabulary. After every replacement, remove the appropriate word from vocabulary. Sometimes, it might seem unclear which word exactly is appropriate but, after reducing the size of vocabulary, there will be only one possible final answer.
+
+// Notes:
+// Words in the priest's speech always consist of lowercase letters and at least one asterisk. Each asterisk is replacing one character;
+// speech consists of these words, as described above, spaces and marks ?!,. ;
+// There might be more words in vocabulary than words in speech;
+// The length of an encoded word must be the same as an appropriate word of vocabulary;
+// The minimum length of a word is 3.
+// Example:
+// Given a speech "a**? *c*. **e," and a vocabulary of ["ace", "acd", "abd"], the expected answer is "abd? acd. ace,".
+
+// If you don't see the image, create the issie please
+
+// Read the end of the story in the "epilogue" test.
+
+function translate2(speech, vocabulary) {
+    const specialChars = "?!,. ".split("")
+    let res = [] // keep the words separated from the special chars so res.join("") gives the result
+    let currWord = ""
+
+    //isolating words
+    for(let i=0 ; i<speech.length ; i++){
+        if(specialChars.includes(speech[i])){
+            if(currWord.length > 0){
+                res.push(currWord)
+                currWord = ""
+                res.push(speech[i])
+            }else{
+                res[res.length-1] += speech[i]
+            }
+        }else{
+            currWord += speech[i]
+        }
+    }
+
+    if(currWord.length > 0){
+        res.push(currWord)
+    }
+
+    for(let i = 0 ; i<res.length ; i++){
+        if(res[i].includes("*")){
+            if(decodeWord(res[i], vocabulary)){
+                res[i] = decodeWord(res[i], vocabulary)
+                vocabulary = vocabulary.filter(e => e !== res[i])
+                i = -1
+            }
+        }
+    }
+
+    return res.join("")
+
+    //decode word if possible, returns the decodes word else returns false
+    function decodeWord(encoded, vocab){
+        const possibilities =  vocab.filter(w => {
+            return ( encoded.split('').every((c, idx) => {
+                if(c !== "*"){
+                    return w[idx] === c
+                }
+                return true
+            }) ) && encoded.length === w.length
+        })
+
+        if(possibilities.length === 1) return possibilities[0]
+        else return false
+    }
+}
+
+console.log(translate2("a**? *c*. **e,", ["ace", "acd", "abd"])) // "abd? acd. ace,"

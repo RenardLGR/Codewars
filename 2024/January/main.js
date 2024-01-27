@@ -1138,20 +1138,32 @@ function countAndSort(target) {
         for(let col=0 ; col<size ; col++){
             if(target[row][col] !== "*"){
                 let score = scoreCalc(row, col)
-                if(target[ow][col] === target[ow][col].toUpperCase()){ //if uppercase
-                    quantityArrowMap[target[ow][col].toLowerCase()] = (quantityArrowMap[target[ow][col].toLowerCase()] || 0) + 2
-                    scoreMap[target[ow][col].toLowerCase()] = (scoreMap[target[ow][col].toLowerCase()] || 0) + 2*score
+                if(target[row][col] === target[row][col].toUpperCase()){ //if uppercase
+                    quantityArrowMap[target[row][col].toLowerCase()] = (quantityArrowMap[target[row][col].toLowerCase()] || 0) + 2
+                    scoreMap[target[row][col].toLowerCase()] = (scoreMap[target[row][col].toLowerCase()] || 0) + 2*score
                 }else{ // if lower case
-                    quantityArrowMap[target[ow][col].toLowerCase()] = (quantityArrowMap[target[ow][col].toLowerCase()] || 0) + 1
-                    scoreMap[target[ow][col].toLowerCase()] = (scoreMap[target[ow][col].toLowerCase()] || 0) + score
+                    quantityArrowMap[target[row][col].toLowerCase()] = (quantityArrowMap[target[row][col].toLowerCase()] || 0) + 1
+                    scoreMap[target[row][col].toLowerCase()] = (scoreMap[target[row][col].toLowerCase()] || 0) + score
                 }
             }
         }
     }
 
+    console.log("scoremap : ", scoreMap);
+    console.log("quatity : ", quantityArrowMap);
+
     return Object.keys(scoreMap).sort((a,b) => {
-        if(scoreMap)
-        //a - b is for ascending order
+        //score are equal
+        if(scoreMap[a] === scoreMap[b]){
+            //qtt arrow are equal
+            if(quantityArrowMap[a] === quantityArrowMap[b]){
+                return a.localeCompare(b)
+            }else{
+                return quantityArrowMap[b] - quantityArrowMap[a]
+            }
+        }else{
+            return scoreMap[a] - scoreMap[b]
+        }
     })
    
     function scoreCalc(row, col){
@@ -1159,3 +1171,82 @@ function countAndSort(target) {
         return Math.min(row, size-1-row, col, size-1-col) + 1
     }
 }
+
+// console.log(countAndSort(["z*B", "*a*", "**z"])) // [b, z, a]
+
+//========================================
+// https://www.codewars.com/kata/6171a85207ab6b003fadc43e/javascript
+// The Gods punished our Kingdom for being rich and prosperous - The Black Death is spreading between us. Moreover, plenty of people in hundreds of villages are affected by the dancing mania, singing and dancing till death. Some people say that they saw the dancing Witch in the crowds. You, Great Inquisitor, must find her and put her at the stake!
+
+// Task
+// You are given the array of strings of equal length, that consist of unique lowercase letters(dancing people) and spaces. You have to figure out which letter is the Witch(if there is one) and return it.
+
+// Rules
+// Each string represents the next moment of dancing, where people have changed their position relative to the previous string(like a filmstrip). Each letter can move only one position to the left or to the right (or can stay in the same place), comparing to its previous position in the previous string. They move simultaneously and can switch places. The "Witch letter" pretends being an ordinary letter(moving one position,staying or switching places), but also she is the one who can leap over others, moving more than 1 position(see the explanation below). When you found out the Witch, return it. If there is no Witch, return null (she felt the danger or probably she is in other village).
+
+// Leap over:
+// The Witch leaped over other letters(s) when she moved more than one position, leaving behind all these letters or some of them. She can jump only when she is adjacent to them.
+
+// Notes:
+// The minimum length of a string is 3;
+
+// The array contains at least 2 strings and a string contains at least 2 letters;
+
+// When the Witch doesn't leap over, it moves a normal distance;
+
+// The letters can change their direction;
+
+// There will always be only one witch (or no witch);
+
+// Two letters can not occupy the same position at the same time;
+
+// All strings contain same letters.
+
+// Example 1:
+// given
+// ["a b", " ba"]
+
+// return "a"
+// Example 2:
+// given
+// ["ab kl", "ba kl", "a blk"]
+
+// return "b"
+// Example 3:
+// given
+// ["icwth", "wicth", "witch"]
+
+// return "w"
+// Example 4:
+// given
+// ["abcdef", "abcfde"]
+
+// return "f"
+// Example 5:
+// given
+// ["hop", "hpo", "pho"]
+
+// return null
+// If you like this kata, check out the another one: Kingdoms Ep.5: The Great Inqisitor's escape
+// https://www.codewars.com/kata/61771d1cf1c7eb004b7329f0
+
+function figureOut(arr) {
+    // Just make sure every letter moves only one position in between each "photos", if a letter moves more than 1 : it is the witch
+    let positionMap = {}
+    for(let photo of arr){
+        let tempPositionMap = {}
+        for(let i=0 ; i<photo.length ; i++){
+            if(photo[i] !== " "){
+                tempPositionMap[photo[i]] = i
+                if(Math.abs(i - positionMap[photo[i]]) > 1){
+                    return photo[i]
+                }
+            }
+        }
+        positionMap = tempPositionMap
+    }
+
+    return null
+}
+
+// console.log(figureOut([" x y z ", " xy  z ", "yx   z ", " xy  z "])) // y

@@ -1250,3 +1250,19 @@ function figureOut(arr) {
 }
 
 // console.log(figureOut([" x y z ", " xy  z ", "yx   z ", " xy  z "])) // y
+
+function figureOutBis(arr){
+    for(let i=1 ; i<arr.length ; i++){
+        for(let j=0 ; j<arr[0].length ; j++){
+            if(arr[i][j] !== " " && Math.abs(j - arr[i-1].indexOf(arr[i][j])) > 1){
+                return arr[i][j]
+            }
+        }
+    }
+
+    return null
+}
+
+// console.log(figureOutBis([" x y z ", " xy  z ", "yx   z ", " xy  z "])) // y
+
+//=================================

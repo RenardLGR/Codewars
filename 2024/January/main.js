@@ -1266,3 +1266,133 @@ function figureOutBis(arr){
 // console.log(figureOutBis([" x y z ", " xy  z ", "yx   z ", " xy  z "])) // y
 
 //=================================
+// https://www.codewars.com/kata/61771d1cf1c7eb004b7329f0
+// Yesterday, You, the Great Inquisitor, drank too much and blabbed accidentally to your lovers clergymen about the King's sins, which He told you in His confession. To escape the punishment, you stole the gold of the indulgence from the temple and sailed away from the Kingdom on your private ship. Unfortunately, you were caught in a storm and got shipwrecked on a desert island. Survive!
+
+// Task
+// You are given the array(island) of strings of equal length with numbers(food), your starting coordinates on this island and the number, that represents how many steps you can make. Your task is to find the maximum amount of food that you can collect.
+
+// Rules
+// To survive, you must collect as much food as possible, that was washed ashore to the island. You start from given coordinates and you can make only horizontal and vertical steps into adjacent cells, subtracting one "point" from your steps for every movement (when the steps are zero you cannot move anymore). When you entered into a cell with a number, add this number to your collected food (the initial collected food is 0). The problem is that you took a lot of gold (represented by $) and a few provisions on your ship, so there might not too much food washed ashore. When you step into a cell with $, subtract one more point from steps (because you are very greedy and you waste time collecting the gold). Remove the food or the gold from the cell when you step into it for the first time. Return the maximum number of the food that is possible to collect.
+
+// Coordinates
+// origin is in the uper left corner of the island
+// X going down
+// Y going right
+// (The coordinates system works like 2D-array indexing)
+
+// Notes
+// You can step into the same cell as many as are necessary to get the best path possible;
+
+// The length of the array is from 0 to 30;
+
+// The given steps are from 0 to 12 (optimize your solution);
+
+// The food is represented by the number from 0 to 9;
+
+// You might start in a cell that already contains food or gold (collect and remove it);
+
+// The dots are just for better visibility.
+
+// Java: in some rare cases, your valid solution may timeout - try again, please
+
+function searchForFood(island, coordinates, steps){
+    //test every paths
+    const numbers = "0123456789"
+    let grid = Array.from({length : island.length}, (_) => Array(island[0].length))
+    // initializing grid
+    for(let row=0 ; row<island.length ; row++){
+        for(let col=0 ; col<island[0].length ; col++){
+            grid[row][col] = island[row][col]
+        }
+    }
+    let maxFood = 0
+    solve(steps, 0, coordinates[0], coordinates[1])
+    return maxFood
+
+    function solve(stepsRemaining, foodCollected, row, col){
+        let newStep = grid[row][col] === "$" ? stepsRemaining - 1 : stepsRemaining
+        let newFood = foodCollected + (numbers.includes(grid[row][col]) ? +grid[row][col] : 0)
+        let temp = grid[row][col]
+        grid[row][col] = "."
+        if(newStep < 1){
+            maxFood = Math.max(maxFood, newFood)
+        }else{
+            let neighbors = getVonNeumannNeighborhood(row, col)
+            for(let [newRow, newCol] of neighbors){
+                solve(newStep-1, newFood, newRow, newCol)
+            }
+        }
+        //backtracking
+        grid[row][col] = temp
+    }
+
+    function getVonNeumannNeighborhood(row, col) {
+        const neighborhood = [];
+    
+        // Define relative coordinates for all 4 neighbors
+        const neighborsRelativeCoords = [[-1, 0], [0, -1], [0, 1], [1, 0]];
+    
+    
+        // Iterate through all neighbors
+        for (const [dr, dc] of neighborsRelativeCoords) {
+            const newRow = row + dr;
+            const newCol = col + dc;
+    
+            // Check if the neighbor is within the bounds of the grid
+            if (newRow >= 0 && newRow < island.length && newCol >= 0 && newCol < island[0].length) {
+                neighborhood.push([newRow, newCol]);
+            }
+        }
+    
+        return neighborhood;
+    }
+}
+
+let island2 = [
+    ".....",
+    ".1.1.",
+    "5$.1.",
+    ".112.",
+    "....."
+]
+
+// console.log(searchForFood(island2, [4, 2], 3)) // 4
+// console.log(searchForFood(island2, [1, 2], 5)) // 7
+// console.log(searchForFood(island2, [2, 4], 2)) // 3
+
+let island3 = [
+    "7....",
+    "$....",
+    "$...1",
+    ".1111",
+ ]
+
+//  console.log(searchForFood(island3, [3, 0], 5)) // 8
+//  console.log(searchForFood(island3, [0, 4], 1)) // 0
+//  console.log(searchForFood(island3, [3, 0], 3)) // 3
+//  console.log(searchForFood(island3, [2, 0], 4)) // 7
+
+ let newEdgeIsland = [
+    "..5.$...............",
+    ".$....48..$8.$$8.$..",
+    "...2$$8.$$..$1......",
+    ".....$1.....$1......",
+    ".4........2..1$.4.$.",
+    "2..1$.4.$...........",
+    "$5$...31.62..1$.4.$.",
+    "............2$$8....",
+    ".....$....2..1$.4.$.",
+    "..........2..1$.4.$.",
+    ".4........2..1$.4.$.",
+    "2..1$.4.$...........",
+    "$5$...31.62..1$.4.$.",
+    ".4........2..1$.4.$.",
+    "2..1$.4.$...........",
+    "$5$...31.62..1$.4.$.",
+    ".4........2..1$.4.$.",
+    "2..1$.4.$...........",
+    "$5$...31.62..1$.4.$.",
+ ]
+
+// console.log(searchForFood(newEdgeIsland, [2, 7], 9)) // 29

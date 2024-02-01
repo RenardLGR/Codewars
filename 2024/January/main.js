@@ -1474,6 +1474,18 @@ function sumOfN(n) {
 // console.log(sumOfN(-5)) // [0, -1, -3, -6, -10, -15]
 // console.log(sumOfN(7)) // [0,  1,  3,  6,  10,  15,  21,  28]
 
+function sumOfNBis(n){
+    let res = [0]
+    for(let i=1 ; i<=Math.abs(n) ; i++){
+        res[i] = Math.sign(n) * (Math.abs(res[i-1]) + i)
+    }
+    return res
+}
+
+// console.log(sumOfNBis(5)) // [0,  1,  3,  6,  10,  15]
+// console.log(sumOfNBis(-5)) // [0, -1, -3, -6, -10, -15]
+// console.log(sumOfNBis(7)) // [0,  1,  3,  6,  10,  15,  21,  28]
+
 function sumOfNTer(n){
     let temp = 0
     return Array.from({length : Math.abs(n) + 1}, (e, i) => i === 0 ? 0 : temp = Math.sign(n) * (Math.abs(temp) + i))
@@ -1482,3 +1494,13 @@ function sumOfNTer(n){
 // console.log(sumOfNTer(5)) // [0,  1,  3,  6,  10,  15]
 // console.log(sumOfNTer(-5)) // [0, -1, -3, -6, -10, -15]
 // console.log(sumOfNTer(7)) // [0,  1,  3,  6,  10,  15,  21,  28]
+
+function sumOfNQuater(n, temp = 0){
+    return Array.from({length : Math.abs(n) + 1}, (e, i) => i === 0 ? 0 : temp = Math.sign(n) * (Math.abs(temp) + i))
+}
+
+// console.log(sumOfNQuater(5)) // [0,  1,  3,  6,  10,  15]
+// console.log(sumOfNQuater(-5)) // [0, -1, -3, -6, -10, -15]
+// console.log(sumOfNQuater(7)) // [0,  1,  3,  6,  10,  15,  21,  28]
+
+

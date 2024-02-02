@@ -1503,4 +1503,28 @@ function sumOfNQuater(n, temp = 0){
 // console.log(sumOfNQuater(-5)) // [0, -1, -3, -6, -10, -15]
 // console.log(sumOfNQuater(7)) // [0,  1,  3,  6,  10,  15,  21,  28]
 
+function sumOfNQuinquies(n){
+    return [...Array(Math.abs(n))].reduce((acc, cur, idx) => [...acc, Math.sign(n) * (Math.abs(acc[idx]) + idx + 1)] , [0])
+}
 
+// console.log(sumOfNQuinquies(5)) // [0,  1,  3,  6,  10,  15]
+// console.log(sumOfNQuinquies(-5)) // [0, -1, -3, -6, -10, -15]
+// console.log(sumOfNQuinquies(7)) // [0,  1,  3,  6,  10,  15,  21,  28]
+
+//==================================
+// https://www.codewars.com/kata/57ee24e17b45eff6d6000164
+// You will be given a string (x) featuring a cat 'C' and a mouse 'm'. The rest of the string will be made up of '.'.
+
+// You need to find out if the cat can catch the mouse from it's current position. The cat can jump over three characters. So:
+
+// C.....m returns 'Escaped!' <-- more than three characters between
+
+// C...m returns 'Caught!' <-- as there are three characters between the two, the cat can jump.
+
+function catMouse(x){
+    return x.indexOf("m") <= 4 ? "Caught!" : "Escaped!"
+}
+
+function catMouseBis(x){
+    return x.length <= 5 ? "Caught!" : "Escaped!"
+}

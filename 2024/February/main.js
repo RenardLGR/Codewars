@@ -80,7 +80,7 @@ function countChange(money, coins) {
 //Did not work, too long
 
 function countChangeBis(money, coins){
-    coins.sort((a,b) => a-b)
+    coins.sort((a,b) => a-b) // probably useless, even if coins were not sorted to begin with, we just need to make sure coins doesn't have duplicates
     let combinations = []
     solve(0, [], 0)
     // console.log(combinations)
@@ -107,3 +107,16 @@ function countChangeBis(money, coins){
 // console.log(countChangeBis(10, [5,2,3])) // => 4
 // console.log(countChangeBis(11, [5,7])) //  => 0
 // console.log(countChangeBis(300, [5, 10, 20, 50, 100, 200, 500])) //  => 1222
+
+
+function countChangeTer(money, coins){
+    if(money < 0 || coins.length === 0) return 0
+    if(money === 0) return 1
+
+    return countChangeTer(money - coins[0], coins) + countChangeTer(money, coins.slice(1))
+}
+
+console.log(countChangeTer(4, [1,2])) // => 3
+console.log(countChangeTer(10, [5,2,3])) // => 4
+console.log(countChangeTer(11, [5,7])) //  => 0
+console.log(countChangeTer(300, [5, 10, 20, 50, 100, 200, 500])) //  => 1222

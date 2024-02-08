@@ -183,3 +183,47 @@ function productArray(numbers){
     let prod = numbers.reduce((acc, cur) => acc * cur, 1)
     return numbers.map(e => prod/e)
 }
+
+
+//===============================
+
+//===============================
+//Curry training
+function add(a){
+    if(a === undefined){
+        return 0
+    }
+    return (b) => {
+        if(b === undefined){
+            return a
+        }
+        return add(a + b)
+    }
+
+}
+
+const addBis = a => a === undefined ? 0 : b => b === undefined ? a : addBis(a + b)
+
+// console.log(add(5)(8)(12)(25)()) // 50
+// console.log(add()) // 0
+// console.log(add(5)()) // 5
+// console.log(add(5)(3)()) // 8
+// console.log(addBis(5)(8)(12)(25)()) // 50
+
+function addTer(a){
+    if(a === undefined){
+        return 0
+    }
+    let sum = a
+    return addNext
+
+    function addNext(b){
+        if(b === undefined){
+            return sum
+        }
+        sum += b
+        return addNext
+    }
+}
+
+// console.log(addTer(5)(8)(12)(25)()) // 50

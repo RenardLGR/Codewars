@@ -227,3 +227,62 @@ function addTer(a){
 }
 
 // console.log(addTer(5)(8)(12)(25)()) // 50
+
+//======================================
+// https://www.codewars.com/kata/60edafd71dad1800563cf933/train/javascript
+// Closure Counter
+// Define the function counter that returns a function that returns an increasing value.
+// The first value should be 1.
+// You're going to have to use closures.
+// Example:
+// const newCounter = counter();
+// newCounter() // 1
+// newCounter() // 2
+// Closure:
+// A closure is the combination of a function bundled together (enclosed) with references to its surrounding state (the lexical environment). In other words, a closure gives you access to an outer function’s scope from an inner function. In JavaScript, closures are created every time a function is created, at function creation time.
+
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures
+
+function counter(){
+    let val = 0
+    return () => {
+        val++
+        return val
+    }
+}
+// const newCounter = counter();
+// console.log(newCounter()) // 1
+// console.log(newCounter()) // 2
+//===================================
+
+const cyphered = "terces"
+
+function obj(cyphered){
+    let decyphered = cyphered.split("").reverse().join("") //here to decode a message, we just reverse it
+    const doIKnow = (attempt) => attempt === decyphered
+    const addStr = str => {
+        decyphered += str
+        return
+    }
+    return {
+        doIKnow,
+        addStr
+    }
+}
+let myObj = obj(cyphered)
+
+// console.log(myObj.doIKnow("secret")) // true
+// console.log(myObj.doIKnow("idk")) // false
+// console.log(myObj.addStr("z")) // false
+// console.log(myObj.doIKnow("secret")) // false
+
+function addV2(a){
+    if(a === undefined) return 0
+    return (b) => {
+        if(b === undefined) return a
+        return addV2(a + b)
+    }
+}
+
+// console.log(addV2(5)(10)(25)()) // 40
+// console.log(addV2(5)(-10)(-25)()) // -30

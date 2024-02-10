@@ -184,10 +184,109 @@ function productArray(numbers){
     return numbers.map(e => prod/e)
 }
 
-
 //===============================
+// https://www.codewars.com/kata/array-product-sans-n
+// Related to MrZizoScream's Product Array kata. You might want to solve that one first :)
+// https://www.codewars.com/kata/product-array-array-series-number-5
 
-//===============================
+// Note: Node 10 has now been enabled, and you can now use its BigInt capabilities if you wish, though your resulting array must still contain strings (e.g. "99999999999", not 9999999999n)
+
+// Pre-node 10: You will need to use the BigNumber.js library! Please use .toFixed(0) or .toPrecision() to round instead of .toString(10), as the latter is very slow
+
+// This is an adaptation of a problem I came across on LeetCode.
+
+// Given an array of numbers, your task is to return a new array where each index (new_array[i]) is equal to the product of the original array, except for the number at that index (array[i]).
+
+// Two things to keep in mind:
+
+// Zeroes will be making their way into some of the arrays you are given
+// O(n^2) solutions will not pass.
+// Examples:
+
+// Note: all numbers should be returned in full string representation.
+
+// productSansN([1,2,3,4]) => ["24", "12", "8", "6"]
+// productSansN([2,3,4,5]) => ["60", "40", "30", "24"]
+// productSansN([1,1,1]) => ["1", "1", "1"]
+// productSansN([9,0,-2]) => ["0", "-18", "0"])
+// productSansN([0,-99,0]) => ["0", "0", "0"])
+// productSansN([3,14,9,11,11]) => ["15246", "3267", "5082", "4158", "4158"])
+// productSansN([-8,1,5,13,-1]) => ["-65", "520", "104", "40", "-520"])
+// productSansN([4,7,3,6,2,14,7,5]) => ["123480", "70560", "164640", "82320", "246960", "35280", "70560", "98784"]
+// Note: All inputs will be valid arrays of nonzero length.
+
+// Have fun! Please upvote if you enjoyed :)
+
+function productSansN(nums) {
+    //Calculate res[0] normally : res[0] is equal to the product of nums.slice(1)
+    //Then knowing res[0], we can conclude that res[1] = res[0] * nums[0] / nums[1]
+    //In fact, for every element of res of index n, knowing its predecessor, res[n] = res[n-1] * nums[n-1] / nums[n]
+    //Except, we need to recalculate res[n] if either nums[n] === 0 (division is impossible and if nums[n] was the unique 0, res[n] !== 0)
+    let res = []
+    res[0] = productButIndex(nums, 0)
+
+    for(let i=1 ; i<nums.length ; i++){
+        if(nums[i] === 0){
+            res[i] = productButIndex(nums, i)
+        }else{
+            res[i] = (res[i-1] * nums[i-1] / nums[i])
+        }
+    }
+
+    return res.map(e => "" + e)
+
+
+    function productButIndex(nums, index){
+        let res = 1
+        for(let i=0 ; i<nums.length ; i++){
+            if(i !== index) res *= nums[i]
+        }
+        return res
+    }
+}
+
+// console.log(productSansN([1,2,3,4])) // ["24", "12", "8", "6"]
+// console.log(productSansN([2,3,4,5])) // ["60", "40", "30", "24"]
+// console.log(productSansN([1,1,1])) // ["1", "1", "1"]
+// console.log(productSansN([9,0,-2])) // ["0", "-18", "0"])
+// console.log(productSansN([0,-99,0])) // ["0", "0", "0"])
+// console.log(productSansN([3,14,9,11,11])) // ["15246", "3267", "5082", "4158", "4158"])
+// console.log(productSansN([-8,1,5,13,-1])) // ["-65", "520", "104", "40", "-520"])
+// console.log(productSansN([4,7,3,6,2,14,7,5])) // ["123480", "70560", "164640", "82320", "246960", "35280", "70560", "98784"]
+
+// Leetcode 238
+function productSansNBis(nums) {
+    const n = nums.length;
+    const pre = new Array(n);
+    const suff = new Array(n);
+    pre[0] = 1;
+    suff[n - 1] = 1;
+    
+    for (let i = 1; i < n; i++) {
+        pre[i] = pre[i - 1] * nums[i - 1];
+    }
+    
+    for (let i = n - 2; i >= 0; i--) {
+        suff[i] = suff[i + 1] * nums[i + 1];
+    }
+    
+    const ans = new Array(n);
+    for (let i = 0; i < n; i++) {
+        ans[i] = pre[i] * suff[i];
+    }
+    return ans.map(e => "" + e)
+}
+
+console.log(productSansNBis([1,2,3,4])) // ["24", "12", "8", "6"]
+console.log(productSansNBis([2,3,4,5])) // ["60", "40", "30", "24"]
+console.log(productSansNBis([1,1,1])) // ["1", "1", "1"]
+console.log(productSansNBis([9,0,-2])) // ["0", "-18", "0"])
+console.log(productSansNBis([0,-99,0])) // ["0", "0", "0"])
+console.log(productSansNBis([3,14,9,11,11])) // ["15246", "3267", "5082", "4158", "4158"])
+console.log(productSansNBis([-8,1,5,13,-1])) // ["-65", "520", "104", "40", "-520"])
+console.log(productSansNBis([4,7,3,6,2,14,7,5])) // ["123480", "70560", "164640", "82320", "246960", "35280", "70560", "98784"]
+
+//=================================
 //Curry training
 function add(a){
     if(a === undefined){

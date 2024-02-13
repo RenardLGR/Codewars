@@ -217,6 +217,8 @@ function productArray(numbers){
 
 // Have fun! Please upvote if you enjoyed :)
 
+// Also check: https://leetcode.com/problems/product-of-array-except-self/description/
+
 function productSansN(nums) {
     //Calculate res[0] normally : res[0] is equal to the product of nums.slice(1)
     //Then knowing res[0], we can conclude that res[1] = res[0] * nums[0] / nums[1]
@@ -254,8 +256,43 @@ function productSansN(nums) {
 // console.log(productSansN([-8,1,5,13,-1])) // ["-65", "520", "104", "40", "-520"])
 // console.log(productSansN([4,7,3,6,2,14,7,5])) // ["123480", "70560", "164640", "82320", "246960", "35280", "70560", "98784"]
 
-// Leetcode 238
-function productSansNBis(nums) {
+function productSansNBis(nums){
+    // res[i] is the product of (the product of elements from nums[0] to nums[i-1] (the elements on its left)) and (the product of elements from nums[n-1] to nums[i+1] (the elements on its right))
+    // we will have two Arrays containing the product of (from nums[0] to nums[n-1]) and (from nums[n-1] to nums[0])
+    const n = nums.length
+
+    let leftToRight = [nums[0]]
+    for(let i=1 ; i<n ; i++){
+        leftToRight[i] = leftToRight[i-1] * nums[i]
+    }
+
+    let rightToLeft = []
+    rightToLeft[n-1] = nums[n-1]
+    for(let i=n-2 ; i>=0 ; i--){
+        rightToLeft[i] = rightToLeft[i+1] * nums[i]
+    }
+
+    let res = []
+    res[0] = rightToLeft[1]
+    res[n-1] = leftToRight[n-2]
+    for(let i=1 ; i<n-1 ; i++){
+        res[i] = leftToRight[i-1] * rightToLeft[i+1]
+    }
+
+    return res.map(e => "" + e)
+}
+
+// console.log(productSansNBis([1,2,3,4])) // ["24", "12", "8", "6"]
+// console.log(productSansNBis([2,3,4,5])) // ["60", "40", "30", "24"]
+// console.log(productSansNBis([1,1,1])) // ["1", "1", "1"]
+// console.log(productSansNBis([9,0,-2])) // ["0", "-18", "0"])
+// console.log(productSansNBis([0,-99,0])) // ["0", "0", "0"])
+// console.log(productSansNBis([3,14,9,11,11])) // ["15246", "3267", "5082", "4158", "4158"])
+// console.log(productSansNBis([-8,1,5,13,-1])) // ["-65", "520", "104", "40", "-520"])
+// console.log(productSansNBis([4,7,3,6,2,14,7,5])) // ["123480", "70560", "164640", "82320", "246960", "35280", "70560", "98784"]
+
+function productSansNTer(nums) {
+    //TODO
     const n = nums.length;
     const pre = new Array(n);
     const suff = new Array(n);
@@ -277,14 +314,14 @@ function productSansNBis(nums) {
     return ans.map(e => "" + e)
 }
 
-console.log(productSansNBis([1,2,3,4])) // ["24", "12", "8", "6"]
-console.log(productSansNBis([2,3,4,5])) // ["60", "40", "30", "24"]
-console.log(productSansNBis([1,1,1])) // ["1", "1", "1"]
-console.log(productSansNBis([9,0,-2])) // ["0", "-18", "0"])
-console.log(productSansNBis([0,-99,0])) // ["0", "0", "0"])
-console.log(productSansNBis([3,14,9,11,11])) // ["15246", "3267", "5082", "4158", "4158"])
-console.log(productSansNBis([-8,1,5,13,-1])) // ["-65", "520", "104", "40", "-520"])
-console.log(productSansNBis([4,7,3,6,2,14,7,5])) // ["123480", "70560", "164640", "82320", "246960", "35280", "70560", "98784"]
+console.log(productSansNTer([1,2,3,4])) // ["24", "12", "8", "6"]
+console.log(productSansNTer([2,3,4,5])) // ["60", "40", "30", "24"]
+console.log(productSansNTer([1,1,1])) // ["1", "1", "1"]
+console.log(productSansNTer([9,0,-2])) // ["0", "-18", "0"])
+console.log(productSansNTer([0,-99,0])) // ["0", "0", "0"])
+console.log(productSansNTer([3,14,9,11,11])) // ["15246", "3267", "5082", "4158", "4158"])
+console.log(productSansNTer([-8,1,5,13,-1])) // ["-65", "520", "104", "40", "-520"])
+console.log(productSansNTer([4,7,3,6,2,14,7,5])) // ["123480", "70560", "164640", "82320", "246960", "35280", "70560", "98784"]
 
 //=================================
 //Curry training
@@ -353,35 +390,3 @@ function counter(){
 // console.log(newCounter()) // 1
 // console.log(newCounter()) // 2
 //===================================
-
-const cyphered = "terces"
-
-function obj(cyphered){
-    let decyphered = cyphered.split("").reverse().join("") //here to decode a message, we just reverse it
-    const doIKnow = (attempt) => attempt === decyphered
-    const addStr = str => {
-        decyphered += str
-        return
-    }
-    return {
-        doIKnow,
-        addStr
-    }
-}
-let myObj = obj(cyphered)
-
-// console.log(myObj.doIKnow("secret")) // true
-// console.log(myObj.doIKnow("idk")) // false
-// console.log(myObj.addStr("z")) // false
-// console.log(myObj.doIKnow("secret")) // false
-
-function addV2(a){
-    if(a === undefined) return 0
-    return (b) => {
-        if(b === undefined) return a
-        return addV2(a + b)
-    }
-}
-
-// console.log(addV2(5)(10)(25)()) // 40
-// console.log(addV2(5)(-10)(-25)()) // -30

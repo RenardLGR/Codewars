@@ -220,28 +220,49 @@ function productArray(numbers){
 // Also check: https://leetcode.com/problems/product-of-array-except-self/description/
 
 function productSansN(nums) {
-    //Calculate res[0] normally : res[0] is equal to the product of nums.slice(1)
-    //Then knowing res[0], we can conclude that res[1] = res[0] * nums[0] / nums[1]
-    //In fact, for every element of res of index n, knowing its predecessor, res[n] = res[n-1] * nums[n-1] / nums[n]
-    //Except, we need to recalculate res[n] if either nums[n] === 0 (division is impossible and if nums[n] was the unique 0, res[n] !== 0)
-    let res = []
-    res[0] = productButIndex(nums, 0)
+    // We have three cases :
+    // First case : There are more than 2 zeroes in nums, thus the result is an array full of zeroes
+    // Second case : There is only a single zero, thus the array is full of zero but at the index of the zero where it is the product except self
+    // Third case : There is no zero.
+    // Calculate res[0] normally : res[0] is equal to the product of nums.slice(1)
+    // Then knowing res[0], we can conclude that res[1] = res[0] * nums[0] / nums[1]
+    // In fact, for every element of res of index n, knowing its predecessor, res[n] = res[n-1] * nums[n-1] / nums[n]
 
+    let res0 = BigInt(1)
+    let zeroes = nums[0] === 0 ? 1 : 0 // number of zeroes
     for(let i=1 ; i<nums.length ; i++){
-        if(nums[i] === 0){
-            res[i] = productButIndex(nums, i)
-        }else{
-            res[i] = (res[i-1] * nums[i-1] / nums[i])
-        }
+        if(nums[i] === 0) zeroes++
+        res0 *= BigInt(nums[i])
     }
 
-    return res.map(e => "" + e)
-
-
-    function productButIndex(nums, index){
-        let res = 1
+    //first case
+    if(zeroes > 1){
+        return Array(nums.length).fill(BigInt(0).toString())
+    }
+    //second case
+    else if(zeroes === 1){
+        let res = Array(nums.length)
+        let prod = BigInt(1)
+        let zeroIdx = null
         for(let i=0 ; i<nums.length ; i++){
-            if(i !== index) res *= nums[i]
+            if(nums[i] !== 0){
+                res[i] = BigInt(0).toString()
+                prod *= BigInt(nums[i])
+            }else{
+                zeroIdx = i
+            }
+        }
+        res[zeroIdx] = BigInt(prod).toString()
+        return res
+    }
+    //third case
+    else{
+        let res = Array(nums.length)
+        let prev = res0
+        res[0] = prev.toString()
+        for(let i=1 ; i<nums.length ; i++){
+            prev = prev * BigInt(nums[i-1]) / BigInt(nums[i])
+            res[i] = prev.toString()
         }
         return res
     }
@@ -255,31 +276,37 @@ function productSansN(nums) {
 // console.log(productSansN([3,14,9,11,11])) // ["15246", "3267", "5082", "4158", "4158"])
 // console.log(productSansN([-8,1,5,13,-1])) // ["-65", "520", "104", "40", "-520"])
 // console.log(productSansN([4,7,3,6,2,14,7,5])) // ["123480", "70560", "164640", "82320", "246960", "35280", "70560", "98784"]
+// console.log(productSansN([4, 7, 3, 6, 2, 11, 14, 4, 7, 5])) // ['5433120', '3104640', '7244160', '3622080', '10866240', '1975680', '1552320', '5433120', '3104640', '4346496']
 
 function productSansNBis(nums){
-    // res[i] is the product of (the product of elements from nums[0] to nums[i-1] (the elements on its left)) and (the product of elements from nums[n-1] to nums[i+1] (the elements on its right))
-    // we will have two Arrays containing the product of (from nums[0] to nums[n-1]) and (from nums[n-1] to nums[0])
-    const n = nums.length
-
-    let leftToRight = [nums[0]]
-    for(let i=1 ; i<n ; i++){
-        leftToRight[i] = leftToRight[i-1] * nums[i]
-    }
-
-    let rightToLeft = []
-    rightToLeft[n-1] = nums[n-1]
-    for(let i=n-2 ; i>=0 ; i--){
-        rightToLeft[i] = rightToLeft[i+1] * nums[i]
-    }
-
+    //Calculate res[0] normally : res[0] is equal to the product of nums.slice(1)
+    //Then knowing res[0], we can conclude that res[1] = res[0] * nums[0] / nums[1]
+    //In fact, for every element of res of index n, knowing its predecessor, res[n] = res[n-1] * nums[n-1] / nums[n]
+    //Except, we need to recalculate res[n] if either nums[n] === 0 (division is impossible and if nums[n] was the unique 0, res[n] !== 0)
     let res = []
-    res[0] = rightToLeft[1]
-    res[n-1] = leftToRight[n-2]
-    for(let i=1 ; i<n-1 ; i++){
-        res[i] = leftToRight[i-1] * rightToLeft[i+1]
+    let prev = productButIndex(nums, 0)
+    res[0] = prev.toString()
+
+    for(let i=1 ; i<nums.length ; i++){
+        if(nums[i] === 0){
+            prev = productButIndex(nums, i)
+            res[i] = prev
+        }else{
+            prev = (prev * BigInt(nums[i-1]) / BigInt(nums[i]))
+            res[i] = prev.toString()
+        }
     }
 
-    return res.map(e => "" + e)
+    return res
+
+
+    function productButIndex(nums, index){
+        let res = 1n
+        for(let i=0 ; i<nums.length ; i++){
+            if(i !== index) res *= BigInt(nums[i])
+        }
+        return res
+    }
 }
 
 // console.log(productSansNBis([1,2,3,4])) // ["24", "12", "8", "6"]
@@ -291,37 +318,90 @@ function productSansNBis(nums){
 // console.log(productSansNBis([-8,1,5,13,-1])) // ["-65", "520", "104", "40", "-520"])
 // console.log(productSansNBis([4,7,3,6,2,14,7,5])) // ["123480", "70560", "164640", "82320", "246960", "35280", "70560", "98784"]
 
+//Too long?
+
 function productSansNTer(nums) {
-    //TODO
-    const n = nums.length;
-    const pre = new Array(n);
-    const suff = new Array(n);
-    pre[0] = 1;
-    suff[n - 1] = 1;
-    
-    for (let i = 1; i < n; i++) {
-        pre[i] = pre[i - 1] * nums[i - 1];
+    // res[i] is the product of (the product of elements from nums[0] to nums[i-1] (the elements on its left)) and (the product of elements from nums[n-1] to nums[i+1] (the elements on its right))
+    // we will have two Arrays containing the product of (from nums[0] to nums[n-1]) and (from nums[n-1] to nums[0])
+    const n = nums.length
+
+    if(n === 1) return ["1"] //All arrays of size 1 returns ["1"] no matter the value of nums[0]
+
+    let leftToRight = [BigInt(nums[0])]
+    for(let i=1 ; i<n ; i++){
+        leftToRight[i] = leftToRight[i-1] * BigInt(nums[i])
     }
-    
-    for (let i = n - 2; i >= 0; i--) {
-        suff[i] = suff[i + 1] * nums[i + 1];
+
+    let rightToLeft = []
+    rightToLeft[n-1] = BigInt(nums[n-1])
+    for(let i=n-2 ; i>=0 ; i--){
+        rightToLeft[i] = rightToLeft[i+1] * BigInt(nums[i])
     }
-    
-    const ans = new Array(n);
-    for (let i = 0; i < n; i++) {
-        ans[i] = pre[i] * suff[i];
+
+    let res = []
+    res[0] = rightToLeft[1]
+    res[n-1] = leftToRight[n-2]
+    for(let i=1 ; i<n-1 ; i++){
+        res[i] = leftToRight[i-1] * rightToLeft[i+1]
     }
-    return ans.map(e => "" + e)
+
+    return res.map(el => el.toString())
 }
 
-console.log(productSansNTer([1,2,3,4])) // ["24", "12", "8", "6"]
-console.log(productSansNTer([2,3,4,5])) // ["60", "40", "30", "24"]
-console.log(productSansNTer([1,1,1])) // ["1", "1", "1"]
-console.log(productSansNTer([9,0,-2])) // ["0", "-18", "0"])
-console.log(productSansNTer([0,-99,0])) // ["0", "0", "0"])
-console.log(productSansNTer([3,14,9,11,11])) // ["15246", "3267", "5082", "4158", "4158"])
-console.log(productSansNTer([-8,1,5,13,-1])) // ["-65", "520", "104", "40", "-520"])
-console.log(productSansNTer([4,7,3,6,2,14,7,5])) // ["123480", "70560", "164640", "82320", "246960", "35280", "70560", "98784"]
+// console.log(productSansNTer([1,2,3,4])) // ["24", "12", "8", "6"]
+// console.log(productSansNTer([2,3,4,5])) // ["60", "40", "30", "24"]
+// console.log(productSansNTer([1,1,1])) // ["1", "1", "1"]
+// console.log(productSansNTer([9,0,-2])) // ["0", "-18", "0"])
+// console.log(productSansNTer([0,-99,0])) // ["0", "0", "0"])
+// console.log(productSansNTer([3,14,9,11,11])) // ["15246", "3267", "5082", "4158", "4158"])
+// console.log(productSansNTer([-8,1,5,13,-1])) // ["-65", "520", "104", "40", "-520"])
+// console.log(productSansNTer([4,7,3,6,2,14,7,5])) // ["123480", "70560", "164640", "82320", "246960", "35280", "70560", "98784"]
+
+// We can have cleaner indices, logic remains the same
+function productExceptSelfQuater(nums){
+    const n = nums.length
+
+    let leftToRight = [1n]
+    for(let i=1 ; i<n ; i++){
+        leftToRight[i] = leftToRight[i-1] * BigInt(nums[i-1])
+    }
+
+    let rightToLeft = []
+    rightToLeft[n-1] = 1n
+    for(let i=n-2 ; i>=0 ; i--){
+        rightToLeft[i] = rightToLeft[i+1] * BigInt(nums[i+1])
+    }
+
+    let res = []
+    for(let i=0 ; i<n ; i++){
+        res[i] = leftToRight[i] * rightToLeft[i]
+    }
+
+    return res.map(el => el.toString())
+}
+
+//Official solution :
+//const BigNumber = require("bignumber.js")
+
+function productSansN(n) {
+    let r = new BigNumber(1),
+        z = null
+    for (let i = 0; i < n.length; i++) {
+        if (n[i] === 0 && z === null) {
+            z = [i]
+        } else if (n[i] === 0) {
+            return Array.from({ length: n.length }, (x) => "0")
+        } else {
+            r = r.times(new BigNumber(n[i]))
+        }
+    }
+    if (z) {
+        let a = Array.from({ length: n.length }, (x) => "0")
+        a[z[0]] = r.toString(10)
+        return a
+    }
+    return n.map((x) => r.dividedBy(new BigNumber(x)).toFixed(0))
+}
 
 //=================================
 //Curry training

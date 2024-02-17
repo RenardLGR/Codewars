@@ -380,6 +380,58 @@ function productExceptSelfQuater(nums){
     return res.map(el => el.toString())
 }
 
+function productExceptSelfQuinqies(nums){
+        // Cleaner version of three cases algo, early return if more than two zeroes are found
+
+        let prod = 1n
+        let zeroIdx = null
+        for(let i=0 ; i<nums.length ; i++){
+            if(nums[i] === 0 && zeroIdx === null){
+                zeroIdx = i
+            }else if(nums[i] === 0){
+                // case more than 2 zeroes
+                return Array.from({length : nums.length}, (_) => "0")
+            }else{
+                prod *= BigInt(nums[i])
+            }
+        }
+        if(zeroIdx !== null){
+            //case 1 zero
+            let res = Array.from({length : nums.length}, (_) => "0")
+            res[zeroIdx] = prod.toString()
+            return res
+        }
+        //case no zero
+        return nums.map(e => (prod / BigInt(e)).toString())
+}
+
+function productExceptSelfSexies(nums){
+    //Yet another syntax for the three cases algo
+    let zeroes = 0
+    let prod = 1n
+    for(let el of nums){
+        if(el === 0){
+            if(++zeroes === 2){
+                break
+            }
+        }else{
+            prod *= BigInt(el)
+        }
+    }
+
+    if(zeroes === 0){
+        return nums.map(e => (prod / BigInt(e)).toString())
+    }else{
+        if(zeroes === 1){
+            let res = Array.from({length : nums.length}, (_) => "0")
+            res[nums.indexOf(0)] = prod.toString()
+            return res
+        }else{
+            return Array.from({length : nums.length}, (_) => "0")
+        }
+    }
+}
+
 //Official solution :
 //const BigNumber = require("bignumber.js")
 
@@ -403,7 +455,7 @@ function productSansN(n) {
     return n.map((x) => r.dividedBy(new BigNumber(x)).toFixed(0))
 }
 
-//=================================
+//=======================================
 //Curry training
 function add(a){
     if(a === undefined){

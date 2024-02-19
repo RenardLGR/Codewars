@@ -563,3 +563,40 @@ function specialNumber(n){
     let specials = "012345"
     return n.toString().split("").every(e => specials.includes(e)) ? "Special!!" : "NOT!!"
 }
+
+//======================================
+// When provided with a String, capitalize all vowels
+
+// For example:
+// Input : "Hello World!"
+
+// Output : "HEllO WOrld!"
+
+// Note: Y is not a vowel in this kata.
+
+function capitalizeVowels(string){
+    return string.split('').map(e => 'aeiou'.includes(e) ? e.toUpperCase() : e).join('')
+}
+
+//===========================================
+// https://www.codewars.com/kata/59dd2c38f703c4ae5e000014
+// In this Kata, you will be given a string that has lowercase letters and numbers. Your task is to compare the number groupings and return the largest number. Numbers will not have leading zeros.
+
+// For example, solve("gh12cdy695m1") = 695, because this is the largest of all number groupings.
+
+// Good luck!
+
+// Please also try Simple remove duplicates
+// https://www.codewars.com/kata/5ba38ba180824a86850000f7
+
+function biggestNumber(string){
+    let nums = "0123456789"
+    let cleaned = string.split("").map(e => nums.includes(e) ? e : " ").join("")
+    return Math.max(...cleaned.split(" ").map(e => +e))
+}
+
+// console.log(biggestNumber('gh12cdy695m1')) // 695
+// console.log(biggestNumber('2ti9iei7qhr5')) //   9
+// console.log(biggestNumber('vih61w8oohj5')) //  61
+// console.log(biggestNumber('f7g42g16hcu5')) //  42
+// console.log(biggestNumber( 'lu1j8qbbb85')) //  85

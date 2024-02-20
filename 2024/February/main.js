@@ -600,3 +600,46 @@ function biggestNumber(string){
 // console.log(biggestNumber('vih61w8oohj5')) //  61
 // console.log(biggestNumber('f7g42g16hcu5')) //  42
 // console.log(biggestNumber( 'lu1j8qbbb85')) //  85
+
+function biggestNumberBis(string){
+    let nums = "0123456789"
+    let biggestSoFar = 0
+    let currentNumber = ""
+    for(let i=0 ; i<string.length ; i++){
+        if(!nums.includes(string[i])){
+            if(+currentNumber > biggestSoFar){
+                biggestSoFar = +currentNumber
+            }
+            currentNumber = ""
+        }else{
+            currentNumber += string[i]
+        }
+    }
+
+    if(+currentNumber > biggestSoFar){
+        biggestSoFar = +currentNumber
+    }
+
+    return biggestSoFar
+}
+
+// console.log(biggestNumberBis('gh12cdy695m1')) // 695
+// console.log(biggestNumberBis('2ti9iei7qhr5')) //   9
+// console.log(biggestNumberBis('vih61w8oohj5')) //  61
+// console.log(biggestNumberBis('f7g42g16hcu5')) //  42
+// console.log(biggestNumberBis( 'lu1j8qbbb85')) //  85
+
+function biggestNumberTer(string){
+    let regex = /\d+/g
+    let numbers = string.match(regex)
+    // let numbers = string.match(regex).map(Number)
+    //It is worth noting map() accepts a function as an argument, the Number function can be used as a constructor to convert values to numbers
+    //Math.max can accept String and works as intended, the conversion is actually not necessary here
+    return Math.max(...numbers)
+}
+
+// console.log(biggestNumberTer('gh12cdy695m1')) // 695
+// console.log(biggestNumberTer('2ti9iei7qhr5')) //   9
+// console.log(biggestNumberTer('vih61w8oohj5')) //  61
+// console.log(biggestNumberTer('f7g42g16hcu5')) //  42
+// console.log(biggestNumberTer( 'lu1j8qbbb85')) //  85

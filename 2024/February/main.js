@@ -685,3 +685,9 @@ console.log(noDupes([3, 4, 4, 3, 6, 3])) // [4, 6, 3]
 var removeVowels = function(str){
     return str.split("").filter(e => !"aeiou".includes(e)).join("")
 }
+
+function removeVowelsBis(str){
+    let regex = /[aeiou]/gi
+    //The /[aeiou]/gi pattern is a regular expression that matches any vowel (case-insensitive) globally (g) and regardless of case (i).
+    return str.replace(regex, "") // replace vowels by nothing
+}

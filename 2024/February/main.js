@@ -667,7 +667,7 @@ function noDupes(nums){
     }, [])
 }
 
-console.log(noDupes([3, 4, 4, 3, 6, 3])) // [4, 6, 3]
+// console.log(noDupes([3, 4, 4, 3, 6, 3])) // [4, 6, 3]
 
 //===============================================
 // https://www.codewars.com/kata/58640340b3a675d9a70000b9/train/javascript
@@ -690,4 +690,145 @@ function removeVowelsBis(str){
     let regex = /[aeiou]/gi
     //The /[aeiou]/gi pattern is a regular expression that matches any vowel (case-insensitive) globally (g) and regardless of case (i).
     return str.replace(regex, "") // replace vowels by nothing
+}
+
+//==================================
+// https://www.codewars.com/kata/57c1ab3949324c321600013f
+// Your task is to write a function toLeetSpeak that converts a regular english sentence to Leetspeak.
+
+// More about LeetSpeak You can read at wiki -> https://en.wikipedia.org/wiki/Leet
+
+// Consider only uppercase letters (no lowercase letters, no numbers) and spaces.
+
+// For example:
+
+// toLeetSpeak("LEET") returns "1337"
+// In this kata we use a simple LeetSpeak dialect. Use this alphabet:
+
+// {
+//   A : '@',
+//   B : '8',
+//   C : '(',
+//   D : 'D',
+//   E : '3',
+//   F : 'F',
+//   G : '6',
+//   H : '#',
+//   I : '!',
+//   J : 'J',
+//   K : 'K',
+//   L : '1',
+//   M : 'M',
+//   N : 'N',
+//   O : '0',
+//   P : 'P',
+//   Q : 'Q',
+//   R : 'R',
+//   S : '$',
+//   T : '7',
+//   U : 'U',
+//   V : 'V',
+//   W : 'W',
+//   X : 'X',
+//   Y : 'Y',
+//   Z : '2'
+// }
+
+function toLeetSpeak(str) {
+    const map = {
+        A: '@',
+        B: '8',
+        C: '(',
+        D: 'D',
+        E: '3',
+        F: 'F',
+        G: '6',
+        H: '#',
+        I: '!',
+        J: 'J',
+        K: 'K',
+        L: '1',
+        M: 'M',
+        N: 'N',
+        O: '0',
+        P: 'P',
+        Q: 'Q',
+        R: 'R',
+        S: '$',
+        T: '7',
+        U: 'U',
+        V: 'V',
+        W: 'W',
+        X: 'X',
+        Y: 'Y',
+        Z: '2'
+    }
+
+    return str.split("").map(e => map.hasOwnProperty(e) ? map[e] : e).join("")
+}
+
+function toLeetSpeakBis(str) {
+    const map = {
+        A: '@',
+        B: '8',
+        C: '(',
+        D: 'D',
+        E: '3',
+        F: 'F',
+        G: '6',
+        H: '#',
+        I: '!',
+        J: 'J',
+        K: 'K',
+        L: '1',
+        M: 'M',
+        N: 'N',
+        O: '0',
+        P: 'P',
+        Q: 'Q',
+        R: 'R',
+        S: '$',
+        T: '7',
+        U: 'U',
+        V: 'V',
+        W: 'W',
+        X: 'X',
+        Y: 'Y',
+        Z: '2'
+    }
+
+    return str.split("").map(e => e in map ? map[e] : e).join("")
+}
+
+function toLeetSpeakTer(str) {
+    const map = {
+        A: '@',
+        B: '8',
+        C: '(',
+        D: 'D',
+        E: '3',
+        F: 'F',
+        G: '6',
+        H: '#',
+        I: '!',
+        J: 'J',
+        K: 'K',
+        L: '1',
+        M: 'M',
+        N: 'N',
+        O: '0',
+        P: 'P',
+        Q: 'Q',
+        R: 'R',
+        S: '$',
+        T: '7',
+        U: 'U',
+        V: 'V',
+        W: 'W',
+        X: 'X',
+        Y: 'Y',
+        Z: '2'
+    }
+
+    return str.replace(/[A-Z]/g, e => map[e])
 }

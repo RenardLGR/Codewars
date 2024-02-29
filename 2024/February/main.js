@@ -832,3 +832,21 @@ function toLeetSpeakTer(str) {
 
     return str.replace(/[A-Z]/g, e => map[e])
 }
+
+//================================
+// https://www.codewars.com/kata/53d32bea2f2a21f666000256
+// Write a program that outputs the top n elements from a list.
+
+// Example:
+
+// largest(2, [7,6,5,4,3,2,1])
+// => [6,7]
+
+//The result should be in ascendant order
+function largest(n, array) {
+    return array.sort((a,b) => b-a).slice(0, n).sort((a,b) => a-b)
+}
+
+function largestBis(n, array) {
+    return array.sort((a,b) => a-b).slice(array.length - n)
+}

@@ -669,6 +669,21 @@ function noDupes(nums){
 
 // console.log(noDupes([3, 4, 4, 3, 6, 3])) // [4, 6, 3]
 
+function noDupesBis(nums){
+    let res = []
+    for(let i=nums.length-1 ; i>=0 ; i--){
+        if(!res.includes(nums[i])){
+            res.unshift(nums[i])
+        }
+    }
+
+    return res
+}
+
+function noDupesTer(nums){
+    return [...new Set(nums.reverse())].reverse()
+}
+
 //===============================================
 // https://www.codewars.com/kata/58640340b3a675d9a70000b9/train/javascript
 // This Kata is intended as a small challenge for my students
@@ -849,4 +864,8 @@ function largest(n, array) {
 
 function largestBis(n, array) {
     return array.sort((a,b) => a-b).slice(array.length - n)
+}
+
+function largestTer(n, array) {
+    return n === 0 ? [] : array.sort((a,b) => a-b).slice(-n)
 }

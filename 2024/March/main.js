@@ -8,6 +8,7 @@ const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 // Convert a linked list to a string
 // Related Kata
 // Although this Kata is not part of an official Series, you may also want to try out Parse a linked list from a string if you enjoyed this Kata.
+// https://www.codewars.com/kata/582c5382f000e535100001a7
 
 // Preloaded
 // Preloaded for you is a class, struct or derived data type Node ( depending on the language ) used to construct linked lists in this Kata:
@@ -49,3 +50,13 @@ function stringify(list) {
     res += "null"
     return res
 }
+
+function stringifyBis(list){
+    if(!list) return "null"
+    return list.data + " -> " + stringifyBis(list.next)
+}
+
+function stringifyter(list){
+    return list ? list.data + " -> " + stringifyBis(list.next) : "null"
+}
+

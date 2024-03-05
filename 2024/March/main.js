@@ -117,3 +117,23 @@ function parse(string){
 
     return head
 }
+
+function parseBis(string){
+    let values = string.split(" -> ")
+    values.pop() // removes "null"
+    return values.reduceRight((acc, cur) => {
+        acc = new Node(+cur, acc)
+        return acc
+    }, null)
+}
+
+function parseTer(string){
+    let values = string.match(/\d+/g) //returns null if no match
+    //Logical AND (&&) evaluates operands from left to right, returning immediately with the value of the first falsy operand it encounters; if all values are truthy, the value of the last operand is returned.
+    return values && values.reduceRight((acc, cur) => new Node(+cur, acc), null)
+}
+
+function parseQuater(string){
+    //parseInt returns the first number encountered
+    return string === "null" ? null : new Node(parseInt(string), parse(string.slice(string.indexOf("->") + 3)))
+}

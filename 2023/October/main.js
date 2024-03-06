@@ -850,17 +850,17 @@ function solvePuzzle6x6Bis(clues){
     const N = clues.length/4
     let grid = Array.from({length:N}, (_) => Array(N).fill(0))
     fillKnownElement()
-    solve(grid)
+    solve()
     return grid
 
-    function solve(grid){
+    function solve(){
         for(let row=0 ; row<N ; row++){
             for(let col=0 ; col<N ; col++){
                 if(grid[row][col] === 0){
                     for(let num = 1 ; num<=N ; num++){
                         if(isNumValid(row, col, num, grid)){
                             grid[row][col] = num
-                            if(solve(grid)){
+                            if(solve()){
                                 //call recursively again, if it returns true, the board is completed, end every recursion
                                 return true
                             }else{
@@ -875,7 +875,7 @@ function solvePuzzle6x6Bis(clues){
             }
         }
         //the grid is complete
-        return isGridCorrect(grid)
+        return isGridCorrect()
     }
 
     // A clue of N gives a [1, ..., N] row or col
@@ -934,7 +934,7 @@ function solvePuzzle6x6Bis(clues){
     }
 
     //To be valid, the number must be unique in his row, unique in his col and respect the clues
-    function isNumValid(row, col, num, grid){
+    function isNumValid(row, col, num){
         let topToBottomSkyscrapers = 0 // this keeps track of the number of visible skyscrapers (in a given direction) if the current skyscraper is put
         let highestTopToBottomSkyscraper = 0
 
@@ -965,7 +965,7 @@ function solvePuzzle6x6Bis(clues){
     }
 
     // Check if the grid respects the clues
-    function isGridCorrect(grid){
+    function isGridCorrect(){
         const cluesCpy = clues.slice()
         let cluesClean = [cluesCpy.splice(0,N), cluesCpy.splice(0,N), cluesCpy.splice(0,N), cluesCpy.splice(0,N)]
         for(let i=0 ; i<N ; i++){
@@ -1013,6 +1013,7 @@ function solvePuzzle6x6Bis(clues){
 
 console.log(solvePuzzle6x6Bis([ 3, 2, 2, 3, 2, 1, 1, 2, 3, 3, 2, 2, 5, 1, 2, 2, 4, 3, 3, 2, 1, 2, 2, 4])) // [[ 2, 1, 4, 3, 5, 6], [ 1, 6, 3, 2, 4, 5], [ 4, 3, 6, 5, 1, 2], [ 6, 5, 2, 1, 3, 4], [ 5, 4, 1, 6, 2, 3], [ 3, 2, 5, 4, 6, 1]] // It took 0.309 seconds...
 console.log(solvePuzzle6x6Bis([ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0])) // [[ 5, 2, 6, 1, 4, 3 ], [ 6, 4, 3, 2, 5, 1 ], [ 3, 1, 5, 4, 6, 2 ], [ 2, 6, 1, 5, 3, 4 ], [ 4, 3, 2, 6, 1, 5 ], [ 1, 5, 4, 3, 2, 6 ]] // It took 107.865 seconds...
+console.log(solvePuzzle6x6Bis([ 4, 0, 3, 3, 0, 0, 0, 4, 0, 0, 5, 3, 0, 0, 4, 0, 0, 0, 3, 0, 6, 0, 0, 3])) // [[ 3, 1, 4, 2, 6, 5 ],[ 4, 6, 1, 5, 3, 2 ],[ 5, 3, 2, 6, 1, 4 ],[ 1, 2, 3, 4, 5, 6 ],[ 6, 4, 5, 3, 2, 1 ],[ 2, 5, 6, 1, 4, 3 ]] // It took 1.978 seconds
 
 //===========================================
 // https://www.codewars.com/kata/59377c53e66267c8f6000027

@@ -450,6 +450,7 @@ function solvePuzzleGPT(clues) {
 
 
 // console.log(solvePuzzleGPT([ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0]))
+console.log("line 453", solvePuzzleGPT([ 4, 0, 3, 3, 0, 0, 0, 4, 0, 0, 5, 3, 0, 0, 4, 0, 0, 0, 3, 0, 6, 0, 0, 3]))
 
 
 // Consider a bit mask as a set of true or false flags.

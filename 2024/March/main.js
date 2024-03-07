@@ -137,3 +137,33 @@ function parseQuater(string){
     //parseInt returns the first number encountered
     return string === "null" ? null : new Node(parseInt(string), parse(string.slice(string.indexOf("->") + 3)))
 }
+
+//=============================
+// https://www.codewars.com/kata/56582133c932d8239900002e
+// Complete the function to find the count of the most frequent item of an array. You can assume that input is an array of integers. For an empty array return 0
+
+// Example
+// input array: [3, -1, -1, -1, 2, 3, -1, 3, -1, 2, 4, 9, 3]
+// ouptut: 5 
+// The most frequent number in the array is -1 and it occurs 5 times.
+
+function mostFrequentItemCount(collection) {
+    let frequency = collection.reduce((acc, cur) => {
+        acc[cur] = (acc[cur] || 0) + 1
+        return acc
+    }, {})
+    
+    let maxItem
+    let maxFreq = 0
+    for(let el in frequency){
+        // no freq are equal ?
+        if(frequency[el] > maxFreq){
+            maxItem = el
+            maxFreq = frequency[el]
+        }
+    }
+
+    return maxFreq
+}
+
+// console.log(mostFrequentItemCount([3, -1, -1, -1, 2, 3, -1, 3, -1, 2, 4, 9, 3])) // 5

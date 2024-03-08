@@ -1,30 +1,44 @@
+// Consider a bit mask as a set of true or false flags.
+// In the following function, we will keep track of possible height of skyscrapers represented by the mask.
+// Examples : 111111 means every heights are possible (this would be how our program starts).
+// 010011 means skyscrapers of height 5, 2 or 1 are possible.
+// 010000 means only there is a unique possibility of a skyscraper of height 5.
+// Note that masks are coded as integers but operations are on bits
+// As we set skyscrapers, we will modify (remove) this height from the row and col we were working on.
+
 class SkyscraperPuzzle{
     constructor(clues){
         this.clues = clues
         this.N = clues.length / 4
-        // this.MASK = (1 << this.N) - 1 // = 63 = 2**6 - 1
-        // this.grid = Array.from({length:this.N}, (_) => Array(this.N).fill(this.MASK))
-        this.grid = Array.from({length:this.N}, (_) => Array(this.N).fill(0))
-        this.fillKnownElement()
+        this.MASK = (1 << this.N) - 1 // = 63 = 2**6 - 1 = "111111"
+        this.grid = Array.from({length:this.N}, (_) => Array(this.N).fill(this.MASK))
+        this.res = Array.from({length:this.N}, (_) => Array(this.N).fill(0))
+        // this.grid = Array.from({length:this.N}, (_) => Array(this.N).fill(0))
+        // this.fillKnownElement()
     }
 
     solve(){
+        console.table(this.grid)
         for(let row=0 ; row<this.N ; row++){
             for(let col=0 ; col<this.N ; col++){
-                if(this.grid[row][col] === 0){
-                    for(let num = 1 ; num<=this.N ; num++){
-                        if(this.isNumValid(row, col, num)){
-                            this.grid[row][col] = num
+                if(this.isMultiplePossibleSkyscraper(this.grid[row][col])){
+                    const possibleMasks = this.getPossibleMasks(this.grid[row][col])
+                    for(let skyscraperMask of possibleMasks){
+                        if(this.isMaskValid(row, col, skyscraperMask)){
+                            let prevMask = this.grid[row][col]
+                            this.grid[row][col] = skyscraperMask
+                            this.removePossibleMask(row, col, skyscraperMask)
                             if(this.solve()){
                                 //call recursively again, if it returns true, the board is completed, end every recursion
                                 return true
                             }else{
                                 //backtrack
-                                this.grid[row][col] = 0
+                                this.grid[row][col] = prevMask
+                                this.addPossibleMask(row, col, skyscraperMask)
                             }
                         }
                     }
-                    //if no nums were possible, the grid is wrong, backtrack
+                    //if no mask were possible, the grid is wrong, backtrack
                     return false
                 }
             }
@@ -35,26 +49,29 @@ class SkyscraperPuzzle{
 
     // A clue of N gives a [1, ..., N] row or col
     // A clue of 1 gives a row or col starting with N
+    //TODO : Adding a number effectively removes this possibility to the rows & cols
     fillKnownElement(){
         this.clues.forEach((e, idx) => {
+            //clue of 1 -> 1 << 5 = "10000" = 32
             if(e === 1){
                 //top to bottom
                 if(idx < this.N){
-                    this.grid[0][idx] = this.N
+                    this.grid[0][idx] = 1 << (this.N - 1)
                 }
                 //right to left
                 if(idx >= this.N && idx < 2*this.N){
-                    this.grid[idx%this.N][this.N-1] = this.N
+                    this.grid[idx%this.N][this.N-1] = 1 << (this.N - 1)
                 }
                 //bottom to top
                 if(idx >= 2*this.N && idx < 3*this.N){
-                    this.grid[this.N-1][this.N-(idx%this.N)-1] = this.N
+                    this.grid[this.N-1][this.N-(idx%this.N)-1] = 1 << (this.N - 1)
                 }
                 //left to right
                 if(idx >= 3*this.N && idx < 4*this.N){
-                    this.grid[this.N-(idx%this.N)-1][0] = this.N
+                    this.grid[this.N-(idx%this.N)-1][0] = 1 << (this.N - 1)
                 }
             }
+            //clue of N
             if(e === this.N){
                 //top to bottom
                 if(idx < this.N){
@@ -88,39 +105,79 @@ class SkyscraperPuzzle{
         })
     }
 
-    //To be valid, the number must be unique in his row, unique in his col and respect the clues
-    isNumValid(row, col, num){
-        let topToBottomSkyscrapers = 0 // this keeps track of the number of visible skyscrapers (in a given direction) if the current skyscraper is put
-        let highestTopToBottomSkyscraper = 0
-
-        let leftToRightSkyscrapers = 0
-        let highestLeftToRightSkyscraper = 0
-        for(let i=0 ; i<this.N ; i++){
-            // Check row and col uniqueness
-            if(this.grid[row][i] === num) return false
-            if(this.grid[i][col] === num) return false
-
-            this.grid[row][col] = num //simulate as if we were putting the skyscraper here
-            // Updates visible skyscrapers
-            if(this.grid[i][col] > highestTopToBottomSkyscraper){
-                topToBottomSkyscrapers++
-                highestTopToBottomSkyscraper = this.grid[i][col]
-            }
-            if(this.grid[row][i] > highestLeftToRightSkyscraper){
-                leftToRightSkyscrapers++
-                highestLeftToRightSkyscraper = this.grid[row][i]
-            }
-            this.grid[row][col] = 0
+    // A skyscraper is set if there is only one 1 in his mask, multiple 1s means skyscrapers of different heights are possible
+    // This function returns true if multiple skyscrapers are possible
+    isMultiplePossibleSkyscraper(mask){
+        // Count the number of set bits in the binary representation
+        let count = 0
+        while (mask) {
+            // In each iteration, mask & 1 is used to check the value of the least significant bit (LSB) of the current mask.
+            // If the LSB is 1, mask & 1 evaluates to 1, and count is incremented by 1.
+            // If the LSB is 0, mask & 1 evaluates to 0, and count remains unchanged.
+            count += mask & 1
+            // After checking the LSB, the entire mask is right-shifted by 1 position.
+            mask >>= 1
         }
-        //The right part of the equality test is the corresponding clue, clue === 0 should be ignored
-        if(topToBottomSkyscrapers > this.clues.slice(0, this.N)[col] && this.clues.slice(0, this.N)[col] > 0) return false
-        if(leftToRightSkyscrapers > this.clues.slice(3*this.N)[this.N-row-1] && this.clues.slice(3*this.N)[this.N-row-1] > 0) return false
 
+        // If there is exactly one set bit, return false
+        return count !== 1
+    }
+
+    //To be valid, the mask must be unique in his row, unique in his col
+    //TODO and respect the clues
+    isMaskValid(row, col, skyscraperMask){
+        for(let i=0 ; i<this.N ; i++){
+            if(this.grid[row][i] === skyscraperMask) return false
+            if(this.grid[i][col] === skyscraperMask) return false
+        }
         return true
+    }
+
+    //Given a mask of not set skyscraper like "011000" = 24 of possibilities returns a list of possible mask to attempt, here ["010000"=16 , "001000"=8]
+    getPossibleMasks(mask){
+        let possibilities = []
+        for (let i = 0; i < this.N ; i++) {
+            // when i is 0, 1 << 0 results in binary 000001
+            // when i is 1, 1 << 0 results in binary 000010
+            // when i is 2, 1 << 0 results in binary 000100
+            // and so on
+            if (mask & (1 << i)) {  // check if the ith bit is set
+                possibilities.push(1 << i)
+            }
+        }
+        if(possibilities.length <= 1) console.log("Error : Attempt to get possible masks on a skyscraper seemingly set")
+        return possibilities
+    }
+
+    //After setting a skyscraper, the row and col must be modified in order to remove this possibility
+    removePossibleMask(row, col, skyscraperMask){
+        //Given a current bitmask of "011100" = 28 and trying to remove the skyscraperMask of "001000" = 8 with ~"001000" = "110111"
+        //The new bitmask should be "011100" & "110111" = "010100" = 20 and is given by the formula newBitmask = oldBitmask & ~skyscraperMask
+        //or simply put, cur &= ~skyscraperMask
+        for(let i=0 ; i<this.N ; i++){
+            //modify row
+            if(i !== col) this.grid[row][i] &= ~skyscraperMask
+            //modify col
+            if(i !== row) this.grid[i][col] &= ~skyscraperMask
+        }
+    }
+
+    //After backtracking a skyscraper, the row and col must be modified in order to re-add this possibility
+    addPossibleMask(row, col, skyscraperMask){
+        //Given a current bitmask of "010100" = 20 and trying to add the skyscraperMask of "001000" = 8
+        //The new bitmask should be "010100" | "001000" = "011100" = 28 and is given by the formula newBitmask = oldBitmask | skyscraperMask
+        //or simply put, cur |= skyscraperMask
+        for(let i=0 ; i<this.N ; i++){
+            //modify row
+            if(i !== col) this.grid[row][i] |= skyscraperMask
+            //modify col
+            if(i !== row) this.grid[i][col] |= skyscraperMask
+        }
     }
 
     // Check if the grid respects the clues
     isGridCorrect(){
+        const numsGrid = this.printNumsGrid()
         const cluesCpy = this.clues.slice()
         let cluesClean = [cluesCpy.splice(0,this.N), cluesCpy.splice(0,this.N), cluesCpy.splice(0,this.N), cluesCpy.splice(0,this.N)]
         for(let i=0 ; i<this.N ; i++){
@@ -140,20 +197,20 @@ class SkyscraperPuzzle{
             let leftToRightVisible = 0
     
             for(let j=0 ; j<this.N ; j++){
-                if(this.grid[j][i] > topToBottomMax){
-                    topToBottomMax = this.grid[j][i]
+                if(numsGrid[j][i] > topToBottomMax){
+                    topToBottomMax = numsGrid[j][i]
                     topToBottomVisible++
                 }
-                if(this.grid[i][this.N-j-1] > rightToLeftMax){
-                    rightToLeftMax = this.grid[i][this.N-j-1]
+                if(numsGrid[i][this.N-j-1] > rightToLeftMax){
+                    rightToLeftMax = numsGrid[i][this.N-j-1]
                     rightToLeftVisible++
                 }
-                if(this.grid[this.N-j-1][this.N-i-1] > bottomToTopMax){
-                    bottomToTopMax = this.grid[this.N-j-1][this.N-i-1]
+                if(numsGrid[this.N-j-1][this.N-i-1] > bottomToTopMax){
+                    bottomToTopMax = numsGrid[this.N-j-1][this.N-i-1]
                     bottomToTopVisible++
                 }
-                if(this.grid[this.N-i-1][j] > leftToRightMax){
-                    leftToRightMax = this.grid[this.N-i-1][j]
+                if(numsGrid[this.N-i-1][j] > leftToRightMax){
+                    leftToRightMax = numsGrid[this.N-i-1][j]
                     leftToRightVisible++
                 }
             }
@@ -164,11 +221,32 @@ class SkyscraperPuzzle{
         }
         return true
     }
+
+    // Given a mask, get the height of a skyscraper, this function suppose ths bit mask to be a UNIQUE skyscraper, otherwise it will just returned the highest i.e. "001111" = 15 and "001001" = 9 will both return a height of 4
+    getHeightFromMask(mask) {
+        let height = 0
+        while (mask) {
+            height++
+            // The entire mask is right-shifted by 1 position.
+            mask >>= 1
+        }
+        return height
+    }
+
+    printNumsGrid(){
+        let res = Array.from({length:this.N}, (_) => Array(this.N).fill(0))
+        for(let row=0 ; row<this.N ; row++){
+            for(let col=0 ; col<this.N ; col++){
+                res[row][col] = this.getHeightFromMask(this.grid[row][col])
+            }
+        }
+        return res
+    }
 }
 
-// let puzzle1 = new SkyscraperPuzzle([ 3, 2, 2, 3, 2, 1, 1, 2, 3, 3, 2, 2, 5, 1, 2, 2, 4, 3, 3, 2, 1, 2, 2, 4])
-// puzzle1.solve()
-// console.log("line 173" ,puzzle1.grid); //[[ 2, 1, 4, 3, 5, 6], [ 1, 6, 3, 2, 4, 5], [ 4, 3, 6, 5, 1, 2], [ 6, 5, 2, 1, 3, 4], [ 5, 4, 1, 6, 2, 3], [ 3, 2, 5, 4, 6, 1]] in 0.2s
+let puzzle1 = new SkyscraperPuzzle([ 3, 2, 2, 3, 2, 1, 1, 2, 3, 3, 2, 2, 5, 1, 2, 2, 4, 3, 3, 2, 1, 2, 2, 4])
+puzzle1.solve()
+console.log(puzzle1.printNumsGrid()); //[[ 2, 1, 4, 3, 5, 6], [ 1, 6, 3, 2, 4, 5], [ 4, 3, 6, 5, 1, 2], [ 6, 5, 2, 1, 3, 4], [ 5, 4, 1, 6, 2, 3], [ 3, 2, 5, 4, 6, 1]] in 0.2s
 
 // let puzzle2 = new SkyscraperPuzzle([ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0])
 // puzzle2.solve()
@@ -184,3 +262,28 @@ class SkyscraperPuzzle{
 
 // console.log(solvePuzzle6x6Bis([ 3, 2, 2, 3, 2, 1, 1, 2, 3, 3, 2, 2, 5, 1, 2, 2, 4, 3, 3, 2, 1, 2, 2, 4])) // [[ 2, 1, 4, 3, 5, 6], [ 1, 6, 3, 2, 4, 5], [ 4, 3, 6, 5, 1, 2], [ 6, 5, 2, 1, 3, 4], [ 5, 4, 1, 6, 2, 3], [ 3, 2, 5, 4, 6, 1]] // It took 0.309 seconds...
 // console.log(solvePuzzle6x6Bis([ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0])) // [[ 5, 2, 6, 1, 4, 3 ], [ 6, 4, 3, 2, 5, 1 ], [ 3, 1, 5, 4, 6, 2 ], [ 2, 6, 1, 5, 3, 4 ], [ 4, 3, 2, 6, 1, 5 ], [ 1, 5, 4, 3, 2, 6 ]] // It took 107.865 seconds...
+
+
+// Given a mask, get the height of a skyscraper, this function suppose ths bit mask to be a UNIQUE skyscraper, otherwise it will just returned the highest i.e. mask=001111=15 and mask=001001=9 will both return a height of 4
+function getHeightFromMask(mask) {
+    let height = 0;
+
+    // Find the position of the set bit
+    while (mask) {
+        height++;
+        // The entire mask is right-shifted by 1 position.
+        mask >>= 1;
+    }
+
+    return height;
+}
+
+// console.log(getHeightFromMask(63)) // 6
+// console.log(getHeightFromMask(15)) // 4
+// console.log(getHeightFromMask(14)) // 4
+// console.log(getHeightFromMask(9)) // 4
+
+let mask = 24 // "011000"
+let remove = 8
+
+// console.log(24 & ~(1 << remove))

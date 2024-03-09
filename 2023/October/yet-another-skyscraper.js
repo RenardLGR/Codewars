@@ -19,14 +19,17 @@ class SkyscraperPuzzle{
 
     solve(){
         console.table(this.grid)
+        console.table(this.res)
+        if(!this.isGridCorrectSoFar()) return false
         for(let row=0 ; row<this.N ; row++){
             for(let col=0 ; col<this.N ; col++){
-                if(this.isMultiplePossibleSkyscraper(this.grid[row][col])){
+                if(this.res[row][col] === 0){
                     const possibleMasks = this.getPossibleMasks(this.grid[row][col])
                     for(let skyscraperMask of possibleMasks){
                         if(this.isMaskValid(row, col, skyscraperMask)){
                             let prevMask = this.grid[row][col]
                             this.grid[row][col] = skyscraperMask
+                            this.res[row][col] = this.getHeightFromMask(skyscraperMask)
                             this.removePossibleMask(row, col, skyscraperMask)
                             if(this.solve()){
                                 //call recursively again, if it returns true, the board is completed, end every recursion
@@ -34,6 +37,7 @@ class SkyscraperPuzzle{
                             }else{
                                 //backtrack
                                 this.grid[row][col] = prevMask
+                                this.res[row][col] = 0
                                 this.addPossibleMask(row, col, skyscraperMask)
                             }
                         }
@@ -107,7 +111,9 @@ class SkyscraperPuzzle{
 
     // A skyscraper is set if there is only one 1 in his mask, multiple 1s means skyscrapers of different heights are possible
     // This function returns true if multiple skyscrapers are possible
+    //! Never called
     isMultiplePossibleSkyscraper(mask){
+        console.log("CALLED")
         // Count the number of set bits in the binary representation
         let count = 0
         while (mask) {
@@ -127,8 +133,8 @@ class SkyscraperPuzzle{
     //TODO and respect the clues
     isMaskValid(row, col, skyscraperMask){
         for(let i=0 ; i<this.N ; i++){
-            if(this.grid[row][i] === skyscraperMask) return false
-            if(this.grid[i][col] === skyscraperMask) return false
+            if(i !== col && this.grid[row][i] === skyscraperMask) return false
+            if(i !== row && this.grid[i][col] === skyscraperMask) return false
         }
         return true
     }
@@ -145,7 +151,7 @@ class SkyscraperPuzzle{
                 possibilities.push(1 << i)
             }
         }
-        if(possibilities.length <= 1) console.log("Error : Attempt to get possible masks on a skyscraper seemingly set")
+        // if(possibilities.length <= 1) console.log("Attention : Attempt to get possible masks on a skyscraper seemingly set")
         return possibilities
     }
 
@@ -175,9 +181,65 @@ class SkyscraperPuzzle{
         }
     }
 
-    // Check if the grid respects the clues
+    //The grid is not yet complete, check if the grid respects the clues
+    isGridCorrectSoFar(){
+        const cluesCpy = this.clues.slice()
+        let cluesClean = [cluesCpy.splice(0,this.N), cluesCpy.splice(0,this.N), cluesCpy.splice(0,this.N), cluesCpy.splice(0,this.N)]
+        //Check for completed lines or cols
+        for(let i=0 ; i<this.N ; i++){
+            let topToBottomClue = cluesClean[0][i]
+            let rightToLeftClue = cluesClean[1][i]
+            let bottomToTopClue = cluesClean[2][i]
+            let leftToRightClue = cluesClean[3][i]
+    
+            let topToBottomMax = 0
+            let rightToLeftMax = 0
+            let bottomToTopMax = 0
+            let leftToRightMax = 0
+    
+            let topToBottomVisible = 0
+            let rightToLeftVisible = 0
+            let bottomToTopVisible = 0
+            let leftToRightVisible = 0
+
+            let topToBottomComplete = true
+            let rightToLeftComplete = true
+            let bottomToTopComplete = true
+            let leftToRightComplete = true
+    
+            for(let j=0 ; j<this.N ; j++){
+                if(this.res[j][i] === 0) topToBottomComplete = false
+                if(this.res[j][i] > topToBottomMax){
+                    topToBottomMax = this.res[j][i]
+                    topToBottomVisible++
+                }
+                if(this.res[i][this.N-j-1] === 0) rightToLeftComplete = false
+                if(this.res[i][this.N-j-1] > rightToLeftMax){
+                    rightToLeftMax = this.res[i][this.N-j-1]
+                    rightToLeftVisible++
+                }
+                if(this.res[this.N-j-1][this.N-i-1] === 0) bottomToTopComplete = false
+                if(this.res[this.N-j-1][this.N-i-1] > bottomToTopMax){
+                    bottomToTopMax = this.res[this.N-j-1][this.N-i-1]
+                    bottomToTopVisible++
+                }
+                if(this.res[this.N-i-1][j] === 0) leftToRightComplete = false
+                if(this.res[this.N-i-1][j] > leftToRightMax){
+                    leftToRightMax = this.res[this.N-i-1][j]
+                    leftToRightVisible++
+                }
+            }
+            if(topToBottomClue>0 && topToBottomComplete && topToBottomVisible!==topToBottomClue) return false
+            if(rightToLeftClue>0 && rightToLeftComplete && rightToLeftVisible!==rightToLeftClue) return false
+            if(bottomToTopClue>0 && bottomToTopComplete && bottomToTopVisible!==bottomToTopClue) return false
+            if(leftToRightClue>0 && leftToRightComplete && leftToRightVisible!==leftToRightClue) return false
+        }
+        return true
+    }
+
+
+    // The grid is now complete, check if the grid respects the clues
     isGridCorrect(){
-        const numsGrid = this.printNumsGrid()
         const cluesCpy = this.clues.slice()
         let cluesClean = [cluesCpy.splice(0,this.N), cluesCpy.splice(0,this.N), cluesCpy.splice(0,this.N), cluesCpy.splice(0,this.N)]
         for(let i=0 ; i<this.N ; i++){
@@ -197,20 +259,20 @@ class SkyscraperPuzzle{
             let leftToRightVisible = 0
     
             for(let j=0 ; j<this.N ; j++){
-                if(numsGrid[j][i] > topToBottomMax){
-                    topToBottomMax = numsGrid[j][i]
+                if(this.res[j][i] > topToBottomMax){
+                    topToBottomMax = this.res[j][i]
                     topToBottomVisible++
                 }
-                if(numsGrid[i][this.N-j-1] > rightToLeftMax){
-                    rightToLeftMax = numsGrid[i][this.N-j-1]
+                if(this.res[i][this.N-j-1] > rightToLeftMax){
+                    rightToLeftMax = this.res[i][this.N-j-1]
                     rightToLeftVisible++
                 }
-                if(numsGrid[this.N-j-1][this.N-i-1] > bottomToTopMax){
-                    bottomToTopMax = numsGrid[this.N-j-1][this.N-i-1]
+                if(this.res[this.N-j-1][this.N-i-1] > bottomToTopMax){
+                    bottomToTopMax = this.res[this.N-j-1][this.N-i-1]
                     bottomToTopVisible++
                 }
-                if(numsGrid[this.N-i-1][j] > leftToRightMax){
-                    leftToRightMax = numsGrid[this.N-i-1][j]
+                if(this.res[this.N-i-1][j] > leftToRightMax){
+                    leftToRightMax = this.res[this.N-i-1][j]
                     leftToRightVisible++
                 }
             }
@@ -222,7 +284,7 @@ class SkyscraperPuzzle{
         return true
     }
 
-    // Given a mask, get the height of a skyscraper, this function suppose ths bit mask to be a UNIQUE skyscraper, otherwise it will just returned the highest i.e. "001111" = 15 and "001001" = 9 will both return a height of 4
+    // Given a mask, get the height of a skyscraper, this function supposes ths bit mask to be a UNIQUE skyscraper, otherwise it will just returned the highest i.e. "001111" = 15 and "001001" = 9 will both return a height of 4
     getHeightFromMask(mask) {
         let height = 0
         while (mask) {
@@ -245,8 +307,13 @@ class SkyscraperPuzzle{
 }
 
 let puzzle1 = new SkyscraperPuzzle([ 3, 2, 2, 3, 2, 1, 1, 2, 3, 3, 2, 2, 5, 1, 2, 2, 4, 3, 3, 2, 1, 2, 2, 4])
+// puzzle1.res = [[1,2,5,3,4,6], [2,1,3,4,0,0], [0,0,0,0,0,0], [0,0,0,0,0,0], [0,0,0,0,0,0], [0,0,0,0,0,0]]
+// puzzle1.grid = [[1,2,16,4,8,32], [2,1,4,8,48,16], [60,60,43,51,55,31], [60,60,43,51,55,31], [60,60,43,51,55,31], [60,60,43,51,55,31]]
+// puzzle1.res = [[ 2, 1, 4, 3, 5, 6], [ 1, 6, 3, 2, 4, 5], [ 4, 3, 6, 5, 1, 2], [ 6, 5, 2, 1, 3, 4], [ 5, 4, 1, 6, 2, 3], [ 3, 2, 5, 4, 6, 0]]
+// puzzle1.grid = [[1,2,16,4,8,32], [2,1,4,8,48,16], [60,60,43,51,55,31], [60,60,43,51,55,31], [60,60,43,51,55,31], [60,60,43,51,55,31]]
+// console.log(puzzle1.getPossibleMasks(puzzle1.grid[1][4]))
 puzzle1.solve()
-console.log(puzzle1.printNumsGrid()); //[[ 2, 1, 4, 3, 5, 6], [ 1, 6, 3, 2, 4, 5], [ 4, 3, 6, 5, 1, 2], [ 6, 5, 2, 1, 3, 4], [ 5, 4, 1, 6, 2, 3], [ 3, 2, 5, 4, 6, 1]] in 0.2s
+console.log(puzzle1.res); //[[ 2, 1, 4, 3, 5, 6], [ 1, 6, 3, 2, 4, 5], [ 4, 3, 6, 5, 1, 2], [ 6, 5, 2, 1, 3, 4], [ 5, 4, 1, 6, 2, 3], [ 3, 2, 5, 4, 6, 1]] in 0.2s
 
 // let puzzle2 = new SkyscraperPuzzle([ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0])
 // puzzle2.solve()

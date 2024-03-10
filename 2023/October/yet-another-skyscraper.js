@@ -13,7 +13,6 @@ class SkyscraperPuzzle{
         this.MASK = (1 << this.N) - 1 // = 63 = 2**6 - 1 = "111111"
         this.grid = Array.from({length:this.N}, (_) => Array(this.N).fill(this.MASK))
         this.res = Array.from({length:this.N}, (_) => Array(this.N).fill(0))
-        // this.grid = Array.from({length:this.N}, (_) => Array(this.N).fill(0))
         // this.fillKnownElement()
     }
 
@@ -27,8 +26,7 @@ class SkyscraperPuzzle{
                     const possibleMasks = this.getPossibleMasks(this.grid[row][col])
                     for(let skyscraperMask of possibleMasks){
                         if(this.isMaskValid(row, col, skyscraperMask)){
-                            let prevMask = this.grid[row][col]
-                            this.grid[row][col] = skyscraperMask
+                            // this.grid[row][col] = skyscraperMask
                             this.res[row][col] = this.getHeightFromMask(skyscraperMask)
                             this.removePossibleMask(row, col, skyscraperMask)
                             if(this.solve()){
@@ -36,7 +34,6 @@ class SkyscraperPuzzle{
                                 return true
                             }else{
                                 //backtrack
-                                this.grid[row][col] = prevMask
                                 this.res[row][col] = 0
                                 this.addPossibleMask(row, col, skyscraperMask)
                             }
@@ -162,9 +159,9 @@ class SkyscraperPuzzle{
         //or simply put, cur &= ~skyscraperMask
         for(let i=0 ; i<this.N ; i++){
             //modify row
-            if(i !== col) this.grid[row][i] &= ~skyscraperMask
+            this.grid[row][i] &= ~skyscraperMask
             //modify col
-            if(i !== row) this.grid[i][col] &= ~skyscraperMask
+            this.grid[i][col] &= ~skyscraperMask
         }
     }
 
@@ -175,9 +172,9 @@ class SkyscraperPuzzle{
         //or simply put, cur |= skyscraperMask
         for(let i=0 ; i<this.N ; i++){
             //modify row
-            if(i !== col) this.grid[row][i] |= skyscraperMask
+            this.grid[row][i] |= skyscraperMask
             //modify col
-            if(i !== row) this.grid[i][col] |= skyscraperMask
+            this.grid[i][col] |= skyscraperMask
         }
     }
 

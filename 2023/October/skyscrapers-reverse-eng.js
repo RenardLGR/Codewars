@@ -140,7 +140,7 @@ function dfs(idx) {
 function solvePuzzleGPT(clues) {
     my_clues = clues;
 
-    for (let i = 0; i < N * N; i++) possible[i] = MASK;
+    // for (let i = 0; i < N * N; i++) possible[i] = MASK;
 
     for (let i = 0; i < N; i++) {
         s[i] = i;
@@ -171,9 +171,13 @@ function solvePuzzleGPT(clues) {
         for (let j = s[i], k = 0; k < N; j += inc[i], k++) {
             let m = MASK;
             for (let l = N + k - my_clues[i] + 1; l < N; l++) m ^= 1 << l;
+            console.log(m)
             possible[j] &= m;
+            // console.log(possible[1])
         }
     }
+
+    console.log("possible :", possible)
 
     while (check_unique() > 0);
 
@@ -197,5 +201,22 @@ function solvePuzzleGPT(clues) {
 }
 
 
-// console.log(solvePuzzleGPT([ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0]))
-console.log("line 453", solvePuzzleGPT([ 4, 0, 3, 3, 0, 0, 0, 4, 0, 0, 5, 3, 0, 0, 4, 0, 0, 0, 3, 0, 6, 0, 0, 3]))
+console.log(solvePuzzleGPT([ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0])) // [[ 5, 2, 6, 1, 4, 3 ], [ 6, 4, 3, 2, 5, 1 ], [ 3, 1, 5, 4, 6, 2 ], [ 2, 6, 1, 5, 3, 4 ], [ 4, 3, 2, 6, 1, 5 ], [ 1, 5, 4, 3, 2, 6 ]]
+// console.log("line 453", solvePuzzleGPT([ 4, 0, 3, 3, 0, 0, 0, 4, 0, 0, 5, 3, 0, 0, 4, 0, 0, 0, 3, 0, 6, 0, 0, 3]))
+
+function solvePuzzleRE(clues){
+    const N = clues.length / 4 // length of a side
+    const SIDES = 4
+    const MASK = (1 << N) - 1 // = 63 = 2**6 - 1 = "111111"
+    let possible = new Array(N*N).fill(MASK) // will be update knowing the clues
+    let s = new Array(SIDES * N) // clues length
+    let e = new Array(SIDES * N) // clues length
+    let inc = new Array(SIDES * N) // clues length
+    let my_clues = [] //
+
+    my_clues = clues
+
+    for(let i=0 ; i<N ; i++){
+        
+    }
+}

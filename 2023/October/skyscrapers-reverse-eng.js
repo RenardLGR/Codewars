@@ -171,7 +171,6 @@ function solvePuzzleGPT(clues) {
         for (let j = s[i], k = 0; k < N; j += inc[i], k++) {
             let m = MASK;
             for (let l = N + k - my_clues[i] + 1; l < N; l++) m ^= 1 << l;
-            console.log(m)
             possible[j] &= m;
             // console.log(possible[1])
         }
@@ -220,3 +219,111 @@ function solvePuzzleRE(clues){
         
     }
 }
+
+function fillKnownElement(){
+    let clues = [ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0]
+    const N = clues.length / 4
+    const MASK = (1 << N) - 1 // = 63 = 2**6 - 1 = "111111"
+    let possible = Array.from({length:N}, (_) => Array(N).fill(MASK))
+    //Just like a clue of 6 ensures the skyscrapers are 1,2,3,4,5,6 in order
+    //A clue of 3 ensures the first skyscraper can neither be a 5 or a 6 (because no combination of skyscrapers could make 3 of them visible with the first one being this high) and, following the same logic the second skyscraper can not be a 6
+    //We can conclude, a clue has an incidence on the [0-clue-1] skyscrapers ; i.e. a clue of 3 has an incidence on skyscraper 0 and skyscraper 1
+    //In fact the first skyscraper's height ranges from 1 to N - clue + 1, the following N - clue + 1 + 1 and so on
+    //This idea can be repeated for each clue in each direction, drastically removing possibilities
+    
+    //for each clue, update its row or col associated
+    const cluesCpy = clues.slice()
+    let [topToBottomClue, rightToLeftClue, bottomToTopClue, leftToRightClue] = [cluesCpy.splice(0,N), cluesCpy.splice(0,N), cluesCpy.splice(0,N), cluesCpy.splice(0,N)]
+    //top to bottom
+    for(let col=0 ; col<N ; col++){
+        let clue = topToBottomClue[col]
+        if(clue === 0) continue
+        if(clue === 1){
+            possible[0][col] = 1 << N - 1
+            continue
+        }
+        if(clue === 6){
+            for(let row=0 ; row<N ; row++){
+                possible[row][col] = 1 << row
+            }
+            continue
+        }
+        for(let row=0 ; row<clue-1 ; row++){
+            let toKeep = MASK
+            for(let shift=N-1 ; shift>=N-clue+1+row ; shift--){
+                toKeep ^= 1 << shift // eliminating skyscrapers, the furthest we are from the side, the less we eliminate skyscraper (always eliminating from the highest)
+            }
+            possible[row][col] &= toKeep
+        }
+    }
+
+    //right to left
+    for(let row=0 ; row<N ; row++){
+        let clue = rightToLeftClue[row]
+        if(clue === 0) continue
+        if(clue === 1){
+            possible[row][N-1] = 1 << N - 1
+            continue
+        }
+        if(clue === 6){
+            for(let col=N-1 ; col>=0 ; col--){
+                possible[row][col] = 1 << N-1 - col
+            }
+        }
+        for(let col=N-1 ; col>=N-clue+1 ; col--){
+            let toKeep = MASK
+            for(let shift=N-1 ; shift>=2*N-clue-col ; shift--){
+                toKeep ^= 1 << shift
+            }
+            possible[row][col] &= toKeep
+        }
+    }
+
+    //bottom to top
+    for(let col=0 ; col<N ; col++){
+        let clue = bottomToTopClue[N-1-col]
+        if(clue === 0) continue
+        if(clue === 1){
+            possible[N-1][col] = 1 << N - 1
+            continue
+        }
+        if(clue === 6){
+            for(let row=N-1 ; row>=0 ; row--){
+                possible[row][col] = 1 << N-1 - row
+            }
+        }
+        for(let row=N-1 ; row>=N-clue+1 ; row--){
+            let toKeep = MASK
+            for(let shift=N-1 ; shift>=2*N-clue-row ; shift--){
+                toKeep ^= 1 << shift
+            }
+            possible[row][col] &= toKeep
+        }
+    }
+
+    //left to right
+    for(let row=0 ; row<N ; row++){
+        let clue = leftToRightClue[N-1-row]
+        if(clue === 0) continue
+        if(clue === 1){
+            possible[row][0] = 1 << N - 1
+            continue
+        }
+        if(clue === 6){
+            for(let col=0 ; col<N ; col++){
+                possible[row][col] = 1 << col
+            }
+        }
+        for(let col=0 ; col<clue-1 ; col++){
+            let toKeep = MASK
+            for(let shift=N-1 ; shift>=N-clue+1+col ; shift--){
+                toKeep ^= 1 << shift
+            }
+            possible[row][col] &= toKeep
+        }
+    }
+
+    console.table(possible)
+}
+
+fillKnownElement()

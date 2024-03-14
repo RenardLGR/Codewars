@@ -167,3 +167,16 @@ function mostFrequentItemCount(collection) {
 }
 
 // console.log(mostFrequentItemCount([3, -1, -1, -1, 2, 3, -1, 3, -1, 2, 4, 9, 3])) // 5
+
+function mostFrequentItemCountBis(collection) {
+    let frequency = {}
+    let res = 0
+    for(let item of collection){
+        frequency[item] = (frequency[item] || 0) + 1
+        res = frequency[item] > res ? frequency[item] : res
+    }
+
+    return res
+}
+
+// console.log(mostFrequentItemCountBis([3, -1, -1, -1, 2, 3, -1, 3, -1, 2, 4, 9, 3])) // 5

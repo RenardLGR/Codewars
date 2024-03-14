@@ -176,9 +176,10 @@ function solvePuzzleGPT(clues) {
         }
     }
 
-    console.log("possible :", possible)
+    console.log("possible BEFORE check uniques():", possible)
 
     while (check_unique() > 0);
+    console.log("possible AFTER check uniques():", possible)
 
     const idx_npos = [];
     for (let i = 0; i < N * N; i++) {
@@ -200,8 +201,8 @@ function solvePuzzleGPT(clues) {
 }
 
 
-console.log(solvePuzzleGPT([ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0])) // [[ 5, 2, 6, 1, 4, 3 ], [ 6, 4, 3, 2, 5, 1 ], [ 3, 1, 5, 4, 6, 2 ], [ 2, 6, 1, 5, 3, 4 ], [ 4, 3, 2, 6, 1, 5 ], [ 1, 5, 4, 3, 2, 6 ]]
-// console.log("line 453", solvePuzzleGPT([ 4, 0, 3, 3, 0, 0, 0, 4, 0, 0, 5, 3, 0, 0, 4, 0, 0, 0, 3, 0, 6, 0, 0, 3]))
+// console.log(solvePuzzleGPT([ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0])) // [[ 5, 2, 6, 1, 4, 3 ], [ 6, 4, 3, 2, 5, 1 ], [ 3, 1, 5, 4, 6, 2 ], [ 2, 6, 1, 5, 3, 4 ], [ 4, 3, 2, 6, 1, 5 ], [ 1, 5, 4, 3, 2, 6 ]]
+console.log("line 453", solvePuzzleGPT([ 3, 2, 2, 3, 2, 1, 1, 2, 3, 3, 2, 2, 5, 1, 2, 2, 4, 3, 3, 2, 1, 2, 2, 4])) //[[ 2, 1, 4, 3, 5, 6], [ 1, 6, 3, 2, 4, 5], [ 4, 3, 6, 5, 1, 2], [ 6, 5, 2, 1, 3, 4], [ 5, 4, 1, 6, 2, 3], [ 3, 2, 5, 4, 6, 1]]
 
 function solvePuzzleRE(clues){
     const N = clues.length / 4 // length of a side
@@ -220,6 +221,7 @@ function solvePuzzleRE(clues){
     }
 }
 
+//Given the clues, we can figure out some masks possibilities
 function fillKnownElement(){
     let clues = [ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0]
     const N = clues.length / 4
@@ -326,4 +328,4 @@ function fillKnownElement(){
     console.table(possible)
 }
 
-fillKnownElement()
+// fillKnownElement()

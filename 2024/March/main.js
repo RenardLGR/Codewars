@@ -201,4 +201,46 @@ var splitInParts = function(s, partLength){
     return s.split('').reduce((acc, cur, idx) => idx%partLength===0 ? acc + " " + cur : acc + cur ,"").trim()
 }
 
-console.log(splitInParts("supercalifragilisticexpialidocious", 3)) // "sup erc ali fra gil ist ice xpi ali doc iou s"
+// console.log(splitInParts("supercalifragilisticexpialidocious", 3)) // "sup erc ali fra gil ist ice xpi ali doc iou s"
+
+function splitInPartsBis(s, l){
+    let res = ""
+    for(let i=0 ; i<s.length ; i+=l){
+        res += " " + s.slice(i, i+l)
+    }
+    return res.slice(1)
+}
+
+//==========================
+// https://www.codewars.com/kata/5a262cfb8f27f217f700000b
+// In this Kata, you will be given two strings a and b and your task will be to return the characters that are not common in the two strings.
+
+// For example:
+
+// solve("xyab","xzca") = "ybzc" 
+// --The first string has 'yb' which is not in the second string. 
+// --The second string has 'zc' which is not in the first string. 
+// Notice also that you return the characters from the first string concatenated with those from the second string.
+
+// More examples in the tests cases.
+
+// Good luck!
+
+// Please also try Simple remove duplicates
+// https://www.codewars.com/kata/5ba38ba180824a86850000f7
+
+function getUniqueChars(str1, str2){
+    let grp1 = ""
+    for(let i=0 ; i<str1.length ; i++){
+        if(!str2.includes(str1[i])) grp1 += str1[i]
+    }
+    let grp2 = ""
+    for(let i=0 ; i<str2.length ; i++){
+        if(!str1.includes(str2[i])) grp2 += str2[i]
+    }
+    return grp1 + grp2
+}
+
+function getUniqueCharsBis(str1, str2){
+    return (str1+str2).split("").filter(c => !str1.includes(c) || !str2.includes(c)).join("")
+}

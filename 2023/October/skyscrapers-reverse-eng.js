@@ -36,6 +36,7 @@ function set_value(x, v) {
 
 function check_unique() {
     let n_decides = 0;
+    console.log(possible);
     for (let i = 0; i < SIDES / 2 * N; i++) {
         const possible_indices = new Map();
         for (let j = s[i], k = 0; k < N; j += inc[i], k++) {
@@ -172,14 +173,13 @@ function solvePuzzleGPT(clues) {
             let m = MASK;
             for (let l = N + k - my_clues[i] + 1; l < N; l++) m ^= 1 << l;
             possible[j] &= m;
-            // console.log(possible[1])
         }
     }
 
-    console.log("possible BEFORE check uniques():", possible)
+    // console.log("possible BEFORE check uniques():", possible)
 
     while (check_unique() > 0);
-    console.log("possible AFTER check uniques():", possible)
+    // console.log("possible AFTER check uniques():", possible)
 
     const idx_npos = [];
     for (let i = 0; i < N * N; i++) {

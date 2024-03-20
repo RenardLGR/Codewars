@@ -292,3 +292,24 @@ function digitize(n) {
 function getAverageAge(list) {
     return Math.round(list.reduce((acc, cur) => acc + cur.age, 0) / list.length)
 }
+
+//============================================
+// https://www.codewars.com/kata/57fb44a12b53146fe1000136
+// Each exclamation mark's weight is 2; each question mark's weight is 3. Putting two strings left and right on the balance - are they balanced?
+
+// If the left side is more heavy, return "Left"; if the right side is more heavy, return "Right"; if they are balanced, return "Balance".
+
+// Examples
+// "!!", "??"     -->  "Right"
+// "!??", "?!!"   -->  "Left"
+// "!?!!", "?!?"  -->  "Left"
+// "!!???!????", "??!!?!!!!!!!"  -->  "Balance"
+
+function balance(left,right){
+    let score1 = left.split("").reduce((acc, cur) => acc + (cur === "!" ? 2 : 3), 0)
+    let score2 = right.split("").reduce((acc, cur) => acc + (cur === "!" ? 2 : 3), 0)
+    console.log(score1, score2);
+    return score1 > score2 ? "Left" : score2 > score1 ? "Right" : "Balance"
+}
+
+// console.log(balance("!!???!????","??!!?!!!!!!!")) // "Balance"

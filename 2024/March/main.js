@@ -327,8 +327,14 @@ var filterLucky=arr=>{
     return arr.filter(n => (""+n).includes("7"))
 }
 
+function filterLuckyBis(arr){
+    return arr.filter(n => (""+n).indexOf("7") !== -1)
+}
 
-
+function filterLuckyTer(arr){
+    //regex.test(str) converts the argument to a str automatically
+    return arr.filter(n => /7/.test(n))
+}
 //========================================================
 // https://www.codewars.com/kata/57faa6ff9610ce181b000028
 // You have stumbled across the divine pleasure that is owning a dog and a garden. Now time to pick up all the cr@p! :D

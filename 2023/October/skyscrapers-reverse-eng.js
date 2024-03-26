@@ -36,7 +36,7 @@ function set_value(x, v) {
 
 function check_unique() {
     let n_decides = 0;
-    console.log(possible);
+    console.log("line 39:",possible);
     for (let i = 0; i < SIDES / 2 * N; i++) {
         const possible_indices = new Map();
         for (let j = s[i], k = 0; k < N; j += inc[i], k++) {
@@ -48,8 +48,15 @@ function check_unique() {
                     possible_indices.get(l).push(j);
                 }
             }
+            if(j===10){
+                // console.log("line 52 :", possible_indices)
+                // console.log("line 53 : i :", i)
+            }
         }
 
+        if(i === 4){
+            console.log("line 58:", possible_indices)
+        }
         for (const [val, indices] of possible_indices.entries()) {
             if (indices.length === 1) {
                 const idx = indices[0];
@@ -202,7 +209,8 @@ function solvePuzzleGPT(clues) {
 
 
 // console.log(solvePuzzleGPT([ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0])) // [[ 5, 2, 6, 1, 4, 3 ], [ 6, 4, 3, 2, 5, 1 ], [ 3, 1, 5, 4, 6, 2 ], [ 2, 6, 1, 5, 3, 4 ], [ 4, 3, 2, 6, 1, 5 ], [ 1, 5, 4, 3, 2, 6 ]]
-console.log("line 453", solvePuzzleGPT([ 3, 2, 2, 3, 2, 1, 1, 2, 3, 3, 2, 2, 5, 1, 2, 2, 4, 3, 3, 2, 1, 2, 2, 4])) //[[ 2, 1, 4, 3, 5, 6], [ 1, 6, 3, 2, 4, 5], [ 4, 3, 6, 5, 1, 2], [ 6, 5, 2, 1, 3, 4], [ 5, 4, 1, 6, 2, 3], [ 3, 2, 5, 4, 6, 1]]
+console.log("res :",solvePuzzleGPT([ 3, 2, 2, 3, 2, 1, 1, 2, 3, 3, 2, 2, 5, 1, 2, 2, 4, 3, 3, 2, 1, 2, 2, 4])) //[[ 2, 1, 4, 3, 5, 6], [ 1, 6, 3, 2, 4, 5], [ 4, 3, 6, 5, 1, 2], [ 6, 5, 2, 1, 3, 4], [ 5, 4, 1, 6, 2, 3], [ 3, 2, 5, 4, 6, 1]]
+
 
 function solvePuzzleRE(clues){
     const N = clues.length / 4 // length of a side
@@ -228,9 +236,10 @@ function fillKnownElement(){
     const MASK = (1 << N) - 1 // = 63 = 2**6 - 1 = "111111"
     let possible = Array.from({length:N}, (_) => Array(N).fill(MASK))
     //Just like a clue of 6 ensures the skyscrapers are 1,2,3,4,5,6 in order
-    //A clue of 3 ensures the first skyscraper can neither be a 5 or a 6 (because no combination of skyscrapers could make 3 of them visible with the first one being this high) and, following the same logic the second skyscraper can not be a 6
-    //We can conclude, a clue has an incidence on the [0-clue-1] skyscrapers ; i.e. a clue of 3 has an incidence on skyscraper 0 and skyscraper 1
-    //In fact the first skyscraper's height ranges from 1 to N - clue + 1, the following N - clue + 1 + 1 and so on
+    //Now let's consider i the index of the skyscraper from its clue side, so a skyscraper on a side is index 0
+    //A clue of 3 ensures the 0th skyscraper can neither be a 5 or a 6 (because no combination of skyscrapers could make 3 of them visible with the first one being this high) and, following the same logic the 1st skyscraper can not be a 6
+    //We can conclude, a clue has an incidence on the skyscrapers on indices [0 ; clue-1[ ; i.e. a clue of 3 has an incidence on the 0th skyscraper (removing possible height 6 and 5) and 1st skyscraper (removing possible height 6)
+    //In fact the 0th skyscraper's height ranges from 1 to N - clue + 1 : [1 ; N - clue + 1], the following N - clue + 1 + 1 : [1 ; N - clue + 1 + 1] and so on. Or in other terms : the ith skyscraper has a height ranging from [1 ; N - clue + 1 + i]
     //This idea can be repeated for each clue in each direction, drastically removing possibilities
     
     //for each clue, update its row or col associated
@@ -250,8 +259,10 @@ function fillKnownElement(){
             }
             continue
         }
+        //a clue has an incidence on the skyscrapers on indices [0 ; clue-1[
         for(let row=0 ; row<clue-1 ; row++){
             let toKeep = MASK
+            //the ith skyscraper has a height ranging from [1 ; N - clue + 1 + i]
             for(let shift=N-1 ; shift>=N-clue+1+row ; shift--){
                 toKeep ^= 1 << shift // eliminating skyscrapers, the furthest we are from the side, the less we eliminate skyscraper (always eliminating from the highest)
             }

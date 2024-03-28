@@ -434,3 +434,15 @@ function houseNumbersSum(inputArray) {
     }
     return res
 }
+
+function houseNumbersSumBis(inputArray) {
+    let res = 0
+    for(let num of inputArray){
+        if(num === 0) return res
+        res += num
+    }
+}
+
+function houseNumbersSumTer(arr){
+    return arr.slice(0, arr.indexOf(0)).reduce((acc, cur) => acc + cur, 0)
+}

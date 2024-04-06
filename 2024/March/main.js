@@ -480,4 +480,3 @@ function fireFight(s){
 function fireFightBis(s){
     return s.replace(/Fire/g, "~~")
 }
-

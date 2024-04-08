@@ -38,7 +38,7 @@ function check_unique() {
     let n_decides = 0;
     console.log("line 39:",possible);
     for (let i = 0; i < SIDES / 2 * N; i++) {
-        const possible_indices = new Map();
+        const possible_indices = new Map(); //{shift : [index, index, etc]}
         for (let j = s[i], k = 0; k < N; j += inc[i], k++) {
             for (let l = 0; l < N; l++) {
                 if ((1 << l) & possible[j]) {
@@ -54,13 +54,13 @@ function check_unique() {
             }
         }
 
-        if(i === 4){
-            console.log("line 58:", possible_indices)
-        }
+        // if(i === 4){
+        //     console.log("line 58:", possible_indices)
+        // }
         for (const [val, indices] of possible_indices.entries()) {
             if (indices.length === 1) {
                 const idx = indices[0];
-                if (possible[idx] !== (1 << val)) {
+                if (possible[idx] !== (1 << val)) { // check if the unique found had a bitmask of more than 1 height
                     n_decides++;
                     set_value(idx, val);
                 }
@@ -229,6 +229,24 @@ function solvePuzzleRE(clues){
     }
 }
 
+// Consider a bit mask as a set of true or false flags.
+// In the following functions, we will keep track of possible height of skyscrapers represented by the mask.
+// Examples : 111111 means every heights are possible (this would be how our program starts).
+// 010011 means skyscrapers of height 5, 2 or 1 are possible.
+// 010000 means only there is a unique possibility of a skyscraper of height 5.
+// Note that masks are coded as integers but operations are on bits, so :
+// 000001 = 1b -> height of 1
+// 000010 = 2b -> height of 2
+// 000100 = 4b -> height of 3
+// 001000 = 8b -> height of 4
+// 010000 = 16b -> height of 5
+// 100000 = 32b -> height of 6
+// As we set skyscrapers, we will modify (remove) this height from the row and col we were working on.
+
+
+
+
+
 //Given the clues, we can figure out some masks possibilities
 function fillKnownElement(){
     let clues = [ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0]
@@ -340,3 +358,46 @@ function fillKnownElement(){
 }
 
 // fillKnownElement()
+
+function checkUnique(){
+    //For a given height, check each element of a row or col if this height can fit.
+    //If a height can fit only in one position of the row or col, place this height and make the necessary adjustments to the row and col
+    //Example :
+    // [[__, __, __, __, 31, __],
+    // [__, __, __, __, 63, __],
+    // [__, __, __, __, 31, __],
+    // [__, __, __, __, 31, __],
+    // [__, __, __, __, 63, __],
+    // [15,  7, 31, 31, 63,  3]]
+    // In the last line, only one position can accept a height of 6 (32b=100000)
+    // Placing the 6 will have consequences on the col as following :
+    // [[__, __, __, __, 31, __],
+    // [__, __, __, __, 31, __],
+    // [__, __, __, __, 31, __],
+    // [__, __, __, __, 31, __],
+    // [__, __, __, __, 31, __],
+    // [15,  7, 31, 31, 32,  3]]
+
+    //This function will try for each row and col every height
+
+    //Try rows
+    for(let row=0 ; row<N ; row++){
+        let map = {} // {1b: [colIdx, colIdx], 2b: [colIdx], 4b:[colIdx, colIdx, colIdx], ...} // A mask with a unique coordinate means the height is set
+        for(let col=0 ; col<N ; col++){
+
+        }
+    }
+}
+
+function setValue(row, col, mask){
+    //This function sets a height, modifying the row and col as necessary
+    //Given a current bitmask of "011100" = 28b and trying to remove the skyscraperMask of "001000" = 8 with ~"001000" = "110111"
+    //The new bitmask should be "011100" & "110111" = "010100" = 20b and is given by the formula newBitmask = oldBitmask & ~skyscraperMask
+    //or simply put, cur &= ~skyscraperMask
+    for(let i=0 ; i<N ; i++){
+        //modify row
+        possible[row][i] &= ~mask
+        //modify col
+        possible[i][col] &= ~mask
+    }
+}

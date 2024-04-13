@@ -6,7 +6,7 @@ function solve(clues){
 
     fillKnownElement()
     //it gets wrong from here ->
-    console.log("backtrack:", backtrack())
+    console.log("backtrack:", backtrack(0, 0))
     console.table(possible)
     console.log("is valid?", isValid())
     return maskToNum(possible)
@@ -201,13 +201,11 @@ function solve(clues){
     }
 
     function backtrack(){
-        // if(!isValid()){
-        //     return false
-        // }
+        checkUnique()
 
         for(let row=0 ; row<N ; row++){
             for(let col=0 ; col<N ; col++){
-                // if(isMultiplePossibleSkyscraper(possible[row][col])){
+                if(isMultiplePossibleSkyscraper(possible[row][col])){
                     let possibleCopy = copy2DArray(possible)
                     for(let shift=0 ; shift<N ; shift++){
                         //Check if the height is available
@@ -220,11 +218,11 @@ function solve(clues){
                             else{
                                 possible = copy2DArray(possibleCopy)
                             }
-                            // possible = possibleCopy // this doesn't change anything
+                            // possible = copy2DArray(possibleCopy) // this doesn't change anything
                         }
                     }
                     return false
-                // }
+                }
             }
         }
         return isValid()
@@ -278,6 +276,28 @@ function solve(clues){
                 }
             }
             if(visible !== clues[c]) return false
+        }
+
+
+        //Finally check if every row & col have unique skyscrapers
+        //Check for rows
+        for(let row=0 ; row<N ; row++){
+            let seen = {}
+            for(let col=0 ; col<N ; col++){
+                if(isMultiplePossibleSkyscraper(possible[row][col])) break
+                if(seen[possible[row][col]]) return false
+                seen[possible[row][col]] = true
+            }
+        }
+
+        //Check for cols
+        for(let col=0 ; col<N ; col++){
+            let seen = {}
+            for(let row=0 ; row<N ; row++){
+                if(isMultiplePossibleSkyscraper(possible[row][col])) break
+                if(seen[possible[row][col]]) return false
+                seen[possible[row][col]] = true
+            }
         }
 
         return true
@@ -343,4 +363,5 @@ function solve(clues){
     }
 }
 
-console.log("res 345:",solve([ 3, 2, 2, 3, 2, 1, 1, 2, 3, 3, 2, 2, 5, 1, 2, 2, 4, 3, 3, 2, 1, 2, 2, 4])) //[[ 2, 1, 4, 3, 5, 6], [ 1, 6, 3, 2, 4, 5], [ 4, 3, 6, 5, 1, 2], [ 6, 5, 2, 1, 3, 4], [ 5, 4, 1, 6, 2, 3], [ 3, 2, 5, 4, 6, 1]]
+// console.log("res 366:",solve([ 3, 2, 2, 3, 2, 1, 1, 2, 3, 3, 2, 2, 5, 1, 2, 2, 4, 3, 3, 2, 1, 2, 2, 4])) //[[ 2, 1, 4, 3, 5, 6], [ 1, 6, 3, 2, 4, 5], [ 4, 3, 6, 5, 1, 2], [ 6, 5, 2, 1, 3, 4], [ 5, 4, 1, 6, 2, 3], [ 3, 2, 5, 4, 6, 1]] in 0.387s
+console.log("res 367:",solve([ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0])) //[[ 5, 2, 6, 1, 4, 3 ], [ 6, 4, 3, 2, 5, 1 ], [ 3, 1, 5, 4, 6, 2 ], [ 2, 6, 1, 5, 3, 4 ], [ 4, 3, 2, 6, 1, 5 ], [ 1, 5, 4, 3, 2, 6 ]] in 0.275s

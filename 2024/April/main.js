@@ -46,3 +46,7 @@ function nicknameGenerator(name){
 function longestWord(stringOfWords){
     return stringOfWords.split(" ").reduce((acc, cur) => cur.length >= acc.length ? cur : acc, "")
 }
+
+function longestWordBis(stringOfWords){
+    return stringOfWords.split(" ").sort((a, b) => a.length - b.length).pop()
+}

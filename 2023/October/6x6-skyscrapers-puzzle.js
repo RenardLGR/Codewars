@@ -29,7 +29,7 @@
 // We can conclude that, a clue has an incidence on the skyscrapers on indices [0 ; clue-1[ ; i.e. a clue of 3 has an incidence on the 0th skyscraper (removing possible height 6 and 5) and 1st skyscraper (removing possible height 6).
 // In fact the 0th skyscraper's height ranges from 1 to N - clue + 1 : [1 ; N - clue + 1], the following N - clue + 1 + 1 : [1 ; N - clue + 1 + 1] and so on. Or in other terms : the ith skyscraper has a height ranging from [1 ; N - clue + 1 + i]
 // This idea can be repeated for each clue in each direction, drastically removing possibilities.
-// Our first focus within the function fillKnownElement() will be that
+// Our first focus within the function fillKnownElement() will be that.
 // (See Note 1)
 
 // At the end of this step, our possible grid looks like this :
@@ -100,10 +100,10 @@ function solve(clues){
             if(clue === 0) continue
             //a clue has an incidence on the skyscrapers on indices [0 ; clue-1[
             for(let row=0 ; row<clue-1 ; row++){
-                let toKeep = MASK
+                let toKeep = MASK // 111111
                 //the ith skyscraper has a height ranging from [1 ; N - clue + 1 + i]
                 for(let shift=N-1 ; shift>=N-clue+1+row ; shift--){
-                    toKeep ^= 1 << shift // eliminating skyscrapers using the bitwise XOR, the furthest we are from the side, the less we eliminate skyscraper (always eliminating from the highest)
+                    toKeep ^= 1 << shift // eliminating skyscrapers using the bitwise XOR, the furthest we are from the side, the less we eliminate skyscraper (always eliminating from the highest i.e. left to right)
                 }
                 possible[row][col] &= toKeep
             }

@@ -52,8 +52,28 @@
 // The skyscraper [5;4] is for sure a 6 (now 100000 = 32b), removing the possibility to skyscraper [4;4] (now 011111 = 31b) and to skyscraper [4;1] (now 011111 = 31b)
 // Likewise skyscraper [3;0] is for sure a 6 (now 100000 = 32b), removing the possibility to skyscraper [3;2] (now 011111 = 31b) and to skyscraper [3;3] (now 011111 = 31b)
 // And skyscraper [1;5] is for sure a 5 (now 010000 = 16b), removing the possibility to skyscraper [1;1] (now 101111 = 47b), to skyscraper [1;2] (now 101111 = 47b), to skyscraper [1;3] (now 001111 = 15b) and to skyscraper [1;4] (now 001111 = 15b)
-// These actions will be performed with the function checkUnique() that will return a number representing the number of skyscraper the function set. As a newly set skyscraper can cascade down to another set skyscraper, we will repeat checkUnique() as long as at least one skyscraper was set.
-// To set a skyscraper, we will use the function setValue(row, col, height), height being a mask with only one bit set. This function not only sets the skyscraper in place but also performs the necessary adjustments in the row and col removing the skyscraper from the possibilities.
+// These actions will be performed with the function checkUnique() that will return a number representing the number of skyscraper the function set. As a newly set skyscraper can induce another set skyscraper, we will repeat checkUnique() as long as at least one skyscraper was set.
+
+// checkUnique() works by creating a map for each row and col, mapping a height to its possible indices. As a particularity, the height will be represented as shifts, so we are in fact mapping shifts to its possible indices.
+// As an example, given the 0th line [ 7, 15, 31, 15, 31, 63 ], the map possibleIndices is : 
+// possibleIndices = {
+//   '0': [ 0, 1, 2, 3, 4, 5 ],
+//   '1': [ 0, 1, 2, 3, 4, 5 ],
+//   '2': [ 0, 1, 2, 3, 4, 5 ],
+//   '3': [ 1, 2, 3, 4, 5 ],
+//   '4': [ 2, 4, 5 ],
+//   '5': [ 5 ]
+// }
+// Meaning a shift equal to 0 (a height of 1 with a mask of 1b = 000001) is possible on indices 0, 1, 2, 3, 4 and 5
+// ...
+// A shift equal to 3 (a height of 4 with a mask of 8b = 001000) is possible on indices 1, 2, 3, 4 and 5
+// A shift equal to 4 (a height of 5 with a mask of 16b = 010000) is possible on indices 2, 4 and 5
+// A shift equal to 5 (a height of 6 with a mask of 32b = 100000) is possible on index 5
+
+// Then, by looping in the map, we notice the shift equal to 5 is possible only on 1 index. We check if the mask at this position had multiple heights, if so we indeed found a new height to set (we will reiterate checkUnique() at the end), if not it was an already set skyscraper. setValue(row, col, height) is called when setting a height.
+
+
+// The function setValue(row, col, height), height being a mask with only one bit set. This function not only sets the skyscraper in place but also performs the necessary adjustments in the row and col removing the skyscraper from the possibilities.
 
 // At the end of this step, our possible grid looks like this :
 // ┌─────────┬────┬────┬────┬────┬────┬────┬─────────┐
@@ -70,8 +90,55 @@
 // └─────────┴────┴────┴────┴────┴────┴────┴─────────┘
 
 // ==== STEP 2 Backtracking : Try, check, backtrack, repeat ====
+// Before trying a height, make a deep copy of the grid.
+// Check if the grid is valid.
+// When backtracking make a deep copy of the deep copy to avoid addresses issues.
+
+// A grid is valid when // TODO
+
+// ==== CODE CHRONOLOGY =====
+// solve{
+//      initialize[
+//          N : 6, length of a side
+//          MASK : 63b = 111111
+//          possible : Grid NxN filled with MASK, it will represent every possible heights of skyscrapers as a mask in a given position
+//      ]
+//      fillKnownElement{
+//          checkUnique{
+//              setValue{}
+//          }
+//      }
+//      backtrack{
+//          checkUnique{
+//              setValue{}
+//          }
+//          attempt[
+//              setValue{}
+//              isValid{} && backtrack{}
+//          ]
+//          backtrack[]
+//      }
+// }
 
 // ====== CODE EXPLANATION ======
+// fillKnownElement => void, as a side effect changes possible array
+// We start by the default mask with every height possible : 63b = 111111 to which we remove highest skyscrapers according to the clue :
+// let toKeep = MASK // 63b = 111111
+// for(let shift=N-1 ; shift>=MAX_HEIGHT_TO_REMOVE ; shift--){
+//     toKeep ^= 1 << shift
+// }
+// 1st iteration :
+//      toKeep = 63b = 111111
+//      1 << shift = 1 << N-1 = 32b = 100000
+//      toKeep ^= 1 << shift = 011111
+// 2nd iteration :
+//      toKeep = 31b = 011111
+//      1 << shift = 1 << N-2 = 16b = 010000
+//      toKeep ^= 1 << shift = 15b = 001111
+// And so on...
+
+// checkUnique => void, as a side effect changes possible array
+
 
 // ====== NOTES ======
 // 1) Cases where the clue is 1 or 6 indeed give information about the skyscrapers, and placing those skyscrapers accordingly is a good idea. It is not necessary as the following step checkUnique() would achieve roughly the same result. It is an interesting problem to tackle on for further improvement to the overall program.
@@ -81,6 +148,7 @@ function solve(clues){
     const N = clues.length / 4
     const MASK = (1 << N) - 1 // = 63 = 2**6 - 1 = "111111"
     let possible = Array.from({length:N}, (_) => Array(N).fill(MASK))
+    let flag = true
 
     fillKnownElement()
     console.log("backtrack:", backtrack())
@@ -155,11 +223,11 @@ function solve(clues){
     function checkUnique(){
         //This function will try for each row and col every height
     
-        let skyscraperSet = 0
+        let skyscraperSet = 0 //increases if we actually set a new skyscraper, not previously found ones.
 
         //Try rows
         for(let row=0 ; row<N ; row++){
-            let possibleIndices = {} // {0: [colIdx, colIdx], 1: [colIdx], 2:[colIdx, colIdx, colIdx], ...} //leftShift : Array of indices // A mask with a unique coordinate means the height is set (Note 2)
+            let possibleIndices = {} // {0: [colIdx, colIdx], 1: [colIdx], 2:[colIdx, colIdx, colIdx], ...} //numLeftShift : Array of indices // A shift/mask with a unique coordinate means the height is set (Note 2)
             for(let col=0 ; col<N ; col++){
                 for(let shift=0 ; shift<N ; shift++){
                     if((1 << shift) & possible[row][col]){
@@ -184,9 +252,10 @@ function solve(clues){
         
         //Try cols
         for(let col=0 ; col<N ; col++){
-            let possibleIndices = {} // {0: [rowIdx, rowIdx], 1: [rowIdx], 2:[rowIdx, rowIdx, rowIdx], ...} //leftShift : Array of indices // A mask with a unique coordinate means the height is set (Note 2)
+            let possibleIndices = {} // {0: [rowIdx, rowIdx], 1: [rowIdx], 2:[rowIdx, rowIdx, rowIdx], ...} //numLeftShift : Array of indices // A shift/mask with a unique coordinate means the height is set (Note 2)
             for(let row=0 ; row<N ; row++){
                 for(let shift=0 ; shift<N ; shift++){
+                    if(col === 5 && row === 0 && flag) console.log((1 << shift) & possible[row][col]);
                     if((1 << shift) & possible[row][col]){
                         if(!possibleIndices[shift]) possibleIndices[shift] = []
                         possibleIndices[shift].push(row)

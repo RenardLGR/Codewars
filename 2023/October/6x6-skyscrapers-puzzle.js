@@ -55,6 +55,7 @@
 // These actions will be performed with the function checkUnique() that will return a number representing the number of skyscraper the function set. As a newly set skyscraper can induce another set skyscraper, we will repeat checkUnique() as long as at least one skyscraper was set.
 
 // checkUnique() works by creating a map for each row and col, mapping a height to its possible indices. As a particularity, the height will be represented as shifts, so we are in fact mapping shifts to its possible indices.
+// (See Note 2)
 // As an example, given the 0th line [ 7, 15, 31, 15, 31, 63 ], the map possibleIndices is : 
 // possibleIndices = {
 //   '0': [ 0, 1, 2, 3, 4, 5 ],
@@ -91,7 +92,8 @@
 
 // ==== STEP 2 Backtracking : Try, check, backtrack, repeat ====
 // Before trying a height, make a deep copy of the grid.
-// Check if the grid is valid.
+// Check if the grid is valid, if so continue to explore this branch.
+// If it is not valid, backtrack.
 // When backtracking make a deep copy of the deep copy to avoid addresses issues.
 
 // A grid is valid when // TODO
@@ -118,6 +120,7 @@
 //          ]
 //          backtrack[]
 //      }
+//      return result as a grid of numbers
 // }
 
 // ====== CODE EXPLANATION ======
@@ -142,7 +145,7 @@
 
 // ====== NOTES ======
 // 1) Cases where the clue is 1 or 6 indeed give information about the skyscrapers, and placing those skyscrapers accordingly is a good idea. It is not necessary as the following step checkUnique() would achieve roughly the same result. It is an interesting problem to tackle on for further improvement to the overall program.
-// 2) Here, one could ask himself why using left shift as the key of our map and not the bitmask itself. Remember JS uses String types as keys and further steps would require to parseInt those strings to fix a height while 1 << "5" is valid. Both methods could have been implemented.
+// 2) Here, one could ask himself why using left shift as the key of our map and not the bitmask itself. Remember JS uses String types as keys and further steps would be required to parseInt those strings to make it all work. Whereas 1 << "5" is valid. Both methods could have been implemented.
 
 function solve(clues){
     const N = clues.length / 4
@@ -359,7 +362,7 @@ function solve(clues){
         }
 
 
-        //Finally check if every row & col have unique skyscrapers
+        //Finally check if every row & col have unique skyscraper heights
         //Check for rows
         for(let row=0 ; row<N ; row++){
             let seen = {}

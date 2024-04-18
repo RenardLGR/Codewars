@@ -66,3 +66,7 @@ function longestWordBis(stringOfWords){
 function twoArePositive(a, b, c) {
     return [...arguments].filter(e => e > 0).length === 2
 }
+
+function twoArePositiveBis(a, b, c) {
+    return (a > 0) + (b > 0) + (c > 0) === 2
+}

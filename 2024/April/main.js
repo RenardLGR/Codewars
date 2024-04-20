@@ -87,3 +87,36 @@ function betweenExtremes(numbers) {
     let sorted = numbers.sort((a,b) => b-a)
     return sorted[0] - sorted[sorted.length-1]
 }
+
+function betweenExtremesBis(numbers) {
+    return Math.max(...numbers) - Math.min(...numbers)
+}
+
+function betweenExtremesTer(numbers) {
+    let min = numbers[0]
+    let max = numbers[0]
+
+    for(let i=0 ; i<numbers.length ; i++){
+        min = (numbers[i] < min) ? numbers[i] : min
+        max = (numbers[i] > max) ? numbers[i] : max
+    }
+
+    return max - min
+}
+
+function betweenExtremesQuater(numbers) {
+    let min = numbers[0]
+    let max = numbers[0]
+
+    // More generally, the operator returns the value of the first falsy operand encountered when evaluating from left to right, or the value of the last operand if they are all truthy.
+    for(let i=0 ; i<numbers.length ; i++){
+        numbers[i] < min && (min = numbers[i])
+        numbers[i] > max && (max = numbers[i])
+    }
+
+    return max - min
+}
+
+
+//Anonymous function called on the sorted array
+const betweenExtremesQuinquies = n => (arr => arr[0] - arr[arr.length-1])(n.sort((a, b) => b - a))

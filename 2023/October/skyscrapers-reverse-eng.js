@@ -1,3 +1,5 @@
+// From : https://github.com/lostleaf/codewars/blob/master/4-by-4-skyscrapers.cpp
+
 const N = 6;
 const SIDES = 4;
 const MASK = (1 << N) - 1;

@@ -1,4 +1,5 @@
-// https://www.codewars.com/kata/5679d5a3f2272011d700000d/train/javascript
+//https://www.codewars.com/kata/5917a2205ffc30ec3a0000a8/train/javascript
+// See 6x6 for more in depth details.
 
 // ====== THOUGHTS ======
 
@@ -30,7 +31,6 @@
 // In fact the 0th skyscraper's height ranges from 1 to N - clue + 1 : [1 ; N - clue + 1], the following N - clue + 1 + 1 : [1 ; N - clue + 1 + 1] and so on. Or in other terms : the ith skyscraper has a height ranging from [1 ; N - clue + 1 + i]
 // This idea can be repeated for each clue in each direction, drastically removing possibilities.
 // Our first focus within the function fillKnownElement() will do that.
-// (See Note 1)
 
 // At the end of this step, our possible grid looks like this :
 // ┌─────────┬────┬────┬────┬────┬────┬────┬─────────┐
@@ -55,7 +55,6 @@
 // These actions will be performed with the function checkUnique() that will return a number representing the number of skyscraper the function has set. As a newly set skyscraper can induce another set skyscraper, hence we will repeat checkUnique() as long as at least one skyscraper was set.
 
 // checkUnique() works by creating a map for each row and col, mapping a height to its possible indices. As a particularity, the height will be represented as shifts, so we are in fact mapping shifts to its possible indices.
-// (See Note 2)
 // As an example, given the 0th line [ 7, 15, 31, 15, 31, 63 ], the map possibleIndices is : 
 // possibleIndices = {
 //   '0': [ 0, 1, 2, 3, 4, 5 ],
@@ -99,107 +98,9 @@
 // A grid is considered valid when these two conditions are met : uniqueness of heights in a row or col and a complete row or col respects its associated non zero clue.
 // In other words, a grid is considered not valid when either a row or col contains more than one skyscraper of the same height or the visible skyscrapers of a completed row or col don't match its associated non zero clue. 
 
-// ==== CODE CHRONOLOGY =====
-// solve{
-//      initialize[
-//          N : 6, length of a side
-//          MASK : 63b = 111111
-//          possible : Grid NxN filled with MASK, it will represent every possible heights of skyscrapers as a mask in a given position
-//      ]
-//      fillKnownElement{
-//          checkUnique{
-//              setValue{}
-//          }
-//      }
-//      backtrack{
-//          checkUnique{
-//              setValue{}
-//          }
-//          attempt[
-//              setValue{}
-//              isValid{} && backtrack{}
-//          ]
-//          backtrack[]
-//      }
-//      return result as a grid of numbers
-// }
-
-// ====== CODE EXPLANATION ======
-// fillKnownElement() => void, as a side effect changes possible array
-// We start by the default mask with every height possible : 63b = 111111 to which we remove highest skyscrapers according to the clue :
-// let toKeep = MASK // 63b = 111111
-// for(let shift=N-1 ; shift>=MAX_HEIGHT_TO_REMOVE ; shift--){
-//     toKeep ^= 1 << shift
-// }
-// 1st iteration :
-//      toKeep = 63b = 111111
-//      1 << shift = 1 << N-1 = 32b = 100000
-//      toKeep ^= 1 << shift = 011111
-// 2nd iteration :
-//      toKeep = 31b = 011111
-//      1 << shift = 1 << N-2 = 16b = 010000
-//      toKeep ^= 1 << shift = 15b = 001111
-// And so on...
-
-// checkUnique() => void, as a side effect changes possible array
-// Try every heights (or shifts), if the height is a possibility, update the map mapping a height to its possible indices
-// for(let shift=0 ; shift<N ; shift++){
-//     if((1 << shift) & possible[row][col]){
-//         if(!possibleIndices[shift]) possibleIndices[shift] = []
-//         possibleIndices[shift].push(col)
-//     }
-// }
-
-// isMultiplePossibleSkyscraper(mask) => Boolean
-// Count the number of set bits in the binary representation
-// let count = 0
-// while (mask) {
-    // In each iteration, mask & 1 is used to check the value of the least significant bit (LSB) (i.e. rightmost) of the current mask.
-    // If the LSB is 1, mask & 1 evaluates to 1, and count is incremented by 1.
-    // If the LSB is 0, mask & 1 evaluates to 0, and count remains unchanged.
-    // count += mask & 1
-    // After checking the LSB, the entire mask is right-shifted by 1 position.
-    // mask >>= 1
-// }
-// If there is exactly one set bit, return false
-// return count !== 1
-
-// Example with the mask 42b = 101010
-// 1st iteration :
-//      101010 & 1 is false
-//      mask = 21b = 10101
-// 2nd iteration :
-//      10101 & 1 is true, count is increased by 1
-//      mask = 10b = 1010
-// 3rd iteration :
-//      1010 & 1 is false
-//      mask = 5b = 101
-// 4th iteration :
-//      101 & 1 is true, count is increased by 1
-//      mask = 2b = 10
-// 5th iteration :
-//      10 & 1 is false
-//      mask = 1b = 1
-// 6th iteration :
-//      1 & 1 is true, count is increased by 1
-//      mask = 0b = 0
-// count is equal to 3, different than 1, there are multiple skyscrapers, return false
-
-// setValue(row, col, mask) => void, as a side effect changes possible array
-// This function sets a height, removing this possibility in the row and col as necessary
-// Example : Given a current bitmask of 28b = 011100 and trying to remove the skyscraperMask (or height) of 8b = 001000
-// We have ~001000 = 110111
-// The new bitmask should be 011100 & 110111 = 010100 = 20b and is given by the formula newBitmask = oldBitmask & ~skyscraperMask
-// or simply put, new &= ~skyscraperMask for every element of the row and col but the element we are setting which is simply possible[row][col] = mask
-
-
-// ====== NOTES ======
-// 1) Cases where the clue is 1 or 6 indeed give information about the skyscrapers, and placing those skyscrapers accordingly is a good idea. It is not necessary as the following step checkUnique() would achieve roughly the same result. It is an interesting problem to tackle on for further improvement to the overall program.
-// 2) Here, one could ask himself why using left shift as the key of our map and not the bitmask itself. Remember JS uses String types as keys and further steps would be required to parseInt those strings to make it all work. Whereas 1 << "5" is valid. Both methods could have been implemented.
-
-function solve(clues){
+function solvePuzzle(clues){
     const N = clues.length / 4
-    const MASK = (1 << N) - 1 // = 63 = 2**6 - 1 = "111111"
+    const MASK = (1 << N) - 1 // = 127 = 2**7 - 1 = "1111111"
     let possible = Array.from({length:N}, (_) => Array(N).fill(MASK))
 
     fillKnownElement()
@@ -462,5 +363,32 @@ function solve(clues){
     }
 }
 
-console.log("res 472:",solve([ 3, 2, 2, 3, 2, 1, 1, 2, 3, 3, 2, 2, 5, 1, 2, 2, 4, 3, 3, 2, 1, 2, 2, 4])) //[[ 2, 1, 4, 3, 5, 6], [ 1, 6, 3, 2, 4, 5], [ 4, 3, 6, 5, 1, 2], [ 6, 5, 2, 1, 3, 4], [ 5, 4, 1, 6, 2, 3], [ 3, 2, 5, 4, 6, 1]] in 0.161s
-// console.log("res 473:",solve([ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0])) //[[ 5, 2, 6, 1, 4, 3 ], [ 6, 4, 3, 2, 5, 1 ], [ 3, 1, 5, 4, 6, 2 ], [ 2, 6, 1, 5, 3, 4 ], [ 4, 3, 2, 6, 1, 5 ], [ 1, 5, 4, 3, 2, 6 ]] in 0.267s
+// console.table(solvePuzzle([0,2,3,0,2,0,0, 5,0,4,5,0,4,0, 0,4,2,0,0,0,6, 5,2,2,2,2,4,1]))
+// [ [7,6,2,1,5,4,3],
+// [1,3,5,4,2,7,6],
+// [6,5,4,7,3,2,1],
+// [5,1,7,6,4,3,2],
+// [4,2,1,3,7,6,5],
+// [3,7,6,2,1,5,4],
+// [2,4,3,5,6,1,7] ]
+// in 0.431 seconds
+
+console.table(solvePuzzle([0,2,3,0,2,0,0, 5,0,4,5,0,4,0, 0,4,2,0,0,0,6, 0,0,0,0,0,0,0]))
+// [ [7,6,2,1,5,4,3],
+// [1,3,5,4,2,7,6],
+// [6,5,4,7,3,2,1],
+// [5,1,7,6,4,3,2],
+// [4,2,1,3,7,6,5],
+// [3,7,6,2,1,5,4],
+// [2,4,3,5,6,1,7] ]
+// in 3.543 seconds
+
+// console.table(solvePuzzle([0,0,0,5,0,0,3, 0,6,3,4,0,0,0, 3,0,0,0,2,4,0, 2,6,2,2,2,0,0]))
+//[ [3,5,6,1,7,2,4],
+// [7,6,5,2,4,3,1],
+// [2,7,1,3,6,4,5],
+// [4,3,7,6,1,5,2],
+// [6,4,2,5,3,1,7],
+// [1,2,3,4,5,7,6],
+// [5,1,4,7,2,6,3] ]
+// in 9.196 seconds

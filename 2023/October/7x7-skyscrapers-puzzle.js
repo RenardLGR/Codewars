@@ -176,6 +176,45 @@ function solvePuzzle(clues){
     
         let skyscraperSet = 0 //increases if we actually set a new skyscraper, not previously found ones.
 
+        for(let i=0 ; i<N ; i++){
+            let possibleIndicesRow = {}
+            let possibleIndicesCol = {}
+            for(let j=0 ; j<N ; j++){
+                for(let shift=0 ; shift<N ; shift++){
+                    //check row elements
+                    if((1 << shift) & possible[i][j]){
+                        if(!possibleIndicesRow[shift]) possibleIndicesRow[shift] = []
+                        possibleIndicesRow[shift].push(j)
+                    }
+                    //check col elements
+                    if((1 << shift) & possible[j][i]){
+                        if(!possibleIndicesCol[shift]) possibleIndicesCol[shift] = []
+                        possibleIndicesCol[shift].push(j)
+                    }
+                }
+            }
+            //Check for heights with unique position
+            for(let shift=0 ; shift<N ; shift++){
+                //Within the row
+                if(possibleIndicesRow[shift] && possibleIndicesRow[shift].length === 1){
+                    let colIdx = possibleIndicesRow[shift][0]
+                    if(possible[i][colIdx] !== (1 << shift)){
+                        setValue(i, colIdx, (1 << shift))
+                        skyscraperSet++
+                    }
+                }
+                //Within the col
+                if(possibleIndicesCol[shift] && possibleIndicesCol[shift].length === 1){
+                    let rowIdx = possibleIndicesCol[shift][0]
+                    if(possible[rowIdx][i] !== (1 << shift)){
+                        setValue(rowIdx, i, (1 << shift))
+                        skyscraperSet++
+                    }
+                }
+            }
+        }
+
+        /*
         //Try rows
         for(let row=0 ; row<N ; row++){
             let possibleIndices = {} // {0: [colIdx, colIdx], 1: [colIdx], 2:[colIdx, colIdx, colIdx], ...} //numLeftShift : Array of indices // A shift/mask with a unique coordinate means the height is set (Note 2)
@@ -225,6 +264,7 @@ function solvePuzzle(clues){
                 }
             }
         }
+        */
     
         return skyscraperSet
     }
@@ -240,6 +280,7 @@ function solvePuzzle(clues){
                     for(let shift=0 ; shift<N ; shift++){
                         //Check if the height is available
                         if((1 << shift) & possible[row][col]){
+                            // let possibleCopy = copy2DArray(possible)
                             setValue(row, col, 1 << shift)
                             if(isValid() && backtrack()){
                                 return true
@@ -304,6 +345,22 @@ function solvePuzzle(clues){
 
 
         //Finally check if every row & col have unique skyscraper heights
+        // for(let i=0 ; i<N ; i++){
+        //     let seenRow = {}
+        //     let seenCol = {}
+        //     let hasRowMultiple = false
+        //     let hasColMultiple = false
+        //     for(let j=0 ; j<N ; j++){
+        //         if(isMultiplePossibleSkyscraper(possible[i][j])) hasRowMultiple = true
+        //         if(isMultiplePossibleSkyscraper(possible[j][i])) hasColMultiple = true
+        //         if(seenRow[possible[i][j]] && !hasRowMultiple) return false
+        //         if(seenCol[possible[j][i]] && !hasColMultiple) return false
+        //         seenRow[possible[i][j]] = true
+        //         seenCol[possible[j][i]] = true
+        //     }
+        // }
+        //! slower than the classical approach below
+
         //Check for rows
         for(let row=0 ; row<N ; row++){
             let seen = {}
@@ -371,7 +428,7 @@ function solvePuzzle(clues){
 // [4,2,1,3,7,6,5],
 // [3,7,6,2,1,5,4],
 // [2,4,3,5,6,1,7] ]
-// in 0.431 seconds
+// in 0.431 seconds before optimization
 
 console.table(solvePuzzle([0,2,3,0,2,0,0, 5,0,4,5,0,4,0, 0,4,2,0,0,0,6, 0,0,0,0,0,0,0]))
 // [ [7,6,2,1,5,4,3],
@@ -381,7 +438,7 @@ console.table(solvePuzzle([0,2,3,0,2,0,0, 5,0,4,5,0,4,0, 0,4,2,0,0,0,6, 0,0,0,0,
 // [4,2,1,3,7,6,5],
 // [3,7,6,2,1,5,4],
 // [2,4,3,5,6,1,7] ]
-// in 3.543 seconds
+// in 3.543 seconds before optimization
 
 // console.table(solvePuzzle([0,0,0,5,0,0,3, 0,6,3,4,0,0,0, 3,0,0,0,2,4,0, 2,6,2,2,2,0,0]))
 //[ [3,5,6,1,7,2,4],
@@ -391,4 +448,7 @@ console.table(solvePuzzle([0,2,3,0,2,0,0, 5,0,4,5,0,4,0, 0,4,2,0,0,0,6, 0,0,0,0,
 // [6,4,2,5,3,1,7],
 // [1,2,3,4,5,7,6],
 // [5,1,4,7,2,6,3] ]
-// in 9.196 seconds
+// in 9.196 seconds before optimization
+
+//TODO
+//backtrack(startRow, startCol)

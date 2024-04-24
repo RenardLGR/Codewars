@@ -99,12 +99,16 @@
 // In other words, a grid is considered not valid when either a row or col contains more than one skyscraper of the same height or the visible skyscrapers of a completed row or col don't match its associated non zero clue. 
 
 function solvePuzzle(clues){
+    let it = 0
     const N = clues.length / 4
     const MASK = (1 << N) - 1 // = 127 = 2**7 - 1 = "1111111"
     let possible = Array.from({length:N}, (_) => Array(N).fill(MASK))
 
     fillKnownElement()
+    console.log("possible:");
+    console.table(possible)
     backtrack(0)
+    console.log("it :", it);
     return maskToNum(possible)
 
     //Initialization : Given the clues, we can figure out some masks possibilities
@@ -217,6 +221,7 @@ function solvePuzzle(clues){
     }
 
     function backtrack(startRow){
+        it++
         // while(checkUnique() > 0){}
         checkUnique() // set some skyscrapers
 
@@ -367,7 +372,7 @@ function solvePuzzle(clues){
     }
 }
 
-console.table(solvePuzzle([0,2,3,0,2,0,0, 5,0,4,5,0,4,0, 0,4,2,0,0,0,6, 5,2,2,2,2,4,1]))
+// console.table(solvePuzzle([0,2,3,0,2,0,0, 5,0,4,5,0,4,0, 0,4,2,0,0,0,6, 5,2,2,2,2,4,1]))
 // [ [7,6,2,1,5,4,3],
 // [1,3,5,4,2,7,6],
 // [6,5,4,7,3,2,1],
@@ -376,8 +381,9 @@ console.table(solvePuzzle([0,2,3,0,2,0,0, 5,0,4,5,0,4,0, 0,4,2,0,0,0,6, 5,2,2,2,
 // [3,7,6,2,1,5,4],
 // [2,4,3,5,6,1,7] ]
 // in 0.431 seconds before optimization
+// in 0.349 seconds after optimization
 
-console.table(solvePuzzle([0,2,3,0,2,0,0, 5,0,4,5,0,4,0, 0,4,2,0,0,0,6, 0,0,0,0,0,0,0]))
+// console.table(solvePuzzle([0,2,3,0,2,0,0, 5,0,4,5,0,4,0, 0,4,2,0,0,0,6, 0,0,0,0,0,0,0]))
 // [ [7,6,2,1,5,4,3],
 // [1,3,5,4,2,7,6],
 // [6,5,4,7,3,2,1],
@@ -386,8 +392,10 @@ console.table(solvePuzzle([0,2,3,0,2,0,0, 5,0,4,5,0,4,0, 0,4,2,0,0,0,6, 0,0,0,0,
 // [3,7,6,2,1,5,4],
 // [2,4,3,5,6,1,7] ]
 // in 3.543 seconds before optimization
+// in 2.363 seconds after optimization
 
-console.table(solvePuzzle([0,0,0,5,0,0,3, 0,6,3,4,0,0,0, 3,0,0,0,2,4,0, 2,6,2,2,2,0,0]))
+//hard puzzle
+// console.table(solvePuzzle([0,0,0,5,0,0,3, 0,6,3,4,0,0,0, 3,0,0,0,2,4,0, 2,6,2,2,2,0,0]))
 //[ [3,5,6,1,7,2,4],
 // [7,6,5,2,4,3,1],
 // [2,7,1,3,6,4,5],
@@ -396,3 +404,35 @@ console.table(solvePuzzle([0,0,0,5,0,0,3, 0,6,3,4,0,0,0, 3,0,0,0,2,4,0, 2,6,2,2,
 // [1,2,3,4,5,7,6],
 // [5,1,4,7,2,6,3] ]
 // in 9.196 seconds before optimization
+// in 4.818 seconds after optimization
+
+//very hard puzzle
+// console.table(solvePuzzle([0,0,5,0,0,0,6, 4,0,0,2,0,2,0, 0,5,2,0,0,0,5, 0,3,0,5,0,0,3]))
+// console.log(JSON.stringify(solvePuzzle([0,0,5,0,0,0,6, 4,0,0,2,0,2,0, 0,5,2,0,0,0,5, 0,3,0,5,0,0,3])))
+//[ [3,4,1,7,6,5,2],
+// [7,1,2,5,4,6,3],
+// [6,3,5,2,1,7,4],
+// [1,2,3,6,7,4,5],
+// [5,7,6,4,2,3,1],
+// [4,5,7,1,3,2,6],
+// [2,6,4,3,5,1,7] ]
+// in 0.979 seconds after optimization
+
+//very hard puzzle
+// console.table(solvePuzzle([0,0,5,3,0,2,0, 0,0,0,4,5,0,0, 0,0,0,3,2,5,4, 2,2,0,0,0,0,5]))
+console.log(JSON.stringify(solvePuzzle([0,0,5,3,0,2,0, 0,0,0,4,5,0,0, 0,0,0,3,2,5,4, 2,2,0,0,0,0,5])))
+//[ [2,3,1,4,6,5,7],
+// [1,7,4,6,5,2,3],
+// [3,6,5,7,2,1,4],
+// [7,5,6,3,1,4,2],
+// [6,2,7,5,4,3,1],
+// [5,4,2,1,3,7,6],
+// [4,1,3,2,7,6,5] ]
+// in 249.39 seconds after optimization
+// in 15.969.480 iterations
+
+
+//easier of above :
+// console.table(solvePuzzle([0,0,5,3,0,2,0, 0,0,0,4,5,0,3, 0,0,0,3,2,5,4, 2,2,0,0,0,0,5]))
+
+//isValid needs to be more restrictive i.e I need to know if a grid is has no chance to work

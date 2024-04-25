@@ -1,209 +1,17 @@
-// https://www.codewars.com/kata/5679d5a3f2272011d700000d/train/javascript
-
-// ====== THOUGHTS ======
-
-// Consider a bit mask as a set of true or false flags.
-// In the following functions, we will keep track of possible heights of skyscrapers represented by a mask.
-// Note that masks are coded as integers but operations are on bits, so :
-// 000001 = 1b -> height of 1
-// 000010 = 2b -> height of 2
-// 000100 = 4b -> height of 3
-// 001000 = 8b -> height of 4
-// 010000 = 16b -> height of 5
-// 100000 = 32b -> height of 6
-// 111111 = 63b -> every heights are possible (this would be how our program starts).
-// 010011 = 19b -> skyscrapers of heights 5, 2 or 1 are possible.
-// We will use a typical backtracking algorithm and try every possible heights.
-// As we set skyscrapers, we will modify (remove) this height from the row and col we were working on in order to decrease the possible heights for further skyscrapers.
-// We will keep track of the possible heights in the grid possible : number[][] with each number being a numerical representation of the binary mask seen above.
-
-
-// From now on, we will consider the example clues = [ 3, 2, 2, 3, 2, 1, 1, 2, 3, 3, 2, 2, 5, 1, 2, 2, 4, 3, 3, 2, 1, 2, 2, 4] to illustrate our different steps.
-
-// ==== STEP 1 Initialization : Given the clues, we can figure out some masks possibilities ====
-// Before starting the backtracking algorithm right away, we can initialize the grid with some educated guesses.
-// ==== STEP 1.1 Prune the possibilities ====
-// Let's consider i the index of the skyscraper from its clue side, so a skyscraper on a side is index 0
-// Just like a clue of 6 ensures the skyscrapers are 1,2,3,4,5,6 in order
-// A clue of 3 ensures the 0th skyscraper can neither be a 5 or a 6 (because no combination of skyscrapers could make 3 of them visible with the first one being this high) and, following the same logic the 1st skyscraper can not be a 6.
-// We can conclude that, a clue has an incidence on the skyscrapers on indices [0 ; clue-1[ ; i.e. a clue of 3 has an incidence on the 0th skyscraper (removing possible height 6 and 5) and 1st skyscraper (removing possible height 6).
-// In fact the 0th skyscraper's height ranges from 1 to N - clue + 1 : [1 ; N - clue + 1], the following N - clue + 1 + 1 : [1 ; N - clue + 1 + 1] and so on. Or in other terms : the ith skyscraper has a height ranging from [1 ; N - clue + 1 + i]
-// This idea can be repeated for each clue in each direction, drastically removing possibilities.
-// Our first focus within the function fillKnownElement() will do that.
-// (See Note 1)
-
-// At the end of this step, our possible grid looks like this :
-// ┌─────────┬────┬────┬────┬────┬────┬────┬─────────┐
-// │  clues  │ 3  │ 2  │ 2  │ 3  │ 2  │ 1  │  clues  │
-// ├─────────┼────┼────┼────┼────┼────┼────┤─────────┤
-// │    4    │ 7  │ 15 │ 31 │ 15 │ 31 │ 63 │    1    │
-// │    2    │ 31 │ 63 │ 63 │ 31 │ 63 │ 31 │    2    │
-// │    2    │ 31 │ 63 │ 63 │ 63 │ 31 │ 15 │    3    │
-// │    1    │ 63 │ 31 │ 63 │ 63 │ 31 │ 15 │    3    │
-// │    2    │ 31 │ 15 │ 63 │ 63 │ 63 │ 7  │    2    │
-// │    3    │ 15 │ 7  │ 31 │ 31 │ 63 │ 3  │    2    │
-// │─────────│────│────│────│────│────│────│─────────│
-// │  clues  │ 3  │ 4  │ 2  │ 2  │ 1  │ 5  │  clues  │
-// └─────────┴────┴────┴────┴────┴────┴────┴─────────┘
-
-// ==== STEP 1.2 Set our first skyscrapers ====
-// Given the grid above, we can already determine for sure specific heights : inside a given row or col, if a height only appears once then we can set this height and remove it from its row and col.
-// Here the skyscraper row=0, col=5 : [0;5] is for sure a 6 (now 100000 = 32b)
-// The skyscraper [5;4] is for sure a 6 (now 100000 = 32b), removing the possibility to skyscraper [4;4] (now 011111 = 31b) and to skyscraper [4;1] (now 011111 = 31b)
-// Likewise skyscraper [3;0] is for sure a 6 (now 100000 = 32b), removing the possibility to skyscraper [3;2] (now 011111 = 31b) and to skyscraper [3;3] (now 011111 = 31b)
-// And skyscraper [1;5] is for sure a 5 (now 010000 = 16b), removing the possibility to skyscraper [1;1] (now 101111 = 47b), to skyscraper [1;2] (now 101111 = 47b), to skyscraper [1;3] (now 001111 = 15b) and to skyscraper [1;4] (now 001111 = 15b)
-// These actions will be performed with the function checkUnique() that will return a number representing the number of skyscraper the function has set. As a newly set skyscraper can induce another set skyscraper, hence we will repeat checkUnique() as long as at least one skyscraper was set.
-
-// checkUnique() works by creating a map for each row and col, mapping a height to its possible indices. As a particularity, the height will be represented as shifts, so we are in fact mapping shifts to its possible indices.
-// (See Note 2)
-// As an example, given the 0th line [ 7, 15, 31, 15, 31, 63 ], the map possibleIndices is : 
-// possibleIndices = {
-//   '0': [ 0, 1, 2, 3, 4, 5 ],
-//   '1': [ 0, 1, 2, 3, 4, 5 ],
-//   '2': [ 0, 1, 2, 3, 4, 5 ],
-//   '3': [ 1, 2, 3, 4, 5 ],
-//   '4': [ 2, 4, 5 ],
-//   '5': [ 5 ]
-// }
-// Meaning a shift equal to 0 (a height of 1 with a mask of 1b = 000001) is possible on indices 0, 1, 2, 3, 4 and 5
-// ...
-// A shift equal to 3 (a height of 4 with a mask of 8b = 001000) is possible on indices 1, 2, 3, 4 and 5
-// A shift equal to 4 (a height of 5 with a mask of 16b = 010000) is possible on indices 2, 4 and 5
-// A shift equal to 5 (a height of 6 with a mask of 32b = 100000) is possible on index 5
-
-// Then, by looping in the map, we notice the shift equal to 5 is possible only on 1 index. We check if the mask at this position had multiple heights, if so we indeed found a new height to set (we will reiterate checkUnique() at the end), if not it was an already set skyscraper. setValue(row, col, height) is called when setting a height.
-
-
-// The function setValue(row, col, height), height being a mask with only one bit set, not only sets the skyscraper in place but also performs the necessary adjustments in the associated row and col removing the skyscraper from the possibilities.
-
-// At the end of this step, our possible grid looks like this :
-// ┌─────────┬────┬────┬────┬────┬────┬────┬─────────┐
-// │  clues  │ 3  │ 2  │ 2  │ 3  │ 2  │ 1  │  clues  │
-// ├─────────┼────┼────┼────┼────┼────┼────┤─────────┤
-// │    4    │ 7  │ 15 │ 31 │ 15 │ 31 │ 32 │    1    │
-// │    2    │ 15 │ 47 │ 47 │ 15 │ 15 │ 16 │    2    │
-// │    2    │ 31 │ 63 │ 63 │ 63 │ 31 │ 15 │    3    │
-// │    1    │ 32 │ 31 │ 31 │ 31 │ 31 │ 15 │    3    │
-// │    2    │ 31 │ 15 │ 63 │ 63 │ 31 │ 7  │    2    │
-// │    3    │ 15 │ 7  │ 31 │ 31 │ 32 │ 3  │    2    │
-// │─────────│────│────│────│────│────│────│─────────│
-// │  clues  │ 3  │ 4  │ 2  │ 2  │ 1  │ 5  │  clues  │
-// └─────────┴────┴────┴────┴────┴────┴────┴─────────┘
-
-// ==== STEP 2 Backtracking : Try, check, backtrack, repeat ====
-// Before trying a height, make a deep copy of the grid.
-// Check if the grid is valid (so far), if so continue to explore this branch.
-// If it is not valid, backtrack.
-// When backtracking make a deep copy of the deep copy to avoid addresses issues.
-
-// A grid is considered valid when these two conditions are met : uniqueness of heights in a row or col and a complete row or col respects its associated non zero clue.
-// In other words, a grid is considered not valid when either a row or col contains more than one skyscraper of the same height or the visible skyscrapers of a completed row or col don't match its associated non zero clue. 
-
-// ==== CODE CHRONOLOGY =====
-// solve{
-//      initialize[
-//          N : 6, length of a side
-//          MASK : 63b = 111111
-//          possible : Grid NxN filled with MASK, it will represent every possible heights of skyscrapers as a mask in a given position
-//      ]
-//      fillKnownElement{
-//          checkUnique{
-//              setValue{}
-//          }
-//      }
-//      backtrack{
-//          checkUnique{
-//              setValue{}
-//          }
-//          attempt[
-//              setValue{}
-//              isValid{} && backtrack{}
-//          ]
-//          backtrack[]
-//      }
-//      return result as a grid of numbers
-// }
-
-// ====== CODE EXPLANATION ======
-// fillKnownElement() => void, as a side effect changes possible array
-// We start by the default mask with every height possible : 63b = 111111 to which we remove highest skyscrapers according to the clue :
-// let toKeep = MASK // 63b = 111111
-// for(let shift=N-1 ; shift>=MAX_HEIGHT_TO_REMOVE ; shift--){
-//     toKeep ^= 1 << shift
-// }
-// 1st iteration :
-//      toKeep = 63b = 111111
-//      1 << shift = 1 << N-1 = 32b = 100000
-//      toKeep ^= 1 << shift = 011111
-// 2nd iteration :
-//      toKeep = 31b = 011111
-//      1 << shift = 1 << N-2 = 16b = 010000
-//      toKeep ^= 1 << shift = 15b = 001111
-// And so on...
-
-// checkUnique() => void, as a side effect changes possible array
-// Try every heights (or shifts), if the height is a possibility, update the map mapping a height to its possible indices
-// for(let shift=0 ; shift<N ; shift++){
-//     if((1 << shift) & possible[row][col]){
-//         if(!possibleIndices[shift]) possibleIndices[shift] = []
-//         possibleIndices[shift].push(col)
-//     }
-// }
-
-// isMultiplePossibleSkyscraper(mask) => Boolean
-// Count the number of set bits in the binary representation
-// let count = 0
-// while (mask) {
-    // In each iteration, mask & 1 is used to check the value of the least significant bit (LSB) (i.e. rightmost) of the current mask.
-    // If the LSB is 1, mask & 1 evaluates to 1, and count is incremented by 1.
-    // If the LSB is 0, mask & 1 evaluates to 0, and count remains unchanged.
-    // count += mask & 1
-    // After checking the LSB, the entire mask is right-shifted by 1 position.
-    // mask >>= 1
-// }
-// If there is exactly one set bit, return false
-// return count !== 1
-
-// Example with the mask 42b = 101010
-// 1st iteration :
-//      101010 & 1 is false
-//      mask = 21b = 10101
-// 2nd iteration :
-//      10101 & 1 is true, count is increased by 1
-//      mask = 10b = 1010
-// 3rd iteration :
-//      1010 & 1 is false
-//      mask = 5b = 101
-// 4th iteration :
-//      101 & 1 is true, count is increased by 1
-//      mask = 2b = 10
-// 5th iteration :
-//      10 & 1 is false
-//      mask = 1b = 1
-// 6th iteration :
-//      1 & 1 is true, count is increased by 1
-//      mask = 0b = 0
-// count is equal to 3, different than 1, there are multiple skyscrapers, return false
-
-// setValue(row, col, mask) => void, as a side effect changes possible array
-// This function sets a height, removing this possibility in the row and col as necessary
-// Example : Given a current bitmask of 28b = 011100 and trying to remove the skyscraperMask (or height) of 8b = 001000
-// We have ~001000 = 110111
-// The new bitmask should be 011100 & 110111 = 010100 = 20b and is given by the formula newBitmask = oldBitmask & ~skyscraperMask
-// or simply put, new &= ~skyscraperMask for every element of the row and col but the element we are setting which is simply possible[row][col] = mask
-
-
-// ====== NOTES ======
-// 1) Cases where the clue is 1 or 6 indeed give information about the skyscrapers, and placing those skyscrapers accordingly is a good idea. It is not necessary as the following step checkUnique() would achieve roughly the same result. It is an interesting problem to tackle on for further improvement to the overall program.
-// 2) Here, one could ask himself why using left shift as the key of our map and not the bitmask itself. Remember JS uses String types as keys and further steps would be required to parseInt those strings to make it all work. Whereas 1 << "5" is valid. Both methods could have been implemented.
-
 function solvePuzzle(clues){
+    let it = 0
     const N = clues.length / 4
-    const MASK = (1 << N) - 1 // = 63 = 2**6 - 1 = "111111"
+    const MASK = (1 << N) - 1 // = 127 = 2**7 - 1 = "1111111"
     let possible = Array.from({length:N}, (_) => Array(N).fill(MASK))
+    let set = Array.from({length:N}, (_) => Array(N).fill(false))
 
     fillKnownElement()
+    // console.log("possible:");
+    // console.table(possible)
+    // console.table(set)
     backtrack(0)
+    console.table(set)
+    console.log("it :", it);
     return maskToNum(possible)
 
     //Initialization : Given the clues, we can figure out some masks possibilities
@@ -275,75 +83,68 @@ function solvePuzzle(clues){
     
         let skyscraperSet = 0 //increases if we actually set a new skyscraper, not previously found ones.
 
-        //Try rows
-        for(let row=0 ; row<N ; row++){
-            let possibleIndices = {} // {0: [colIdx, colIdx], 1: [colIdx], 2:[colIdx, colIdx, colIdx], ...} //numLeftShift : Array of indices // A shift/mask with a unique coordinate means the height is set (Note 2)
-            for(let col=0 ; col<N ; col++){
+        for(let i=0 ; i<N ; i++){
+            let possibleIndicesRow = {}
+            let possibleIndicesCol = {}
+            for(let j=0 ; j<N ; j++){
                 for(let shift=0 ; shift<N ; shift++){
-                    if((1 << shift) & possible[row][col]){
-                        if(!possibleIndices[shift]) possibleIndices[shift] = []
-                        possibleIndices[shift].push(col)
+                    //check row elements
+                    if((1 << shift) & possible[i][j]){
+                        if(!possibleIndicesRow[shift]) possibleIndicesRow[shift] = []
+                        possibleIndicesRow[shift].push(j)
+                    }
+                    //check col elements
+                    if((1 << shift) & possible[j][i]){
+                        if(!possibleIndicesCol[shift]) possibleIndicesCol[shift] = []
+                        possibleIndicesCol[shift].push(j)
                     }
                 }
             }
             //Check for heights with unique position
-            for(let shift in possibleIndices){
-                //If a height can only have 1 unique position in the current row
-                if(possibleIndices[shift].length === 1){
-                    let colIdx = possibleIndices[shift][0]
-                    //If the unique position had a bitmask of more than 1 height, i.e. we actually set a new height and not read a previously known height
-                    if(possible[row][colIdx] !== (1 << shift)){
-                        setValue(row, colIdx, (1 << shift))
+            for(let shift=0 ; shift<N ; shift++){
+                //Within the row
+                if(possibleIndicesRow[shift] && possibleIndicesRow[shift].length === 1){
+                    let colIdx = possibleIndicesRow[shift][0]
+                    if(possible[i][colIdx] !== (1 << shift)){
+                        setValue(i, colIdx, (1 << shift))
+                        set[i][colIdx] = true
+                        skyscraperSet++
+                    }
+                }
+                //Within the col
+                if(possibleIndicesCol[shift] && possibleIndicesCol[shift].length === 1){
+                    let rowIdx = possibleIndicesCol[shift][0]
+                    if(possible[rowIdx][i] !== (1 << shift)){
+                        setValue(rowIdx, i, (1 << shift))
+                        set[rowIdx][i] = true
                         skyscraperSet++
                     }
                 }
             }
         }
-        
-        //Try cols
-        for(let col=0 ; col<N ; col++){
-            let possibleIndices = {} // {0: [rowIdx, rowIdx], 1: [rowIdx], 2:[rowIdx, rowIdx, rowIdx], ...} //numLeftShift : Array of indices // A shift/mask with a unique coordinate means the height is set (Note 2)
-            for(let row=0 ; row<N ; row++){
-                for(let shift=0 ; shift<N ; shift++){
-                    if((1 << shift) & possible[row][col]){
-                        if(!possibleIndices[shift]) possibleIndices[shift] = []
-                        possibleIndices[shift].push(row)
-                    }
-                }
-            }
-            //Check for heights with unique position
-            for(let shift in possibleIndices){
-                //If a height can only have 1 unique position in the current row
-                if(possibleIndices[shift].length === 1){
-                    let rowIdx = possibleIndices[shift][0]
-                    //If the unique position had a bitmask of more than 1 height, i.e. we actually set a new height and not read a previously known height
-                    if(possible[rowIdx][col] !== (1 << shift)){
-                        setValue(rowIdx, col, 1 << shift)
-                        skyscraperSet++
-                    }
-                }
-            }
-        }
-    
         return skyscraperSet
     }
 
     function backtrack(startRow){
+        it++
         // while(checkUnique() > 0){}
-        checkUnique() // set some skyscrapers
+        // checkUnique() // set some skyscrapers
 
         for(let row=startRow ; row<N ; row++){
             for(let col=0 ; col<N ; col++){
-                if(isMultiplePossibleSkyscraper(possible[row][col])){
+                // if(isMultiplePossibleSkyscraper(possible[row][col])){
+                if(!set[row][col]){
                     let possibleCopy = copy2DArray(possible)
                     for(let shift=0 ; shift<N ; shift++){
                         //Check if the height is available
                         if((1 << shift) & possible[row][col]){
+                            set[row][col] = true
                             setValue(row, col, 1 << shift)
                             if(isValid() && backtrack(row)){
                                 return true
                             }
                             else{
+                                set[row][col] = false
                                 possible = copy2DArray(possibleCopy)
                             }
                         }
@@ -352,6 +153,8 @@ function solvePuzzle(clues){
                 }
             }
         }
+        console.log("isvalid?",isValid())
+        console.table(possible);
         return isValid()
     }
 
@@ -387,8 +190,8 @@ function solvePuzzle(clues){
                         break;
 
                 }
-                // We can't check for a row/col to be correct if at least one skyscraper is not set, continue to the next clue
                 if(curr === 0) return false
+                // We can't check for a row/col to be correct if at least one skyscraper is not set, continue to the next clue
                 if(isMultiplePossibleSkyscraper(curr)){
                     // break
                     continue loopClue
@@ -404,6 +207,22 @@ function solvePuzzle(clues){
 
 
         //Finally check if every row & col have unique skyscraper heights
+        // for(let i=0 ; i<N ; i++){
+        //     let seenRow = {}
+        //     let seenCol = {}
+        //     let hasRowMultiple = false
+        //     let hasColMultiple = false
+        //     for(let j=0 ; j<N ; j++){
+        //         if(isMultiplePossibleSkyscraper(possible[i][j])) hasRowMultiple = true
+        //         if(isMultiplePossibleSkyscraper(possible[j][i])) hasColMultiple = true
+        //         if(seenRow[possible[i][j]] && !hasRowMultiple) return false
+        //         if(seenCol[possible[j][i]] && !hasColMultiple) return false
+        //         seenRow[possible[i][j]] = true
+        //         seenCol[possible[j][i]] = true
+        //     }
+        // }
+        //! slower than the classical approach below
+
         //Check for rows
         for(let row=0 ; row<N ; row++){
             let seen = {}
@@ -463,7 +282,7 @@ function solvePuzzle(clues){
     }
 }
 
-// console.table(solvePuzzle([0,2,3,0,2,0,0, 5,0,4,5,0,4,0, 0,4,2,0,0,0,6, 5,2,2,2,2,4,1]))
+console.table(solvePuzzle([0,2,3,0,2,0,0, 5,0,4,5,0,4,0, 0,4,2,0,0,0,6, 5,2,2,2,2,4,1]))
 // [ [7,6,2,1,5,4,3],
 // [1,3,5,4,2,7,6],
 // [6,5,4,7,3,2,1],
@@ -472,6 +291,7 @@ function solvePuzzle(clues){
 // [3,7,6,2,1,5,4],
 // [2,4,3,5,6,1,7] ]
 // in 0.431 seconds before optimization
+// in 0.349 seconds after optimization
 
 // console.table(solvePuzzle([0,2,3,0,2,0,0, 5,0,4,5,0,4,0, 0,4,2,0,0,0,6, 0,0,0,0,0,0,0]))
 // [ [7,6,2,1,5,4,3],
@@ -482,7 +302,9 @@ function solvePuzzle(clues){
 // [3,7,6,2,1,5,4],
 // [2,4,3,5,6,1,7] ]
 // in 3.543 seconds before optimization
+// in 2.363 seconds after optimization
 
+//hard puzzle
 // console.table(solvePuzzle([0,0,0,5,0,0,3, 0,6,3,4,0,0,0, 3,0,0,0,2,4,0, 2,6,2,2,2,0,0]))
 //[ [3,5,6,1,7,2,4],
 // [7,6,5,2,4,3,1],
@@ -492,222 +314,23 @@ function solvePuzzle(clues){
 // [1,2,3,4,5,7,6],
 // [5,1,4,7,2,6,3] ]
 // in 9.196 seconds before optimization
+// in 4.818 seconds after optimization
 
+//very hard puzzle
+// console.table(solvePuzzle([0,0,5,0,0,0,6, 4,0,0,2,0,2,0, 0,5,2,0,0,0,5, 0,3,0,5,0,0,3]))
+// console.log(JSON.stringify(solvePuzzle([0,0,5,0,0,0,6, 4,0,0,2,0,2,0, 0,5,2,0,0,0,5, 0,3,0,5,0,0,3])))
+//[ [3,4,1,7,6,5,2],
+// [7,1,2,5,4,6,3],
+// [6,3,5,2,1,7,4],
+// [1,2,3,6,7,4,5],
+// [5,7,6,4,2,3,1],
+// [4,5,7,1,3,2,6],
+// [2,6,4,3,5,1,7] ]
+// in 0.979 seconds after optimization
 
-//======================================================================
-// From : https://github.com/lostleaf/codewars/blob/master/4-by-4-skyscrapers.cpp
-
-const N = 7;
-const SIDES = 4;
-const MASK = (1 << N) - 1;
-let possible = new Array(N * N).fill(MASK);
-let s = new Array(SIDES * N);
-let e = new Array(SIDES * N);
-let inc = new Array(SIDES * N);
-let results = new Array(N).fill(0).map(() => new Array(N).fill(0));
-let my_clues = [];
-let order = [];
-let it = 0
-
-function print_binary(x) {
-    for (let i = N - 1; i >= 0; i--) {
-        console.log((x & (1 << i)) ? 1 : 0);
-    }
-}
-
-function print_possible() {
-    for (let i = 0; i < N * N; i++) {
-        print_binary(possible[i]);
-        console.log(" ");
-        if (i % N === N - 1) console.log("\n");
-    }
-}
-
-function set_value(x, v) {
-    const m = MASK ^ (1 << v);
-    const s_row = x - x % N;
-    const s_col = x % N;
-    for (let i = 0; i < N; i++) {
-        possible[s_row + i] &= m;
-        possible[s_col + i * N] &= m;
-    }
-    possible[x] = 1 << v;
-}
-
-function check_unique() {
-    let n_decides = 0;
-    for (let i = 0; i < SIDES / 2 * N; i++) {
-        const possible_indices = new Map(); //{shift : [index, index, etc]}
-        for (let j = s[i], k = 0; k < N; j += inc[i], k++) {
-            for (let l = 0; l < N; l++) {
-                if ((1 << l) & possible[j]) {
-                    if (!possible_indices.has(l)) {
-                        possible_indices.set(l, []);
-                    }
-                    possible_indices.get(l).push(j);
-                }
-            }
-        }
-
-        for (const [val, indices] of possible_indices.entries()) {
-            if (indices.length === 1) {
-                const idx = indices[0];
-                if (possible[idx] !== (1 << val)) { // check if the unique found had a bitmask of more than 1 height
-                    n_decides++;
-                    set_value(idx, val);
-                }
-            }
-        }
-    }
-    return n_decides;
-}
-
-function count_possible(val) {
-    let n = 0;
-    while (val) {
-        n += val & 1;
-        val >>= 1;
-    }
-    return n;
-}
-
-function valid() {
-    for (let i = 0; i < SIDES * N; i++) {
-        if (my_clues[i] === 0) continue;
-
-        let is_decided = true;
-        for (let j = s[i], k = 0; k < N; j += inc[i], k++) {
-            if (count_possible(possible[j]) !== 1) {
-                is_decided = false;
-                break;
-            }
-        }
-
-        if (is_decided) {
-            let largest = 0, n_clue = 0;
-            for (let j = s[i], k = 0; k < N; j += inc[i], k++) {
-                if (largest < possible[j]) {
-                    n_clue++;
-                    largest = possible[j];
-                }
-            }
-            if (n_clue !== my_clues[i]) return false;
-        }
-    }
-
-    return true;
-}
-
-function write_results() {
-    for (let i = 0; i < N * N; i++) {
-        const x = Math.floor(i / N);
-        const y = i % N;
-        for (let j = 0; j < N; j++) {
-            if ((1 << j) === possible[i]) {
-                results[x][y] = j + 1;
-                break;
-            }
-        }
-    }
-}
-
-function dfs(idx) {
-    it++
-    check_unique()
-    if (idx >= order.length) {
-        if (valid()) {
-            write_results();
-            return true;
-        }
-        return false;
-    }
-
-    const i = order[idx];
-    const possible_bak = [...possible];
-
-    //try different shifts
-    for (let j = 0; j < N; j++) {
-        const m = (1 << j) & possible[i];
-        if (m === 0) continue;
-
-        set_value(i, j);
-        const found = valid() && dfs(idx + 1);
-        if (found) {
-            return true;
-        }
-        possible = [...possible_bak];
-    }
-    return false;
-}
-
-function solvePuzzleGPT(clues) {
-    my_clues = clues;
-
-    // for (let i = 0; i < N * N; i++) possible[i] = MASK;
-
-    for (let i = 0; i < N; i++) {
-        s[i] = i;
-        e[i] = (N - 1) * N + i;
-        inc[i] = N;
-    }
-
-    for (let i = 0, j = N; i < N; i++, j++) {
-        s[j] = i * N + N - 1;
-        e[j] = i * N;
-        inc[j] = -1;
-    }
-
-    for (let i = 0, j = 2 * N; i < N; i++, j++) {
-        s[j] = N * N - 1 - i;
-        e[j] = N - 1 - i;
-        inc[j] = -N;
-    }
-
-    for (let i = 0, j = 3 * N; i < N; i++, j++) {
-        s[j] = (N - i - 1) * N;
-        e[j] = (N - i) * N - 1;
-        inc[j] = 1;
-    }
-
-    for (let i = 0; i < SIDES * N; i++) {
-        if (my_clues[i] === 0) continue;
-        for (let j = s[i], k = 0; k < N; j += inc[i], k++) {
-            let m = MASK;
-            for (let l = N + k - my_clues[i] + 1; l < N; l++) m ^= 1 << l;
-            possible[j] &= m;
-        }
-    }
-
-    // console.log("possible BEFORE check uniques():", possible)
-
-    while (check_unique() > 0);
-    // console.log("possible AFTER check uniques():", possible)
-
-    const idx_npos = [];
-    for (let i = 0; i < N * N; i++) {
-        const n_possible = count_possible(possible[i]);
-        if (n_possible > 1) {
-            idx_npos.push({ n_possible, index: i });
-        }
-    }
-
-    idx_npos.sort((a, b) => a.n_possible - b.n_possible);
-    order = idx_npos.map(item => item.index);
-    dfs(0);
-
-    console.log("res GPT masks:", possible)
-    console.log("it :", it)
-    const result = [];
-    for (let i = 0; i < N; i++) {
-        result.push([...results[i]]);
-    }
-    return result;
-}
-
-
-// console.log(solvePuzzleGPT([ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0])) // [[ 5, 2, 6, 1, 4, 3 ], [ 6, 4, 3, 2, 5, 1 ], [ 3, 1, 5, 4, 6, 2 ], [ 2, 6, 1, 5, 3, 4 ], [ 4, 3, 2, 6, 1, 5 ], [ 1, 5, 4, 3, 2, 6 ]]
-// console.log("res GPT:",solvePuzzleGPT([ 3, 2, 2, 3, 2, 1, 1, 2, 3, 3, 2, 2, 5, 1, 2, 2, 4, 3, 3, 2, 1, 2, 2, 4])) //[[ 2, 1, 4, 3, 5, 6], [ 1, 6, 3, 2, 4, 5], [ 4, 3, 6, 5, 1, 2], [ 6, 5, 2, 1, 3, 4], [ 5, 4, 1, 6, 2, 3], [ 3, 2, 5, 4, 6, 1]]
-console.log("res GPT:",JSON.stringify(solvePuzzleGPT([0,0,5,3,0,2,0, 0,0,0,4,5,0,0, 0,0,0,3,2,5,4, 2,2,0,0,0,0,5])))
+//very hard puzzle
+// console.table(solvePuzzle([0,0,5,3,0,2,0, 0,0,0,4,5,0,0, 0,0,0,3,2,5,4, 2,2,0,0,0,0,5]))
+// console.log(JSON.stringify(solvePuzzle([0,0,5,3,0,2,0, 0,0,0,4,5,0,0, 0,0,0,3,2,5,4, 2,2,0,0,0,0,5])))
 //[ [2,3,1,4,6,5,7],
 // [1,7,4,6,5,2,3],
 // [3,6,5,7,2,1,4],
@@ -715,5 +338,11 @@ console.log("res GPT:",JSON.stringify(solvePuzzleGPT([0,0,5,3,0,2,0, 0,0,0,4,5,0
 // [6,2,7,5,4,3,1],
 // [5,4,2,1,3,7,6],
 // [4,1,3,2,7,6,5] ]
+// in 249.39 seconds after optimization
+// in 15.969.480 iterations
 
-// in 35.911 seconds; in 57,618,340 iterations
+
+//easier of above :
+// console.table(solvePuzzle([0,0,5,3,0,2,0, 0,0,0,4,5,0,3, 0,0,0,3,2,5,4, 2,2,0,0,0,0,5]))
+
+//isValid needs to be more restrictive i.e I need to know if a grid is has no chance to work

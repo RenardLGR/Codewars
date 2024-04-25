@@ -3,8 +3,38 @@ function solvePuzzle(clues){
     const MASK = (1 << N) - 1
     const possible = Array(N *N).fill(MASK)
 
-    fillKnownElement()
+    const start = Array(clues.length) // for any i clues[i] will be read from start[i], the following element will be start[i] + inc[i]
+    const inc = Array(clues.length)
+    initializeStartInc()
+    console.table(start)
+    console.table(inc)
+
+
+    // fillKnownElement()
     console.table(toGrid());
+
+    function initializeStartInc(){
+        //top to bottom
+        for(let i=0 ; i<N ; i++){
+            start[i] = i
+            inc[i] = N
+        }
+        //right to left
+        for(let i=N, j=0 ; i<2*N ; i++, j++){
+            start[i] = (j+1)*N - 1
+            inc[i] = -1
+        }
+        //bottom to top
+        for(let i=2*N, j=0 ; i<3*N ; i++, j++){
+            start[i] = N*N - 1 - j
+            inc[i] = -N
+        }
+        //right to left
+        for(let i=3*N, j=0 ; i<4*N ; i++, j++){
+            start[i] = (N-j-1) * N
+            inc[i] = 1
+        }
+    }
 
     function fillKnownElement(){
         //for each clue, update its row or col associated
@@ -149,3 +179,5 @@ console.log(JSON.stringify(solvePuzzle([0,0,5,3,0,2,0, 0,0,0,4,5,0,0, 0,0,0,3,2,
 //We can implement clue === 1 (it starts with the max height)
 //A clue of 2 indicates the first skyscraper can't be of max height
 //A clue of 3 indicates the first skyscraper nor the second skyscraper can be of max height
+
+//A clue of 5 indicates 

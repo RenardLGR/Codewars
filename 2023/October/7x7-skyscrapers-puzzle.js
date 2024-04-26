@@ -105,10 +105,10 @@ function solvePuzzle(clues){
     let possible = Array.from({length:N}, (_) => Array(N).fill(MASK))
 
     fillKnownElement()
-    console.log("possible:");
-    console.table(possible)
+    // console.log("possible:");
+    // console.table(possible)
     backtrack(0)
-    console.log("it :", it);
+    // console.log("it :", it);
     return maskToNum(possible)
 
     //Initialization : Given the clues, we can figure out some masks possibilities

@@ -1,15 +1,21 @@
+//=============================== 4x4 ANNOTATED SOLUTION ===============================
+
 // From : https://github.com/lostleaf/codewars/blob/master/4-by-4-skyscrapers.cpp
 
-const N = 7;
+// This approach was good enough for the 6x6 puzzle.
+
+const N = 7; // length of a side //modify this line as needed or :
+// const N = clues.length / 4
 const SIDES = 4;
 const MASK = (1 << N) - 1;
-let possible = new Array(N * N).fill(MASK);
-let s = new Array(SIDES * N);
-let e = new Array(SIDES * N);
+let possible = new Array(N * N).fill(MASK); // Array of masks (possible heights) in a 1D format
+// As we are working on a 1D Array, getting our indices right when navigating through the rows and cols can be quite tricky. For a clue of index i in clues[], the starting index of the row/col associated with the clue is start[i] and the following index in the row/col is start[i] + inc[i]
+let s = new Array(SIDES * N); // start
+let e = new Array(SIDES * N); // end, if we ever needed to get the last index of a row/col associated with a clue
 let inc = new Array(SIDES * N);
 let results = new Array(N).fill(0).map(() => new Array(N).fill(0));
 let my_clues = [];
-let order = [];
+let order = []; //  We set the order in which backtrack will work on : starting from the indices with the least possible heights and working its way to the indices with the maximum possible heights.
 
 function print_binary(x) {
     for (let i = N - 1; i >= 0; i--) {
@@ -25,6 +31,8 @@ function print_possible() {
     }
 }
 
+// This function sets a height, removing this possibility in the row and col as necessary
+// x is an index, v is a shift
 function set_value(x, v) {
     const m = MASK ^ (1 << v);
     const s_row = x - x % N;
@@ -36,6 +44,7 @@ function set_value(x, v) {
     possible[x] = 1 << v;
 }
 
+//With a current grid, we can set some skyscrapers if their height can only be in a single position
 function check_unique() {
     let n_decides = 0; //increases if we actually set a new skyscraper, not previously found ones.
     //0 to 13, 0 to 6 check cols from left to right top to bottom, 7 to 13 check rows from right to left top to bottom
@@ -65,6 +74,7 @@ function check_unique() {
     return n_decides;
 }
 
+// Count the number of set bits in the binary representation, for the entire length of mask check the rightmost bit with 1, increase count if the checked bit of the mask is 1 too, remove the rightmost bit of the mask after each iteration of the while loop
 function count_possible(val) {
     let n = 0;
     while (val) {
@@ -74,7 +84,9 @@ function count_possible(val) {
     return n;
 }
 
+//Check if the clues are being respected, i.e. if a fully set col or row respects the clue
 function valid() {
+    //loop through clues
     for (let i = 0; i < SIDES * N; i++) {
         if (my_clues[i] === 0) continue;
 
@@ -116,7 +128,9 @@ function write_results() {
     }
 }
 
+//backtrack following the order[]
 function dfs(idx) {
+    //Escape case
     if (idx >= order.length) {
         if (valid()) {
             write_results();
@@ -125,7 +139,7 @@ function dfs(idx) {
         return false;
     }
 
-    const i = order[idx];
+    const i = order[idx]; //get the index where we should try to set up our height
     const possible_bak = [...possible];
 
     //try different shifts
@@ -143,6 +157,7 @@ function dfs(idx) {
     return false;
 }
 
+//Easier way to read possible[] for debugging or curiosity purposes
 function toGrid(){
     let res = []
     for(let i=0 ; i<N ; i++){
@@ -155,11 +170,13 @@ function toGrid(){
     return res
 }
 
+// Main function call
 function solvePuzzleGPT(clues) {
     my_clues = clues;
 
     // for (let i = 0; i < N * N; i++) possible[i] = MASK;
 
+    //set up start, end and inc arrays
     for (let i = 0; i < N; i++) {
         s[i] = i;
         e[i] = (N - 1) * N + i;
@@ -184,6 +201,7 @@ function solvePuzzleGPT(clues) {
         inc[j] = 1;
     }
 
+    //prune heights as a clue gives information on impossible heights
     //loop on clues
     for (let i = 0; i < SIDES * N; i++) {
         if (my_clues[i] === 0) continue;
@@ -196,9 +214,11 @@ function solvePuzzleGPT(clues) {
         }
     }
 
+    //set skyscraper height that are unique in the row/col
     while (check_unique() > 0);
     // console.table(toGrid())
 
+    //set up order[]
     const idx_npos = [];
     for (let i = 0; i < N * N; i++) {
         const n_possible = count_possible(possible[i]);
@@ -208,14 +228,14 @@ function solvePuzzleGPT(clues) {
     }
 
     idx_npos.sort((a, b) => a.n_possible - b.n_possible);
+    //We get the indices with the least possible heights and we start our backtrack from there
     order = idx_npos.map(item => item.index);
-    console.log("order:");
-    console.log(order)
-    //order are the indices with the lest option of skyscraper, start with that
+
+    //backtrack
     dfs(0);
 
-    console.log("res GPT masks:")
-    console.table(toGrid())
+    // console.log("res GPT masks:")
+    // console.table(toGrid())
     const result = [];
     for (let i = 0; i < N; i++) {
         result.push([...results[i]]);
@@ -231,3 +251,4 @@ console.log(JSON.stringify(solvePuzzleGPT([0,0,5,3,0,2,0, 0,0,0,4,5,0,0, 0,0,0,3
 // [6,2,7,5,4,3,1],
 // [5,4,2,1,3,7,6],
 // [4,1,3,2,7,6,5] ]
+// in 33.506 seconds

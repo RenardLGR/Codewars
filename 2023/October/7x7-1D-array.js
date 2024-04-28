@@ -39,7 +39,6 @@ function solvePuzzle(clues){
     //Now our backtrack follow the order in order[]
     backtrack(0)
 
-    // console.table(toGrid())
     return toRes()
 
     //start and inc are Arrays to make our traveling through the 1D possible[] easier. For a given clue of index i, the 0th element of the row/col associated with clues[i] will be start[i] and the following will be start[i] + inc[i]
@@ -83,6 +82,7 @@ function solvePuzzle(clues){
                 possible[skyscr] &= toKeep
             }
         }
+
         while(checkUnique() > 0){}
     }
 
@@ -210,7 +210,7 @@ function solvePuzzle(clues){
     // This function sets a height, removing this possibility in the row and col as necessary
     function setValue(idx, mask){
         let idxRow = Math.floor(idx / N) * N
-        let idxCol = idx % 7
+        let idxCol = idx % N
         for(let i=0 ; i<N ; i++){
             possible[idxRow] &= ~mask
             possible[idxCol] &= ~mask
@@ -251,7 +251,7 @@ function solvePuzzle(clues){
     }
 }
 
-console.log(JSON.stringify(solvePuzzle([0,0,5,3,0,2,0, 0,0,0,4,5,0,0, 0,0,0,3,2,5,4, 2,2,0,0,0,0,5])))
+// console.log(JSON.stringify(solvePuzzle([0,0,5,3,0,2,0, 0,0,0,4,5,0,0, 0,0,0,3,2,5,4, 2,2,0,0,0,0,5])))
 //[ [2,3,1,4,6,5,7],
 // [1,7,4,6,5,2,3],
 // [3,6,5,7,2,1,4],
@@ -261,3 +261,8 @@ console.log(JSON.stringify(solvePuzzle([0,0,5,3,0,2,0, 0,0,0,4,5,0,0, 0,0,0,3,2,
 // [4,1,3,2,7,6,5] ]
 
 // in 22.684 seconds
+
+
+// 6x6 PROBLEMS
+console.log("res 267:",solvePuzzle([ 3, 2, 2, 3, 2, 1, 1, 2, 3, 3, 2, 2, 5, 1, 2, 2, 4, 3, 3, 2, 1, 2, 2, 4])) //[[ 2, 1, 4, 3, 5, 6], [ 1, 6, 3, 2, 4, 5], [ 4, 3, 6, 5, 1, 2], [ 6, 5, 2, 1, 3, 4], [ 5, 4, 1, 6, 2, 3], [ 3, 2, 5, 4, 6, 1]] in 0.161s
+console.log("res 268:",solvePuzzle([ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0])) //[[ 5, 2, 6, 1, 4, 3 ], [ 6, 4, 3, 2, 5, 1 ], [ 3, 1, 5, 4, 6, 2 ], [ 2, 6, 1, 5, 3, 4 ], [ 4, 3, 2, 6, 1, 5 ], [ 1, 5, 4, 3, 2, 6 ]] in 0.267s

@@ -1,10 +1,9 @@
 //=============================== 4x4 ANNOTATED SOLUTION ===============================
 
 // From : https://github.com/lostleaf/codewars/blob/master/4-by-4-skyscrapers.cpp
+// And its 6x6 (same) : https://github.com/lostleaf/codewars/blob/master/6-by-6-skyscrapers.cpp
 
-// This approach was good enough for the 6x6 puzzle.
-
-const N = 7; // length of a side //modify this line as needed or :
+const N = 6; // length of a side //modify this line as needed or :
 // const N = clues.length / 4
 const SIDES = 4;
 const MASK = (1 << N) - 1;
@@ -216,7 +215,6 @@ function solvePuzzleGPT(clues) {
 
     //set skyscraper height that are unique in the row/col
     while (check_unique() > 0);
-    // console.table(toGrid())
 
     //set up order[]
     const idx_npos = [];
@@ -234,8 +232,6 @@ function solvePuzzleGPT(clues) {
     //backtrack
     dfs(0);
 
-    // console.log("res GPT masks:")
-    // console.table(toGrid())
     const result = [];
     for (let i = 0; i < N; i++) {
         result.push([...results[i]]);
@@ -243,7 +239,12 @@ function solvePuzzleGPT(clues) {
     return result;
 }
 
-console.log(JSON.stringify(solvePuzzleGPT([0,0,5,3,0,2,0, 0,0,0,4,5,0,0, 0,0,0,3,2,5,4, 2,2,0,0,0,0,5])))
+// 6x6
+console.log("res 246:",solvePuzzleGPT([ 3, 2, 2, 3, 2, 1, 1, 2, 3, 3, 2, 2, 5, 1, 2, 2, 4, 3, 3, 2, 1, 2, 2, 4])) //[[ 2, 1, 4, 3, 5, 6], [ 1, 6, 3, 2, 4, 5], [ 4, 3, 6, 5, 1, 2], [ 6, 5, 2, 1, 3, 4], [ 5, 4, 1, 6, 2, 3], [ 3, 2, 5, 4, 6, 1]] in 0.161s
+// console.log("res 247:",solvePuzzleGPT([ 0, 3, 0, 5, 3, 4,  0, 0, 0, 0, 0, 1, 0, 3, 0, 3, 2, 3, 3, 2, 0, 3, 1, 0])) //[[ 5, 2, 6, 1, 4, 3 ], [ 6, 4, 3, 2, 5, 1 ], [ 3, 1, 5, 4, 6, 2 ], [ 2, 6, 1, 5, 3, 4 ], [ 4, 3, 2, 6, 1, 5 ], [ 1, 5, 4, 3, 2, 6 ]] in 0.267s
+
+// 7x7
+// console.log(JSON.stringify(solvePuzzleGPT([0,0,5,3,0,2,0, 0,0,0,4,5,0,0, 0,0,0,3,2,5,4, 2,2,0,0,0,0,5])))
 //[ [2,3,1,4,6,5,7],
 // [1,7,4,6,5,2,3],
 // [3,6,5,7,2,1,4],

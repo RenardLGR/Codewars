@@ -356,7 +356,6 @@ function solvePuzzleV2(clues){
     //Now our backtrack follow the order in order[]
     backtrack(0)
 
-    // console.table(toGrid())
     return toRes()
 
     //start and inc are Arrays to make our traveling through the 1D possible[] easier. For a given clue of index i, the 0th element of the row/col associated with clues[i] will be start[i] and the following will be start[i] + inc[i]
@@ -400,6 +399,7 @@ function solvePuzzleV2(clues){
                 possible[skyscr] &= toKeep
             }
         }
+
         while(checkUnique() > 0){}
     }
 
@@ -527,7 +527,7 @@ function solvePuzzleV2(clues){
     // This function sets a height, removing this possibility in the row and col as necessary
     function setValue(idx, mask){
         let idxRow = Math.floor(idx / N) * N
-        let idxCol = idx % 7
+        let idxCol = idx % N
         for(let i=0 ; i<N ; i++){
             possible[idxRow] &= ~mask
             possible[idxCol] &= ~mask
@@ -568,7 +568,7 @@ function solvePuzzleV2(clues){
     }
 }
 
-// console.log(JSON.stringify(solvePuzzleV2([0,0,5,3,0,2,0, 0,0,0,4,5,0,0, 0,0,0,3,2,5,4, 2,2,0,0,0,0,5])))
+console.log(JSON.stringify(solvePuzzleV2([0,0,5,3,0,2,0, 0,0,0,4,5,0,0, 0,0,0,3,2,5,4, 2,2,0,0,0,0,5])))
 //[ [2,3,1,4,6,5,7],
 // [1,7,4,6,5,2,3],
 // [3,6,5,7,2,1,4],

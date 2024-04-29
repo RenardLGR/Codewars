@@ -49,7 +49,7 @@ function check_unique() {
     //0 to 13, 0 to 6 check cols from left to right top to bottom, 7 to 13 check rows from right to left top to bottom
     for (let i = 0; i < SIDES / 2 * N; i++) {
         const possible_indices = new Map(); //{shift : [index, index, etc]}
-        for (let j = s[i], k = 0; k < N; j += inc[i], k++) {
+        for (let j = s[i], k = 0; k < N; j += inc[i], k++) { //j is an index in possible[]
             for (let l = 0; l < N; l++) {
                 if ((1 << l) & possible[j]) {
                     if (!possible_indices.has(l)) {
@@ -204,7 +204,7 @@ function solvePuzzleGPT(clues) {
     //loop on clues
     for (let i = 0; i < SIDES * N; i++) {
         if (my_clues[i] === 0) continue;
-        //j is the index in possible of a skyscraper, k is just representing a step for the items in a row/col
+        //j is the index in possible[] of a skyscraper, k is just representing a step for the items in a row/col
         for (let j = s[i], k = 0; k < N; j += inc[i], k++) {
             let m = MASK;
             //l is a shift (height) to remove

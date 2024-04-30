@@ -142,12 +142,12 @@ function writeResults() {
 //the idx argument is useless, its an artefact of previous algorithms
 function dfs(idx) {
     let i = -1; // i is the index we will be setting our skyscraper
-    let tmp = 10000; // whatever value
+    let tmp = 10000; // whatever value, it will store the value of the number of possible height count
 
     //This following loop get the index of the mask with the least possible heights (same idea than order, but instead of setting it once and for all, we just search the smallest on each call of dfs())
     //loop through possible[]
     for (let _i = 0; _i < N * N; _i++) {
-        const c = countPossible(possible[_i]); // 1-7
+        const c = countPossible(possible[_i]); // 0-7, but 0 should lead to an early abort, yet nowhere in the algo is this condition checked
         //first non visited skyscraper sets the value tmp and i, after that, only element with a count smaller than tmp re-sets tmp and i
         if (tmp > c && !vis[_i]) {
             tmp = c;

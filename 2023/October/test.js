@@ -15,6 +15,9 @@ function solvePuzzle(clues){
     //Now our backtrack try to set the mask with the least amount of possibilities.
     backtrack()
 
+    console.log("isvalid;", isValid());
+    console.table(toGrid())
+    console.log(visited);
     return toRes()
 
     //start and inc are Arrays to make our traveling through the 1D possible[] easier. For a given clue of index i, the 0th element of the row/col associated with clues[i] will be start[i] and the following will be start[i] + inc[i]
@@ -132,13 +135,16 @@ function solvePuzzle(clues){
 
     //backtrack, search the index in possible with the least possible height, backtrack from there
     function backtrack(){
+        for(let i=0 ; i<N*N ; i++){
+            if(possible[i] === 0) console.log("0 appeared")
+        }
         let smallestCount = Infinity
         let smallestCountIdx = -1
 
         for(let i=0 ; i<N*N ; i++){
             let count = countPossibleHeight(possible[i])
             //We have an unset skyscraper and it is the one with the least amount of height possibilities
-            if(count>1 && !visited[i] && count<smallestCount){
+            if(!visited[i] && count<smallestCount){
                 smallestCount = count
                 smallestCountIdx = i
             }
@@ -254,4 +260,7 @@ console.log(JSON.stringify(solvePuzzle([0,0,5,3,0,2,0, 0,0,0,4,5,0,0, 0,0,0,3,2,
 // [5,4,2,1,3,7,6],
 // [4,1,3,2,7,6,5] ]
 
-// in 22.684 seconds
+// in 1.022 seconds
+
+//What I don't understand : It would appear that some possible[] elements drops to 0, isValid() doesn't return false when this case is encountered (although it would be very easy to implement). So where is this possibility rejected i.e. the backtrack doesn't explore this branch?
+//Well in this case, no shifts would make it work. if((1 << shift) & possible[smallestCountIdx]) never works. Whatever mask & 0 lead to a 0 -> falsy value

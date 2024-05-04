@@ -40,3 +40,48 @@ function bandNameGenerator(str) {
 
 // console.log(bandNameGenerator("dolphin")) // "The Dolphin"
 // console.log(bandNameGenerator("alaska")) // "Alaskalaska"
+
+//===============================
+// https://www.codewars.com/kata/576bb3c4b1abc497ec000065
+// Compare two strings by comparing the sum of their values (ASCII character code).
+
+// For comparing treat all letters as UpperCase
+// null/NULL/Nil/None should be treated as empty strings
+// If the string contains other characters than letters, treat the whole string as it would be empty
+// Your method should return true, if the strings are equal and false if they are not equal.
+
+// Examples:
+// "AD", "BC"  -> equal
+// "AD", "DD"  -> not equal
+// "gf", "FG"  -> equal
+// "zz1", ""   -> equal (both are considered empty)
+// "ZzZz", "ffPFF" -> equal
+// "kl", "lz"  -> not equal
+// null, ""    -> equal
+
+function compare(s1, s2) {
+    const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+    s1 = s1 ? s1.toUpperCase() : ""
+    s2 = s2 ? s2.toUpperCase() : ""
+
+    let score1 = 0
+    for(let i=0 ; i<s1.length ; i++){
+        if(!alpha.includes(s1[i])){
+            score1 = 0
+            break
+        }
+        score1 += s1.charCodeAt(i)
+    }
+
+    let score2 = 0
+    for(let i=0 ; i<s2.length ; i++){
+        if(!alpha.includes(s2[i])){
+            score2 = 0
+            break
+        }
+        score2 += s2.charCodeAt(i)
+    }
+
+    return score1 === score2
+}

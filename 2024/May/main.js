@@ -85,3 +85,29 @@ function compare(s1, s2) {
 
     return score1 === score2
 }
+
+//==========================================
+// https://www.codewars.com/kata/5a9e86705ee396d6be000091
+// Given an array with exactly 5 strings "a", "b" or "c" (chars in Java, characters in Fortran), check if the array contains three and two of the same values.
+
+// Examples
+// ["a", "a", "a", "b", "b"] ==> true  // 3x "a" and 2x "b"
+// ["a", "b", "c", "b", "c"] ==> false // 1x "a", 2x "b" and 2x "c"
+// ["a", "a", "a", "a", "a"] ==> false // 5x "a"
+
+function checkThreeAndTwo(array) {
+    let as = array.filter(e => e === "a").length
+    let bs = array.filter(e => e === "b").length
+    let cs = array.filter(e => e === "c").length
+
+    //If I have a 1, or a 4 or a 5 ; I can't have a 2 and a 3
+    if(as === 1 || as === 4 || as === 5) return false
+    if(bs === 1 || bs === 4 || bs === 5) return false
+    if(cs === 1 || cs === 4 || cs === 5) return false
+
+    return true
+}
+
+console.log(checkThreeAndTwo(["a", "a", "a", "b", "b"])) // ==> true  // 3x "a" and 2x "b"
+console.log(checkThreeAndTwo(["a", "b", "c", "b", "c"])) // ==> false // 1x "a", 2x "b" and 2x "c"
+console.log(checkThreeAndTwo(["a", "a", "a", "a", "a"])) // ==> false // 5x "a"

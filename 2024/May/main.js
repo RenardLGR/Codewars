@@ -108,6 +108,36 @@ function checkThreeAndTwo(array) {
     return true
 }
 
-console.log(checkThreeAndTwo(["a", "a", "a", "b", "b"])) // ==> true  // 3x "a" and 2x "b"
-console.log(checkThreeAndTwo(["a", "b", "c", "b", "c"])) // ==> false // 1x "a", 2x "b" and 2x "c"
-console.log(checkThreeAndTwo(["a", "a", "a", "a", "a"])) // ==> false // 5x "a"
+// console.log(checkThreeAndTwo(["a", "a", "a", "b", "b"])) // ==> true  // 3x "a" and 2x "b"
+// console.log(checkThreeAndTwo(["a", "b", "c", "b", "c"])) // ==> false // 1x "a", 2x "b" and 2x "c"
+// console.log(checkThreeAndTwo(["a", "a", "a", "a", "a"])) // ==> false // 5x "a"
+
+function checkThreeAndTwoBis(array) {
+    let as = array.filter(e => e === "a").length
+    let bs = array.filter(e => e === "b").length
+    let cs = array.filter(e => e === "c").length
+
+    //If there is one of them a two and one of them a Three
+    return (as === 2 || bs === 2 || cs === 2) && (as === 3 || bs === 3 || cs === 3)
+}
+
+// console.log(checkThreeAndTwoBis(["a", "a", "a", "b", "b"])) // ==> true  // 3x "a" and 2x "b"
+// console.log(checkThreeAndTwoBis(["a", "b", "c", "b", "c"])) // ==> false // 1x "a", 2x "b" and 2x "c"
+// console.log(checkThreeAndTwoBis(["a", "a", "a", "a", "a"])) // ==> false // 5x "a"
+
+function checkThreeAndTwoTer(array) {
+    let freq = array.reduce((acc, cur) =>{
+        acc[cur] = (acc[cur] || 0) + 1
+        return acc
+    }, {})
+
+    //If I have both a Two and a Three
+    let isThereTwo = Object.values(freq).some(e => e === 2)
+    let isThereThree = Object.values(freq).some(e => e === 3)
+
+    return isThereTwo && isThereThree
+}
+
+// console.log(checkThreeAndTwoTer(["a", "a", "a", "b", "b"])) // ==> true  // 3x "a" and 2x "b"
+// console.log(checkThreeAndTwoTer(["a", "b", "c", "b", "c"])) // ==> false // 1x "a", 2x "b" and 2x "c"
+// console.log(checkThreeAndTwoTer(["a", "a", "a", "a", "a"])) // ==> false // 5x "a"

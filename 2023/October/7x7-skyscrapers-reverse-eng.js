@@ -1,11 +1,13 @@
 // From : https://github.com/lostleaf/codewars/blob/master/7x7-skyscrapers.cpp
 
+//Check 4x4-skyscrapers-reverse-eng.js for more in depth details
+
 const N = 7;
 const SIDES = 4;
 const MASK = (1 << N) - 1;
 const s = [
     0, 1, 2, 3, 4, 5, 6, 6, 13, 20, 27, 34, 41, 48, 48, 47, 46, 45, 44, 43, 42, 42, 35, 28, 21, 14, 7, 0
-];
+]; 
 const inc = [
     7, 7, 7, 7, 7, 7, 7, -1, -1, -1, -1, -1, -1, -1, -7, -7, -7, -7, -7, -7, -7, 1, 1, 1, 1, 1, 1, 1
 ];
@@ -14,6 +16,8 @@ let results = Array.from({ length: N }, () => Array(N).fill(0));
 let vis = Array(N * N).fill(true);
 let myClues = [];
 
+// This function sets a height, removing this possibility in the row and col as necessary
+// x is an index, v is a shift
 function setValue(x, v) {
     const m = MASK ^ (1 << v);
     const sRow = x - (x % N);
@@ -25,6 +29,7 @@ function setValue(x, v) {
     possible[x] = 1 << v;
 }
 
+// Count the number of set bits in the binary representation, for the entire length of mask check the rightmost bit with 1, increase count if the checked bit of the mask is 1 too, remove the rightmost bit of the mask after each iteration of the while loop
 function countPossible(val) {
     let n = 0;
     while (val) {
@@ -256,7 +261,6 @@ function solvePuzzle(clues) {
 // [3,7,6,2,1,5,4],
 // [2,4,3,5,6,1,7] ]
 // in 0.085 seconds
-// filter2() useless
 
 // console.table(solvePuzzle([0,2,3,0,2,0,0, 5,0,4,5,0,4,0, 0,4,2,0,0,0,6, 0,0,0,0,0,0,0]))
 // [ [7,6,2,1,5,4,3],
@@ -267,7 +271,6 @@ function solvePuzzle(clues) {
 // [3,7,6,2,1,5,4],
 // [2,4,3,5,6,1,7] ]
 // in 0.107 seconds
-// filter2() useless
 
 //hard puzzle
 // console.table(solvePuzzle([0,0,0,5,0,0,3, 0,6,3,4,0,0,0, 3,0,0,0,2,4,0, 2,6,2,2,2,0,0]))
@@ -279,7 +282,6 @@ function solvePuzzle(clues) {
 // [1,2,3,4,5,7,6],
 // [5,1,4,7,2,6,3] ]
 // in 0.09 seconds
-// filter2() useless
 
 
 //very hard
@@ -291,6 +293,4 @@ console.log(JSON.stringify(solvePuzzle([0,0,5,3,0,2,0, 0,0,0,4,5,0,0, 0,0,0,3,2,
 // [6,2,7,5,4,3,1],
 // [5,4,2,1,3,7,6],
 // [4,1,3,2,7,6,5] ]
-
 // in 1.66 seconds
-// filter2() useless

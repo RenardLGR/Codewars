@@ -1,9 +1,11 @@
-const SIZE = 7;
+const SIZE = 6;
 
 function solvePuzzle(clues) {
     let permutations = getPermutations(Array(SIZE).fill(0).map((_, i) => i + 1));
     let rows = [], rowsVert = [];
     for (let i = SIZE; i < SIZE * 2; i++) {
+      //For each rows, store very row permutation possible that fits the clue
+      //Check for both right to left and left to right
       rows.push(permutations.filter(row => isValid(row, i, clues) && isValid(row, SIZE * 5 - 1 - i, clues)));
     }
     for (let i = 0; i < SIZE; i++) {
@@ -24,6 +26,7 @@ function removeConflicts(rows, rowsVert) {
   });
 }
 
+// i is the clues[] index
 function isValid(row, i, clues) {
   if (clues[i] === 0) return true;
   reduceMethod = i >= SIZE && i < SIZE * 3 ? "reduceRight" : "reduce";
@@ -34,8 +37,8 @@ function getPermutations(list) {
   if (list.length == 1) return [list];
   let result = [];
   for (let i = 0; i < list.length; i++) {
-    sublist = list.slice(0);
-    let head = sublist.splice(i, 1);
+    sublist = list.slice(0); //cpy
+    let head = sublist.splice(i, 1); //remove and stores it in head
     getPermutations(sublist).forEach(permutation => {
       result.push(head.concat(permutation));
       return result;
@@ -43,6 +46,9 @@ function getPermutations(list) {
   }
   return result;
 }
+
+// console.log(getPermutations([1,2,3,4,5,6,7,8]))
+// in 0.153 seconds
 
 function transpose(matrix) {
   let result = [];

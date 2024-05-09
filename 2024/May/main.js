@@ -174,3 +174,52 @@ function createDictBis(keys, values){
 }
 
 // console.log(createDictBis(['a', 'b', 'c', 'd'], [1, 2, 3])) // {'a': 1, 'b': 2, 'c': 3, 'd': null}
+
+//==============================
+// https://www.codewars.com/kata/56576f82ab83ee8268000059
+// Kevin is noticing his space run out! Write a function that removes the spaces from the values and returns an array showing the space decreasing.
+// For example, running this function on the array ['i', 'have','no','space'] would produce ['i','ihave','ihaveno','ihavenospace']
+
+function spacey(array) {
+    return array.map((e, idx, arr) => {
+
+    })
+}
+
+function lds(arr) {
+    if (arr.length === 0) return [];
+
+    let n = arr.length;
+    let lds = Array.from({length: n}, () => 1); // Initialize LDS values for all indexes
+    let prev = Array.from({length: n}, () => -1); // Initialize previous indexes for all indexes
+
+    // Compute optimized LDS values in bottom up manner
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[i] < arr[j] && lds[i] < lds[j] + 1) {
+                lds[i] = lds[j] + 1;
+                prev[i] = j;
+            }
+        }
+    }
+
+    // Find the maximum value and its index in LDS array
+    let max = lds[0], maxIndex = 0;
+    for (let i = 1; i < n; i++) {
+        if (lds[i] > max) {
+            max = lds[i];
+            maxIndex = i;
+        }
+    }
+
+    // Construct the LDS from the prev array
+    let result = [];
+    while (maxIndex !== -1) {
+        result.unshift(arr[maxIndex]);
+        maxIndex = prev[maxIndex];
+    }
+
+    return result;
+}
+
+console.log(lds([6, 13, 5, 10, 2, 8, 11, 7, 3, 5, 2])); // [13, 10, 8, 7, 3, 2]

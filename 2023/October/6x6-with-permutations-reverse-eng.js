@@ -1,4 +1,4 @@
-const SIZE = 6;
+const SIZE = 7;
 
 function solvePuzzle(clues) {
     let permutations = getPermutations(Array(SIZE).fill(0).map((_, i) => i + 1));
@@ -11,6 +11,7 @@ function solvePuzzle(clues) {
     for (let i = 0; i < SIZE; i++) {
       rowsVert.push(permutations.filter(row => isValid(row, i, clues) && isValid(row, SIZE * 3 - 1 - i, clues)));
     }
+    console.log(rows);
     do {
       removeConflicts(rows, rowsVert);
       removeConflicts(rowsVert, rows);
@@ -20,6 +21,7 @@ function solvePuzzle(clues) {
 
 function removeConflicts(rows, rowsVert) {
   rows.forEach((r, i) => {
+    //r is an array of possibilities, each possibility being an array itself like so : r = [[1,2,3,4,6,7,5], [2,5,1,3,4,6,7], [x,x,x,x,x,x,x]]
     transpose(r).forEach((values, j) => {
       rowsVert[j] = rowsVert[j].filter(row => values.includes(row[i]));
     });
@@ -47,10 +49,10 @@ function getPermutations(list) {
   return result;
 }
 
-// console.log(getPermutations([1,2,3,4,5,6,7,8]))
-// in 0.153 seconds
-
+//not called on a matrix
 function transpose(matrix) {
+  // console.log("matrix");
+  // console.table(matrix);
   let result = [];
   let l = matrix.length;
   for (let i = 0; i < matrix[0].length; i++) {

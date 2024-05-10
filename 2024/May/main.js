@@ -181,45 +181,33 @@ function createDictBis(keys, values){
 // For example, running this function on the array ['i', 'have','no','space'] would produce ['i','ihave','ihaveno','ihavenospace']
 
 function spacey(array) {
-    return array.map((e, idx, arr) => {
-
-    })
+    let res = []
+    for(let i=0 ; i<array.length ; i++){
+        let curr = ""
+        for(let j=0 ; j<=i ; j++){
+            curr += array[j]
+        }
+        res.push(curr)
+    }
+    return res
 }
 
-function lds(arr) {
-    if (arr.length === 0) return [];
+// console.log(spacey(['kevin', 'has','no','space'])) // ['kevin','kevinhas','kevinhasno','kevinhasnospace']
 
-    let n = arr.length;
-    let lds = Array.from({length: n}, () => 1); // Initialize LDS values for all indexes
-    let prev = Array.from({length: n}, () => -1); // Initialize previous indexes for all indexes
-
-    // Compute optimized LDS values in bottom up manner
-    for (let i = 1; i < n; i++) {
-        for (let j = 0; j < i; j++) {
-            if (arr[i] < arr[j] && lds[i] < lds[j] + 1) {
-                lds[i] = lds[j] + 1;
-                prev[i] = j;
-            }
-        }
+function spaceyBis(array) {
+    let res = []
+    for(let i=0 ; i<array.length ; i++){
+        res[i] = (res[i-1] || "") + array[i]
     }
-
-    // Find the maximum value and its index in LDS array
-    let max = lds[0], maxIndex = 0;
-    for (let i = 1; i < n; i++) {
-        if (lds[i] > max) {
-            max = lds[i];
-            maxIndex = i;
-        }
-    }
-
-    // Construct the LDS from the prev array
-    let result = [];
-    while (maxIndex !== -1) {
-        result.unshift(arr[maxIndex]);
-        maxIndex = prev[maxIndex];
-    }
-
-    return result;
+    return res
 }
 
-console.log(lds([6, 13, 5, 10, 2, 8, 11, 7, 3, 5, 2])); // [13, 10, 8, 7, 3, 2]
+// console.log(spaceyBis(['kevin', 'has','no','space'])) // ['kevin','kevinhas','kevinhasno','kevinhasnospace']
+
+function spaceyTer(array) {
+    let curr = ""
+    return array.map(e => curr += e)
+}
+
+// console.log(spaceyTer(['kevin', 'has','no','space'])) // ['kevin','kevinhas','kevinhasno','kevinhasnospace']
+

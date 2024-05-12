@@ -230,3 +230,15 @@ function arithmeticSequenceElements(a, d, n) {
     }
     return res.slice(0, res.length-2)
 }
+
+function arithmeticSequenceElementsBis(a, d, n) {
+	let res = [a]
+    while(--n > 0){
+        res.push(a+=d)
+    }
+    return res.join(", ")
+}
+
+function arithmeticSequenceElementsTer(a, d, n) {
+    return Array.from({length : n}, (_, i) => a + i * d).join(", ")
+}

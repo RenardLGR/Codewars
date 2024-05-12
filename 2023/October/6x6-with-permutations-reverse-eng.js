@@ -29,6 +29,7 @@ function removeConflicts(rows, rowsVert) {
 }
 
 // i is the clues[] index
+//TODO : this check if a row respects the clue (left o right and right to left)
 function isValid(row, i, clues) {
   if (clues[i] === 0) return true;
   reduceMethod = i >= SIZE && i < SIZE * 3 ? "reduceRight" : "reduce";
@@ -61,6 +62,10 @@ function transpose(matrix) {
   }
   return result;
 }
+
+let r = [[1,2,3,4,6,7,5], [2,5,1,3,4,6,7], ["x","x","x","x","x","x","x"]]
+// console.table(transpose(r))
+console.log(transpose(r))
 
 
 // console.table(solvePuzzle([0,2,3,0,2,0,0, 5,0,4,5,0,4,0, 0,4,2,0,0,0,6, 5,2,2,2,2,4,1]))
@@ -107,7 +112,7 @@ function transpose(matrix) {
 // in an insignificant amount of time
 
 //very hard puzzle
-console.table(solvePuzzle([0,0,5,3,0,2,0, 0,0,0,4,5,0,0, 0,0,0,3,2,5,4, 2,2,0,0,0,0,5]))
+// console.table(solvePuzzle([0,0,5,3,0,2,0, 0,0,0,4,5,0,0, 0,0,0,3,2,5,4, 2,2,0,0,0,0,5]))
 // console.log(JSON.stringify(solvePuzzle([0,0,5,3,0,2,0, 0,0,0,4,5,0,0, 0,0,0,3,2,5,4, 2,2,0,0,0,0,5])))
 //[ [2,3,1,4,6,5,7],
 // [1,7,4,6,5,2,3],

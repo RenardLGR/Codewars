@@ -242,3 +242,44 @@ function arithmeticSequenceElementsBis(a, d, n) {
 function arithmeticSequenceElementsTer(a, d, n) {
     return Array.from({length : n}, (_, i) => a + i * d).join(", ")
 }
+
+//=====================================
+// https://www.codewars.com/kata/5809b62808ad92e31b000031
+// In this kata, you will do addition and subtraction on a given string. The return value must be also a string.
+
+// Note: the input will not be empty.
+
+// Examples
+// "1plus2plus3plus4"  --> "10"
+// "1plus2plus3minus4" -->  "2"
+
+function calculate(str) {
+    let res = 0
+    let inProgress = ""
+    let sign = 1
+    for(let i=0 ; i<str.length ; i++){
+        if(str[i] === "p"){
+            res += Number(inProgress) * sign
+            inProgress = ""
+            i += 3
+            sign = 1
+            continue
+        }
+        if(str[i] === "m"){
+            res += Number(inProgress) * sign
+            inProgress = ""
+            i += 4
+            sign = -1
+            continue
+        }
+        inProgress += str[i]
+    }
+
+    res += Number(inProgress) * sign
+
+    return "" + res
+}
+
+// console.log(calculate("1plus2plus3plus4")) // "10"
+// console.log(calculate("1minus2minus3minus4")) // "-8"
+// console.log(calculate("1plus2plus3minus4")) // "2"

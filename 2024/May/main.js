@@ -283,3 +283,25 @@ function calculate(str) {
 // console.log(calculate("1plus2plus3plus4")) // "10"
 // console.log(calculate("1minus2minus3minus4")) // "-8"
 // console.log(calculate("1plus2plus3minus4")) // "2"
+
+function calculateBis(str) {
+    let signs = str.match(/plus|minus/g)
+    let nums = str.match(/\d+/g)
+
+    let res = Number(nums[0])
+    for(let i=0 ; i<signs.length ; i++){
+        let sign = signs[i] === "plus" ? 1 : -1
+        res += Number(nums[i+1]) * sign
+    }
+
+    return "" + res
+}
+
+// console.log(calculateBis("1plus2plus3plus4")) // "10"
+// console.log(calculateBis("1minus2minus3minus4")) // "-8"
+// console.log(calculateBis("1plus2plus3minus4")) // "2"
+
+// Since everyone is using the eval()
+function calculateTer(str){
+    return eval(str.replace(/plus/gi, "+").replace(/minus/gi, "-")).toString()
+}

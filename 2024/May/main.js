@@ -324,4 +324,13 @@ function twoDecimalPlaces(number) {
     return Math.trunc(number*100)/100
 }
 
-console.log(twoDecimalPlaces(32.8493)) // 32.84
+// console.log(twoDecimalPlaces(32.8493)) // 32.84
+
+function twoDecimalPlacesBis(number){
+    let split = (""+number).split(".")
+    split[1] = split[1].slice(0, 2)
+    return Number(split.join("."))
+}
+
+// console.log(twoDecimalPlacesBis(32.8493)) // 32.84
+// console.log(twoDecimalPlacesBis(-2662382.91989303)) // -2662382.91

@@ -363,12 +363,37 @@ function reverseBits(n){
     return parseInt(n.toString(2).split("").reverse().join(""), 2)
 }
 
-console.log(reverseBits(417)) // 267
+// console.log(reverseBits(417)) // 267
 
 function reverseBitsBis(n){
-    let res = 0
-    let shifts = 0
-    while(n){
-        
+    // Bitwise operations in JavaScript work on 32-bit signed integers. When you use a number larger than 32 bits, it gets truncated to a 32-bit signed integer.
+    // Number.MAX_SAFE_INTEGER is 9007199254740991 (which is 2^53 - 1)
+    // We need BigInt
+    let res = 0n
+    n = BigInt(n)
+    while(n > 0){
+        let bit = 1n & n // rightmost bit of n
+        res = res << 1n
+        res |= bit
+        n = n >> 1n
     }
+
+    return Number(res)
 }
+
+// console.log(reverseBitsBis(417)) // 267
+// console.log(reverseBitsBis(Number.MAX_SAFE_INTEGER)) // 9007199254740991
+
+function reverseBitsTer(n){
+    let res = 0
+    while(n > 0){
+        let bit = n % 2 // rightmost bit of n
+        res = res * 2 + bit
+        n = Math.floor(n/2)
+    }
+
+    return res
+}
+
+// console.log(reverseBitsTer(417)) // 267
+// console.log(reverseBitsTer(Number.MAX_SAFE_INTEGER)) // 9007199254740991

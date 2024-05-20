@@ -397,3 +397,13 @@ function reverseBitsTer(n){
 
 // console.log(reverseBitsTer(417)) // 267
 // console.log(reverseBitsTer(Number.MAX_SAFE_INTEGER)) // 9007199254740991
+
+//=====================================
+// https://www.codewars.com/kata/57b68bc7b69bfc8209000307
+// Create a function that returns the average of an array of numbers ("scores"), rounded to the nearest whole number. You are not allowed to use any loops (including for, for/in, while, and do/while loops).
+
+// The array will never be empty.
+
+function average(scores) {
+    return Math.round(scores.reduce((acc, cur) => acc+cur, 0) / scores.length)
+}

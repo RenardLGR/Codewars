@@ -469,3 +469,14 @@ function validISBN10(isbn){
 }
 
 // console.log(validISBN10("1112223339")) // true
+
+function validISBN10Bis(isbn){
+    let len = isbn.length
+
+    if(len !== 10) return false
+
+    //no need to check for validity of e since returning NaN will give us false in the end
+    return isbn.split("").map((e, idx) => (e === "X" && idx === len-1) ? 10 : Number(e)).reduce((acc, cur, idx) => acc + cur * (idx+1), 0) % 11 === 0
+}
+
+// console.log(validISBN10Bis("1112223339")) // true

@@ -480,3 +480,12 @@ function validISBN10Bis(isbn){
 }
 
 // console.log(validISBN10Bis("1112223339")) // true
+
+function validISBN10Ter(isbn){
+    //Check if isbn is valid
+    if(!/^\d{9}[X\d]$/.test(isbn)) return false
+
+    return isbn.split("").reduce((acc, curr, idx) => acc + (curr === "X" ? 10 : curr) * (idx+1), 0) % 11 === 0
+}
+
+// console.log(validISBN10Ter("1112223339")) // true

@@ -508,3 +508,8 @@ Object.defineProperty(Array.prototype, 'numberOfOccurrences',{
         return this.filter(e => e === element).length
     }
 });
+
+//Remember : Arrow function wouldn't work
+Array.prototype.numberOfOccurrencesBis = function(element){
+    return this.filter(e => e === element).length
+}

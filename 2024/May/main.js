@@ -603,3 +603,20 @@ var nbrOfLaps = function (x, y) {
 
 // console.log(nbrOfLaps(5, 3)) // returns [3, 5]
 // console.log(nbrOfLaps(4, 6)) // returns [3, 2]
+
+function nbrOfLapsBis(bLength, cLength){
+    //We are actually searching for the smallest number divisible by both bLength and cLength. This is known as the lcm(a, b) or least common multiple of a and b.
+    //It is given by the formula lcm(a, b) = |ab| / gcd(a, b)
+    //With gcd being the greatest common divisor. It is the largest positive integer that divides both numbers without leaving a remainder
+    let lcm = bLength * cLength / gcd(bLength, cLength)
+
+    return [lcm/bLength, lcm/cLength]
+
+    function gcd(a, b){
+        if(b === 0) return a
+        return gcd(b, a%b)
+    }
+}
+
+// console.log(nbrOfLapsBis(5, 3)) // returns [3, 5]
+// console.log(nbrOfLapsBis(4, 6)) // returns [3, 2]

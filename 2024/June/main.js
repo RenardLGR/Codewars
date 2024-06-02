@@ -20,3 +20,9 @@ function isLucky(n) {
 }
 
 // console.log(isLucky(1892376)) // true
+
+function isLuckyBis(n) {
+    return n%9 === 0
+}
+
+// console.log(isLuckyBis(1892376)) // true

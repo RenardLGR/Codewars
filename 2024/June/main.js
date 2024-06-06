@@ -76,3 +76,7 @@ function evenLast(numbers) {
     if(numbers.length === 0) return 0
     return numbers[numbers.length - 1] * numbers.reduce((acc, curr, idx) => idx%2 === 0 ? acc + curr : acc, 0)
 }
+
+function evenLastBis(numbers){
+    return numbers[numbers.length - 1] * numbers.reduce((acc, curr, idx) => idx%2 === 0 ? acc + curr : acc, 0) || 0
+}

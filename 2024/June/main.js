@@ -80,3 +80,24 @@ function evenLast(numbers) {
 function evenLastBis(numbers){
     return numbers[numbers.length - 1] * numbers.reduce((acc, curr, idx) => idx%2 === 0 ? acc + curr : acc, 0) || 0
 }
+
+//====================================================
+// https://www.codewars.com/kata/592fd8f752ee71ac7e00008a
+// Your are given a string. You must replace any occurence of the sequence coverage by covfefe, however, if you don't find the word coverage in the string, you must add covfefe at the end of the string with a leading space.
+
+// For the languages where the string is mutable (such as ruby), don't modify the given string, otherwise this will break the test cases.
+
+function covfefe(str){
+    let addCff = true
+    let res = str.split(" ").map(w => {
+        if(w === "coverage"){
+            addCff = false
+            return "covfefe"
+        }
+        return w
+    }).join(" ")
+
+    if(addCff) res += " covfefe"
+
+    return res
+}

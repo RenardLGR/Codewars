@@ -101,3 +101,9 @@ function covfefe(str){
 
     return res
 }
+
+function covfefeBis(str){
+    let res = str.split("coverage").join("covfefe")
+
+    return res === str ? res + " covfefe" : res
+}

@@ -107,3 +107,15 @@ function covfefeBis(str){
 
     return res === str ? res + " covfefe" : res
 }
+
+function covfefeTer(str){
+    let res = str.replace(/coverage/g, "covfefe")
+
+    return res === str ? res + " covfefe" : res
+}
+
+function covfefeQuater(str){
+    let regexp = /coverage/g
+    //return str.match(regexp) ...
+    return regexp.test(str) ? str.replace(regexp, "covfefe") : str + " covfefe"
+}

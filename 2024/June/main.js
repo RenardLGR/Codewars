@@ -139,3 +139,11 @@ function keyEqualsValue(pairs){
 
     return res.slice(0, -1)
 }
+
+function keyEqualsValueBis(pairs){
+    return Object.keys(pairs).map(k => `${k} = ${pairs[k]}`).join(",")
+}
+
+function keyEqualsValueTer(pairs){
+    return Object.entries(pairs).map(([k, v]) => `${k} = ${v}`).join(",")
+}

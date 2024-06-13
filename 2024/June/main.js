@@ -180,6 +180,20 @@ function getStrings(city){
     }, "").slice(0, -1)
 }
 
-console.log(getStrings("Chicago")) // "c:**,h:*,i:*,a:*,g:*,o:*"
-console.log(getStrings("Bangkok")) // "b:*,a:*,n:*,g:*,k:**,o:*"
-console.log(getStrings("Las Vegas")) // "l:*,a:**,s:**,v:*,e:*,g:*"
+// console.log(getStrings("Chicago")) // "c:**,h:*,i:*,a:*,g:*,o:*"
+// console.log(getStrings("Bangkok")) // "b:*,a:*,n:*,g:*,k:**,o:*"
+// console.log(getStrings("Las Vegas")) // "l:*,a:**,s:**,v:*,e:*,g:*"
+
+function getStringsBis(city){
+    city = city.replace(/ /g, "").toLowerCase()
+    let freq = city.split("").reduce((acc, cur) => {
+        acc[cur] = (acc[cur] || "") + "*"
+        return acc
+    }, {})
+
+    return Object.entries(freq).map(([key, val]) => `${key}:${val}`).join(",")
+}
+
+console.log(getStringsBis("Chicago")) // "c:**,h:*,i:*,a:*,g:*,o:*"
+console.log(getStringsBis("Bangkok")) // "b:*,a:*,n:*,g:*,k:**,o:*"
+console.log(getStringsBis("Las Vegas")) // "l:*,a:**,s:**,v:*,e:*,g:*"

@@ -253,3 +253,23 @@ function newAvg(arr, newavg) {
 // console.log(newAvg([14, 30, 5, 7, 9, 11, 16], 90)) // 628
 // console.log(newAvg([14, 30, 5, 7, 9, 11, 15], 92)) // 645
 // console.log(newAvg([14, 30, 5, 7, 9, 11, 15], 2)) // Error : "Expected New Average is too low"
+
+//=====================================
+// https://www.codewars.com/kata/5768a693a3205e1cc100071f/train/javascript
+// Some people just have a first name; some people have first and last names and some people have first, middle and last names.
+
+// You task is to initialize the middle names (if there is any).
+
+// Examples
+// 'Jack Ryan'                   => 'Jack Ryan'
+// 'Lois Mary Lane'              => 'Lois M. Lane'
+// 'Dimitri'                     => 'Dimitri'
+// 'Alice Betty Catherine Davis' => 'Alice B. C. Davis'
+
+function initializeNames(name){
+    return name.split(' ').map((e, idx, arr) =>{
+        if(idx === 0) return e
+        if(idx === arr.length-1) return e
+        return e[0] + '.'
+    }).join(' ')
+}

@@ -330,3 +330,9 @@ function arrowArea(a,b) {
 String.prototype.vowel = function() {
     return this.length === 1 ? /[aeiou]/i.test(this) : false
 }
+
+String.prototype.vowelBis = function() {
+    //^: This is the start-of-line anchor. It asserts that the match must start at the beginning of the string or line.
+    //$: This is the end-of-line anchor. It asserts that the match must end at the end of the string or line.
+    return /^[aeiou]$/i.test(this)
+}

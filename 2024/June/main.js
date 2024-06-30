@@ -448,3 +448,28 @@ function squaresNeeded(grains){
 // console.log(squaresNeeded(2)) // 2
 // console.log(squaresNeeded(3)) // 2
 // console.log(squaresNeeded(4)) // 3
+// console.log(squaresNeeded(319921)) // 19
+// console.log(squaresNeeded(586518813)) // 30
+// console.log(squaresNeeded(63754893952)) // 36
+// console.log(squaresNeeded(23262079995834)) // 45
+
+function squaresNeededBis(grains){
+    let res = 0
+    grains = BigInt(grains)
+    while(grains){
+        // grains = grains >> 1n
+        grains >>= 1n
+        res++
+    }
+    return res
+}
+
+// console.log(squaresNeededBis(0)) // 0
+// console.log(squaresNeededBis(1)) // 1
+// console.log(squaresNeededBis(2)) // 2
+// console.log(squaresNeededBis(3)) // 2
+// console.log(squaresNeededBis(4)) // 3
+// console.log(squaresNeededBis(319921)) // 19
+// console.log(squaresNeededBis(586518813)) // 30
+console.log(squaresNeededBis(63754893952)) // 36
+console.log(squaresNeededBis(23262079995834)) // 45

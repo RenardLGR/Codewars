@@ -471,5 +471,19 @@ function squaresNeededBis(grains){
 // console.log(squaresNeededBis(4)) // 3
 // console.log(squaresNeededBis(319921)) // 19
 // console.log(squaresNeededBis(586518813)) // 30
-console.log(squaresNeededBis(63754893952)) // 36
-console.log(squaresNeededBis(23262079995834)) // 45
+// console.log(squaresNeededBis(63754893952)) // 36
+// console.log(squaresNeededBis(23262079995834)) // 45
+
+function squaresNeededTer(grains){
+    return grains === 0 ? 0 : grains.toString(2).length
+}
+
+// console.log(squaresNeededTer(0)) // 0
+// console.log(squaresNeededTer(1)) // 1
+// console.log(squaresNeededTer(2)) // 2
+// console.log(squaresNeededTer(3)) // 2
+// console.log(squaresNeededTer(4)) // 3
+// console.log(squaresNeededTer(319921)) // 19
+// console.log(squaresNeededTer(586518813)) // 30
+// console.log(squaresNeededTer(63754893952)) // 36
+// console.log(squaresNeededTer(23262079995834)) // 45

@@ -487,3 +487,17 @@ function squaresNeededTer(grains){
 // console.log(squaresNeededTer(586518813)) // 30
 // console.log(squaresNeededTer(63754893952)) // 36
 // console.log(squaresNeededTer(23262079995834)) // 45
+
+function squaresNeededQuater(grains){
+    return Math.ceil(Math.log2(grains+1))
+}
+
+// console.log(squaresNeededQuater(0)) // 0
+// console.log(squaresNeededQuater(1)) // 1
+// console.log(squaresNeededQuater(2)) // 2
+// console.log(squaresNeededQuater(3)) // 2
+// console.log(squaresNeededQuater(4)) // 3
+// console.log(squaresNeededQuater(319921)) // 19
+// console.log(squaresNeededQuater(586518813)) // 30
+// console.log(squaresNeededQuater(63754893952)) // 36
+// console.log(squaresNeededQuater(23262079995834)) // 45

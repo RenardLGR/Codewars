@@ -97,3 +97,15 @@ function nextHappyYear(year){
         return new Set(s).size === s.length
     }
 }
+
+function nextHappyYearBis(year){
+    while(true){
+        if(areAllDigitsUnique(++year)) return year
+    }
+
+
+    function areAllDigitsUnique(number){
+        let s = "" + number
+        return new Set(s).size === s.length
+    }
+}

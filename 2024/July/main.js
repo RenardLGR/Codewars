@@ -128,3 +128,7 @@ function findAll(array, n){
         return acc
     }, [])
 }
+
+function findAllBis(array, n){
+    return array.reduce((acc, cur, idx) => cur===n ? [...acc, idx] : acc, [])
+}

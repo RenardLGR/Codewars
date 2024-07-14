@@ -155,3 +155,7 @@ function consecutive(array){
 
     return diff - toRemove
 }
+
+function consecutiveBis(array){
+    return array.sort((a,b) => a-b).reduce((acc, cur, idx, arr) => idx===0 ? 0 : acc + cur - arr[idx-1] - 1, 0)
+}

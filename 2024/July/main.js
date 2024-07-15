@@ -157,5 +157,18 @@ function consecutive(array){
 }
 
 function consecutiveBis(array){
+    //This supposes every element of the array is unique
+    let sorted = array.sort((a,b) => a-b)
+    let res = 0
+    for(let i=1 ; i<sorted.length ; i++){
+        let diff = sorted[i] - sorted[i-1] - 1
+        res += diff
+    }
+
+    return res
+}
+
+function consecutiveTer(array){
+    //This supposes every element of the array is unique
     return array.sort((a,b) => a-b).reduce((acc, cur, idx, arr) => idx===0 ? 0 : acc + cur - arr[idx-1] - 1, 0)
 }

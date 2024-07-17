@@ -195,3 +195,7 @@ function killer(suspectInfo, dead) {
         if(dead.every(d => suspectInfo[suspect].includes(d))) return suspect
     }
 }
+
+function killerBis(suspectInfo, dead){
+    return Object.keys(suspectInfo).find(x => dead.every(y => suspectInfo[x].includes(y)))
+}

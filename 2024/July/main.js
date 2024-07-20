@@ -217,3 +217,9 @@ function findDup(arr){
         }
     }
 }
+
+function findDupBis(arr){
+    return arr.sort().find((e, i) => e === arr[i+1])
+}
+
+console.log(findDupBis([3, 2, 5, 1, 3, 4]))

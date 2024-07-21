@@ -222,4 +222,6 @@ function findDupBis(arr){
     return arr.sort().find((e, i) => e === arr[i+1])
 }
 
-console.log(findDupBis([3, 2, 5, 1, 3, 4]))
+function findDupTer(arr){
+    return arr.find((e, i) => arr.indexOf(e) !== i)
+}

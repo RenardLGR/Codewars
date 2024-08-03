@@ -16,3 +16,14 @@ function sumNoDuplicates(numList) {
         return isDupe ? acc : acc + cur
     }, 0)
 }
+
+function sumNoDuplicatesBis(numList) {
+    return numList.reduce((acc, cur) => {
+        let isDupe = numList.indexOf(cur) !== numList.lastIndexOf(cur)
+        return isDupe ? acc : acc + cur
+    }, 0)
+}
+
+function sumNoDuplicatesTer(numList) {
+    return numList.filter(e => numList.indexOf(e) === numList.lastIndexOf(e)).reduce((acc, cur) => acc + cur, 0)
+}

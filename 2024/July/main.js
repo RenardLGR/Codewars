@@ -225,3 +225,14 @@ function findDupBis(arr){
 function findDupTer(arr){
     return arr.find((e, i) => arr.indexOf(e) !== i)
 }
+
+function findDupQuater(arr){
+    // bitwise XOR returns a number whose binary representation has a 1 in each bit position for which the corresponding bits of either but not both operands are 1
+    // bitwise XOR is commutative, meaning a^b = b^a
+    // => a^a = 0
+    // => a^0 = 0
+    // We have an array of numbers from [1, n] with a duplicate
+    // We have i from [0, n]
+    // The duplicate will cancel each other, i will cancel the non duplicate, leaving only i for the duplicate
+    return arr.reduce((acc, cur, idx) => acc^cur^idx, 0)
+}

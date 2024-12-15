@@ -1,3 +1,5 @@
+//! Please read fibonacci.js in the same folder for full proof and explanations.
+
 // https://www.codewars.com/kata/53d40c1e2f13e331fc000c26/train/javascript
 // The year is 1214. One night, Pope Innocent III awakens to find the the archangel Gabriel floating before him. Gabriel thunders to the pope:
 
@@ -320,6 +322,32 @@ function fibFastDoublingIdentities(n){
 // console.log(fibFastDoublingIdentities(30)); // 832040
 // console.log(fibFastDoublingIdentities(40)); // 102334155
 
+// Now accepting BigInts and negative inputs :
+function fibFastDoublingIdentitiesV2(n) {
+    if(n === 0) return 0n
+    if(n === 1) return 1n
+    if(n === 2) return 1n
+    // Note : we have to specify the edge case n === 2 otherwise the algo would jump into n%2 === 0 and call fib(n/2 + 1) = fib(2) and indefinitely call that.
+
+    const isNegative = n < 0
+    n = isNegative ? -n : n
+  
+    if(isNegative && n % 2 === 0) return -fib(n)
+    
+    if(n%2 === 0){
+        // F2n = 2(Fn)(Fn+1) - (Fn)^2
+        // return 2 * fib(n/2) * fib(n/2 + 1) - fib(n/2) * fib(n/2)
+        let a = fib(n/2)
+        let b = fib(n/2 + 1)
+        return 2n * a * b - a*a
+    }else{
+        // F2n+1 = (Fn)^2 + (Fn+1)^2
+        // return fib(n/2) * fib(n/2) + fib((n-1)/2 + 1) * fib((n-1)/2 + 1)
+        let a = fib((n-1)/2)
+        let b = fib((n-1)/2 + 1)
+        return a*a + b*b
+    }
+}
 //===============================================
 // https://www.codewars.com/kata/522551eee9abb932420004a0/train/javascript
 // I love Fibonacci numbers in general, but I must admit I love some more than others.
